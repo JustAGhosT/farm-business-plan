@@ -29,3 +29,6 @@ plugins:
   - jekyll-feed
   - jekyll-seo-tag
   - jekyll-sitemap
+
+# Version Info
+version: "1.0.2"
