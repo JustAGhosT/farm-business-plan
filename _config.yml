@@ -3,7 +3,7 @@ title: Farm Business Plan
 description: A comprehensive farm business plan repository.
 url: "https://justaghost.github.io/farm-business-plan/"
 baseurl: "/farm-business-plan/"
-theme: jekyll-theme-minimal
+theme: minima
 
 # Markdown Processing
 markdown: kramdown
@@ -22,5 +22,11 @@ collections:
   docs:
     output: true
     permalink: /:path/
-  assets:
-    output: false
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "docs"
+    values:
+      layout: "page"
