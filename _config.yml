@@ -11,11 +11,6 @@ kramdown:
   input: GFM
   hard_wrap: false
 
-# Sass Configuration
-sass:
-  load_paths:
-    - assets/css
-
 # Navigation
 collections:
   docs:
