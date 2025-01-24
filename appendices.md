@@ -249,3 +249,6 @@ Technical:
 ```
 
 [Previous](implementation-timeline.md) | [Next](README.md)
+
+<!-- Version: 1.0.1 -->
+
