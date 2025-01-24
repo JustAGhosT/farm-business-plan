@@ -22,6 +22,8 @@
 | **Contingency**     | (15% of total)        | R1,575         | **R1,575**   |
 | **Total Initial Investment** |             |                | **R12,075**  |
 
+---
+
 ## 3.2 Operating Costs
 
 ### Fixed Monthly Costs
@@ -42,6 +44,8 @@
 | Delivery             | R10/km                | R200-400              |
 | **Total Variable Costs** |                   | **R736-1,340**        |
 
+---
+
 ## 3.3 Revenue Projections
 
 ### Year 1 Production Schedule
@@ -58,13 +62,26 @@
 | 2        | 50         | 8                   | 160          | R57,600            |
 | 3        | 50         | 12                  | 240          | R86,400            |
 
+---
+
 ## 3.4 Cash Flow Analysis
 
 ### Monthly Cash Flow Projection - Year 1
-![Monthly Cash Flow - Year 1](assets//monthly_cash_flow_year1.png)
+```
+Month 1-7:  -R800 (Fixed costs only)
+Month 8-9:  -R1,176 (Fixed + Variable - R360 Revenue)
+Month 10-11: -R456 (Fixed + Variable - R1,080 Revenue)
+Month 12:   +R984 (Fixed + Variable - R2,520 Revenue)
+```
 
 ### Annual Cash Flow Summary
-![Cumulative Revenue vs Costs](assets/cumulative_revenue_vs_costs.png)
+| **Year** | **Revenue** | **Costs** | **Net Cash Flow** |
+|----------|-------------|-----------|--------------------|
+| 1        | R5,400      | R8,864    | -R3,464            |
+| 2        | R57,600     | R28,800   | +R28,800           |
+| 3        | R86,400     | R32,400   | +R54,000           |
+
+---
 
 ## 3.5 Break-Even Analysis
 
@@ -75,7 +92,7 @@
 - Break-Even Point: **480 kg annually** (Based on 50 plants × 12 fruits/plant × 80% success rate at maturity).
 - Expected Break-Even Timeline: Month 18
 
-![Break-even Analysis](assets/break_even_analysis.png)
+---
 
 ## 3.6 ROI Analysis
 
@@ -89,7 +106,8 @@ Year 3: +R80,800
 
 ROI at Year 3: 922.04%
 ```
-![ROI Progression](assets/roi_progression.png)
+
+---
 
 ## 3.7 Sensitivity Analysis
 
@@ -106,7 +124,5 @@ ROI at Year 3: 922.04%
 | Best Case            | R104,500          | 973%             |
 | Base Case            | R86,400           | 922%             |
 | Worst Case           | R58,800           | 780%             |
-
-![Sensitivity Analysis](assets/sensitivity_analysis.png)
 
 [Previous](technical-implementation.md) | [Next](operations-manual.md)
