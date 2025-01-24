@@ -1,22 +1,3 @@
-# 2. TECHNICAL IMPLEMENTATION
-
-## 2.1 Site Specifications
-
-### Wall Infrastructure
-- **East-West Wall**
-  - Length: 26 meters
-  - Height: 2.8 meters
-  - Sun Exposure: Southern face
-  - Material: Concrete block
-  - Load Capacity: 120 kg/m²
-
-- **South-North Wall**
-  - Length: 14.1 meters
-  - Height: 2.8 meters
-  - Sun Exposure: Western face
-  - Material: Concrete block
-  - Load Capacity: 120 kg/m²
-
 ## 2.2 Plant Layout Design
 
 ### Spacing Requirements
@@ -106,46 +87,3 @@ graph TB
   M3[0.5m Offset] --- PP
   end
 ```
-
-## 2.3 Support Structure
-
-### Primary Support System
-- Material: Galvanized Steel
-- Post Diameter: 50mm
-- Post Height: 2.5 meters
-- Anchor Depth: 0.5 meters
-- Load Rating: 80 kg per post
-
-### Secondary Support Elements
-- Wire Type: 4mm stainless steel
-- Wire Tension: 15-20 kg
-- Cross Bracing: Every 5 meters
-- Tension Adjusters: Turnbuckle system
-
-## 2.4 Irrigation System
-
-### Main Components
-1. **Water Source**
-   - Storage Tank: 5000L
-   - Pump: 0.75kW
-   - Filter System: 120 mesh
-   - Pressure Regulator: 2.5 bar
-
-2. **Distribution Network**
-   - Main Line: 32mm HDPE
-   - Sub-mains: 25mm HDPE
-   - Laterals: 16mm PE
-
-3. **Emission Devices**
-   - Type: Pressure Compensating Drippers
-   - Flow Rate: 2L/hour
-   - Spacing: 0.5 meters
-   - Quantity: 2 per plant
-
-### Control System
-- Timer-based automation
-- Soil moisture sensors
-- Manual override capability
-- Zone control valves
-
-[Previous](executive-summary.md) | [Next](financial-analysis.md)

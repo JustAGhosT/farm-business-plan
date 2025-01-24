@@ -188,3 +188,5 @@ graph TB
   G --> H
   F --> H
 ```
+
+[Previous](market-strategy.md) | [Next](implementation-timeline.md)

@@ -133,6 +133,7 @@ gantt
   Market Entry        :2025-09-01, 45d
   Optimization        :2025-09-15, 90d
 
+```python
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -177,3 +178,6 @@ plt.annotate('Revenue Starts',
             arrowprops=dict(facecolor='black', shrink=0.05))
 
 plt.show()
+```
+
+[Previous](README.md) | [Next](technical-implementation.md)

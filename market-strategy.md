@@ -144,3 +144,5 @@
 - Product line diversification
 - E-commerce development
 - Partnership programs
+
+[Previous](operations-manual.md) | [Next](risk-management.md)

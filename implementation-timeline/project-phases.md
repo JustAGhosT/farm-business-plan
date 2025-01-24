@@ -146,5 +146,3 @@ graph TB
   style Phase2 fill:#ff9,stroke:#333,stroke-width:2px
   style Phase3 fill:#9f9,stroke:#333,stroke-width:2px
 ```
-
-[Previous](risk-management.md) | [Next](appendices.md)

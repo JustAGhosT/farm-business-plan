@@ -216,3 +216,5 @@ graph TB
   G --> H
   F --> H
 ```
+
+[Previous](financial-analysis.md) | [Next](market-strategy.md)

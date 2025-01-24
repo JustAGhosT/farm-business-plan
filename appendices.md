@@ -143,13 +143,13 @@ Weather: ___________
 Signed: ____________
 ```
 
-### B. Inspection Forms
-| Area | Status | Issues | Action Taken | Follow-up |
-|------|--------|--------|--------------|-----------|
-| Irrigation | □ OK □ Issue | | | |
-| Structure | □ OK □ Issue | | | |
-| Plants | □ OK □ Issue | | | |
-| Storage | □ OK □ Issue | | | |
+### B. Maintenance Schedule Template
+| Component | Frequency | Action Items | Tools Required |
+|-----------|-----------|--------------|----------------|
+| Filters | Weekly | Backwash, inspect | Wrench set |
+| Drip Lines | Monthly | Flush, check flow | Pressure gauge |
+| Controllers | Quarterly | Calibrate, test | Multimeter |
+| Structures | Bi-annual | Inspect, tighten | Socket set |
 
 ## 8.5 Reference Materials
 
@@ -247,3 +247,5 @@ Technical:
 - [ ] Audit preparations
 - [ ] Compliance review
 ```
+
+[Previous](implementation-timeline.md) | [Next](README.md)
