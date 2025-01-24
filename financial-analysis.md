@@ -61,10 +61,10 @@
 ## 3.4 Cash Flow Analysis
 
 ### Monthly Cash Flow Projection - Year 1
-![Monthly Cash Flow - Year 1](graphs/monthly_cash_flow_year1.png)
+![Monthly Cash Flow - Year 1](assets//monthly_cash_flow_year1.png)
 
 ### Annual Cash Flow Summary
-![Cumulative Revenue vs Costs](graphs/cumulative_revenue_vs_costs.png)
+![Cumulative Revenue vs Costs](assets/cumulative_revenue_vs_costs.png)
 
 ## 3.5 Break-Even Analysis
 
@@ -75,7 +75,7 @@
 - Break-Even Point: **480 kg annually** (Based on 50 plants × 12 fruits/plant × 80% success rate at maturity).
 - Expected Break-Even Timeline: Month 18
 
-![Break-even Analysis](graphs/break_even_analysis.png)
+![Break-even Analysis](assets/break_even_analysis.png)
 
 ## 3.6 ROI Analysis
 
@@ -89,7 +89,7 @@ Year 3: +R80,800
 
 ROI at Year 3: 922.04%
 ```
-![ROI Progression](graphs/roi_progression.png)
+![ROI Progression](assets/roi_progression.png)
 
 ## 3.7 Sensitivity Analysis
 
@@ -107,6 +107,6 @@ ROI at Year 3: 922.04%
 | Base Case            | R86,400           | 922%             |
 | Worst Case           | R58,800           | 780%             |
 
-![Sensitivity Analysis](graphs/sensitivity_analysis.png)
+![Sensitivity Analysis](assets/sensitivity_analysis.png)
 
 [Previous](technical-implementation.md) | [Next](operations-manual.md)
