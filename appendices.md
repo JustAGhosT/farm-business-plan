@@ -62,7 +62,7 @@ Materials:
 - [ ] Record daily measurements
 - [ ] Check storage conditions
 - [ ] Update logbook
-- [ ] Set next day's schedule
+- [ ] Set next day’s schedule
 ```
 
 ### B. Maintenance Schedule Template
