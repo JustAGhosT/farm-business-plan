@@ -1,3 +1,4 @@
+
 # 4. OPERATIONS MANUAL
 
 ## 4.1 Daily Operations Schedule
@@ -24,15 +25,15 @@
 
 ## 4.2 Weekly Maintenance Schedule
 
-| Day | Primary Tasks | Secondary Tasks |
-|-----|--------------|-----------------|
-| Monday | Structural inspection | Update logs |
-| Tuesday | Pest monitoring | Clean tools |
-| Wednesday | Fertilization (if scheduled) | Check storage |
-| Thursday | Pruning/Training | Organize supplies |
-| Friday | Deep irrigation check | Equipment maintenance |
-| Saturday | General maintenance | Market preparation |
-| Sunday | System rest day | Data review |
+| Day      | Primary Tasks           | Secondary Tasks      |
+|----------|-------------------------|----------------------|
+| Monday   | Structural inspection   | Update logs          |
+| Tuesday  | Pest monitoring         | Clean tools          |
+| Wednesday| Fertilization (if scheduled) | Check storage  |
+| Thursday | Pruning/Training        | Organize supplies    |
+| Friday   | Deep irrigation check   | Equipment maintenance|
+| Saturday | General maintenance     | Market preparation   |
+| Sunday   | System rest day         | Data review          |
 
 ## 4.3 Growing Protocols
 
@@ -50,21 +51,21 @@
    - Balance plant structure
 
 ### Fertilization Schedule
-| Growth Stage | Product | Rate | Frequency |
-|--------------|---------|------|-----------|
-| Establishment | 3:2:3 | 50g/plant | Monthly |
-| Vegetative | 5:1:3 | 75g/plant | Bi-monthly |
-| Flowering | 3:1:5 | 100g/plant | Monthly |
-| Fruiting | 2:3:4 | 125g/plant | Bi-monthly |
+| Growth Stage  | Product  | Rate       | Frequency       |
+|---------------|----------|------------|-----------------|
+| Establishment | 3:2:3    | 50g/plant  | Monthly         |
+| Vegetative    | 5:1:3    | 75g/plant  | Bi-monthly      |
+| Flowering     | 3:1:5    | 100g/plant | Monthly         |
+| Fruiting      | 2:3:4    | 125g/plant | Bi-monthly      |
 
 ## 4.4 Irrigation Management
 
 ### Watering Schedule
-| Season | Frequency | Duration | Time |
-|--------|-----------|----------|------|
-| Summer | 2x daily | 15 min | 06:00, 17:00 |
-| Winter | 1x daily | 10 min | 10:00 |
-| Spring/Autumn | 1x daily | 12 min | 07:00 |
+| Season        | Frequency | Duration | Time    |
+|---------------|-----------|----------|---------|
+| Summer        | 2x daily  | 15 min   | 06:00, 17:00 |
+| Winter        | 1x daily  | 10 min   | 10:00   |
+| Spring/Autumn | 1x daily  | 12 min   | 07:00   |
 
 ### Moisture Targets
 - Field Capacity: 80-85%
@@ -86,20 +87,20 @@
    - Monitor pH levels
 
 ### Treatment Matrix
-| Issue | Symptoms | Treatment | Prevention |
-|-------|----------|-----------|------------|
-| Stem Rot | Brown lesions | Copper fungicide | Improve drainage |
-| Mealybugs | White cotton-like masses | Neem oil | Regular inspection |
-| Sunburn | Yellow patches | Shade cloth | Proper positioning |
-| Root Rot | Wilting | Reduce irrigation | Soil amendment |
+| Issue       | Symptoms              | Treatment         | Prevention          |
+|-------------|-----------------------|-------------------|---------------------|
+| Stem Rot    | Brown lesions         | Copper fungicide  | Improve drainage    |
+| Mealybugs   | White cotton-like masses | Neem oil       | Regular inspection  |
+| Sunburn     | Yellow patches        | Shade cloth       | Proper positioning  |
+| Root Rot    | Wilting               | Reduce irrigation | Soil amendment      |
 
 ## 4.6 Harvest Procedures
 
 ### Harvest Criteria
-- Color: Full red with even tone
-- Size: 8-12cm length
-- Texture: Firm but slight give
-- Brix: 13-15° minimum
+- **Color**: Full red with even tone
+- **Size**: 8-12cm length
+- **Texture**: Firm but slight give
+- **Brix**: 13-15° minimum
 
 ### Harvest Steps
 1. **Preparation**
@@ -123,12 +124,12 @@
 ## 4.7 Quality Control
 
 ### Daily Quality Metrics
-| Parameter | Target Range | Action if Outside Range |
-|-----------|--------------|------------------------|
-| Soil Moisture | 65-75% | Adjust irrigation |
-| Temperature | 20-30°C | Modify shade/protection |
-| pH | 6.0-6.5 | Amend soil |
-| EC | 1.5-2.0 mS/cm | Adjust fertilization |
+| Parameter       | Target Range     | Action if Outside Range    |
+|-----------------|------------------|----------------------------|
+| Soil Moisture   | 65-75%          | Adjust irrigation          |
+| Temperature     | 20-30°C         | Modify shade/protection    |
+| pH              | 6.0-6.5         | Amend soil                 |
+| EC              | 1.5-2.0 mS/cm   | Adjust fertilization       |
 
 ### Monthly Quality Checks
 1. **Plant Health Index**
@@ -171,50 +172,25 @@
    - Document damage
    - Implement repairs
 
+#### Process Workflow
 ```mermaid
 graph TD
   A[Daily Start] -->|Morning Check| B(System Inspection)
   B --> C{Issues Found?}
   C -->|Yes| D[Emergency Protocol]
   C -->|No| E[Regular Tasks]
-  
   E --> F[Plant Care]
   E --> G[Irrigation Check]
   E --> H[Environment Control]
-  
   F --> I[Record Keeping]
   G --> I
   H --> I
-  
   I --> J[End of Day Review]
-  
   D --> K[Issue Assessment]
   K --> L[Apply Solution]
   L --> M[Document Action]
   M --> N[Follow-up Check]
   N --> J
-```
-
-```mermaid
-graph TB
-  subgraph Daily Monitoring
-  A[Morning Inspection] --> B[Parameter Check]
-  B --> C[Record Data]
-  C --> D[Compare to Standards]
-  D --> E{Within Range?}
-  E -->|Yes| F[Continue Regular Operations]
-  E -->|No| G[Corrective Action]
-  end
-  
-  subgraph Monthly Review
-  H[Collect Monthly Data] --> I[Analyze Trends]
-  I --> J[Update Procedures]
-  J --> K[Staff Training]
-  K --> L[Implementation]
-  end
-  
-  G --> H
-  F --> H
 ```
 
 [Previous](financial-analysis.md) | [Next](market-strategy.md)
