@@ -1,4 +1,3 @@
-
 # 3. FINANCIAL ANALYSIS
 
 ## 3.1 Investment Structure
@@ -22,8 +21,6 @@
 | **Contingency**     | (15% of total)        | R1,575         | **R1,575**   |
 | **Total Initial Investment** |             |                | **R12,075**  |
 
----
-
 ## 3.2 Operating Costs
 
 ### Fixed Monthly Costs
@@ -44,8 +41,6 @@
 | Delivery             | R10/km                | R200-400              |
 | **Total Variable Costs** |                   | **R736-1,340**        |
 
----
-
 ## 3.3 Revenue Projections
 
 ### Year 1 Production Schedule
@@ -61,8 +56,6 @@
 |----------|------------|---------------------|--------------|--------------------|
 | 2        | 50         | 8                   | 160          | R57,600            |
 | 3        | 50         | 12                  | 240          | R86,400            |
-
----
 
 ## 3.4 Cash Flow Analysis
 
@@ -81,8 +74,6 @@ Month 12:   +R984 (Fixed + Variable - R2,520 Revenue)
 | 2        | R57,600     | R28,800   | +R28,800           |
 | 3        | R86,400     | R32,400   | +R54,000           |
 
----
-
 ## 3.5 Break-Even Analysis
 
 ### Break-Even Calculation
@@ -91,8 +82,6 @@ Month 12:   +R984 (Fixed + Variable - R2,520 Revenue)
 - Selling Price per Kg: R45
 - Break-Even Point: **480 kg annually** (Based on 50 plants × 12 fruits/plant × 80% success rate at maturity).
 - Expected Break-Even Timeline: Month 18
-
----
 
 ## 3.6 ROI Analysis
 
@@ -106,8 +95,6 @@ Year 3: +R80,800
 
 ROI at Year 3: 922.04%
 ```
-
----
 
 ## 3.7 Sensitivity Analysis
 
