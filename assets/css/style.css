@@ -3,6 +3,7 @@ table {
   border-collapse: collapse;
   width: 100%;
   margin-bottom: 20px;
+  border: 1px solid #ddd;
 }
 
 th, td {
@@ -13,6 +14,7 @@ th, td {
 th {
   background-color: #333;
   color: #fff;
+  border-bottom: 2px solid #ddd;
 }
 
 tr:nth-child(even) {
@@ -35,9 +37,11 @@ pre, code {
 pre {
   font-family: "Courier New", monospace;
   font-size: 14px;
+  color: #333;
+  background: #f9f9f9;
 }
 
-/* Page Enhancements */
+/* General Page Styling */
 body {
   font-family: Arial, sans-serif;
   line-height: 1.6;
