@@ -1,1 +1,26 @@
-theme: jekyll-theme-cayman
+# Site Configuration
+title: Farm Business Plan
+description: A comprehensive farm business plan repository.
+url: "https://justaghost.github.io/farm-business-plan/"
+baseurl: "/farm-business-plan/"
+theme: jekyll-theme-minimal
+
+# Markdown Processing
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# Navigation
+collections:
+  docs:
+    output: true
+    permalink: /:path/
+  assets:
+    output: false
