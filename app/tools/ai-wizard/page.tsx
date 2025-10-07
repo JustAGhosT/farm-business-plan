@@ -6,40 +6,288 @@ import { useRouter } from 'next/navigation'
 
 type Step = 'location' | 'climate' | 'crops' | 'financials' | 'timeline' | 'recommendations'
 
+interface BoundaryPoint {
+  lat: number
+  lng: number
+}
+
+interface CropAllocation {
+  cropId: string
+  minHectares: string
+  maxHectares: string
+}
+
 interface WizardData {
   location: string
   province: string
+  coordinates: {
+    lat: string
+    lng: string
+  }
   farmSize: string
+  farmSizeSource: 'manual' | 'boundary' | 'calculated'
+  boundaryPoints: BoundaryPoint[]
   climate: {
     avgTempSummer: string
     avgTempWinter: string
     annualRainfall: string
     frostRisk: string
+    autoPopulated: boolean
   }
   crops: string[]
+  cropAllocations: CropAllocation[]
   budget: string
   timeline: string
+  soilType: string
+  waterSource: string
 }
 
 export default function AIWizardPage() {
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState<Step>('location')
+  const [isLoadingClimate, setIsLoadingClimate] = useState(false)
   const [data, setData] = useState<WizardData>({
     location: '',
     province: '',
+    coordinates: {
+      lat: '',
+      lng: ''
+    },
     farmSize: '',
+    farmSizeSource: 'manual',
+    boundaryPoints: [],
     climate: {
       avgTempSummer: '',
       avgTempWinter: '',
       annualRainfall: '',
-      frostRisk: 'no'
+      frostRisk: 'no',
+      autoPopulated: false
     },
     crops: [],
+    cropAllocations: [],
     budget: '',
-    timeline: ''
+    timeline: '',
+    soilType: '',
+    waterSource: ''
   })
 
   const [aiRecommendations, setAiRecommendations] = useState<string[]>([])
+
+  // Calculate farm size from boundary points using the Shoelace formula
+  const calculateAreaFromBoundary = (points: BoundaryPoint[]): number => {
+    if (points.length < 3) return 0
+    
+    let area = 0
+    const n = points.length
+    
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n
+      area += points[i].lat * points[j].lng
+      area -= points[j].lat * points[i].lng
+    }
+    
+    area = Math.abs(area) / 2
+    
+    // Convert from square degrees to hectares (approximate)
+    // 1 degree latitude ≈ 111 km, 1 degree longitude ≈ 111 * cos(latitude) km
+    const avgLat = points.reduce((sum, p) => sum + p.lat, 0) / n
+    const latFactor = 111 * 1000 // meters per degree
+    const lngFactor = 111 * 1000 * Math.cos(avgLat * Math.PI / 180)
+    
+    const areaInSquareMeters = area * latFactor * lngFactor
+    const hectares = areaInSquareMeters / 10000
+    
+    return hectares
+  }
+
+  // Fetch climate data based on location
+  const fetchClimateData = async () => {
+    if (!data.coordinates.lat || !data.coordinates.lng) {
+      // Try to geocode the location first
+      if (data.location && data.province) {
+        setIsLoadingClimate(true)
+        try {
+          // Simulated climate data based on South African provinces
+          const climateData = getClimateDataForProvince(data.province, data.location)
+          
+          setData({
+            ...data,
+            climate: {
+              ...climateData,
+              autoPopulated: true
+            }
+          })
+        } catch (error) {
+          console.error('Error fetching climate data:', error)
+        } finally {
+          setIsLoadingClimate(false)
+        }
+      }
+    } else {
+      setIsLoadingClimate(true)
+      try {
+        // Use coordinates to get more accurate climate data
+        const climateData = getClimateDataForCoordinates(
+          parseFloat(data.coordinates.lat),
+          parseFloat(data.coordinates.lng)
+        )
+        
+        setData({
+          ...data,
+          climate: {
+            ...climateData,
+            autoPopulated: true
+          }
+        })
+      } catch (error) {
+        console.error('Error fetching climate data:', error)
+      } finally {
+        setIsLoadingClimate(false)
+      }
+    }
+  }
+
+  // Simulated climate data function (in production, this would call a real API)
+  const getClimateDataForProvince = (province: string, location: string) => {
+    const climateDB: Record<string, any> = {
+      'Limpopo': {
+        avgTempSummer: '28',
+        avgTempWinter: '16',
+        annualRainfall: '500',
+        frostRisk: 'yes'
+      },
+      'Mpumalanga': {
+        avgTempSummer: '26',
+        avgTempWinter: '14',
+        annualRainfall: '750',
+        frostRisk: 'yes'
+      },
+      'Gauteng': {
+        avgTempSummer: '26',
+        avgTempWinter: '12',
+        annualRainfall: '650',
+        frostRisk: 'yes'
+      },
+      'KwaZulu-Natal': {
+        avgTempSummer: '27',
+        avgTempWinter: '18',
+        annualRainfall: '1000',
+        frostRisk: 'no'
+      },
+      'Western Cape': {
+        avgTempSummer: '24',
+        avgTempWinter: '12',
+        annualRainfall: '520',
+        frostRisk: 'yes'
+      },
+      'Eastern Cape': {
+        avgTempSummer: '25',
+        avgTempWinter: '14',
+        annualRainfall: '650',
+        frostRisk: 'yes'
+      },
+      'Northern Cape': {
+        avgTempSummer: '30',
+        avgTempWinter: '14',
+        annualRainfall: '200',
+        frostRisk: 'yes'
+      },
+      'Free State': {
+        avgTempSummer: '27',
+        avgTempWinter: '10',
+        annualRainfall: '550',
+        frostRisk: 'yes'
+      },
+      'North West': {
+        avgTempSummer: '28',
+        avgTempWinter: '12',
+        annualRainfall: '500',
+        frostRisk: 'yes'
+      }
+    }
+    
+    return climateDB[province] || {
+      avgTempSummer: '26',
+      avgTempWinter: '14',
+      annualRainfall: '600',
+      frostRisk: 'no'
+    }
+  }
+
+  const getClimateDataForCoordinates = (lat: number, lng: number) => {
+    // Simulated based on latitude (more sophisticated in production)
+    const avgLat = Math.abs(lat)
+    
+    if (avgLat < 26) { // Northern, hotter
+      return {
+        avgTempSummer: '30',
+        avgTempWinter: '18',
+        annualRainfall: '450',
+        frostRisk: 'no'
+      }
+    } else if (avgLat < 28) {
+      return {
+        avgTempSummer: '27',
+        avgTempWinter: '14',
+        annualRainfall: '600',
+        frostRisk: 'yes'
+      }
+    } else { // Southern, cooler
+      return {
+        avgTempSummer: '24',
+        avgTempWinter: '12',
+        annualRainfall: '550',
+        frostRisk: 'yes'
+      }
+    }
+  }
+
+  // Autopopulate budget recommendations based on farm size and crops
+  const getRecommendedBudget = () => {
+    const size = parseFloat(data.farmSize) || 0
+    const cropCount = data.crops.length
+    
+    if (size === 0 || cropCount === 0) return ''
+    
+    // Base cost per hectare varies by crop complexity
+    let costPerHectare = 50000 // Base for simple crops
+    
+    if (data.crops.includes('dragon-fruit')) {
+      costPerHectare = 150000 // High infrastructure cost
+    } else if (data.crops.includes('moringa') || data.crops.includes('lucerne')) {
+      costPerHectare = 70000 // Medium cost
+    } else if (data.crops.includes('vegetables')) {
+      costPerHectare = 80000 // Medium-high for intensive management
+    }
+    
+    const estimatedBudget = Math.round(size * costPerHectare)
+    return estimatedBudget.toString()
+  }
+
+  // Autopopulate soil and water recommendations
+  const getSoilRecommendation = () => {
+    if (data.province === 'Limpopo' || data.province === 'Northern Cape') {
+      return 'Sandy loam with low organic matter - may require amendments'
+    } else if (data.province === 'KwaZulu-Natal') {
+      return 'Clay-rich soils with good water retention'
+    } else if (data.province === 'Western Cape') {
+      return 'Sandy or alluvial soils - good drainage'
+    }
+    return 'Mixed soil types - conduct soil test for specifics'
+  }
+
+  const getWaterSourceRecommendation = () => {
+    const rainfall = parseInt(data.climate.annualRainfall) || 0
+    
+    if (rainfall < 400) {
+      return 'Borehole or municipal water essential - very low rainfall'
+    } else if (rainfall < 600) {
+      return 'Supplementary irrigation required - moderate rainfall'
+    } else if (rainfall > 900) {
+      return 'Rainwater harvesting viable - high rainfall area'
+    }
+    return 'Mixed sources recommended - seasonal variation'
+  }
 
   const steps: { id: Step; title: string; icon: string }[] = [
     { id: 'location', title: 'Location & Size', icon: '📍' },
@@ -249,23 +497,172 @@ export default function AIWizardPage() {
                     </select>
                   </div>
 
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h3 className="font-semibold text-blue-900 mb-2">📍 Optional: Farm Coordinates</h3>
+                    <p className="text-sm text-blue-800 mb-3">Provide exact coordinates for more accurate climate data</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Latitude
+                        </label>
+                        <input
+                          type="number"
+                          step="0.000001"
+                          value={data.coordinates.lat}
+                          onChange={(e) => setData({ ...data, coordinates: { ...data.coordinates, lat: e.target.value } })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          placeholder="e.g., -24.2819"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Longitude
+                        </label>
+                        <input
+                          type="number"
+                          step="0.000001"
+                          value={data.coordinates.lng}
+                          onChange={(e) => setData({ ...data, coordinates: { ...data.coordinates, lng: e.target.value } })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          placeholder="e.g., 28.4167"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Farm Size (hectares) *
+                      Farm Size Method *
                     </label>
-                    <input
-                      type="number"
-                      value={data.farmSize}
-                      onChange={(e) => setData({ ...data, farmSize: e.target.value })}
-                      step="0.1"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="e.g., 2.5"
-                    />
+                    <div className="flex gap-4 mb-3">
+                      <label className="flex items-center">
+                        <input
+                          type="radio"
+                          name="farmSizeSource"
+                          value="manual"
+                          checked={data.farmSizeSource === 'manual'}
+                          onChange={(e) => setData({ ...data, farmSizeSource: 'manual' as 'manual' | 'boundary' | 'calculated' })}
+                          className="mr-2"
+                        />
+                        Manual Entry
+                      </label>
+                      <label className="flex items-center">
+                        <input
+                          type="radio"
+                          name="farmSizeSource"
+                          value="boundary"
+                          checked={data.farmSizeSource === 'boundary'}
+                          onChange={(e) => setData({ ...data, farmSizeSource: 'boundary' as 'manual' | 'boundary' | 'calculated' })}
+                          className="mr-2"
+                        />
+                        Boundary Points
+                      </label>
+                    </div>
+
+                    {data.farmSizeSource === 'manual' ? (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Farm Size (hectares) *
+                        </label>
+                        <input
+                          type="number"
+                          value={data.farmSize}
+                          onChange={(e) => setData({ ...data, farmSize: e.target.value })}
+                          step="0.1"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          placeholder="e.g., 2.5"
+                        />
+                      </div>
+                    ) : (
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <h3 className="font-semibold text-green-900 mb-2">🗺️ Define Farm Boundary</h3>
+                        <p className="text-sm text-green-800 mb-3">
+                          Enter at least 3 corner points (lat, lng) to calculate area
+                        </p>
+                        
+                        {data.boundaryPoints.map((point, index) => (
+                          <div key={index} className="flex gap-2 mb-2">
+                            <input
+                              type="number"
+                              step="0.000001"
+                              value={point.lat}
+                              onChange={(e) => {
+                                const newPoints = [...data.boundaryPoints]
+                                newPoints[index].lat = parseFloat(e.target.value) || 0
+                                setData({ ...data, boundaryPoints: newPoints })
+                              }}
+                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
+                              placeholder="Latitude"
+                            />
+                            <input
+                              type="number"
+                              step="0.000001"
+                              value={point.lng}
+                              onChange={(e) => {
+                                const newPoints = [...data.boundaryPoints]
+                                newPoints[index].lng = parseFloat(e.target.value) || 0
+                                setData({ ...data, boundaryPoints: newPoints })
+                              }}
+                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
+                              placeholder="Longitude"
+                            />
+                            <button
+                              onClick={() => {
+                                const newPoints = data.boundaryPoints.filter((_, i) => i !== index)
+                                setData({ ...data, boundaryPoints: newPoints })
+                              }}
+                              className="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                        
+                        <button
+                          onClick={() => {
+                            setData({
+                              ...data,
+                              boundaryPoints: [...data.boundaryPoints, { lat: 0, lng: 0 }]
+                            })
+                          }}
+                          className="w-full px-4 py-2 border-2 border-dashed border-green-300 rounded-lg text-green-700 hover:bg-green-100 transition-colors mt-2"
+                        >
+                          + Add Boundary Point
+                        </button>
+
+                        {data.boundaryPoints.length >= 3 && (
+                          <div className="mt-4">
+                            <button
+                              onClick={() => {
+                                const calculatedSize = calculateAreaFromBoundary(data.boundaryPoints)
+                                setData({
+                                  ...data,
+                                  farmSize: calculatedSize.toFixed(2),
+                                  farmSizeSource: 'calculated'
+                                })
+                              }}
+                              className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                            >
+                              Calculate Area from Boundary
+                            </button>
+                            
+                            {data.farmSizeSource === 'calculated' && data.farmSize && (
+                              <div className="mt-2 p-3 bg-white border border-green-300 rounded-lg">
+                                <p className="text-sm text-gray-700">
+                                  <strong>Calculated Area:</strong> {parseFloat(data.farmSize).toFixed(2)} hectares
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
                     <p className="text-sm text-blue-800">
                       <strong>💡 Tip:</strong> The AI will use your location to provide climate-specific recommendations and suitable crop suggestions.
+                      {data.coordinates.lat && data.coordinates.lng && ' Coordinates will enable precise climate data.'}
                     </p>
                   </div>
                 </div>
@@ -278,6 +675,30 @@ export default function AIWizardPage() {
                 <p className="text-gray-600 mb-6">Help us understand your local climate conditions</p>
                 
                 <div className="space-y-4">
+                  {!data.climate.autoPopulated && (data.location || data.coordinates.lat) && (
+                    <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
+                      <h3 className="font-semibold text-primary-900 mb-2">🤖 Auto-Populate Climate Data</h3>
+                      <p className="text-sm text-primary-800 mb-3">
+                        We can automatically fetch climate data based on your location
+                      </p>
+                      <button
+                        onClick={fetchClimateData}
+                        disabled={isLoadingClimate}
+                        className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
+                      >
+                        {isLoadingClimate ? 'Loading...' : '✨ Auto-Fill Climate Data'}
+                      </button>
+                    </div>
+                  )}
+
+                  {data.climate.autoPopulated && (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                      <p className="text-sm text-green-800">
+                        ✓ Climate data auto-populated based on your location. You can adjust values if needed.
+                      </p>
+                    </div>
+                  )}
+
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -286,7 +707,7 @@ export default function AIWizardPage() {
                       <input
                         type="number"
                         value={data.climate.avgTempSummer}
-                        onChange={(e) => setData({ ...data, climate: { ...data.climate, avgTempSummer: e.target.value } })}
+                        onChange={(e) => setData({ ...data, climate: { ...data.climate, avgTempSummer: e.target.value, autoPopulated: false } })}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                         placeholder="e.g., 28"
                       />
@@ -299,7 +720,7 @@ export default function AIWizardPage() {
                       <input
                         type="number"
                         value={data.climate.avgTempWinter}
-                        onChange={(e) => setData({ ...data, climate: { ...data.climate, avgTempWinter: e.target.value } })}
+                        onChange={(e) => setData({ ...data, climate: { ...data.climate, avgTempWinter: e.target.value, autoPopulated: false } })}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                         placeholder="e.g., 16"
                       />
@@ -313,7 +734,7 @@ export default function AIWizardPage() {
                     <input
                       type="number"
                       value={data.climate.annualRainfall}
-                      onChange={(e) => setData({ ...data, climate: { ...data.climate, annualRainfall: e.target.value } })}
+                      onChange={(e) => setData({ ...data, climate: { ...data.climate, annualRainfall: e.target.value, autoPopulated: false } })}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       placeholder="e.g., 600"
                     />
@@ -360,8 +781,8 @@ export default function AIWizardPage() {
 
             {currentStep === 'crops' && (
               <div>
-                <h2 className="text-2xl font-bold mb-4">🌱 Crop Selection</h2>
-                <p className="text-gray-600 mb-6">Select crops you&apos;re interested in growing</p>
+                <h2 className="text-2xl font-bold mb-4">🌱 Crop Selection & Allocation</h2>
+                <p className="text-gray-600 mb-6">Select crops you&apos;re interested in growing and allocate land</p>
                 
                 <div className="grid md:grid-cols-2 gap-4 mb-6">
                   {cropOptions.map((crop) => (
@@ -369,9 +790,17 @@ export default function AIWizardPage() {
                       key={crop.id}
                       onClick={() => {
                         if (data.crops.includes(crop.id)) {
-                          setData({ ...data, crops: data.crops.filter(c => c !== crop.id) })
+                          setData({ 
+                            ...data, 
+                            crops: data.crops.filter(c => c !== crop.id),
+                            cropAllocations: data.cropAllocations.filter(a => a.cropId !== crop.id)
+                          })
                         } else {
-                          setData({ ...data, crops: [...data.crops, crop.id] })
+                          setData({ 
+                            ...data, 
+                            crops: [...data.crops, crop.id],
+                            cropAllocations: [...data.cropAllocations, { cropId: crop.id, minHectares: '', maxHectares: '' }]
+                          })
                         }
                       }}
                       className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
@@ -393,10 +822,104 @@ export default function AIWizardPage() {
                   ))}
                 </div>
 
+                {data.crops.length > 0 && data.farmSize && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                    <h3 className="font-semibold text-blue-900 mb-3">📊 Land Allocation</h3>
+                    <p className="text-sm text-blue-800 mb-4">
+                      Total farm size: <strong>{parseFloat(data.farmSize).toFixed(2)} hectares</strong>
+                    </p>
+                    
+                    <div className="space-y-3">
+                      {data.crops.map((cropId) => {
+                        const crop = cropOptions.find(c => c.id === cropId)
+                        const allocation = data.cropAllocations.find(a => a.cropId === cropId)
+                        
+                        return (
+                          <div key={cropId} className="bg-white rounded-lg p-3 border border-blue-200">
+                            <div className="flex items-center mb-2">
+                              <span className="text-2xl mr-2">{crop?.icon}</span>
+                              <h4 className="font-semibold">{crop?.name}</h4>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-3">
+                              <div>
+                                <label className="block text-xs font-medium text-gray-700 mb-1">
+                                  Min Hectares
+                                </label>
+                                <input
+                                  type="number"
+                                  step="0.1"
+                                  value={allocation?.minHectares || ''}
+                                  onChange={(e) => {
+                                    const newAllocations = data.cropAllocations.map(a =>
+                                      a.cropId === cropId ? { ...a, minHectares: e.target.value } : a
+                                    )
+                                    setData({ ...data, cropAllocations: newAllocations })
+                                  }}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                  placeholder="e.g., 0.5"
+                                />
+                              </div>
+                              
+                              <div>
+                                <label className="block text-xs font-medium text-gray-700 mb-1">
+                                  Max Hectares
+                                </label>
+                                <input
+                                  type="number"
+                                  step="0.1"
+                                  value={allocation?.maxHectares || ''}
+                                  onChange={(e) => {
+                                    const newAllocations = data.cropAllocations.map(a =>
+                                      a.cropId === cropId ? { ...a, maxHectares: e.target.value } : a
+                                    )
+                                    setData({ ...data, cropAllocations: newAllocations })
+                                  }}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                  placeholder="e.g., 1.5"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+
+                    {(() => {
+                      const totalMin = data.cropAllocations.reduce((sum, a) => sum + (parseFloat(a.minHectares) || 0), 0)
+                      const totalMax = data.cropAllocations.reduce((sum, a) => sum + (parseFloat(a.maxHectares) || 0), 0)
+                      const farmSize = parseFloat(data.farmSize) || 0
+                      
+                      return (
+                        <div className="mt-4 p-3 bg-white rounded-lg border border-blue-200">
+                          <div className="flex justify-between text-sm mb-1">
+                            <span>Total Min Allocation:</span>
+                            <span className={totalMin > farmSize ? 'text-red-600 font-semibold' : 'font-semibold'}>
+                              {totalMin.toFixed(2)} ha {totalMin > farmSize && '⚠️ Exceeds farm size!'}
+                            </span>
+                          </div>
+                          <div className="flex justify-between text-sm mb-1">
+                            <span>Total Max Allocation:</span>
+                            <span className={totalMax > farmSize ? 'text-red-600 font-semibold' : 'font-semibold'}>
+                              {totalMax.toFixed(2)} ha {totalMax > farmSize && '⚠️ Exceeds farm size!'}
+                            </span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Unallocated Land:</span>
+                            <span className="font-semibold text-green-600">
+                              {Math.max(0, farmSize - totalMax).toFixed(2)} ha available
+                            </span>
+                          </div>
+                        </div>
+                      )
+                    })()}
+                  </div>
+                )}
+
                 {data.crops.length > 0 && (
                   <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded">
                     <p className="text-sm text-green-800">
-                      <strong>Selected:</strong> {data.crops.length} crop(s). The AI will provide specific recommendations for each.
+                      <strong>Selected:</strong> {data.crops.length} crop(s). The AI will provide specific recommendations for each crop allocation.
                     </p>
                   </div>
                 )}
@@ -408,6 +931,24 @@ export default function AIWizardPage() {
                 <h2 className="text-2xl font-bold mb-4">💰 Budget & Financial Goals</h2>
                 
                 <div className="space-y-4">
+                  {data.farmSize && data.crops.length > 0 && !data.budget && (
+                    <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
+                      <h3 className="font-semibold text-primary-900 mb-2">🤖 Recommended Budget</h3>
+                      <p className="text-sm text-primary-800 mb-3">
+                        Based on your farm size ({parseFloat(data.farmSize).toFixed(2)} ha) and selected crops
+                      </p>
+                      <button
+                        onClick={() => {
+                          const recommendedBudget = getRecommendedBudget()
+                          setData({ ...data, budget: recommendedBudget })
+                        }}
+                        className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                      >
+                        ✨ Use Recommended Budget: R{parseInt(getRecommendedBudget()).toLocaleString()}
+                      </button>
+                    </div>
+                  )}
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Available Investment Budget (ZAR) *
@@ -420,6 +961,42 @@ export default function AIWizardPage() {
                       placeholder="e.g., 150000"
                     />
                     <p className="text-xs text-gray-500 mt-1">Total capital available for startup and first season</p>
+                  </div>
+
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                    <h3 className="font-semibold text-gray-900 mb-3">📋 Additional Information</h3>
+                    
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Soil Type (Auto-detected)
+                        </label>
+                        <input
+                          type="text"
+                          value={data.soilType || getSoilRecommendation()}
+                          onChange={(e) => setData({ ...data, soilType: e.target.value })}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-blue-50"
+                          placeholder="Soil type information"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Water Source (Auto-recommended)
+                        </label>
+                        <input
+                          type="text"
+                          value={data.waterSource || getWaterSourceRecommendation()}
+                          onChange={(e) => setData({ ...data, waterSource: e.target.value })}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-blue-50"
+                          placeholder="Water source information"
+                        />
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-gray-500 mt-3">
+                      💡 These fields are auto-populated based on your location and climate. You can edit them if needed.
+                    </p>
                   </div>
 
                   <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
