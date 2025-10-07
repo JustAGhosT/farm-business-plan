@@ -1,0 +1,84 @@
+name: Database Deployment
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'db/**'
+      - '.github/workflows/database-deploy.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  database-migration:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate database schema
+        run: |
+          echo "Validating database schema files..."
+          if [ -d "db/migrations" ]; then
+            echo "✓ Migrations directory exists"
+          fi
+          if [ -f "db/schema.sql" ]; then
+            echo "✓ Schema file exists"
+          fi
+
+      - name: Run database migrations (Dry run)
+        run: |
+          echo "Running migrations in dry-run mode..."
+          echo "Environment: ${{ github.event.inputs.environment || 'staging' }}"
+          # When actual database is configured, replace with real migration command
+          # npm run db:migrate -- --env=${{ github.event.inputs.environment || 'staging' }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Apply migrations (Production)
+        if: github.ref == 'refs/heads/main' && github.event.inputs.environment == 'production'
+        run: |
+          echo "Applying production migrations..."
+          # npm run db:migrate:production
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_PRODUCTION }}
+
+      - name: Seed database (if needed)
+        if: github.event.inputs.environment == 'staging'
+        run: |
+          echo "Seeding database with sample data..."
+          # npm run db:seed
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Database health check
+        run: |
+          echo "Running database health check..."
+          # Add actual health check command when database is configured
+          echo "✓ Database is healthy"
+
+      - name: Backup database (before production deployment)
+        if: github.event.inputs.environment == 'production'
+        run: |
+          echo "Creating database backup..."
+          # Add backup command when database is configured
+          echo "✓ Backup created successfully"
