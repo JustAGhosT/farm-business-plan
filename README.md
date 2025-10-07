@@ -300,7 +300,7 @@ npm run build
 - **Framework**: Next.js 14+ with App Router
 - **Language**: TypeScript for type safety
 - **Styling**: Tailwind CSS for responsive design
-- **Deployment**: Static site export compatible with GitHub Pages
+- **Deployment**: Static site export compatible with GitHub Pages, Netlify, Vercel, and other hosting platforms
 
 #### Project Structure
 
@@ -317,6 +317,34 @@ farm-business-plan/
 ├── docs/                # Markdown documentation templates
 └── README.md            # This file
 ```
+
+#### Deployment
+
+The application is configured for static site export and can be deployed to various hosting platforms:
+
+**Netlify Deployment (Recommended):**
+
+1. Push your code to a Git repository (GitHub, GitLab, Bitbucket)
+2. Connect your repository to Netlify
+3. Netlify will automatically detect the `netlify.toml` configuration
+4. The site will build and deploy automatically
+
+**Manual Deployment:**
+
+```bash
+# Build the static site
+npm run build
+
+# The output will be in the 'out' directory
+# Upload the contents of the 'out' directory to your hosting provider
+```
+
+**Other Platforms:**
+
+- **Vercel**: Connect your repository and deploy with zero configuration
+- **GitHub Pages**: Configure GitHub Actions to build and deploy to `gh-pages` branch
+- **AWS S3**: Upload the `out` directory contents to an S3 bucket with static website hosting
+- **Azure Static Web Apps**: Connect repository and deploy automatically
 
 ### Planned Features
 
