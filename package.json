@@ -2,6 +2,14 @@
   "name": "farm-business-plan",
   "version": "3.0.0",
   "description": "Agricultural Business Plan Template and Farm Management Application",
+  "homepage": "https://farm-business-plan.netlify.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JustAGhosT/farm-business-plan.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JustAGhosT/farm-business-plan/issues"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

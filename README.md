@@ -1,6 +1,14 @@
 # Agricultural Business Plan Template & Farm Management Tool
 
+[![Build Status](https://github.com/JustAGhosT/farm-business-plan/workflows/Deploy%20to%20Netlify/badge.svg)](https://github.com/JustAGhosT/farm-business-plan/actions)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/NETLIFY_SITE_ID/deploy-status)](https://app.netlify.com/sites/farm-business-plan/deploys)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Last Commit](https://img.shields.io/github/last-commit/JustAGhosT/farm-business-plan)](https://github.com/JustAGhosT/farm-business-plan/commits/main)
+
 ![Farm Planning](https://via.placeholder.com/800x200.png?text=Agricultural+Business+Plan+Template)
+
+**🌐 Live Demo:** [https://farm-business-plan.netlify.app](https://farm-business-plan.netlify.app)
 
 Welcome to the **Agricultural Business Plan Template** repository. This comprehensive framework provides farmers and agricultural entrepreneurs with a customizable business planning system that can be adapted for any crop type, location, and farming context. The template includes both detailed documentation and a Next.js-based farm management application.
 
@@ -320,7 +328,18 @@ farm-business-plan/
 
 #### Deployment
 
+**🚀 Live Application:** The application is automatically deployed to Netlify and can be accessed at:
+
+**[https://farm-business-plan.netlify.app](https://farm-business-plan.netlify.app)**
+
 The application is configured for static site export and can be deployed to various hosting platforms:
+
+**Automated Deployment (Current Setup):**
+
+- **Main branch** → Production deployment to Netlify
+- **Develop branch** → Staging deployment
+- **Pull Requests** → Preview deployments with unique URLs
+- Automatic builds triggered on every push via GitHub Actions
 
 **Netlify Deployment (Recommended):**
 
@@ -345,6 +364,8 @@ npm run build
 - **GitHub Pages**: Configure GitHub Actions to build and deploy to `gh-pages` branch
 - **AWS S3**: Upload the `out` directory contents to an S3 bucket with static website hosting
 - **Azure Static Web Apps**: Connect repository and deploy automatically
+
+For detailed deployment instructions and troubleshooting, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ### Planned Features
 
