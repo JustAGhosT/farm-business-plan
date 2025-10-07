@@ -77,6 +77,32 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Tools Section */}
+        <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">Interactive Tools</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Link href="/tools/plan-generator" className="p-4 border border-gray-200 rounded-lg hover:border-primary-500 hover:shadow-md transition-all">
+              <h3 className="font-semibold text-lg mb-2">🌱 Plan Generator</h3>
+              <p className="text-gray-600 text-sm">Create customized business plans</p>
+            </Link>
+            
+            <Link href="/tools/calculators" className="p-4 border border-gray-200 rounded-lg hover:border-primary-500 hover:shadow-md transition-all">
+              <h3 className="font-semibold text-lg mb-2">💰 Financial Tools</h3>
+              <p className="text-gray-600 text-sm">ROI, break-even & more calculators</p>
+            </Link>
+            
+            <Link href="/tools/dashboard" className="p-4 border border-gray-200 rounded-lg hover:border-primary-500 hover:shadow-md transition-all">
+              <h3 className="font-semibold text-lg mb-2">📊 Dashboard</h3>
+              <p className="text-gray-600 text-sm">Track tasks and operations</p>
+            </Link>
+            
+            <Link href="/tools/templates" className="p-4 border border-gray-200 rounded-lg hover:border-primary-500 hover:shadow-md transition-all">
+              <h3 className="font-semibold text-lg mb-2">📚 Crop Templates</h3>
+              <p className="text-gray-600 text-sm">Browse pre-built crop profiles</p>
+            </Link>
+          </div>
+        </div>
+
         {/* Documentation Links */}
         <div className="bg-white rounded-lg shadow-lg p-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Documentation</h2>
