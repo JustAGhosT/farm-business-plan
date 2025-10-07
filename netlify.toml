@@ -12,6 +12,21 @@
   [build.environment]
     NODE_VERSION = "18"
 
+# Deploy Preview settings for pull requests
+[context.deploy-preview]
+  command = "npm run build"
+  publish = "out"
+
+# Branch deploy settings for non-production branches
+[context.branch-deploy]
+  command = "npm run build"
+  publish = "out"
+
+# Production-specific settings
+[context.production]
+  command = "npm run build"
+  publish = "out"
+
 # Redirect rules for client-side routing
 [[redirects]]
   from = "/*"
