@@ -2,7 +2,7 @@
 
 This document describes the automated deployment workflows and manual deployment options for the Farm Business Plan application.
 
-**🚀 Live Application:** [https://farm-business-plan.netlify.app](https://farm-business-plan.netlify.app)
+**🚀 Live Application:** [https://farmplan.netlify.app/](https://farmplan.netlify.app/)
 
 ## GitHub Actions Workflows
 
@@ -30,7 +30,7 @@ The application automatically deploys to Netlify when changes are pushed to the 
 - PR preview comments with deployment URL
 
 **Deployment URLs:**
-- **Production**: [https://farm-business-plan.netlify.app](https://farm-business-plan.netlify.app)
+- **Production**: [https://farmplan.netlify.app/](https://farmplan.netlify.app/)
 - **Staging**: Automatically deployed from `develop` branch
 - **Preview**: Unique URLs generated for each pull request
 

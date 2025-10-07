@@ -1,14 +1,22 @@
 # Agricultural Business Plan Template & Farm Management Tool
 
+<div align="center">
+
+![Farm Business Plan Logo](https://via.placeholder.com/150x150.png?text=🌾+FBP)
+
 [![Build Status](https://github.com/JustAGhosT/farm-business-plan/workflows/Deploy%20to%20Netlify/badge.svg)](https://github.com/JustAGhosT/farm-business-plan/actions)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/NETLIFY_SITE_ID/deploy-status)](https://app.netlify.com/sites/farm-business-plan/deploys)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Last Commit](https://img.shields.io/github/last-commit/JustAGhosT/farm-business-plan)](https://github.com/JustAGhosT/farm-business-plan/commits/main)
 
-![Farm Planning](https://via.placeholder.com/800x200.png?text=Agricultural+Business+Plan+Template)
+### 🚀 [Live Demo](https://farmplan.netlify.app/) | 📖 [Documentation](docs/) | 💬 [Issues](https://github.com/JustAGhosT/farm-business-plan/issues)
 
-**🌐 Live Demo:** [https://farm-business-plan.netlify.app](https://farm-business-plan.netlify.app)
+</div>
+
+---
+
+![Farm Planning](https://via.placeholder.com/800x200.png?text=Agricultural+Business+Plan+Template)
 
 Welcome to the **Agricultural Business Plan Template** repository. This comprehensive framework provides farmers and agricultural entrepreneurs with a customizable business planning system that can be adapted for any crop type, location, and farming context. The template includes both detailed documentation and a Next.js-based farm management application.
 
@@ -271,12 +279,46 @@ Use this template to evaluate and select crops for your operation:
 
 This repository includes a Next.js-based farm management and planning application that provides an interactive interface for the agricultural business plan templates.
 
-### Features
+**🌐 Live Demo:** [https://farmplan.netlify.app/](https://farmplan.netlify.app/)
 
-- **Interactive Documentation**: Web-based browser for all planning frameworks and templates
-- **Financial Calculators**: Dynamic tools for investment, revenue, and ROI projections (coming soon)
-- **Responsive Design**: Works on desktop, tablet, and mobile devices
-- **Export Functionality**: Generate PDF reports and documentation (coming soon)
+### Current Implementation Status
+
+#### ✅ Implemented Features
+
+- **Interactive Documentation Browser**: Web-based viewer for all planning frameworks and templates
+- **Financial Calculators Suite**:
+  - Investment Calculator - Calculate initial investment requirements
+  - Revenue Calculator - Project income from various sources
+  - ROI Calculator - Return on investment analysis
+  - Break-Even Calculator - Determine break-even points
+  - Operating Costs Calculator - Track and calculate ongoing expenses
+  - Loan Calculator - Analyze loan scenarios and payments
+- **Operations Dashboard**: View and manage farm tasks and activities
+- **Plan Generator**: Basic information input form for business plan creation
+- **Template Library**: Access to standardized agricultural templates
+- **AI Wizard**: Interactive assistant for farm planning guidance
+- **Responsive Design**: Fully functional on desktop, tablet, and mobile devices
+- **Dark Mode Support**: Theme switching for better visibility
+- **Real-time Calculations**: Instant feedback on all calculator tools
+
+#### 🚧 In Progress
+
+- **Custom Plan Generator**: Multi-step forms for complete business plan creation
+- **Enhanced Data Visualization**: Charts and graphs for financial projections
+- **Advanced Operations Dashboard**: Expanded task management and tracking
+
+#### 📋 Planned Features
+
+- **Data Export**: PDF and spreadsheet export of plans and projections
+- **Template Library Enhancement**: Save and reuse custom crop profiles
+- **Multi-Farm Management**: Manage multiple farm operations from one dashboard
+- **Weather Integration**: Real-time weather data and forecasts
+- **Market Price Tracking**: Integration with agricultural commodity prices
+- **Collaboration Tools**: Share plans with stakeholders and advisors
+- **Mobile App**: Native mobile applications for iOS and Android
+- **Offline Support**: Work without internet connectivity
+- **Advanced Analytics**: Machine learning-powered insights and recommendations
+- **Integration APIs**: Connect with accounting and farm management systems
 
 ### Getting Started with the Application
 
@@ -330,7 +372,7 @@ farm-business-plan/
 
 **🚀 Live Application:** The application is automatically deployed to Netlify and can be accessed at:
 
-**[https://farm-business-plan.netlify.app](https://farm-business-plan.netlify.app)**
+**[https://farmplan.netlify.app/](https://farmplan.netlify.app/)**
 
 The application is configured for static site export and can be deployed to various hosting platforms:
 
@@ -367,14 +409,6 @@ npm run build
 
 For detailed deployment instructions and troubleshooting, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
-### Planned Features
-
-- **Custom Plan Generator**: Interactive forms to create customized business plans
-- **Financial Modeling Tools**: Calculators for projections and scenario analysis
-- **Operations Dashboard**: Track activities, tasks, and milestones
-- **Data Export**: PDF and spreadsheet export of plans and projections
-- **Template Library**: Save and reuse crop profiles and planning templates
-
 ---
 
 ## Contributing
@@ -400,6 +434,27 @@ For questions, suggestions, or collaboration opportunities, please open an issue
 
 ---
 
+<div align="center">
+
+## 📞 Support & Resources
+
+**[🌐 Live Demo](https://farmplan.netlify.app/)** | **[📚 Documentation](docs/)** | **[💬 Issues](https://github.com/JustAGhosT/farm-business-plan/issues)** | **[🤝 Contributing](#contributing)**
+
+### Built With
+
+[![Next.js](https://img.shields.io/badge/Next.js-14+-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5+-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3+-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
+[![Netlify](https://img.shields.io/badge/Deployed%20on-Netlify-00C7B7?style=flat-square&logo=netlify)](https://www.netlify.com/)
+
+---
+
 **Version**: 3.0 - General Agricultural Template  
 **Last Updated**: 2025  
-**License**: Open Source (specify license as needed)
+**License**: [MIT License](https://opensource.org/licenses/MIT)
+
+Made with 🌾 for farmers and agricultural entrepreneurs worldwide
+
+© 2025 Farm Business Plan. All rights reserved.
+
+</div>
