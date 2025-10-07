@@ -180,4 +180,4 @@ plt.annotate('Revenue Starts',
 plt.show()
 ```
 
-[Previous](README.md) | [Next](technical-implementation.md)
+[Previous](../README.md) | [Next](technical-implementation.md)

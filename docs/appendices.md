@@ -248,7 +248,7 @@ Technical:
 - [ ] Compliance review
 ```
 
-[Previous](implementation-timeline.md) | [Next](README.md)
+[Previous](implementation-timeline.md) | [Next](../README.md)
 
 <!-- Version: 1.0.1 -->
 
