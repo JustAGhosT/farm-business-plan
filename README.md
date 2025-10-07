@@ -1,39 +1,91 @@
-# Dragon Fruit Wall-Farming Initiative
+# Small-Scale Diversified Farm Business Plan – Bela Bela, South Africa
 
-![Dragon Fruit Logo](https://via.placeholder.com/800x200.png?text=Dragon+Fruit+Wall-Farming+Initiative)
+![Farm Logo](https://via.placeholder.com/800x200.png?text=Small-Scale+Diversified+Farm+-+Bela+Bela)
 
-Welcome to the **Dragon Fruit Wall-Farming Initiative** project repository. This repository outlines the full business plan and implementation details for establishing a high-yield, space-efficient dragon fruit farm in Bela Bela, South Africa.
+Welcome to the **Small-Scale Diversified Farm Business Plan** repository. This repository outlines comprehensive business strategies for establishing a diversified agricultural operation in Bela Bela, South Africa, focusing on moringa, lucerne, and dragonfruit production, along with additional complementary crops.
 
 ---
 
 ## Table of Contents
 
-1. [:seedling: Executive Summary](executive-summary.md)
-2. [:hammer_and_wrench: Technical Implementation](technical-implementation.md)
-3. [:chart_with_upwards_trend: Financial Analysis](financial-analysis.md)
-4. [:clipboard: Operations Manual](operations-manual.md)
-5. [:shopping_cart: Market Strategy](market-strategy.md)
-6. [:warning: Risk Management](risk-management.md)
-7. [:calendar: Implementation Timeline](implementation-timeline.md)
-8. [:file_folder: Appendices](appendices.md)
+### Main Business Plan
+
+1. [:deciduous_tree: Diversified Farm Business Plan](docs/diversified-farm-plan.md) - **START HERE**
+   - Comprehensive plan covering moringa, lucerne, and dragonfruit
+   - Climate and soil considerations
+   - Financial projections and SWOT analysis
+   - Implementation timeline and risk management
+
+### Supplementary Documentation (Dragon Fruit Wall-Farming Initiative)
+
+2. [:seedling: Executive Summary](docs/executive-summary.md)
+3. [:hammer_and_wrench: Technical Implementation](docs/technical-implementation.md)
+4. [:chart_with_upwards_trend: Financial Analysis](docs/financial-analysis.md)
+5. [:clipboard: Operations Manual](docs/operations-manual.md)
+6. [:shopping_cart: Market Strategy](docs/market-strategy.md)
+7. [:warning: Risk Management](docs/risk-management.md)
+8. [:calendar: Implementation Timeline](docs/implementation-timeline.md)
+9. [:file_folder: Appendices](docs/appendices.md)
 
 ---
 
 ## Project Overview
 
-The **Dragon Fruit Wall-Farming Initiative** represents an innovative agricultural venture leveraging existing infrastructure to create a high-yield, space-efficient farming operation in Bela Bela, South Africa. This project combines traditional farming techniques with modern agricultural technology to maximize production efficiency and market value.
+This business plan represents a comprehensive strategy for diversified small-scale farming near Bela Bela in Limpopo Province, South Africa. The plan compares three primary crops—**moringa**, **lucerne**, and **dragonfruit**—providing detailed analysis of each crop's requirements, costs, returns, and risks.
+
+The diversified approach combines traditional farming techniques with modern agricultural technology to maximize production efficiency, minimize risk, and create multiple income streams throughout the year.
 
 ---
 
-## Project Scope
+## Key Crops
 
+### 1. Moringa (Moringa oleifera)
+- **First harvest**: 6–8 months
+- **Strengths**: High-value superfood, drought-tolerant, multiple products (leaves, pods, seeds)
+- **Setup cost**: ~R12,000 for 0.25 ha
+- **Projected net profit (Year 3)**: >R140,000 on 0.25 ha
+
+### 2. Lucerne (Alfalfa)
+- **Production**: 15–30 t hay per hectare
+- **Strengths**: Proven fodder crop, stable demand, perennial stand
+- **Best for**: Farms with livestock or mechanization
+- **Projected net profit**: ≈R20,000/ha (small non-mechanized plot)
+
+### 3. Dragonfruit (Pitaya)
+- **Full production**: Year 3–4
+- **Setup cost**: R200k–R400k per hectare
+- **Projected revenue at full production**: R500k–R1M per hectare
+- **Strengths**: Exotic high-value fruit, long production life
+
+### 4. Additional Crops
+- Pomegranates
+- Vegetables (butternut, sweet potato, watermelon)
+- Herbs (rosemary, lavender, turmeric, ginger)
+- Prickly pear
+- Grain and forage crops (maize, teff, sunflower, cowpeas)
+
+---
+
+## Farm Specifications
+
+### Location and Climate
 - **Location**: Bela Bela, Limpopo Province
-- **Total Wall Space**: 40.1 linear meters
-  - East-West Wall: 26 meters
-  - South-North Wall: 14.1 meters
-- **Production Capacity**: 50 plants
-- **Annual Yield Target**: 150-250 kg (Year 2+)
-- **Implementation Timeline**: 18 months
+- **Climate**: Hot summers (30–33°C), mild dry winters
+- **Annual rainfall**: 450–600 mm (mostly Oct–Mar)
+- **Irrigation**: Required in dry season
+- **Frost**: Rare but possible; protection measures needed
+
+### Land Allocation (1 hectare example)
+- **Lucerne**: 0.5 ha (50%) - Steady fodder income
+- **Moringa**: 0.3 ha (30%) - High-value, early returns
+- **Dragonfruit**: 0.2 ha (20%) - Long-term profit potential
+- **Experiments & Infrastructure**: 0.1 ha (10%) - Nursery, trials, storage
+
+### Soil Requirements
+- Well-drained sandy or loamy soil
+- pH: 6–7.5 for moringa and dragonfruit
+- Deep, fertile, neutral loams for lucerne
+- Incorporate compost or manure before planting
 
 ---
 
@@ -42,19 +94,19 @@ The **Dragon Fruit Wall-Farming Initiative** represents an innovative agricultur
 ### Primary Objectives
 
 1. **:chart_with_upwards_trend: Production Targets**
-   - Year 1: 50-100 kg total yield
-   - Year 2: 150-250 kg total yield
-   - Year 3: 250-350 kg total yield
+   - Year 1: Establish crops, first moringa harvest
+   - Year 2: Full moringa production, first dragonfruit yields
+   - Year 3: All crops at or near peak production
 
 2. **:star: Quality Metrics**
-   - Grade A Fruit: ≥ 80% of production
-   - Brix Level: 13-15°
-   - Average Fruit Weight: 350-500g
+   - Moringa: High-grade leaf powder and pods
+   - Dragonfruit: Grade A fruit ≥80% of production
+   - Lucerne: Quality hay for premium markets
 
 3. **:moneybag: Financial Goals**
-   - Break-even: Month 18
-   - ROI: 35% by Year 3
-   - Revenue Target: R45,000+ (Year 2)
+   - Break-even: Within Year 1–2
+   - Diversified income streams
+   - Sustainable profit margins across all crops
 
 ### Secondary Objectives
 
@@ -62,11 +114,19 @@ The **Dragon Fruit Wall-Farming Initiative** represents an innovative agricultur
    - Water Usage Optimization
    - Organic Growing Methods
    - Minimal Chemical Inputs
+   - Soil Health Improvement
 
 2. **:shopping_cart: Market Development**
    - Local Market Penetration
-   - Premium Pricing Strategy
+   - Multiple Income Streams
    - Brand Development
+   - Value-Added Products
+
+3. **:shield: Risk Management**
+   - Crop Diversification
+   - Frost Protection Measures
+   - Market Diversification
+   - Emergency Fund Maintenance
 
 ---
 
@@ -76,26 +136,106 @@ The **Dragon Fruit Wall-Farming Initiative** represents an innovative agricultur
 
 | Metric | Target | Timeline |
 |--------|---------|----------|
-| :herb: Plant Survival Rate | ≥95% | 3 months |
-| :blossom: Flowering Success | ≥80% | 8 months |
-| :seedling: Fruit Set Rate | ≥70% | 12 months |
-| :droplet: Water Efficiency | ≤2.5L/plant/day | Ongoing |
+| :herb: Moringa Plant Survival | ≥95% | 3 months |
+| :blossom: Dragonfruit Flowering | ≥80% | 8 months |
+| :seedling: Overall Crop Health | ≥90% | Ongoing |
+| :droplet: Water Efficiency | Optimized | Ongoing |
 
 ### Financial Metrics
 
 | Metric | Target | Timeline |
 |--------|---------|----------|
-| :chart_with_upwards_trend: Gross Margin | ≥60% | Year 2 |
-| :money_with_wings: Operating Costs | ≤40% of Revenue | Year 2 |
-| :dollar: Net Profit | ≥35% | Year 3 |
-| :heavy_dollar_sign: Cash Flow Positive | Month 18 | Month 18 |
+| :chart_with_upwards_trend: Gross Revenue | Increasing | Yearly |
+| :money_with_wings: Operating Efficiency | Improve | Ongoing |
+| :dollar: Net Profit Margin | ≥35% | Year 3 |
+| :heavy_dollar_sign: Cash Flow Positive | Year 1–2 | As planned |
+
+---
+
+## SWOT Summary
+
+### Strengths
+- Diversified crop portfolio reduces risk
+- Multiple income streams throughout the year
+- Moringa provides early returns
+- Proven crops with established markets
+- Sustainable farming practices
+
+### Weaknesses
+- High initial capital requirement for dragonfruit
+- Labour-intensive processing for moringa
+- Water requirements during dry season
+- Frost sensitivity in some crops
+
+### Opportunities
+- Rising demand for superfoods (moringa)
+- Growing exotic fruit markets (dragonfruit)
+- Value-added product development
+- Agro-tourism potential
+- Educational workshops and tours
+
+### Threats
+- Climate variability and frost events
+- Market price volatility
+- Pest and disease pressure
+- Competition from established producers
+- Water scarcity during drought
+
+---
+
+## Implementation Timeline
+
+### Phase 1: Planning (Feb–Aug 2025)
+- Finalize farm layout and crop selection
+- Conduct soil testing
+- Order materials and seeds
+- Arrange financing
+
+### Phase 2: Land Preparation (Jun–Aug 2025)
+- Clear weeds and prepare soil
+- Incorporate compost and amendments
+- Install fencing and irrigation
+
+### Phase 3: Planting (Sep–Oct 2025)
+- Plant moringa after last frost
+- Establish dragonfruit cuttings
+- Seed lucerne
+
+### Phase 4: Establishment (Oct–Dec 2025)
+- Intensive watering and care
+- Pest and disease monitoring
+- Weed management
+
+### Phase 5: Growth & First Harvest (2026)
+- First moringa leaf harvest (Apr–Jun)
+- Continue care for all crops
+- Market development
+
+### Phase 6: Full Production (2027+)
+- All crops producing
+- Optimize operations
+- Expand as appropriate
+
+---
+
+## Getting Started
+
+1. **Read the [Diversified Farm Business Plan](docs/diversified-farm-plan.md)** for comprehensive information on all three main crops
+2. Review supplementary documentation for detailed dragon fruit wall-farming specifications
+3. Conduct soil testing and site assessment
+4. Develop your customized implementation plan based on available land and capital
+5. Begin with land preparation and ordering materials
 
 ---
 
 ## Call to Action
 
-Explore the full documentation for detailed insights into the Dragon Fruit Wall-Farming Initiative. For inquiries or collaboration, contact us at [your email/contact info].
+Explore the full documentation for detailed insights into diversified small-scale farming in Bela Bela. This comprehensive business plan provides actionable strategies for establishing a sustainable, profitable agricultural operation.
+
+For inquiries or collaboration, please open an issue in this repository.
 
 ---
 
-Let me know if further refinements are required or if you’d like to generate custom visuals for the project!
+**Version**: 2.0  
+**Last Updated**: 2025  
+**Location**: Bela Bela, Limpopo Province, South Africa
