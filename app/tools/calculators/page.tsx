@@ -57,34 +57,34 @@ export default function CalculatorsPage() {
       <div className="container mx-auto px-4 py-8">
         <Link 
           href="/" 
-          className="inline-flex items-center text-primary-600 hover:text-primary-700 mb-6 transition-colors"
+          className="inline-flex items-center text-primary-600 hover:text-primary-700 mb-8 transition-all font-medium group"
         >
-          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
           Back to Home
         </Link>
 
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
+        <div className="bg-white rounded-xl shadow-xl p-10 mb-10 border border-gray-100">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Financial Calculators</h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-gray-600 leading-relaxed">
             Use these tools to create accurate financial projections for your agricultural business plan.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {calculators.map((calc) => (
             <Link
               key={calc.href}
               href={calc.href}
-              className={`block bg-white p-6 rounded-lg border-2 ${calc.color} shadow-md hover:shadow-lg transition-all`}
+              className={`block bg-white p-8 rounded-xl border-2 ${calc.color} shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 group`}
             >
-              <div className="text-4xl mb-4">{calc.icon}</div>
-              <h3 className="text-xl font-semibold mb-2">{calc.title}</h3>
-              <p className="text-gray-600 mb-4">{calc.description}</p>
-              <div className="text-primary-600 font-medium flex items-center">
+              <div className="text-5xl mb-5 group-hover:scale-110 transition-transform">{calc.icon}</div>
+              <h3 className="text-xl font-bold mb-3 text-gray-900">{calc.title}</h3>
+              <p className="text-gray-600 mb-6 leading-relaxed">{calc.description}</p>
+              <div className="text-primary-600 font-bold flex items-center group-hover:gap-3 gap-2 transition-all">
                 Open Calculator
-                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </div>
@@ -92,13 +92,28 @@ export default function CalculatorsPage() {
           ))}
         </div>
 
-        <div className="mt-8 bg-blue-50 border-l-4 border-blue-500 p-6 rounded">
-          <h3 className="text-lg font-semibold text-blue-900 mb-2">💡 How to Use These Tools</h3>
-          <ul className="list-disc list-inside space-y-2 text-blue-800">
-            <li>Each calculator is designed for specific financial analysis needs</li>
-            <li>Input your actual or estimated data for accurate projections</li>
-            <li>Results can be exported or saved for your business plan</li>
-            <li>Use multiple calculators together for comprehensive financial planning</li>
+        <div className="mt-10 bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-8 rounded-xl shadow-md">
+          <h3 className="text-xl font-bold text-blue-900 mb-4 flex items-center">
+            <span className="text-2xl mr-2">💡</span>
+            How to Use These Tools
+          </h3>
+          <ul className="space-y-3 text-blue-800">
+            <li className="flex items-start">
+              <span className="text-blue-600 mr-3 mt-1">•</span>
+              <span>Each calculator is designed for specific financial analysis needs</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-blue-600 mr-3 mt-1">•</span>
+              <span>Input your actual or estimated data for accurate projections</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-blue-600 mr-3 mt-1">•</span>
+              <span>Results can be exported or saved for your business plan</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-blue-600 mr-3 mt-1">•</span>
+              <span>Use multiple calculators together for comprehensive financial planning</span>
+            </li>
           </ul>
         </div>
       </div>
