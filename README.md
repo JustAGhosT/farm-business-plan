@@ -259,23 +259,72 @@ Use this template to evaluate and select crops for your operation:
    - Export reports and documentation
 ---
 
-## Next.js Application (Coming Soon)
+## Next.js Application
 
-This repository will include a Next.js-based farm management and planning application that allows you to:
+This repository includes a Next.js-based farm management and planning application that provides an interactive interface for the agricultural business plan templates.
 
-- **Generate Custom Business Plans**: Input your crop types, location, and resources to create tailored business plans
-- **Financial Modeling**: Dynamic calculators for investment, operating costs, revenue projections, and ROI analysis
-- **Operations Management**: Track planting schedules, maintenance tasks, harvests, and resource usage
-- **Market Analysis**: Tools for pricing strategy, market research, and sales tracking
-- **Risk Assessment**: Identify and plan for risks specific to your crops and location
-- **Export & Share**: Generate professional PDF reports and documentation
+### Features
 
-### Technology Stack
-- Next.js 14+ with App Router
-- TypeScript for type safety
-- Tailwind CSS for responsive design
-- Server-side rendering for optimal performance
-- Data persistence and export capabilities
+- **Interactive Documentation**: Web-based browser for all planning frameworks and templates
+- **Financial Calculators**: Dynamic tools for investment, revenue, and ROI projections (coming soon)
+- **Responsive Design**: Works on desktop, tablet, and mobile devices
+- **Export Functionality**: Generate PDF reports and documentation (coming soon)
+
+### Getting Started with the Application
+
+#### Prerequisites
+
+- Node.js 18.x or higher
+- npm or yarn
+
+#### Installation and Development
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Open http://localhost:3000 in your browser
+
+# Build for production
+npm run build
+
+# Export static site
+npm run build
+```
+
+#### Technology Stack
+
+- **Framework**: Next.js 14+ with App Router
+- **Language**: TypeScript for type safety
+- **Styling**: Tailwind CSS for responsive design
+- **Deployment**: Static site export compatible with GitHub Pages
+
+#### Project Structure
+
+```
+farm-business-plan/
+├── app/                 # Next.js app directory (routes and pages)
+│   ├── layout.tsx       # Root layout component
+│   ├── page.tsx         # Home page
+│   └── globals.css      # Global styles
+├── components/          # Reusable React components
+├── lib/                 # Utility functions and business logic
+├── types/               # TypeScript type definitions
+├── public/              # Static assets
+├── docs/                # Markdown documentation templates
+└── README.md            # This file
+```
+
+### Planned Features
+
+- **Custom Plan Generator**: Interactive forms to create customized business plans
+- **Financial Modeling Tools**: Calculators for projections and scenario analysis
+- **Operations Dashboard**: Track activities, tasks, and milestones
+- **Data Export**: PDF and spreadsheet export of plans and projections
+- **Template Library**: Save and reuse crop profiles and planning templates
 
 ---
 
