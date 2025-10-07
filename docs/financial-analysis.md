@@ -1,4 +1,71 @@
-# 3. FINANCIAL ANALYSIS
+# FINANCIAL ANALYSIS FRAMEWORK
+
+## Instructions
+
+This template helps you create comprehensive financial projections for your agricultural operation. Complete all sections with your specific data based on research, quotes, and realistic assumptions. Update projections regularly as you gain actual operational data.
+
+---
+
+## 3.1 Investment Structure and Startup Costs
+
+### Capital Investment Breakdown
+
+**Complete this table with your specific startup costs:**
+
+| Category | Item Description | Quantity | Unit Cost | Total Cost | Notes |
+|----------|------------------|----------|-----------|------------|-------|
+| **Land Preparation** | | | | | |
+| | Site clearing | [Area] | [Cost/unit] | [Total] | [Details] |
+| | Soil testing | [# tests] | [Cost] | [Total] | [Lab, comprehensive] |
+| | Soil amendments | [Amount] | [Cost] | [Total] | [Lime, compost, etc.] |
+| | Land leveling/beds | [Area] | [Cost] | [Total] | [If needed] |
+| | **Subtotal** | | | **[Total]** | |
+| **Infrastructure** | | | | | |
+| | Irrigation system | [Type] | [Cost] | [Total] | [Drip, sprinkler, etc.] |
+| | Water source/storage | [Capacity] | [Cost] | [Total] | [Well, tank, pond] |
+| | Fencing | [Length] | [Cost/m] | [Total] | [Type of fencing] |
+| | Structures | [Type] | [Cost] | [Total] | [Greenhouse, shade, storage] |
+| | Support systems | [Type] | [Cost] | [Total] | [Trellises, stakes, etc.] |
+| | **Subtotal** | | | **[Total]** | |
+| **Planting Materials** | | | | | |
+| | [Crop 1] seeds/plants | [Quantity] | [Cost] | [Total] | [Variety, source] |
+| | [Crop 2] seeds/plants | [Quantity] | [Cost] | [Total] | [Variety, source] |
+| | **Subtotal** | | | **[Total]** | |
+| **Equipment & Tools** | | | | | |
+| | Major equipment | [List] | [Cost] | [Total] | [Tractor, implements] |
+| | Hand tools | [Set] | [Cost] | [Total] | [Basic tool kit] |
+| | Irrigation equipment | [Items] | [Cost] | [Total] | [Pumps, filters, etc.] |
+| | Post-harvest equipment | [Items] | [Cost] | [Total] | [Processing, storage] |
+| | **Subtotal** | | | **[Total]** | |
+| **Initial Inputs** | | | | | |
+| | Fertilizers | [Amount] | [Cost] | [Total] | [Starter fertilizer] |
+| | Pest/disease control | [Supplies] | [Cost] | [Total] | [Initial supplies] |
+| | Mulch/soil cover | [Amount] | [Cost] | [Total] | [If applicable] |
+| | **Subtotal** | | | **[Total]** | |
+| **Professional Services** | | | | | |
+| | Technical consultation | [Hours/days] | [Rate] | [Total] | [Agronomist, etc.] |
+| | Legal/permits | [Items] | [Cost] | [Total] | [Business registration] |
+| | **Subtotal** | | | **[Total]** | |
+| **Contingency** | | | | | |
+| | Reserve fund | [% of total] | | [Total] | [10-15% recommended] |
+| | **Subtotal** | | | **[Total]** | |
+| **TOTAL INITIAL INVESTMENT** | | | | **[GRAND TOTAL]** | |
+
+### Funding Sources
+
+**Document how you will finance the operation:**
+
+| Source | Amount | % of Total | Terms/Conditions | Status |
+|--------|--------|------------|------------------|--------|
+| Personal savings | [Amount] | [%] | [Ownership stake] | [Available/Committed] |
+| Family/friends | [Amount] | [%] | [Terms] | [Status] |
+| Bank loan | [Amount] | [%] | [Interest rate, term, collateral] | [Application stage] |
+| Government grants | [Amount] | [%] | [Program name, requirements] | [Status] |
+| Investors | [Amount] | [%] | [Equity/debt terms] | [Status] |
+| Equipment leasing | [Amount] | [%] | [Lease terms] | [Status] |
+| **TOTAL FUNDING** | **[Total]** | **100%** | | |
+
+---
 
 ## 3.1 Investment Structure
 
