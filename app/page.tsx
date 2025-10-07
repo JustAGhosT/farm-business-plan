@@ -77,6 +77,33 @@ export default function Home() {
           </div>
         </div>
 
+        {/* AI Wizard - Featured */}
+        <div className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-lg shadow-xl p-8 mb-8 text-white">
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div className="mb-4 md:mb-0">
+              <div className="flex items-center mb-3">
+                <span className="text-4xl mr-3">🤖</span>
+                <h2 className="text-3xl font-bold">AI-Powered Farm Planning Wizard</h2>
+              </div>
+              <p className="text-primary-50 text-lg mb-4">
+                Get personalized recommendations based on your location, climate, and budget. 
+                Let AI guide you through every step of farm planning.
+              </p>
+              <ul className="text-primary-50 space-y-1 text-sm">
+                <li>✓ Climate-specific crop recommendations</li>
+                <li>✓ Budget-optimized investment planning</li>
+                <li>✓ Step-by-step guided setup</li>
+              </ul>
+            </div>
+            <Link 
+              href="/tools/ai-wizard"
+              className="bg-white text-primary-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-primary-50 transition-colors shadow-lg flex-shrink-0"
+            >
+              Start Wizard →
+            </Link>
+          </div>
+        </div>
+
         {/* Tools Section */}
         <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Interactive Tools</h2>
@@ -88,7 +115,7 @@ export default function Home() {
             
             <Link href="/tools/calculators" className="p-4 border border-gray-200 rounded-lg hover:border-primary-500 hover:shadow-md transition-all">
               <h3 className="font-semibold text-lg mb-2">💰 Financial Tools</h3>
-              <p className="text-gray-600 text-sm">ROI, break-even & more calculators</p>
+              <p className="text-gray-600 text-sm">6 calculators: ROI, break-even & more</p>
             </Link>
             
             <Link href="/tools/dashboard" className="p-4 border border-gray-200 rounded-lg hover:border-primary-500 hover:shadow-md transition-all">
