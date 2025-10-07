@@ -176,11 +176,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="text-center mt-16 text-gray-600 dark:text-gray-400">
-          <p className="mb-2">Version 3.0 - General Agricultural Template</p>
-          <p>Open source agricultural business planning framework</p>
-        </div>
       </div>
     </main>
   )
