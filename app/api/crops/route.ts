@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server'
 
+// Force this route to be dynamic (not pre-rendered during build)
+export const dynamic = 'force-dynamic'
+
 // Example crop data
 const crops = [
   { id: 'dragon-fruit', name: 'Dragon Fruit', category: 'Fruit', avgYield: '15-25 tons/hectare' },

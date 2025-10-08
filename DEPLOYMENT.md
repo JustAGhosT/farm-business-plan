@@ -187,27 +187,42 @@ You can also use an external PostgreSQL database (e.g., Heroku, AWS RDS, Digital
 
 ## Manual Deployment
 
-### Static Site Export
+### Netlify Manual Deploy (Dynamic Next.js)
 
-Build and deploy the static site manually:
-
-```bash
-# Build the application
-npm run build
-
-# The output will be in the 'out' directory
-# Upload contents to any static hosting provider
-```
-
-### Netlify Manual Deploy
+This application uses dynamic Next.js features (API routes, server-side rendering) and should be deployed to Netlify with the Next.js plugin:
 
 ```bash
 # Install Netlify CLI
 npm install -g netlify-cli
 
-# Deploy to Netlify
+# Build the application
+npm run build
+
+# Deploy to Netlify (uses netlify.toml configuration)
+netlify deploy --prod
+
+# Or for preview deployment
+netlify deploy
+```
+
+**Note:** The `@netlify/plugin-nextjs` automatically handles the `.next` directory and serverless functions. Do not use `--dir` flag as it may interfere with the plugin's operation.
+
+### Static Site Export (Alternative - Limited Features)
+
+If you want to deploy as a static site (no API routes, no SSR), you need to modify the configuration:
+
+```bash
+# 1. Update next.config.js to enable static export
+# Add: output: 'export'
+
+# 2. Build the application
+npm run build
+
+# 3. Deploy the 'out' directory
 netlify deploy --prod --dir=out
 ```
+
+**Warning:** Static export disables API routes and server-side features.
 
 ### Database Setup
 
@@ -360,7 +375,7 @@ Before deploying to production:
 | Deployment fails | ✅ Check Netlify CLI authentication and site ID |
 | API routes return 404 | ✅ Ensure Netlify Next.js Runtime is enabled |
 | Functions timeout | ✅ Check Netlify function logs and increase timeout if needed |
-| CSS/JS files return MIME type errors | ✅ Ensure `publish = "."` in netlify.toml (not ".next") |
+| CSS/JS files return MIME type errors | ✅ Ensure `@netlify/plugin-nextjs` is configured in netlify.toml |
 
 ### Build Failures
 
@@ -400,8 +415,8 @@ Before deploying to production:
    export NETLIFY_AUTH_TOKEN="your-token-here"
    netlify sites:list
    
-   # Test deployment
-   netlify deploy --dir=. --message="Test deploy"
+   # Test deployment (the CLI will use netlify.toml configuration)
+   netlify deploy --message="Test deploy"
    ```
 
 4. **Verify Next.js Runtime**:
@@ -426,13 +441,17 @@ If you see errors like "Refused to apply style because its MIME type ('text/html
 
 **Solution**:
 
-1. **Fix netlify.toml publish directory**:
+1. **Configure netlify.toml correctly**:
    ```toml
    [build]
-     publish = "."  # Use root directory, NOT ".next"
+     command = "npm run build"
+     # Do NOT set publish directory - let the plugin handle it
+   
+   [[plugins]]
+     package = "@netlify/plugin-nextjs"
    ```
    
-   For Next.js with `@netlify/plugin-nextjs`, the plugin handles the `.next` directory automatically. Setting `publish = ".next"` breaks static asset routing.
+   **Important**: When using `@netlify/plugin-nextjs`, do NOT specify a `publish` directory in netlify.toml. The plugin automatically handles the `.next` directory and static asset routing. Setting `publish = "."` or `publish = ".next"` can cause the error: "Your publish directory cannot be the same as the base directory of your site."
 
 2. **Add explicit headers** (already configured in netlify.toml):
    ```toml

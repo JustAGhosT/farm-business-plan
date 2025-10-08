@@ -66,8 +66,14 @@ Open browser DevTools (F12) → Console tab:
 Verify in the repository that `netlify.toml` has:
 ```toml
 [build]
-  publish = "."  # Must be "." not ".next"
+  command = "npm run build"
+  # No publish directory specified - plugin handles it automatically
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 ```
+
+**Note**: Do NOT set a `publish` directory when using `@netlify/plugin-nextjs`. The plugin automatically manages the build output.
 
 ### Step 4: Check Build Logs
 1. Go to Netlify Dashboard → Deploys
