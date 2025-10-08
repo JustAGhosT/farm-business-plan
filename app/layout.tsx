@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { ToastProvider } from '@/components/ToastProvider'
+import { GlobalKeyboardShortcuts } from '@/components/KeyboardShortcuts'
 import ThemeToggle from '@/components/ThemeToggle'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -21,6 +22,7 @@ export default function RootLayout({
       <body className="font-sans bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors flex flex-col min-h-screen">
         <ThemeProvider>
           <ToastProvider>
+            <GlobalKeyboardShortcuts />
             <Header />
             <ThemeToggle />
             <main className="flex-grow">

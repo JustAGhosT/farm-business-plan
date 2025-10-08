@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { FormInput, useFormValidation } from '@/components/FormValidation'
 
 export default function BasicInfoForm() {
   const router = useRouter()
@@ -15,8 +16,51 @@ export default function BasicInfoForm() {
     contactPhone: '',
   })
 
+  // Validation rules
+  const validationRules = {
+    farmName: {
+      required: true,
+      minLength: 2,
+      maxLength: 100,
+      message: 'Farm name must be between 2 and 100 characters'
+    },
+    ownerName: {
+      required: true,
+      minLength: 2,
+      maxLength: 100,
+      message: 'Owner name must be between 2 and 100 characters'
+    },
+    location: {
+      required: true,
+      minLength: 3,
+      message: 'Please provide a valid location'
+    },
+    farmSize: {
+      required: true,
+      min: 0.01,
+      max: 100000,
+      message: 'Farm size must be greater than 0'
+    },
+    contactEmail: {
+      pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      message: 'Please enter a valid email address'
+    },
+    contactPhone: {
+      pattern: /^[\d\s\+\-\(\)]+$/,
+      message: 'Please enter a valid phone number'
+    }
+  }
+
+  const { errors, validateForm, handleBlur, getError } = useFormValidation(validationRules)
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Validate form
+    if (!validateForm(formData)) {
+      return
+    }
+
     // Store in localStorage for now (will add proper persistence later)
     localStorage.setItem('farmPlanBasicInfo', JSON.stringify(formData))
     // Navigate to next step
@@ -61,101 +105,78 @@ export default function BasicInfoForm() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="farmName" className="block text-sm font-medium text-gray-700 mb-2">
-                Farm Name *
-              </label>
-              <input
-                type="text"
-                id="farmName"
-                name="farmName"
-                required
-                value={formData.farmName}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                placeholder="e.g., Green Valley Farm"
-              />
-            </div>
+            <FormInput
+              label="Farm Name"
+              name="farmName"
+              value={formData.farmName}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={getError('farmName')}
+              required
+              placeholder="e.g., Green Valley Farm"
+            />
 
-            <div>
-              <label htmlFor="ownerName" className="block text-sm font-medium text-gray-700 mb-2">
-                Owner/Manager Name *
-              </label>
-              <input
-                type="text"
-                id="ownerName"
-                name="ownerName"
-                required
-                value={formData.ownerName}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                placeholder="Your name"
-              />
-            </div>
+            <FormInput
+              label="Owner/Manager Name"
+              name="ownerName"
+              value={formData.ownerName}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={getError('ownerName')}
+              required
+              placeholder="Your name"
+            />
 
-            <div>
-              <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
-                Location *
-              </label>
-              <input
-                type="text"
-                id="location"
-                name="location"
-                required
-                value={formData.location}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                placeholder="City, Province/State, Country"
-              />
-            </div>
+            <FormInput
+              label="Location"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={getError('location')}
+              required
+              placeholder="City, Province/State, Country"
+              helpText="Provide your farm's location for climate and market analysis"
+            />
 
-            <div>
-              <label htmlFor="farmSize" className="block text-sm font-medium text-gray-700 mb-2">
-                Farm Size (hectares) *
-              </label>
-              <input
-                type="number"
-                id="farmSize"
-                name="farmSize"
-                required
-                step="0.1"
-                min="0"
-                value={formData.farmSize}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                placeholder="e.g., 1.5"
-              />
-            </div>
+            <FormInput
+              label="Farm Size (hectares)"
+              name="farmSize"
+              type="number"
+              value={formData.farmSize}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={getError('farmSize')}
+              required
+              step="0.1"
+              min="0.01"
+              placeholder="e.g., 1.5"
+              helpText="Total area available for farming activities"
+            />
 
-            <div>
-              <label htmlFor="contactEmail" className="block text-sm font-medium text-gray-700 mb-2">
-                Contact Email
-              </label>
-              <input
-                type="email"
-                id="contactEmail"
-                name="contactEmail"
-                value={formData.contactEmail}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                placeholder="your@email.com"
-              />
-            </div>
+            <FormInput
+              label="Contact Email"
+              name="contactEmail"
+              type="email"
+              value={formData.contactEmail}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={getError('contactEmail')}
+              placeholder="your@email.com"
+              helpText="Optional: For sharing and collaboration"
+            />
 
-            <div>
-              <label htmlFor="contactPhone" className="block text-sm font-medium text-gray-700 mb-2">
-                Contact Phone
-              </label>
-              <input
-                type="tel"
-                id="contactPhone"
-                name="contactPhone"
-                value={formData.contactPhone}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                placeholder="+1 234 567 8900"
-              />
-            </div>
+            <FormInput
+              label="Contact Phone"
+              name="contactPhone"
+              type="tel"
+              value={formData.contactPhone}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={getError('contactPhone')}
+              placeholder="+1 234 567 8900"
+              helpText="Optional: Include country code"
+            />
 
             <div className="flex justify-between pt-6">
               <Link
