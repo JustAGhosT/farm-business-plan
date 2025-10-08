@@ -62,6 +62,9 @@ jobs:
       - name: Type Check
         run: npx tsc --noEmit
 
+      - name: Build
+        run: npm run build
+
       - name: Check Netlify secrets
         id: check_secrets
         run: |
@@ -116,6 +119,9 @@ jobs:
       # Skip format check for now - focus on deployment
       - name: Type Check
         run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
 
       - name: Check Netlify secrets (Preview)
         id: check_secrets_preview
