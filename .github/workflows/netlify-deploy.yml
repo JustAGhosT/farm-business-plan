@@ -90,14 +90,14 @@ jobs:
 
       - name: Deploy to Netlify (Production)
         if: steps.check_secrets.outputs.secrets_available == 'true' && github.ref == 'refs/heads/main'
-        run: netlify deploy --prod --dir=. --message="Production deploy from main branch"
+        run: netlify deploy --prod --message="Production deploy from main branch"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
       - name: Deploy to Netlify (Staging)
         if: steps.check_secrets.outputs.secrets_available == 'true' && github.ref == 'refs/heads/develop'
-        run: netlify deploy --prod --dir=. --message="Staging deploy from develop branch"
+        run: netlify deploy --prod --message="Staging deploy from develop branch"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
@@ -167,7 +167,7 @@ jobs:
       - name: Deploy Preview to Netlify
         if: steps.check_secrets_preview.outputs.secrets_available == 'true'
         run: |
-          netlify deploy --dir=. --alias="${{ steps.sanitize_branch_name.outputs.safe_alias }}" --message="Deploy Preview from PR #${{ github.event.pull_request.number }}"
+          netlify deploy --alias="${{ steps.sanitize_branch_name.outputs.safe_alias }}" --message="Deploy Preview from PR #${{ github.event.pull_request.number }}"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}

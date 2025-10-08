@@ -187,27 +187,42 @@ You can also use an external PostgreSQL database (e.g., Heroku, AWS RDS, Digital
 
 ## Manual Deployment
 
-### Static Site Export
+### Netlify Manual Deploy (Dynamic Next.js)
 
-Build and deploy the static site manually:
-
-```bash
-# Build the application
-npm run build
-
-# The output will be in the 'out' directory
-# Upload contents to any static hosting provider
-```
-
-### Netlify Manual Deploy
+This application uses dynamic Next.js features (API routes, server-side rendering) and should be deployed to Netlify with the Next.js plugin:
 
 ```bash
 # Install Netlify CLI
 npm install -g netlify-cli
 
-# Deploy to Netlify
+# Build the application
+npm run build
+
+# Deploy to Netlify (uses netlify.toml configuration)
+netlify deploy --prod
+
+# Or for preview deployment
+netlify deploy
+```
+
+**Note:** The `@netlify/plugin-nextjs` automatically handles the `.next` directory and serverless functions. Do not use `--dir` flag as it may interfere with the plugin's operation.
+
+### Static Site Export (Alternative - Limited Features)
+
+If you want to deploy as a static site (no API routes, no SSR), you need to modify the configuration:
+
+```bash
+# 1. Update next.config.js to enable static export
+# Add: output: 'export'
+
+# 2. Build the application
+npm run build
+
+# 3. Deploy the 'out' directory
 netlify deploy --prod --dir=out
 ```
+
+**Warning:** Static export disables API routes and server-side features.
 
 ### Database Setup
 
@@ -400,8 +415,8 @@ Before deploying to production:
    export NETLIFY_AUTH_TOKEN="your-token-here"
    netlify sites:list
    
-   # Test deployment
-   netlify deploy --dir=. --message="Test deploy"
+   # Test deployment (the CLI will use netlify.toml configuration)
+   netlify deploy --message="Test deploy"
    ```
 
 4. **Verify Next.js Runtime**:
