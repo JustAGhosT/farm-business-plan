@@ -30,6 +30,49 @@ The application automatically deploys to Netlify as a **dynamic Next.js applicat
    - `NETLIFY_SITE_ID`: Your Netlify site ID (API ID)
      - Found at: Netlify Dashboard → Your Site → Site Settings → Site details → API ID
      - **Note**: Use the API ID, not the site name
+   - `DEPLOY_NETLIFY`: SSH deploy key for repository access (if using private repository)
+     - Generate SSH key: `ssh-keygen -t ed25519 -C "netlify-deploy" -f ~/.ssh/deploy_netlify`
+     - Add public key to: GitHub Repository → Settings → Deploy keys
+     - Add private key to: GitHub Repository → Settings → Secrets and variables → Actions
+     - **Name**: `DEPLOY_NETLIFY` (used by the workflow for checkout)
+
+**Setting Up the Deploy Key (Deploy_Netlify):**
+
+If you're experiencing deployment issues, particularly with private repositories, you may need to configure an SSH deploy key. The `DEPLOY_NETLIFY` secret contains the private key used by GitHub Actions to checkout your repository.
+
+1. **Generate the SSH key pair**:
+   ```bash
+   ssh-keygen -t ed25519 -C "netlify-deploy" -f ~/.ssh/deploy_netlify
+   # Press Enter to skip passphrase (required for CI/CD)
+   ```
+
+2. **Add the public key as a Deploy Key**:
+   - Go to: GitHub Repository → Settings → Deploy keys → Add deploy key
+   - Title: `Deploy_Netlify`
+   - Key: Copy contents of `~/.ssh/deploy_netlify.pub`
+   - ✅ Check "Allow write access" only if you need to push from CI (not needed for deploy)
+   - Click "Add key"
+
+3. **Add the private key as a Secret**:
+   - Go to: GitHub Repository → Settings → Secrets and variables → Actions → New repository secret
+   - Name: `DEPLOY_NETLIFY`
+   - Value: Copy the entire contents of `~/.ssh/deploy_netlify` (the private key)
+   - Click "Add secret"
+
+4. **Verify in the workflow**:
+   - The workflow file uses this in the checkout step:
+   ```yaml
+   - name: Checkout code
+     uses: actions/checkout@v4
+     with:
+       ssh-key: ${{ secrets.DEPLOY_NETLIFY }}
+   ```
+
+**When to Use Deploy Keys:**
+- Private repositories that need custom checkout authentication
+- When you want dedicated keys per repository for security
+- When experiencing "Permission denied" or authentication errors during checkout
+- As an alternative to using the default `GITHUB_TOKEN`
 
 **Features:**
 - Automatic dependency caching for faster builds
@@ -132,10 +175,11 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 ### For GitHub Actions
 
 Required secrets in repository settings:
-- `NETLIFY_DEPLOY_TOKEN`
-- `NETLIFY_SITE_ID`
-- `DATABASE_URL`
-- `DATABASE_URL_PRODUCTION`
+- `NETLIFY_DEPLOY_TOKEN` - Your Netlify personal access token
+- `NETLIFY_SITE_ID` - Your Netlify site API ID
+- `DEPLOY_NETLIFY` - SSH deploy key (private key) for repository checkout
+- `DATABASE_URL` - Database connection string for staging
+- `DATABASE_URL_PRODUCTION` - Database connection string for production
 
 ## Deployment Checklist
 
@@ -147,10 +191,16 @@ Before deploying to production:
 - [ ] Database migrations tested in staging
 - [ ] Environment variables configured
 - [ ] Secrets added to GitHub repository
+  - [ ] `NETLIFY_DEPLOY_TOKEN` configured
+  - [ ] `NETLIFY_SITE_ID` configured
+  - [ ] `DEPLOY_NETLIFY` deploy key configured (if using private repo)
+  - [ ] `DATABASE_URL` configured (if using database)
+  - [ ] `DATABASE_URL_PRODUCTION` configured (if using database)
+- [ ] Deploy key added to repository (Settings → Deploy keys)
 - [ ] Netlify site connected to repository
 - [ ] Netlify Next.js Runtime enabled (automatic with `@netlify/plugin-nextjs`)
 - [ ] API routes tested locally and in production
-- [ ] Database backup created
+- [ ] Database backup created (if applicable)
 
 ## Rollback Procedures
 
@@ -215,8 +265,19 @@ Before deploying to production:
 1. **Verify Netlify Secrets**:
    - `NETLIFY_DEPLOY_TOKEN` - Your Netlify personal access token
    - `NETLIFY_SITE_ID` - Your Netlify site API ID
+   - `DEPLOY_NETLIFY` - SSH deploy key (if using private repository)
    
-2. **Check Netlify CLI Authentication**:
+2. **Check Deploy Key Configuration** (for private repositories):
+   ```bash
+   # Verify the deploy key is properly configured
+   # The public key should be added to: Repository → Settings → Deploy keys
+   # The private key should be in: Repository → Settings → Secrets → DEPLOY_NETLIFY
+   
+   # Test SSH access (locally)
+   ssh -T git@github.com -i ~/.ssh/deploy_netlify
+   ```
+
+3. **Check Netlify CLI Authentication**:
    ```bash
    # Test your token locally
    export NETLIFY_AUTH_TOKEN="your-token-here"
@@ -226,14 +287,19 @@ Before deploying to production:
    netlify deploy --dir=. --message="Test deploy"
    ```
 
-3. **Verify Next.js Runtime**:
+4. **Verify Next.js Runtime**:
    - Check that `netlify.toml` includes the `@netlify/plugin-nextjs` plugin
    - Netlify should automatically detect Next.js and enable the runtime
    - Review build logs to confirm Next.js Runtime is being used
 
-4. **Team-Owned Sites**:
+5. **Team-Owned Sites**:
    - If your site is owned by a team, ensure your token is from a team member
    - The token must have permissions to deploy to team sites
+
+6. **Deploy Key Permissions**:
+   - Ensure the deploy key has read access to the repository
+   - Check that "Allow write access" is NOT enabled (read-only is sufficient)
+   - Verify the key hasn't expired or been revoked
 
 ### API Route Issues
 
