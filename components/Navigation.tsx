@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import UserProfile from '@/components/UserProfile'
 
 export default function Navigation() {
   return (
@@ -37,14 +38,7 @@ export default function Navigation() {
       >
         GitHub
       </a>
-      <a 
-        href="https://farmplan.netlify.app/" 
-        target="_blank"
-        rel="noopener noreferrer"
-        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-md hover:shadow-lg"
-      >
-        🚀 Live Demo
-      </a>
+      <UserProfile />
     </nav>
   )
 }

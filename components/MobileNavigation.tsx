@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import UserProfile from '@/components/UserProfile'
 
 interface MobileNavigationProps {
   onLinkClick: () => void
@@ -46,14 +47,9 @@ export default function MobileNavigation({ onLinkClick }: MobileNavigationProps)
         >
           GitHub
         </a>
-        <a 
-          href="https://farmplan.netlify.app/" 
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-md text-center"
-        >
-          🚀 Live Demo
-        </a>
+        <div className="pt-2">
+          <UserProfile />
+        </div>
       </div>
     </nav>
   )
