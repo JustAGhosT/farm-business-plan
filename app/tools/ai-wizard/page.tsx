@@ -394,11 +394,120 @@ export default function AIWizardPage() {
     }
   }
 
-  const handleComplete = () => {
-    // Save data to localStorage
-    localStorage.setItem('aiWizardData', JSON.stringify(data))
-    localStorage.setItem('aiRecommendations', JSON.stringify(aiRecommendations))
-    router.push('/tools/dashboard')
+  const handleComplete = async () => {
+    try {
+      // Save to localStorage as backup
+      localStorage.setItem('aiWizardData', JSON.stringify(data))
+      localStorage.setItem('aiRecommendations', JSON.stringify(aiRecommendations))
+
+      // Create farm plan via API
+      const farmPlanResponse = await fetch('/api/farm-plans', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: `${data.location} Farm Plan`,
+          location: data.location,
+          province: data.province,
+          coordinates: data.coordinates.lat && data.coordinates.lng ? {
+            lat: parseFloat(data.coordinates.lat),
+            lng: parseFloat(data.coordinates.lng)
+          } : undefined,
+          farm_size: parseFloat(data.farmSize),
+          soil_type: data.soilType,
+          water_source: data.waterSource,
+          status: 'draft'
+        })
+      })
+
+      const farmPlanResult = await farmPlanResponse.json()
+      
+      if (farmPlanResult.success && farmPlanResult.data) {
+        const farmPlanId = farmPlanResult.data.id
+
+        // Create climate data
+        if (data.climate.avgTempSummer && data.climate.avgTempWinter && data.climate.annualRainfall) {
+          await fetch('/api/climate-data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              farm_plan_id: farmPlanId,
+              avg_temp_summer: parseFloat(data.climate.avgTempSummer),
+              avg_temp_winter: parseFloat(data.climate.avgTempWinter),
+              annual_rainfall: parseFloat(data.climate.annualRainfall),
+              frost_risk: data.climate.frostRisk === 'yes',
+              auto_populated: data.climate.autoPopulated
+            })
+          })
+        }
+
+        // Create crop plans
+        for (const cropId of data.crops) {
+          const cropOption = cropOptions.find(c => c.id === cropId)
+          if (cropOption) {
+            const cropPlanResponse = await fetch('/api/crop-plans', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                farm_plan_id: farmPlanId,
+                crop_name: cropOption.name,
+                planting_area: parseFloat(data.farmSize) / data.crops.length, // Equal distribution
+                status: 'planned'
+              })
+            })
+
+            // If crop plan created, add financial data
+            const cropPlanResult = await cropPlanResponse.json()
+            if (cropPlanResult.success && cropPlanResult.data && data.budget) {
+              await fetch('/api/financial-data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  crop_plan_id: cropPlanResult.data.id,
+                  initial_investment: parseFloat(data.budget) / data.crops.length
+                })
+              })
+            }
+          }
+        }
+
+        // Create AI recommendations
+        for (const recommendation of aiRecommendations) {
+          // Extract category from recommendation text
+          let category = 'general'
+          if (recommendation.toLowerCase().includes('irrigation') || recommendation.toLowerCase().includes('water')) {
+            category = 'irrigation'
+          } else if (recommendation.toLowerCase().includes('budget') || recommendation.toLowerCase().includes('cost')) {
+            category = 'financial'
+          } else if (recommendation.toLowerCase().includes('crop')) {
+            category = 'crop-selection'
+          } else if (recommendation.toLowerCase().includes('climate') || recommendation.toLowerCase().includes('frost')) {
+            category = 'climate'
+          }
+
+          await fetch('/api/ai-recommendations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              farm_plan_id: farmPlanId,
+              recommendation_text: recommendation,
+              category,
+              priority: 5
+            })
+          })
+        }
+
+        // Navigate to dashboard
+        router.push('/tools/dashboard')
+      } else {
+        console.error('Failed to create farm plan:', farmPlanResult.error)
+        // Still navigate to dashboard with localStorage data
+        router.push('/tools/dashboard')
+      }
+    } catch (error) {
+      console.error('Error saving farm plan:', error)
+      // Still navigate to dashboard with localStorage data
+      router.push('/tools/dashboard')
+    }
   }
 
   const cropOptions = [
