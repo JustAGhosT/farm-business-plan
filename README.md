@@ -409,6 +409,8 @@ npm run build
 
 For detailed deployment instructions and troubleshooting, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
+> **⚠️ Deployment Issue?** If you're seeing "Error: Not Found" from Netlify, see the [Quick Fix Guide](NETLIFY_FIX_GUIDE.md) for step-by-step instructions.
+
 ---
 
 ## Contributing
