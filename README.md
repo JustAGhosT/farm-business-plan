@@ -10,7 +10,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Last Commit](https://img.shields.io/github/last-commit/JustAGhosT/farm-business-plan)](https://github.com/JustAGhosT/farm-business-plan/commits/main)
 
-### 🚀 [Live Demo](https://farmplan.netlify.app/) | 📖 [Documentation](docs/) | 💬 [Issues](https://github.com/JustAGhosT/farm-business-plan/issues)
+### 🚀 [Live Demo](https://farmplan.netlify.app/) | 📖 [Documentation](docs/) | 🚀 [Quick Start](QUICKSTART.md) | 💬 [Issues](https://github.com/JustAGhosT/farm-business-plan/issues)
 
 </div>
 
@@ -374,6 +374,8 @@ farm-business-plan/
 
 **[https://farmplan.netlify.app/](https://farmplan.netlify.app/)**
 
+**📚 Quick Start:** New to deployment? See [QUICKSTART.md](QUICKSTART.md) for a step-by-step guide.
+
 The application is deployed as a **dynamic Next.js application** with API routes and serverless functions support:
 
 **Automated Deployment (Current Setup):**
@@ -394,6 +396,7 @@ The application is deployed as a **dynamic Next.js application** with API routes
 **API Endpoints:**
 - `/api/health` - Health check endpoint
 - `/api/crops` - Crop data API endpoint
+- `/api/db-test` - Database connectivity test (requires database setup)
 - Additional API routes in the `app/api/` directory
 
 **Manual Deployment:**
