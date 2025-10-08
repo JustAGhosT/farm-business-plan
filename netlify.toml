@@ -30,3 +30,16 @@
 # Next.js plugin for Netlify - enables serverless functions and ISR
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# Netlify Functions configuration
+[functions]
+  # Directory for serverless functions (Next.js API routes)
+  directory = ".netlify/functions"
+  # Node bundler for functions
+  node_bundler = "esbuild"
+
+# Redirects and rewrites (if needed in the future)
+# [[redirects]]
+#   from = "/api/*"
+#   to = "/.netlify/functions/:splat"
+#   status = 200

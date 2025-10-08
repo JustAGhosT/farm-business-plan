@@ -1,8 +1,8 @@
-name: Deploy Marketing (Next.js)
+name: Deploy to Netlify
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
     paths:
       - "app/**"
       - "components/**"
@@ -58,20 +58,29 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Skip format check for now - focus on deployment
+      # Run tests before deployment (if available)
+      # - name: Run tests
+      #   run: npm test
+
       - name: Type Check
         run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
+        env:
+          # Add any build-time environment variables here
+          NODE_ENV: production
 
       - name: Check Netlify secrets
         id: check_secrets
         run: |
-          if [ -n "${{ secrets.NETLIFY_DEPLOY_TOKEN }}" ] && [ -n "${{ secrets.NETLIFY_SITE_ID }}" ]; then
+          if [ -n "${{ secrets.NETLIFY_AUTH_TOKEN }}" ] && [ -n "${{ secrets.NETLIFY_SITE_ID }}" ]; then
             echo "secrets_available=true" >> $GITHUB_OUTPUT
           else
             echo "secrets_available=false" >> $GITHUB_OUTPUT
             echo "Warning: Netlify secrets not configured. Skipping deployment."
             echo "Missing secrets:"
-            [ -z "${{ secrets.NETLIFY_DEPLOY_TOKEN }}" ] && echo "  - NETLIFY_DEPLOY_TOKEN"
+            [ -z "${{ secrets.NETLIFY_AUTH_TOKEN }}" ] && echo "  - NETLIFY_AUTH_TOKEN"
             [ -z "${{ secrets.NETLIFY_SITE_ID }}" ] && echo "  - NETLIFY_SITE_ID"
           fi
 
@@ -79,11 +88,18 @@ jobs:
         if: steps.check_secrets.outputs.secrets_available == 'true'
         run: npm install -g netlify-cli
 
-      - name: Deploy to Netlify
-        if: steps.check_secrets.outputs.secrets_available == 'true'
-        run: netlify deploy --dir=. --prod --message="Production deploy from main"
+      - name: Deploy to Netlify (Production)
+        if: steps.check_secrets.outputs.secrets_available == 'true' && github.ref == 'refs/heads/main'
+        run: netlify deploy --prod --dir=. --message="Production deploy from main branch"
         env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_DEPLOY_TOKEN }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+      - name: Deploy to Netlify (Staging)
+        if: steps.check_secrets.outputs.secrets_available == 'true' && github.ref == 'refs/heads/develop'
+        run: netlify deploy --prod --dir=. --message="Staging deploy from develop branch"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
   preview-deploy:
@@ -109,20 +125,28 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Skip format check for now - focus on deployment
+      # Run tests before deployment (if available)
+      # - name: Run tests
+      #   run: npm test
+
       - name: Type Check
         run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
+        env:
+          NODE_ENV: production
 
       - name: Check Netlify secrets (Preview)
         id: check_secrets_preview
         run: |
-          if [ -n "${{ secrets.NETLIFY_DEPLOY_TOKEN }}" ] && [ -n "${{ secrets.NETLIFY_SITE_ID }}" ]; then
+          if [ -n "${{ secrets.NETLIFY_AUTH_TOKEN }}" ] && [ -n "${{ secrets.NETLIFY_SITE_ID }}" ]; then
             echo "secrets_available=true" >> $GITHUB_OUTPUT
           else
             echo "secrets_available=false" >> $GITHUB_OUTPUT
             echo "Warning: Netlify secrets not configured. Skipping preview deployment."
             echo "Missing secrets:"
-            [ -z "${{ secrets.NETLIFY_DEPLOY_TOKEN }}" ] && echo "  - NETLIFY_DEPLOY_TOKEN"
+            [ -z "${{ secrets.NETLIFY_AUTH_TOKEN }}" ] && echo "  - NETLIFY_AUTH_TOKEN"
             [ -z "${{ secrets.NETLIFY_SITE_ID }}" ] && echo "  - NETLIFY_SITE_ID"
           fi
 
@@ -145,5 +169,5 @@ jobs:
         run: |
           netlify deploy --dir=. --alias="${{ steps.sanitize_branch_name.outputs.safe_alias }}" --message="Deploy Preview from PR #${{ github.event.pull_request.number }}"
         env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_DEPLOY_TOKEN }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
