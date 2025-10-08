@@ -209,14 +209,27 @@ This error typically indicates an issue with Netlify credentials or site configu
    - Add/update it in GitHub repository secrets as `NETLIFY_DEPLOY_TOKEN`
    - Ensure the token has full access permissions
 
-3. **Check Site Exists**:
+3. **Team-Owned Sites (Common Issue)**:
+   - If your site is owned by a team (not your personal account), this is a common cause of "Error: Not Found"
+   - The personal access token must be from a user who is a **member of the team** that owns the site
+   - **Solution**: Go to your Netlify team settings and ensure:
+     - You are logged in as a user who has access to the team
+     - Generate the token while logged in as that user
+     - The token has permissions to deploy to team sites
+   - Alternative: Consider transferring the site to your personal account if team ownership isn't required
+
+4. **Check Site Exists**:
    - Confirm the Netlify site hasn't been deleted
    - Verify you have access to the site with your token
 
-4. **Test Locally**:
+5. **Test Token Locally**:
    ```bash
    # Install Netlify CLI
    npm install -g netlify-cli
+   
+   # Test authentication with your token
+   export NETLIFY_AUTH_TOKEN="your-token-here"
+   netlify sites:list
    
    # Link to your site (uses NETLIFY_SITE_ID)
    netlify link --id YOUR_SITE_ID
@@ -224,6 +237,8 @@ This error typically indicates an issue with Netlify credentials or site configu
    # Test deployment
    netlify deploy --dir=out
    ```
+   
+   If the CLI commands fail with the same error, the token doesn't have access to the site.
 
 ## Support
 
