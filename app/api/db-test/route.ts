@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server'
 import { Pool } from 'pg'
 
+// Force this route to be dynamic (not pre-rendered during build)
+// This prevents database connection attempts during the build process
+export const dynamic = 'force-dynamic'
+
 // Example API route demonstrating database connectivity
 // This uses connection pooling which is recommended for serverless environments
 
