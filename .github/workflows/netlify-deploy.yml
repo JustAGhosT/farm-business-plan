@@ -1,56 +1,149 @@
-name: Deploy to Netlify
+name: Deploy Marketing (Next.js)
 
 on:
   push:
-    branches:
-      - main
-      - develop
+    branches: [main]
+    paths:
+      - "app/**"
+      - "components/**"
+      - "types/**"
+      - "package.json"
+      - "package-lock.json"
+      - "next.config.js"
+      - "tsconfig.json"
+      - "tailwind.config.ts"
+      - "postcss.config.js"
+      - ".eslintrc.json"
+      - "netlify.toml"
+      - ".github/workflows/netlify-deploy.yml"
   pull_request:
-    types: [opened, synchronize, reopened]
+    paths:
+      - "app/**"
+      - "components/**"
+      - "types/**"
+      - "package.json"
+      - "package-lock.json"
+      - "next.config.js"
+      - "tsconfig.json"
+      - "tailwind.config.ts"
+      - "postcss.config.js"
+      - ".eslintrc.json"
+      - "netlify.toml"
+      - ".github/workflows/netlify-deploy.yml"
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
-    
+    permissions:
+      contents: read
+      statuses: write
+      pull-requests: write
+    defaults:
+      run:
+        working-directory: .
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v5        
         with:
           ssh-key: ${{ secrets.DEPLOY_NETLIFY }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint code
-        run: npm run lint
-        continue-on-error: true
+      # Skip format check for now - focus on deployment
+      - name: Type Check
+        run: npx tsc --noEmit
+
+      - name: Check Netlify secrets
+        id: check_secrets
+        run: |
+          if [ -n "${{ secrets.NETLIFY_DEPLOY_TOKEN }}" ] && [ -n "${{ secrets.NETLIFY_SITE_ID }}" ]; then
+            echo "secrets_available=true" >> $GITHUB_OUTPUT
+          else
+            echo "secrets_available=false" >> $GITHUB_OUTPUT
+            echo "Warning: Netlify secrets not configured. Skipping deployment."
+            echo "Missing secrets:"
+            [ -z "${{ secrets.NETLIFY_DEPLOY_TOKEN }}" ] && echo "  - NETLIFY_DEPLOY_TOKEN"
+            [ -z "${{ secrets.NETLIFY_SITE_ID }}" ] && echo "  - NETLIFY_SITE_ID"
+          fi
 
       - name: Install Netlify CLI
+        if: steps.check_secrets.outputs.secrets_available == 'true'
         run: npm install -g netlify-cli
 
-      - name: Build and Deploy to Netlify
-        run: |
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            netlify deploy --dir=. --message="Deploy PR #${{ github.event.pull_request.number }}"
-          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            netlify deploy --dir=. --prod --message="Production deploy from main"
-          else
-            netlify deploy --dir=. --message="Deploy from ${{ github.ref_name }}"
-          fi
+      - name: Deploy to Netlify
+        if: steps.check_secrets.outputs.secrets_available == 'true'
+        run: netlify deploy --dir=. --prod --message="Production deploy from main"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_DEPLOY_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        if: always()
+  preview-deploy:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      statuses: write
+      pull-requests: write
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
         with:
-          name: build-output
-          path: .next/
-          retention-days: 7
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Skip format check for now - focus on deployment
+      - name: Type Check
+        run: npx tsc --noEmit
+
+      - name: Check Netlify secrets (Preview)
+        id: check_secrets_preview
+        run: |
+          if [ -n "${{ secrets.NETLIFY_DEPLOY_TOKEN }}" ] && [ -n "${{ secrets.NETLIFY_SITE_ID }}" ]; then
+            echo "secrets_available=true" >> $GITHUB_OUTPUT
+          else
+            echo "secrets_available=false" >> $GITHUB_OUTPUT
+            echo "Warning: Netlify secrets not configured. Skipping preview deployment."
+            echo "Missing secrets:"
+            [ -z "${{ secrets.NETLIFY_DEPLOY_TOKEN }}" ] && echo "  - NETLIFY_DEPLOY_TOKEN"
+            [ -z "${{ secrets.NETLIFY_SITE_ID }}" ] && echo "  - NETLIFY_SITE_ID"
+          fi
+
+      - name: Install Netlify CLI
+        if: steps.check_secrets_preview.outputs.secrets_available == 'true'
+        run: npm install -g netlify-cli
+
+      - name: Sanitize branch name for Netlify alias
+        id: sanitize_branch_name
+        if: steps.check_secrets_preview.outputs.secrets_available == 'true'
+        run: |
+          # Sanitize branch name for Netlify alias (lowercase, replace / with -, remove invalid chars)
+          SAFE_ALIAS=$(echo "${{ github.head_ref }}" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g' | sed 's/--*/-/g' | sed 's/^-\|-$//g')
+          echo "safe_alias=$SAFE_ALIAS" >> $GITHUB_OUTPUT
+          echo "Original branch: ${{ github.head_ref }}"
+          echo "Safe alias: $SAFE_ALIAS"
+
+      - name: Deploy Preview to Netlify
+        if: steps.check_secrets_preview.outputs.secrets_available == 'true'
+        run: |
+          netlify deploy --dir=. --alias="${{ steps.sanitize_branch_name.outputs.safe_alias }}" --message="Deploy Preview from PR #${{ github.event.pull_request.number }}"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_DEPLOY_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
