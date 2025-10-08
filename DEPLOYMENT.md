@@ -20,7 +20,7 @@ The application automatically deploys to Netlify when changes are pushed to the 
 **Setup Requirements:**
 1. Create a Netlify account and site
 2. Add GitHub repository secrets:
-   - `NETLIFY_AUTH_TOKEN`: Your Netlify personal access token
+   - `NETLIFY_DEPLOY_TOKEN`: Your Netlify personal access token
    - `NETLIFY_SITE_ID`: Your Netlify site ID
 
 **Features:**
@@ -116,7 +116,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 ### For GitHub Actions
 
 Required secrets in repository settings:
-- `NETLIFY_AUTH_TOKEN`
+- `NETLIFY_DEPLOY_TOKEN`
 - `NETLIFY_SITE_ID`
 - `DATABASE_URL`
 - `DATABASE_URL_PRODUCTION`
