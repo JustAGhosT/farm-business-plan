@@ -110,6 +110,37 @@ export const CalculatorResultSchema = z.object({
 export type CalculatorResult = z.infer<typeof CalculatorResultSchema>
 
 /**
+ * Crop Template Validation Schema
+ */
+export const CropTemplateSchema = z.object({
+  id: z.string().uuid().optional(),
+  name: z.string().min(1, 'Template name is required').max(255),
+  description: z.string().optional(),
+  category: z.string().max(100).optional(),
+  technical_specs: z.any().optional(), // JSONB field
+  financial_projections: z.any().optional(), // JSONB field
+  growing_requirements: z.any().optional(), // JSONB field
+  market_info: z.any().optional(), // JSONB field
+  is_public: z.boolean().default(true),
+  created_by: z.string().uuid().optional()
+})
+
+export type CropTemplate = z.infer<typeof CropTemplateSchema>
+
+/**
+ * AI Recommendation Validation Schema
+ */
+export const AIRecommendationSchema = z.object({
+  id: z.string().uuid().optional(),
+  farm_plan_id: z.string().uuid(),
+  recommendation_text: z.string().min(1, 'Recommendation text is required'),
+  category: z.string().max(100).optional(),
+  priority: z.number().int().default(0)
+})
+
+export type AIRecommendation = z.infer<typeof AIRecommendationSchema>
+
+/**
  * Validation helper function
  */
 export function validateData<T>(schema: z.ZodSchema<T>, data: unknown): {
