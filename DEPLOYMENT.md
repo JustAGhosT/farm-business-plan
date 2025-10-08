@@ -375,7 +375,7 @@ Before deploying to production:
 | Deployment fails | ✅ Check Netlify CLI authentication and site ID |
 | API routes return 404 | ✅ Ensure Netlify Next.js Runtime is enabled |
 | Functions timeout | ✅ Check Netlify function logs and increase timeout if needed |
-| CSS/JS files return MIME type errors | ✅ Ensure `publish = "."` in netlify.toml (not ".next") |
+| CSS/JS files return MIME type errors | ✅ Ensure `@netlify/plugin-nextjs` is configured in netlify.toml |
 
 ### Build Failures
 
@@ -441,13 +441,17 @@ If you see errors like "Refused to apply style because its MIME type ('text/html
 
 **Solution**:
 
-1. **Fix netlify.toml publish directory**:
+1. **Configure netlify.toml correctly**:
    ```toml
    [build]
-     publish = "."  # Use root directory, NOT ".next"
+     command = "npm run build"
+     # Do NOT set publish directory - let the plugin handle it
+   
+   [[plugins]]
+     package = "@netlify/plugin-nextjs"
    ```
    
-   For Next.js with `@netlify/plugin-nextjs`, the plugin handles the `.next` directory automatically. Setting `publish = ".next"` breaks static asset routing.
+   **Important**: When using `@netlify/plugin-nextjs`, do NOT specify a `publish` directory in netlify.toml. The plugin automatically handles the `.next` directory and static asset routing. Setting `publish = "."` or `publish = ".next"` can cause the error: "Your publish directory cannot be the same as the base directory of your site."
 
 2. **Add explicit headers** (already configured in netlify.toml):
    ```toml
