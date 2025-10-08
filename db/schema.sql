@@ -5,6 +5,22 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ============================================
+-- USERS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS users (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255), -- NULL for OAuth users
+    role VARCHAR(50) DEFAULT 'user', -- 'user', 'admin', 'manager'
+    auth_provider VARCHAR(50) DEFAULT 'credentials', -- 'credentials', 'github', 'google'
+    auth_provider_id VARCHAR(255), -- Provider's user ID for OAuth
+    email_verified BOOLEAN DEFAULT false,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ============================================
 -- FARM PLANS TABLE
 -- ============================================
 CREATE TABLE IF NOT EXISTS farm_plans (
@@ -125,6 +141,7 @@ CREATE TABLE IF NOT EXISTS ai_recommendations (
 -- ============================================
 -- INDEXES
 -- ============================================
+CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_farm_plans_owner ON farm_plans(owner_id);
 CREATE INDEX idx_farm_plans_status ON farm_plans(status);
 CREATE INDEX idx_climate_data_farm_plan ON climate_data(farm_plan_id);
@@ -147,6 +164,9 @@ BEGIN
     RETURN NEW;
 END;
 $$ language 'plpgsql';
+
+CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_farm_plans_updated_at BEFORE UPDATE ON farm_plans
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();

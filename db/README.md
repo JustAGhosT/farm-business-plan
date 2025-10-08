@@ -69,6 +69,8 @@ Netlify DB is a serverless PostgreSQL database powered by Neon, with automatic p
    ```bash
    # Run migrations in order
    psql $DATABASE_URL -f db/migrations/001_initial_schema.sql
+   psql $DATABASE_URL -f db/migrations/002_add_authentication.sql
+   psql $DATABASE_URL -f db/migrations/003_add_calculator_results.sql
    ```
 
 6. **Seed database (optional):**
@@ -108,6 +110,8 @@ For local development or self-hosted deployments:
 4. **Run Migrations** (in order)
    ```bash
    psql -U your_username -d farm_business_plan -f db/migrations/001_initial_schema.sql
+   psql -U your_username -d farm_business_plan -f db/migrations/002_add_authentication.sql
+   psql -U your_username -d farm_business_plan -f db/migrations/003_add_calculator_results.sql
    ```
 
 5. **Seed Database** (optional)

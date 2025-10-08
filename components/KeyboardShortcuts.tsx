@@ -19,6 +19,9 @@ interface KeyboardShortcut {
 export function useKeyboardShortcuts(shortcuts: KeyboardShortcut[]) {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      // Guard against undefined event.key
+      if (!event.key) return
+
       shortcuts.forEach(shortcut => {
         const ctrlMatch = shortcut.ctrlKey === undefined || shortcut.ctrlKey === event.ctrlKey
         const shiftMatch = shortcut.shiftKey === undefined || shortcut.shiftKey === event.shiftKey
@@ -46,6 +49,9 @@ export function KeyboardShortcutsHelp({ shortcuts }: { shortcuts: KeyboardShortc
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      // Guard against undefined event.key
+      if (!event.key) return
+
       if (event.key === '?' && event.shiftKey) {
         event.preventDefault()
         setIsOpen(true)
