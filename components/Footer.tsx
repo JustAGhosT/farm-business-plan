@@ -155,9 +155,15 @@ export default function Footer() {
               <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-cyan-500 text-white">
                 Tailwind CSS 3+
               </span>
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-teal-500 text-white">
+              <a 
+                href="https://www.netlify.com/" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-teal-500 text-white hover:bg-teal-600 transition-colors cursor-pointer"
+                aria-label="Deployed on Netlify"
+              >
                 Netlify
-              </span>
+              </a>
             </div>
           </div>
         </div>

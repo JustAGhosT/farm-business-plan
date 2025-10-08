@@ -1,0 +1,54 @@
+<svg width="800" height="200" viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with gradient -->
+  <defs>
+    <linearGradient id="bannerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#059669;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#047857;stop-opacity:1" />
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="200" fill="url(#bannerGradient)"/>
+  <rect width="800" height="200" fill="url(#grid)"/>
+  
+  <!-- Decorative wheat elements -->
+  <g opacity="0.3">
+    <!-- Left wheat -->
+    <path d="M 50 180 Q 55 160 50 140 Q 45 160 50 180" fill="#fbbf24" stroke="#f59e0b" stroke-width="2"/>
+    <circle cx="50" cy="135" r="3" fill="#fbbf24"/>
+    <circle cx="48" cy="142" r="3" fill="#fbbf24"/>
+    <circle cx="52" cy="142" r="3" fill="#fbbf24"/>
+    <circle cx="48" cy="149" r="3" fill="#fbbf24"/>
+    <circle cx="52" cy="149" r="3" fill="#fbbf24"/>
+    
+    <!-- Right wheat -->
+    <path d="M 750 180 Q 755 160 750 140 Q 745 160 750 180" fill="#fbbf24" stroke="#f59e0b" stroke-width="2"/>
+    <circle cx="750" cy="135" r="3" fill="#fbbf24"/>
+    <circle cx="748" cy="142" r="3" fill="#fbbf24"/>
+    <circle cx="752" cy="142" r="3" fill="#fbbf24"/>
+    <circle cx="748" cy="149" r="3" fill="#fbbf24"/>
+    <circle cx="752" cy="149" r="3" fill="#fbbf24"/>
+  </g>
+  
+  <!-- Main text -->
+  <text x="400" y="85" font-family="Arial, sans-serif" font-size="42" font-weight="bold" text-anchor="middle" fill="white">
+    Agricultural Business Plan Template
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="400" y="125" font-family="Arial, sans-serif" font-size="22" text-anchor="middle" fill="rgba(255,255,255,0.9)">
+    Comprehensive Farm Planning &amp; Management System
+  </text>
+  
+  <!-- Icon row -->
+  <g transform="translate(250, 145)">
+    <text x="0" y="20" font-size="28" fill="white">🌱</text>
+    <text x="80" y="20" font-size="28" fill="white">📊</text>
+    <text x="160" y="20" font-size="28" fill="white">💰</text>
+    <text x="240" y="20" font-size="28" fill="white">🚜</text>
+  </g>
+</svg>
