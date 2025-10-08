@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Farm Business Plan Logo](https://via.placeholder.com/150x150.png?text=🌾+FBP)
+[![Farm Business Plan Logo](./public/logo.svg)](https://farmplan.netlify.app/)
 
 [![Build Status](https://github.com/JustAGhosT/farm-business-plan/workflows/Deploy%20to%20Netlify/badge.svg)](https://github.com/JustAGhosT/farm-business-plan/actions)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/NETLIFY_SITE_ID/deploy-status)](https://app.netlify.com/sites/farm-business-plan/deploys)
@@ -16,7 +16,7 @@
 
 ---
 
-![Farm Planning](https://via.placeholder.com/800x200.png?text=Agricultural+Business+Plan+Template)
+[![Farm Planning](./public/banner.svg)](https://farmplan.netlify.app/)
 
 Welcome to the **Agricultural Business Plan Template** repository. This comprehensive framework provides farmers and agricultural entrepreneurs with a customizable business planning system that can be adapted for any crop type, location, and farming context. The template includes both detailed documentation and a Next.js-based farm management application.
 
