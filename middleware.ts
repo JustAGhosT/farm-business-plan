@@ -15,21 +15,12 @@ export default withAuth(
   }
 )
 
-// Protect specific routes - everything except public routes
+// Protect specific routes - only protect /tools/* except calculators and templates
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except:
-     * - / (landing page)
-     * - /api/auth/* (auth endpoints)
-     * - /auth/* (sign in/register pages)
-     * - /docs/* (documentation - public)
-     * - /tools/calculators/* (calculators - public)
-     * - /tools/templates (templates - public)
-     * - /_next/* (Next.js internals)
-     * - /favicon.ico, /robots.txt, etc. (static files)
-     */
-    '/((?!api/auth|auth|docs|_next/static|_next/image|favicon.ico|robots.txt).*)',
-    '/tools/((?!calculators|templates).*)',
+    '/tools/dashboard/:path*',
+    '/tools/ai-wizard/:path*',
+    '/tools/plan-generator/:path*',
+    '/tools/reports/:path*',
   ],
 }

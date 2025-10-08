@@ -139,6 +139,49 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Benefits of Creating an Account */}
+        {!session && (
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl shadow-xl p-10 mb-16 border border-green-100 dark:border-green-800">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 text-center">
+              Why Create an Account?
+            </h2>
+            <div className="grid md:grid-cols-3 gap-8 mt-8">
+              <div className="text-center">
+                <div className="text-5xl mb-4">🤖</div>
+                <h3 className="font-bold text-lg mb-3 text-gray-900 dark:text-white">AI-Powered Recommendations</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                  Get personalized crop suggestions and investment advice based on your location and budget
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="text-5xl mb-4">💾</div>
+                <h3 className="font-bold text-lg mb-3 text-gray-900 dark:text-white">Save Your Progress</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                  Store your business plans, calculations, and track your farm operations over time
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="text-5xl mb-4">📊</div>
+                <h3 className="font-bold text-lg mb-3 text-gray-900 dark:text-white">Advanced Analytics</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                  Access detailed reports, financial projections, and operational dashboards
+                </p>
+              </div>
+            </div>
+            <div className="text-center mt-8">
+              <Link
+                href="/auth/register"
+                className="inline-block px-8 py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-lg hover:shadow-xl font-bold text-lg transform hover:scale-105"
+              >
+                Create Free Account →
+              </Link>
+              <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                Or sign in with <span className="font-semibold">Google</span> in just one click!
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* AI Wizard - Featured (Requires Login) */}
         <div className="bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 rounded-xl shadow-2xl p-10 mb-10 text-white transform hover:scale-[1.02] transition-all duration-300">
           <div className="flex flex-col md:flex-row items-center justify-between">
