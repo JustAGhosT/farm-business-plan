@@ -46,6 +46,7 @@ export default function AIWizardPage() {
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState<Step>('location')
   const [isLoadingClimate, setIsLoadingClimate] = useState(false)
+  const [isDetectingLocation, setIsDetectingLocation] = useState(false)
   const [data, setData] = useState<WizardData>({
     location: '',
     province: '',
@@ -73,6 +74,19 @@ export default function AIWizardPage() {
 
   const [aiRecommendations, setAiRecommendations] = useState<string[]>([])
 
+  // South African cities/towns for autocomplete
+  const southAfricanLocations = [
+    'Bela Bela', 'Polokwane', 'Tzaneen', 'Mokopane', 'Musina', 'Thohoyandou', // Limpopo
+    'Nelspruit (Mbombela)', 'White River', 'Barberton', 'Hazyview', 'Lydenburg', // Mpumalanga
+    'Johannesburg', 'Pretoria', 'Midrand', 'Sandton', 'Roodepoort', 'Soweto', // Gauteng
+    'Durban', 'Pietermaritzburg', 'Richards Bay', 'Newcastle', 'Ladysmith', // KwaZulu-Natal
+    'Cape Town', 'Stellenbosch', 'Paarl', 'George', 'Knysna', 'Mossel Bay', // Western Cape
+    'Port Elizabeth (Gqeberha)', 'East London', 'Grahamstown (Makhanda)', 'Uitenhage', // Eastern Cape
+    'Kimberley', 'Upington', 'Kuruman', 'Springbok', // Northern Cape
+    'Bloemfontein', 'Welkom', 'Kroonstad', 'Bethlehem', 'Sasolburg', // Free State
+    'Rustenburg', 'Mahikeng', 'Klerksdorp', 'Potchefstroom', 'Brits' // North West
+  ]
+
   // Calculate farm size from boundary points using the Shoelace formula
   const calculateAreaFromBoundary = (points: BoundaryPoint[]): number => {
     if (points.length < 3) return 0
@@ -98,6 +112,147 @@ export default function AIWizardPage() {
     const hectares = areaInSquareMeters / 10000
     
     return hectares
+  }
+
+  // Detect town name from coordinates using reverse geocoding
+  const detectTownFromCoordinates = async (lat: number, lng: number): Promise<string> => {
+    try {
+      // Use Open-Meteo Geocoding API (free, no API key required)
+      const response = await fetch(
+        `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lng}`
+      )
+      
+      if (!response.ok) {
+        throw new Error('Reverse geocoding failed')
+      }
+      
+      const data = await response.json()
+      
+      // Get the most relevant result
+      if (data.results && data.results.length > 0) {
+        const result = data.results[0]
+        // Return city/town name or admin region
+        return result.name || result.admin1 || 'Unknown location'
+      }
+      
+      return 'Unknown location'
+    } catch (error) {
+      console.error('Error in reverse geocoding:', error)
+      return 'Unknown location'
+    }
+  }
+
+  // Detect location via IP address
+  const detectLocationViaIP = async () => {
+    setIsDetectingLocation(true)
+    try {
+      // Use ipapi.co free API (no key required, 30k requests/month)
+      const response = await fetch('https://ipapi.co/json/')
+      
+      if (!response.ok) {
+        throw new Error('IP location detection failed')
+      }
+      
+      const ipData = await response.json()
+      
+      // Check if it's in South Africa
+      if (ipData.country_code === 'ZA') {
+        const lat = ipData.latitude
+        const lng = ipData.longitude
+        const detectedProvince = detectProvinceFromCoordinates(lat, lng)
+        
+        setData(prev => ({
+          ...prev,
+          coordinates: {
+            lat: lat.toString(),
+            lng: lng.toString()
+          },
+          province: detectedProvince || ipData.region || '',
+          location: ipData.city || 'Unknown location'
+        }))
+      } else {
+        // Not in South Africa, just use what we got
+        setData(prev => ({
+          ...prev,
+          location: ipData.city || 'Unknown location',
+          province: ipData.region || ''
+        }))
+      }
+    } catch (error) {
+      console.error('Error detecting location via IP:', error)
+      alert('Unable to detect location via IP. Please use GPS or enter manually.')
+    } finally {
+      setIsDetectingLocation(false)
+    }
+  }
+
+  // Auto-detect user's current location using browser geolocation API
+  const detectCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser')
+      return
+    }
+
+    setIsDetectingLocation(true)
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const lat = position.coords.latitude
+        const lng = position.coords.longitude
+        
+        // Try to reverse geocode to get town name
+        const townName = await detectTownFromCoordinates(lat, lng)
+        const detectedProvince = detectProvinceFromCoordinates(lat, lng)
+        
+        setData(prev => ({
+          ...prev,
+          coordinates: {
+            lat: lat.toString(),
+            lng: lng.toString()
+          },
+          province: detectedProvince,
+          location: townName
+        }))
+        
+        setIsDetectingLocation(false)
+      },
+      (error) => {
+        console.error('Error getting location:', error)
+        // Fallback to IP-based detection
+        console.log('Falling back to IP-based location detection...')
+        detectLocationViaIP()
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      }
+    )
+  }
+
+  // Detect South African province from coordinates
+  const detectProvinceFromCoordinates = (lat: number, lng: number): string => {
+    // Approximate province boundaries for South Africa
+    // Northern provinces (Limpopo)
+    if (lat < -22 && lat > -25 && lng > 28 && lng < 31) return 'Limpopo'
+    // Mpumalanga
+    if (lat < -24 && lat > -27 && lng > 29 && lng < 32) return 'Mpumalanga'
+    // Gauteng
+    if (lat < -25.5 && lat > -26.5 && lng > 27.5 && lng < 29) return 'Gauteng'
+    // KwaZulu-Natal
+    if (lat < -27 && lat > -31 && lng > 29 && lng < 33) return 'KwaZulu-Natal'
+    // Western Cape
+    if (lat < -32 && lat > -35 && lng > 18 && lng < 24) return 'Western Cape'
+    // Eastern Cape
+    if (lat < -30 && lat > -34 && lng > 24 && lng < 30) return 'Eastern Cape'
+    // Northern Cape
+    if (lat < -27 && lat > -31 && lng > 20 && lng < 25) return 'Northern Cape'
+    // Free State
+    if (lat < -27 && lat > -30 && lng > 26 && lng < 30) return 'Free State'
+    // North West
+    if (lat < -25 && lat > -28 && lng > 24 && lng < 28) return 'North West'
+    
+    // Default - couldn't determine
+    return ''
   }
 
   // Fetch climate data based on location
@@ -375,6 +530,24 @@ export default function AIWizardPage() {
     setAiRecommendations(recommendations)
   }
 
+  const generateAutomationSuggestions = (): string[] => {
+    const suggestions: string[] = []
+    
+    // Suggest automations based on context
+    suggestions.push('🤖 **Weather Integration**: Connect to real-time weather APIs (OpenWeatherMap, WeatherAPI) for accurate forecasts and alerts')
+    suggestions.push('📊 **Market Price Tracking**: Automatically fetch current market prices for your crops to optimize selling decisions')
+    suggestions.push('💧 **Smart Irrigation**: Implement IoT sensors to automate irrigation based on soil moisture and weather forecasts')
+    suggestions.push('📅 **Task Scheduling**: Set up automated reminders for planting, fertilizing, and harvesting based on crop calendars')
+    suggestions.push('📈 **Yield Prediction**: Use historical data and ML models to predict harvest yields and plan accordingly')
+    suggestions.push('🌱 **Pest & Disease Alerts**: Integrate climate-based pest prediction systems for early warning')
+    suggestions.push('💰 **Expense Tracking**: Connect bank accounts or use receipt scanning to automatically track farm expenses')
+    suggestions.push('📱 **Mobile Notifications**: Enable push notifications for critical farm events (frost warnings, irrigation needs, harvest time)')
+    suggestions.push('🔄 **Crop Rotation Planning**: Auto-generate optimal crop rotation schedules based on soil health and market demand')
+    suggestions.push('📊 **Inventory Management**: Track seed, fertilizer, and equipment inventory with low-stock alerts')
+    
+    return suggestions
+  }
+
   const handleNext = () => {
     if (currentStep === 'timeline') {
       generateAIRecommendations()
@@ -571,17 +744,71 @@ export default function AIWizardPage() {
               <div>
                 <h2 className="text-2xl font-bold mb-4">📍 Location & Farm Size</h2>
                 <div className="space-y-4">
-                  <div>
+                  {/* Auto-detect location button */}
+                  <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
+                    <h3 className="font-semibold text-primary-900 mb-2">📍 Auto-Detect Your Location</h3>
+                    <p className="text-sm text-primary-800 mb-3">
+                      Use your device&apos;s GPS to automatically detect your current location and coordinates
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      <button
+                        onClick={detectCurrentLocation}
+                        disabled={isDetectingLocation}
+                        className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 flex items-center justify-center"
+                      >
+                        {isDetectingLocation ? (
+                          <>
+                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Detecting...
+                          </>
+                        ) : (
+                          '🎯 Use GPS Location'
+                        )}
+                      </button>
+                      <button
+                        onClick={detectLocationViaIP}
+                        disabled={isDetectingLocation}
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center"
+                      >
+                        {isDetectingLocation ? (
+                          <>
+                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Detecting...
+                          </>
+                        ) : (
+                          '🌐 Use IP Location'
+                        )}
+                      </button>
+                    </div>
+                    <p className="text-xs text-gray-600 mt-2">
+                      GPS is more accurate. IP location is used as fallback if GPS fails.
+                    </p>
+                  </div>
+
+                  <div className="relative">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Location / Town *
                     </label>
                     <input
                       type="text"
+                      list="locations"
                       value={data.location}
                       onChange={(e) => setData({ ...data, location: e.target.value })}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       placeholder="e.g., Bela Bela, Polokwane"
                     />
+                    <datalist id="locations">
+                      {southAfricanLocations.map((loc) => (
+                        <option key={loc} value={loc} />
+                      ))}
+                    </datalist>
+                    <p className="text-xs text-gray-500 mt-1">Start typing to see suggestions</p>
                   </div>
 
                   <div>
@@ -1165,7 +1392,7 @@ export default function AIWizardPage() {
                   ))}
                 </div>
 
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
                   <h3 className="font-semibold text-blue-900 mb-3">📋 Your Farm Profile</h3>
                   <div className="grid md:grid-cols-2 gap-3 text-sm">
                     <div><strong>Location:</strong> {data.location}, {data.province}</div>
@@ -1177,7 +1404,32 @@ export default function AIWizardPage() {
                   </div>
                 </div>
 
-                <div className="mt-6 bg-primary-50 border-l-4 border-primary-500 p-4 rounded">
+                {/* Automation Suggestions Section */}
+                <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-6 mb-6">
+                  <div className="flex items-center mb-3">
+                    <span className="text-2xl mr-2">⚡</span>
+                    <h3 className="font-semibold text-purple-900">Future Automation Opportunities</h3>
+                  </div>
+                  <p className="text-sm text-purple-800 mb-4">
+                    Here are ways this wizard and your farm operations can be further automated:
+                  </p>
+                  <div className="space-y-2">
+                    {generateAutomationSuggestions().map((suggestion, index) => (
+                      <div key={index} className="flex items-start p-3 bg-white rounded-lg border border-purple-100">
+                        <span className="text-purple-500 mr-2 flex-shrink-0 text-sm">•</span>
+                        <p className="text-sm text-gray-700">{suggestion}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4 p-3 bg-white rounded-lg border border-purple-200">
+                    <p className="text-xs text-purple-700">
+                      💡 <strong>Pro Tip:</strong> Start with 1-2 automation features that align with your immediate needs. 
+                      Weather integration and task scheduling are great starting points for most farms.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-primary-50 border-l-4 border-primary-500 p-4 rounded">
                   <h3 className="font-semibold text-primary-900 mb-2">🎯 Next Steps</h3>
                   <ol className="list-decimal list-inside space-y-1 text-sm text-primary-800">
                     <li>Use Financial Calculators to validate your projections</li>
