@@ -52,6 +52,23 @@ export default function CalculatorsPage() {
     }
   ]
 
+  const features = [
+    {
+      title: 'Calculator History',
+      description: 'View and compare all your saved calculations with interactive charts',
+      icon: '📊',
+      href: '/tools/calculators/history',
+      color: 'border-teal-300 dark:border-teal-700 hover:border-teal-500 dark:hover:border-teal-600'
+    },
+    {
+      title: 'Financial Reports',
+      description: 'Generate comprehensive reports with PDF and CSV export',
+      icon: '📈',
+      href: '/tools/reports',
+      color: 'border-pink-300 dark:border-pink-700 hover:border-pink-500 dark:hover:border-pink-600'
+    }
+  ]
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white dark:from-gray-800 dark:to-gray-900">
       <div className="container mx-auto px-4 py-8">
@@ -90,6 +107,30 @@ export default function CalculatorsPage() {
               </div>
             </Link>
           ))}
+        </div>
+
+        {/* Analysis Tools Section */}
+        <div className="mt-12 mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Analysis & Reporting Tools</h2>
+          <div className="grid md:grid-cols-2 gap-8">
+            {features.map((feature) => (
+              <Link
+                key={feature.href}
+                href={feature.href}
+                className={`block bg-white dark:bg-gray-800 p-8 rounded-xl border-2 ${feature.color} shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 group`}
+              >
+                <div className="text-5xl mb-5 group-hover:scale-110 transition-transform">{feature.icon}</div>
+                <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">{feature.title}</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">{feature.description}</p>
+                <div className="text-primary-600 dark:text-primary-400 font-bold flex items-center group-hover:gap-3 gap-2 transition-all">
+                  View {feature.title}
+                  <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
 
         <div className="mt-10 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 border-l-4 border-blue-500 dark:border-blue-600 p-8 rounded-xl shadow-md">
