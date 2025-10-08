@@ -29,31 +29,26 @@ jobs:
         run: npm run lint
         continue-on-error: true
 
-      - name: Build application
-        run: npm run build
-        env:
-          NODE_ENV: production
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
 
-      - name: Deploy to Netlify
-        uses: nwtgck/actions-netlify@v3.0
-        with:
-          publish-dir: './out'
-          production-branch: main
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Deploy from GitHub Actions"
-          enable-pull-request-comment: true
-          enable-commit-comment: true
-          overwrites-pull-request-comment: true
-          fails-without-credentials: true
+      - name: Build and Deploy to Netlify
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            netlify deploy --dir=. --message="Deploy PR #${{ github.event.pull_request.number }}"
+          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            netlify deploy --dir=. --prod --message="Production deploy from main"
+          else
+            netlify deploy --dir=. --message="Deploy from ${{ github.ref_name }}"
+          fi
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_DEPLOY_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        timeout-minutes: 10
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: build-output
-          path: out/
+          path: .next/
           retention-days: 7
