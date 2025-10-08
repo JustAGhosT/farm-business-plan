@@ -10,7 +10,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Last Commit](https://img.shields.io/github/last-commit/JustAGhosT/farm-business-plan)](https://github.com/JustAGhosT/farm-business-plan/commits/main)
 
-### 🚀 [Live Demo](https://farmplan.netlify.app/) | 📖 [Documentation](docs/) | 🚀 [Quick Start](QUICKSTART.md) | 💬 [Issues](https://github.com/JustAGhosT/farm-business-plan/issues)
+**🚀 Live Application:** [https://farmplan.netlify.app/](https://farmplan.netlify.app/)
+
+### 🚀 [Live Demo](https://farmplan.netlify.app/) | 📖 [Documentation](docs/) | 🚀 [Quick Start](docs/guides/QUICKSTART.md) | 💬 [Issues](https://github.com/JustAGhosT/farm-business-plan/issues)
 
 </div>
 
@@ -380,7 +382,7 @@ farm-business-plan/
 
 **[https://farmplan.netlify.app/](https://farmplan.netlify.app/)**
 
-**📚 Quick Start:** New to deployment? See [QUICKSTART.md](QUICKSTART.md) for a step-by-step guide.
+**📚 Quick Start:** New to deployment? See [QUICKSTART.md](docs/guides/QUICKSTART.md) for a step-by-step guide.
 
 The application is deployed as a **dynamic Next.js application** with API routes and serverless functions support:
 
@@ -422,7 +424,7 @@ netlify deploy --prod
 - **AWS S3**: Upload the `out` directory contents to an S3 bucket with static website hosting
 - **Azure Static Web Apps**: Connect repository and deploy automatically
 
-For detailed deployment instructions and troubleshooting, see [DEPLOYMENT.md](DEPLOYMENT.md).
+For detailed deployment instructions and troubleshooting, see [DEPLOYMENT.md](docs/guides/DEPLOYMENT.md).
 
 ---
 
@@ -453,11 +455,11 @@ For questions, suggestions, or collaboration opportunities, please open an issue
 
 ### Implementation Guides
 
-- **[PHASE1_GUIDE.md](PHASE1_GUIDE.md)** - Phase 1 implementation (Core data persistence & API routes)
-- **[PHASE3_GUIDE.md](PHASE3_GUIDE.md)** - Phase 3 implementation (Calculator results API & testing) ⭐ NEW
-- **[TESTING_GUIDE.md](TESTING_GUIDE.md)** - Comprehensive testing documentation ⭐ NEW
-- **[IMPLEMENTATION_COMPLETE.md](IMPLEMENTATION_COMPLETE.md)** - Complete implementation summary
-- **[ENHANCEMENT_ROADMAP.md](ENHANCEMENT_ROADMAP.md)** - Future enhancement roadmap
+- **[PHASE1_GUIDE.md](docs/guides/PHASE1_GUIDE.md)** - Phase 1 implementation (Core data persistence & API routes)
+- **[PHASE3_GUIDE.md](docs/guides/PHASE3_GUIDE.md)** - Phase 3 implementation (Calculator results API & testing) ⭐ NEW
+- **[TESTING_GUIDE.md](docs/guides/TESTING_GUIDE.md)** - Comprehensive testing documentation ⭐ NEW
+- **[IMPLEMENTATION_COMPLETE.md](docs/guides/IMPLEMENTATION_COMPLETE.md)** - Complete implementation summary
+- **[ENHANCEMENT_ROADMAP.md](docs/guides/ENHANCEMENT_ROADMAP.md)** - Future enhancement roadmap
 
 ### Testing
 
@@ -481,7 +483,7 @@ npm run test:coverage
 - ✅ API validation and logic tests
 - ✅ All builds passing
 
-For detailed testing information, see [TESTING_GUIDE.md](TESTING_GUIDE.md).
+For detailed testing information, see [TESTING_GUIDE.md](docs/guides/TESTING_GUIDE.md).
 
 ### Recent Enhancements (Phase 3)
 
@@ -490,7 +492,7 @@ For detailed testing information, see [TESTING_GUIDE.md](TESTING_GUIDE.md).
 - API endpoints for CRUD operations on calculator results
 - Support for 8 calculator types (ROI, break-even, investment, loan, etc.)
 - Filter by farm plan, crop plan, calculator type, or user
-- Full documentation in [PHASE3_GUIDE.md](PHASE3_GUIDE.md)
+- Full documentation in [PHASE3_GUIDE.md](docs/guides/PHASE3_GUIDE.md)
 
 **Testing Infrastructure** - NEW! ⭐
 - Jest configured for Next.js with TypeScript
