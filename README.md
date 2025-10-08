@@ -5,7 +5,7 @@
 [![Farm Business Plan Logo](./public/logo.svg)](https://farmplan.netlify.app/)
 
 [![Build Status](https://github.com/JustAGhosT/farm-business-plan/workflows/Deploy%20to%20Netlify/badge.svg)](https://github.com/JustAGhosT/farm-business-plan/actions)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/NETLIFY_SITE_ID/deploy-status)](https://app.netlify.com/sites/farm-business-plan/deploys)
+[![Netlify](https://img.shields.io/badge/Deployed%20on-Netlify-00C7B7?style=flat-square&logo=netlify)](https://app.netlify.com/sites/farm-business-plan/deploys)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Last Commit](https://img.shields.io/github/last-commit/JustAGhosT/farm-business-plan)](https://github.com/JustAGhosT/farm-business-plan/commits/main)
