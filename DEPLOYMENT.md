@@ -360,6 +360,7 @@ Before deploying to production:
 | Deployment fails | ✅ Check Netlify CLI authentication and site ID |
 | API routes return 404 | ✅ Ensure Netlify Next.js Runtime is enabled |
 | Functions timeout | ✅ Check Netlify function logs and increase timeout if needed |
+| CSS/JS files return MIME type errors | ✅ Ensure `publish = "."` in netlify.toml (not ".next") |
 
 ### Build Failures
 
@@ -416,6 +417,49 @@ Before deploying to production:
    - Ensure the deploy key has read access to the repository
    - Check that "Allow write access" is NOT enabled (read-only is sufficient)
    - Verify the key hasn't expired or been revoked
+
+### Static Asset MIME Type Issues
+
+If you see errors like "Refused to apply style because its MIME type ('text/html') is not a supported stylesheet MIME type":
+
+**Root Cause**: This occurs when CSS/JS files are returning HTML (typically 404 pages) instead of the actual files. Common with incorrect Netlify configuration.
+
+**Solution**:
+
+1. **Fix netlify.toml publish directory**:
+   ```toml
+   [build]
+     publish = "."  # Use root directory, NOT ".next"
+   ```
+   
+   For Next.js with `@netlify/plugin-nextjs`, the plugin handles the `.next` directory automatically. Setting `publish = ".next"` breaks static asset routing.
+
+2. **Add explicit headers** (already configured in netlify.toml):
+   ```toml
+   [[headers]]
+     for = "/_next/static/*"
+     [headers.values]
+       Cache-Control = "public, max-age=31536000, immutable"
+   
+   [[headers]]
+     for = "/*.css"
+     [headers.values]
+       Content-Type = "text/css; charset=utf-8"
+   ```
+
+3. **Clear Netlify cache and redeploy**:
+   ```bash
+   # Via Netlify CLI
+   netlify deploy --prod --build
+   
+   # Or via Netlify Dashboard
+   # Site Settings → Build & deploy → Clear cache and deploy site
+   ```
+
+4. **Verify the fix**:
+   - Check browser DevTools → Network tab
+   - CSS files should return status 200 with Content-Type: text/css
+   - Look for `/_next/static/css/*.css` files loading correctly
 
 ### API Route Issues
 

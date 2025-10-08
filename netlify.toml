@@ -8,8 +8,9 @@
   # Build command for Next.js
   command = "npm run build"
   
-  # Publish directory for Next.js (Netlify will handle .next directory automatically)
-  publish = ".next"
+  # Publish directory - use root for Next.js with @netlify/plugin-nextjs
+  # The plugin handles the .next directory automatically
+  publish = "."
   
   # Node.js version to use
   [build.environment]
@@ -43,3 +44,29 @@
 #   from = "/api/*"
 #   to = "/.netlify/functions/:splat"
 #   status = 200
+
+# Headers for static assets
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Content-Type = "text/css; charset=utf-8"
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Content-Type = "application/javascript; charset=utf-8"
+    Cache-Control = "public, max-age=31536000, immutable"
