@@ -44,8 +44,9 @@ jobs:
           enable-pull-request-comment: true
           enable-commit-comment: true
           overwrites-pull-request-comment: true
+          fails-without-credentials: true
         env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_DEPLOY_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         timeout-minutes: 10
 

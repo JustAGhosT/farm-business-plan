@@ -20,8 +20,12 @@ The application automatically deploys to Netlify when changes are pushed to the 
 **Setup Requirements:**
 1. Create a Netlify account and site
 2. Add GitHub repository secrets:
-   - `NETLIFY_AUTH_TOKEN`: Your Netlify personal access token
-   - `NETLIFY_SITE_ID`: Your Netlify site ID
+   - `NETLIFY_DEPLOY_TOKEN`: Your Netlify personal access token
+     - Found at: Netlify Dashboard → User Settings → Applications → Personal access tokens
+     - Create new token with full access permissions
+   - `NETLIFY_SITE_ID`: Your Netlify site ID (API ID)
+     - Found at: Netlify Dashboard → Your Site → Site Settings → Site details → API ID
+     - **Note**: Use the API ID, not the site name
 
 **Features:**
 - Automatic dependency caching for faster builds
@@ -116,7 +120,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 ### For GitHub Actions
 
 Required secrets in repository settings:
-- `NETLIFY_AUTH_TOKEN`
+- `NETLIFY_DEPLOY_TOKEN`
 - `NETLIFY_SITE_ID`
 - `DATABASE_URL`
 - `DATABASE_URL_PRODUCTION`
@@ -189,6 +193,52 @@ Before deploying to production:
 2. Check build command in netlify.toml
 3. Ensure static export is enabled in next.config.js
 4. Review Netlify deploy logs
+
+#### "Error: Not Found" from Netlify Action
+
+This error typically indicates an issue with Netlify credentials or site configuration:
+
+1. **Verify NETLIFY_SITE_ID**: 
+   - Go to Netlify Dashboard → Your Site → Site Settings → Site details
+   - Copy the "API ID" (not the site name)
+   - Add/update it in GitHub repository secrets as `NETLIFY_SITE_ID`
+
+2. **Verify NETLIFY_DEPLOY_TOKEN**:
+   - Go to Netlify Dashboard → User Settings → Applications → Personal access tokens
+   - Generate a new token if needed
+   - Add/update it in GitHub repository secrets as `NETLIFY_DEPLOY_TOKEN`
+   - Ensure the token has full access permissions
+
+3. **Team-Owned Sites (Common Issue)**:
+   - If your site is owned by a team (not your personal account), this is a common cause of "Error: Not Found"
+   - The personal access token must be from a user who is a **member of the team** that owns the site
+   - **Solution**: Go to your Netlify team settings and ensure:
+     - You are logged in as a user who has access to the team
+     - Generate the token while logged in as that user
+     - The token has permissions to deploy to team sites
+   - Alternative: Consider transferring the site to your personal account if team ownership isn't required
+
+4. **Check Site Exists**:
+   - Confirm the Netlify site hasn't been deleted
+   - Verify you have access to the site with your token
+
+5. **Test Token Locally**:
+   ```bash
+   # Install Netlify CLI
+   npm install -g netlify-cli
+   
+   # Test authentication with your token
+   export NETLIFY_AUTH_TOKEN="your-token-here"
+   netlify sites:list
+   
+   # Link to your site (uses NETLIFY_SITE_ID)
+   netlify link --id YOUR_SITE_ID
+   
+   # Test deployment
+   netlify deploy --dir=out
+   ```
+   
+   If the CLI commands fail with the same error, the token doesn't have access to the site.
 
 ## Support
 
