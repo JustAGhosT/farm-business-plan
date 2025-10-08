@@ -92,6 +92,24 @@ export const ClimateDataSchema = z.object({
 export type ClimateData = z.infer<typeof ClimateDataSchema>
 
 /**
+ * Calculator Result Validation Schema
+ */
+export const CalculatorResultSchema = z.object({
+  id: z.string().uuid().optional(),
+  farm_plan_id: z.string().uuid().optional().nullable(),
+  crop_plan_id: z.string().uuid().optional().nullable(),
+  user_id: z.string().uuid().optional().nullable(),
+  calculator_type: z.enum(['roi', 'break-even', 'investment', 'loan', 'operating-costs', 'revenue', 'cash-flow', 'profit-margin']),
+  input_data: z.any(), // Simplified to z.any() to avoid Zod v4 record issues
+  results: z.any(), // Simplified to z.any() to avoid Zod v4 record issues
+  notes: z.string().optional(),
+  created_at: z.string().optional(),
+  updated_at: z.string().optional()
+})
+
+export type CalculatorResult = z.infer<typeof CalculatorResultSchema>
+
+/**
  * Validation helper function
  */
 export function validateData<T>(schema: z.ZodSchema<T>, data: unknown): {
