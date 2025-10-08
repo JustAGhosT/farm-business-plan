@@ -1,11 +1,17 @@
 # Netlify Configuration for Farm Business Plan Application
 # https://docs.netlify.com/configure-builds/file-based-configuration/
+#
+# IMPORTANT: This file configures Netlify to use the 'out' directory for deployment.
+# If you see "Error: Not Found" in GitHub Actions, verify that your Netlify UI settings
+# match these values (especially the publish directory should be 'out', NOT '.next').
+# File-based config should take precedence, but UI settings can sometimes override it.
 
 [build]
   # Build command for Next.js static export
   command = "npm run build"
   
   # Directory containing the static files after build
+  # CRITICAL: Must be 'out' for Next.js static export (not '.next')
   publish = "out"
   
   # Node.js version to use
