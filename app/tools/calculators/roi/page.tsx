@@ -18,6 +18,10 @@ export default function ROICalculator() {
     paybackPeriod: number
   } | null>(null)
 
+  const [savedMessage, setSavedMessage] = useState('')
+  const [notes, setNotes] = useState('')
+  const [isSaving, setIsSaving] = useState(false)
+
   const calculateROI = () => {
     const investment = parseFloat(values.initialInvestment) || 0
     const revenue = parseFloat(values.annualRevenue) || 0
@@ -58,6 +62,41 @@ export default function ROICalculator() {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }).format(value)
+  }
+
+  const handleSaveCalculation = async () => {
+    if (!results) return
+
+    setIsSaving(true)
+    setSavedMessage('')
+
+    try {
+      const response = await fetch('/api/calculator-results', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          calculator_type: 'roi',
+          input_data: values,
+          results: results,
+          notes: notes || undefined
+        })
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setSavedMessage('✓ Calculation saved successfully!')
+        setNotes('')
+        setTimeout(() => setSavedMessage(''), 3000)
+      } else {
+        setSavedMessage('✗ Failed to save calculation')
+      }
+    } catch (error) {
+      console.error('Error saving calculation:', error)
+      setSavedMessage('✗ Error saving calculation')
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   return (
@@ -205,6 +244,44 @@ export default function ROICalculator() {
                         'Negative ROI. The operation is not profitable at these levels.'
                       }
                     </p>
+                  </div>
+
+                  {/* Save Calculation Section */}
+                  <div className="mt-6 border-t pt-4">
+                    <h3 className="text-lg font-semibold mb-3">Save This Calculation</h3>
+                    <div className="space-y-3">
+                      <div>
+                        <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
+                          Notes (optional)
+                        </label>
+                        <textarea
+                          id="notes"
+                          value={notes}
+                          onChange={(e) => setNotes(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          rows={2}
+                          placeholder="e.g., Q1 2024 projection, Conservative estimate"
+                        />
+                      </div>
+                      <button
+                        onClick={handleSaveCalculation}
+                        disabled={isSaving}
+                        className="w-full bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-medium"
+                      >
+                        {isSaving ? 'Saving...' : '💾 Save Calculation'}
+                      </button>
+                      {savedMessage && (
+                        <div className={`text-center text-sm font-medium ${savedMessage.includes('✓') ? 'text-green-600' : 'text-red-600'}`}>
+                          {savedMessage}
+                        </div>
+                      )}
+                      <Link
+                        href="/tools/calculators/history"
+                        className="block w-full text-center bg-gray-100 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                      >
+                        📊 View Calculation History
+                      </Link>
+                    </div>
                   </div>
                 </div>
               ) : (
