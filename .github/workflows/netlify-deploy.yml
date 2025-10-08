@@ -62,9 +62,6 @@ jobs:
       - name: Type Check
         run: npx tsc --noEmit
 
-      - name: Build
-        run: npm run build
-
       - name: Check Netlify secrets
         id: check_secrets
         run: |
@@ -78,17 +75,13 @@ jobs:
             [ -z "${{ secrets.NETLIFY_SITE_ID }}" ] && echo "  - NETLIFY_SITE_ID"
           fi
 
+      - name: Install Netlify CLI
+        if: steps.check_secrets.outputs.secrets_available == 'true'
+        run: npm install -g netlify-cli
+
       - name: Deploy to Netlify
         if: steps.check_secrets.outputs.secrets_available == 'true'
-        uses: nwtgck/actions-netlify@v3
-        with:
-          publish-dir: "."
-          production-deploy: true
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Automated deploy"
-          enable-commit-comment: false
-          enable-commit-status: true
-          alias: "prod"
+        run: netlify deploy --dir=. --prod --message="Production deploy from main"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_DEPLOY_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
@@ -120,9 +113,6 @@ jobs:
       - name: Type Check
         run: npx tsc --noEmit
 
-      - name: Build
-        run: npm run build
-
       - name: Check Netlify secrets (Preview)
         id: check_secrets_preview
         run: |
@@ -136,6 +126,10 @@ jobs:
             [ -z "${{ secrets.NETLIFY_SITE_ID }}" ] && echo "  - NETLIFY_SITE_ID"
           fi
 
+      - name: Install Netlify CLI
+        if: steps.check_secrets_preview.outputs.secrets_available == 'true'
+        run: npm install -g netlify-cli
+
       - name: Sanitize branch name for Netlify alias
         id: sanitize_branch_name
         if: steps.check_secrets_preview.outputs.secrets_available == 'true'
@@ -148,17 +142,8 @@ jobs:
 
       - name: Deploy Preview to Netlify
         if: steps.check_secrets_preview.outputs.secrets_available == 'true'
-        uses: nwtgck/actions-netlify@v3
-        with:
-          publish-dir: "."
-          production-deploy: false
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message:
-            "Deploy Preview from PR #${{
-            github.event.pull_request.number }}"
-          enable-commit-comment: true
-          enable-commit-status: true
-          alias: ${{ steps.sanitize_branch_name.outputs.safe_alias }}
+        run: |
+          netlify deploy --dir=. --alias="${{ steps.sanitize_branch_name.outputs.safe_alias }}" --message="Deploy Preview from PR #${{ github.event.pull_request.number }}"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_DEPLOY_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
