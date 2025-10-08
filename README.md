@@ -293,10 +293,16 @@ This repository includes a Next.js-based farm management and planning applicatio
   - Break-Even Calculator - Determine break-even points
   - Operating Costs Calculator - Track and calculate ongoing expenses
   - Loan Calculator - Analyze loan scenarios and payments
+- **Calculator Results API** ⭐ NEW:
+  - Save and retrieve calculator results to database
+  - Historical tracking of all calculations
+  - Filter by farm, crop, calculator type
+  - Full CRUD API endpoints
 - **Operations Dashboard**: View and manage farm tasks and activities
 - **Plan Generator**: Basic information input form for business plan creation
 - **Template Library**: Access to standardized agricultural templates
 - **AI Wizard**: Interactive assistant for farm planning guidance
+- **Comprehensive Testing** ⭐ NEW: 52 passing tests with >90% validation coverage
 - **Responsive Design**: Fully functional on desktop, tablet, and mobile devices
 - **Dark Mode Support**: Theme switching for better visibility
 - **Real-time Calculations**: Instant feedback on all calculator tools
@@ -440,6 +446,57 @@ Please open an issue or pull request to contribute.
 Whether you're planning a small-scale diversified farm, a specialized crop operation, or an innovative agricultural venture, this template provides the foundation for professional business planning. Customize it for your specific needs and build a sustainable, profitable agricultural operation.
 
 For questions, suggestions, or collaboration opportunities, please open an issue in this repository.
+
+---
+
+## 📚 Development Documentation
+
+### Implementation Guides
+
+- **[PHASE1_GUIDE.md](PHASE1_GUIDE.md)** - Phase 1 implementation (Core data persistence & API routes)
+- **[PHASE3_GUIDE.md](PHASE3_GUIDE.md)** - Phase 3 implementation (Calculator results API & testing) ⭐ NEW
+- **[TESTING_GUIDE.md](TESTING_GUIDE.md)** - Comprehensive testing documentation ⭐ NEW
+- **[IMPLEMENTATION_COMPLETE.md](IMPLEMENTATION_COMPLETE.md)** - Complete implementation summary
+- **[ENHANCEMENT_ROADMAP.md](ENHANCEMENT_ROADMAP.md)** - Future enhancement roadmap
+
+### Testing
+
+The application includes comprehensive test coverage with Jest:
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Generate coverage report
+npm run test:coverage
+```
+
+**Current Test Status:**
+- ✅ 52 tests passing
+- ✅ 4 test suites
+- ✅ >90% coverage for validation schemas
+- ✅ API validation and logic tests
+- ✅ All builds passing
+
+For detailed testing information, see [TESTING_GUIDE.md](TESTING_GUIDE.md).
+
+### Recent Enhancements (Phase 3)
+
+**Calculator Results Persistence** - NEW! ⭐
+- Save and retrieve calculator results to database
+- API endpoints for CRUD operations on calculator results
+- Support for 8 calculator types (ROI, break-even, investment, loan, etc.)
+- Filter by farm plan, crop plan, calculator type, or user
+- Full documentation in [PHASE3_GUIDE.md](PHASE3_GUIDE.md)
+
+**Testing Infrastructure** - NEW! ⭐
+- Jest configured for Next.js with TypeScript
+- 52 comprehensive tests across validation and API logic
+- Test helpers and utilities for easy test creation
+- Coverage reporting and CI/CD integration
 
 ---
 
