@@ -374,7 +374,7 @@ farm-business-plan/
 
 **[https://farmplan.netlify.app/](https://farmplan.netlify.app/)**
 
-The application is configured for static site export and can be deployed to various hosting platforms:
+The application is deployed as a **dynamic Next.js application** with API routes and serverless functions support:
 
 **Automated Deployment (Current Setup):**
 
@@ -382,22 +382,28 @@ The application is configured for static site export and can be deployed to vari
 - **Develop branch** → Staging deployment
 - **Pull Requests** → Preview deployments with unique URLs
 - Automatic builds triggered on every push via GitHub Actions
+- API routes deployed as serverless functions
 
 **Netlify Deployment (Recommended):**
 
 1. Push your code to a Git repository (GitHub, GitLab, Bitbucket)
 2. Connect your repository to Netlify
-3. Netlify will automatically detect the `netlify.toml` configuration
-4. The site will build and deploy automatically
+3. Netlify will automatically detect Next.js and enable the Next.js Runtime
+4. The site will build and deploy with full serverless function support
+
+**API Endpoints:**
+- `/api/health` - Health check endpoint
+- `/api/crops` - Crop data API endpoint
+- Additional API routes in the `app/api/` directory
 
 **Manual Deployment:**
 
 ```bash
-# Build the static site
+# Build the application
 npm run build
 
-# The output will be in the 'out' directory
-# Upload the contents of the 'out' directory to your hosting provider
+# Deploy using Netlify CLI
+netlify deploy --prod
 ```
 
 **Other Platforms:**
@@ -408,8 +414,6 @@ npm run build
 - **Azure Static Web Apps**: Connect repository and deploy automatically
 
 For detailed deployment instructions and troubleshooting, see [DEPLOYMENT.md](DEPLOYMENT.md).
-
-> **⚠️ Deployment Issue?** If you're seeing "Error: Not Found" from Netlify, see the [Quick Fix Guide](NETLIFY_FIX_GUIDE.md) for step-by-step instructions.
 
 ---
 

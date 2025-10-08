@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  // Removed 'output: export' to enable dynamic Next.js features and API routes
   images: {
+    // Keep images unoptimized for Netlify compatibility
     unoptimized: true,
   },
 }

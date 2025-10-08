@@ -8,7 +8,7 @@ This document describes the automated deployment workflows and manual deployment
 
 ### Netlify Deployment
 
-The application automatically deploys to Netlify when changes are pushed to the repository.
+The application automatically deploys to Netlify as a **dynamic Next.js application** with API routes and serverless functions support.
 
 **Workflow File:** `.github/workflows/netlify-deploy.yml`
 
@@ -19,14 +19,10 @@ The application automatically deploys to Netlify when changes are pushed to the 
 
 **Setup Requirements:**
 1. Create a Netlify account and site
-2. **Configure Netlify Build Settings** (Important!):
-   - Go to Netlify Dashboard → Your Site → Site Settings → Build & deploy → Build settings
-   - Set the following values:
-     - **Build command**: `npm run build`
-     - **Publish directory**: `out` (NOT `.next` - this is critical!)
-     - **Base directory**: (leave empty or set to `/`)
-   - Click "Save" to apply changes
-   - **Note**: Netlify may auto-detect settings incorrectly for Next.js static export. Always verify!
+2. **Enable Next.js Runtime** (Important!):
+   - Netlify automatically detects Next.js and uses the `@netlify/plugin-nextjs` plugin
+   - This enables serverless functions, API routes, and incremental static regeneration (ISR)
+   - The `netlify.toml` file configures this automatically
 3. Add GitHub repository secrets:
    - `NETLIFY_DEPLOY_TOKEN`: Your Netlify personal access token
      - Found at: Netlify Dashboard → User Settings → Applications → Personal access tokens
@@ -39,12 +35,20 @@ The application automatically deploys to Netlify when changes are pushed to the 
 - Automatic dependency caching for faster builds
 - Linting validation before deployment
 - Build artifact uploads for debugging
-- PR preview comments with deployment URL
+- Serverless API routes support
+- Next.js Runtime with ISR and SSR capabilities
+- Deployment status comments on PRs
 
 **Deployment URLs:**
 - **Production**: [https://farmplan.netlify.app/](https://farmplan.netlify.app/)
 - **Staging**: Automatically deployed from `develop` branch
 - **Preview**: Unique URLs generated for each pull request
+
+**API Routes:**
+The application includes API routes that are deployed as serverless functions:
+- `/api/health` - Health check endpoint
+- `/api/crops` - Crop data API endpoint
+- Additional API routes can be added in the `app/api/` directory
 
 ### Database Deployment
 
@@ -144,8 +148,8 @@ Before deploying to production:
 - [ ] Environment variables configured
 - [ ] Secrets added to GitHub repository
 - [ ] Netlify site connected to repository
-- [ ] **Netlify publish directory set to `out`** (not `.next`)
-- [ ] Netlify build command set to `npm run build`
+- [ ] Netlify Next.js Runtime enabled (automatic with `@netlify/plugin-nextjs`)
+- [ ] API routes tested locally and in production
 - [ ] Database backup created
 
 ## Rollback Procedures
@@ -182,16 +186,14 @@ Before deploying to production:
 
 ## Troubleshooting
 
-> **⚠️ IMPORTANT**: If you're seeing "Error: Not Found" from the Netlify GitHub Action, the most common cause is an incorrect publish directory setting in your Netlify dashboard. Jump to ["Error: Not Found" from Netlify Action](#error-not-found-from-netlify-action) for the fix.
-
 ### Quick Fix: Common Issues
 
 | Issue | Quick Solution |
 |-------|---------------|
-| "Error: Not Found" from Netlify Action | ✅ Check Netlify publish directory is set to `out` (not `.next`) |
-| Deployment succeeds but site is broken | ✅ Verify `next.config.js` has `output: 'export'` |
 | Build fails in GitHub Actions | ✅ Run `npm run build` locally to identify the issue |
-| 404 on routes after deployment | ✅ Check redirect rules in `netlify.toml` |
+| Deployment fails | ✅ Check Netlify CLI authentication and site ID |
+| API routes return 404 | ✅ Ensure Netlify Next.js Runtime is enabled |
+| Functions timeout | ✅ Check Netlify function logs and increase timeout if needed |
 
 ### Build Failures
 
@@ -210,67 +212,55 @@ Before deploying to production:
 
 ### Deployment Issues
 
-1. Verify Netlify secrets are set correctly
-2. Check build command in netlify.toml
-3. Ensure static export is enabled in next.config.js
-4. Review Netlify deploy logs
-
-#### "Error: Not Found" from Netlify Action
-
-This error typically indicates an issue with Netlify credentials or site configuration:
-
-1. **Verify Netlify Publish Directory (MOST COMMON ISSUE)**:
-   - ⚠️ **This is the most common cause of "Error: Not Found"**
-   - Go to Netlify Dashboard → Your Site → Site Settings → Build & deploy → Build settings
-   - **Check the "Publish directory" setting**
-   - For Next.js static export (which this project uses), it MUST be set to: **`out`**
-   - If it shows `.next` or any other directory, this is **wrong** and will cause deployment failures
-   - **Fix**: Change "Publish directory" from `.next` to `out`
-   - Click "Save" to apply the change
-   - **Why**: Next.js with `output: 'export'` generates static HTML files in the `out/` directory, not `.next/`
-   - The `.next/` directory contains only build metadata and cannot be served as a website
-
-2. **Verify NETLIFY_SITE_ID**: 
-   - Go to Netlify Dashboard → Your Site → Site Settings → Site details
-   - Copy the "API ID" (not the site name)
-   - Add/update it in GitHub repository secrets as `NETLIFY_SITE_ID`
-
-3. **Verify NETLIFY_DEPLOY_TOKEN**:
-   - Go to Netlify Dashboard → User Settings → Applications → Personal access tokens
-   - Generate a new token if needed
-   - Add/update it in GitHub repository secrets as `NETLIFY_DEPLOY_TOKEN`
-   - Ensure the token has full access permissions
-
-4. **Team-Owned Sites (Common Issue)**:
-   - If your site is owned by a team (not your personal account), this is a common cause of "Error: Not Found"
-   - The personal access token must be from a user who is a **member of the team** that owns the site
-   - **Solution**: Go to your Netlify team settings and ensure:
-     - You are logged in as a user who has access to the team
-     - Generate the token while logged in as that user
-     - The token has permissions to deploy to team sites
-   - Alternative: Consider transferring the site to your personal account if team ownership isn't required
-
-5. **Check Site Exists**:
-   - Confirm the Netlify site hasn't been deleted
-   - Verify you have access to the site with your token
-
-6. **Test Token Locally**:
-   ```bash
-   # Install Netlify CLI
-   npm install -g netlify-cli
+1. **Verify Netlify Secrets**:
+   - `NETLIFY_DEPLOY_TOKEN` - Your Netlify personal access token
+   - `NETLIFY_SITE_ID` - Your Netlify site API ID
    
-   # Test authentication with your token
+2. **Check Netlify CLI Authentication**:
+   ```bash
+   # Test your token locally
    export NETLIFY_AUTH_TOKEN="your-token-here"
    netlify sites:list
    
-   # Link to your site (uses NETLIFY_SITE_ID)
-   netlify link --id YOUR_SITE_ID
-   
-   # Test deployment (note: uses 'out' directory)
-   netlify deploy --dir=out
+   # Test deployment
+   netlify deploy --dir=. --message="Test deploy"
    ```
-   
-   If the CLI commands fail with the same error, the token doesn't have access to the site.
+
+3. **Verify Next.js Runtime**:
+   - Check that `netlify.toml` includes the `@netlify/plugin-nextjs` plugin
+   - Netlify should automatically detect Next.js and enable the runtime
+   - Review build logs to confirm Next.js Runtime is being used
+
+4. **Team-Owned Sites**:
+   - If your site is owned by a team, ensure your token is from a team member
+   - The token must have permissions to deploy to team sites
+
+### API Route Issues
+
+If API routes are not working after deployment:
+
+1. **Verify API Routes Exist**:
+   - Check that your API routes are in the `app/api/` directory
+   - Each route should have a `route.ts` or `route.js` file
+
+2. **Check Netlify Functions**:
+   - Netlify converts Next.js API routes to serverless functions automatically
+   - View function logs in Netlify Dashboard → Functions
+   - Check for errors or timeouts in the function logs
+
+3. **Test API Routes Locally**:
+   ```bash
+   npm run dev
+   # Test: http://localhost:3000/api/health
+   # Test: http://localhost:3000/api/crops
+   ```
+
+4. **Production Testing**:
+   ```bash
+   # Test production API endpoints
+   curl https://your-site.netlify.app/api/health
+   curl https://your-site.netlify.app/api/crops
+   ```
 
 ## Support
 
