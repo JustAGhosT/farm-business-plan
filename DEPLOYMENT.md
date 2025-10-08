@@ -100,6 +100,7 @@ If you're experiencing deployment issues, particularly with private repositories
 The application includes API routes that are deployed as serverless functions:
 - `/api/health` - Health check endpoint
 - `/api/crops` - Crop data API endpoint
+- `/api/db-test` - Database connectivity test endpoint (requires database setup)
 - Additional API routes can be added in the `app/api/` directory
 
 ### Database Deployment

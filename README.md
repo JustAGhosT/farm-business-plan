@@ -394,6 +394,7 @@ The application is deployed as a **dynamic Next.js application** with API routes
 **API Endpoints:**
 - `/api/health` - Health check endpoint
 - `/api/crops` - Crop data API endpoint
+- `/api/db-test` - Database connectivity test (requires database setup)
 - Additional API routes in the `app/api/` directory
 
 **Manual Deployment:**
