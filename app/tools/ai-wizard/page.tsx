@@ -114,6 +114,78 @@ export default function AIWizardPage() {
     return hectares
   }
 
+  // Detect town name from coordinates using reverse geocoding
+  const detectTownFromCoordinates = async (lat: number, lng: number): Promise<string> => {
+    try {
+      // Use Open-Meteo Geocoding API (free, no API key required)
+      const response = await fetch(
+        `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lng}`
+      )
+      
+      if (!response.ok) {
+        throw new Error('Reverse geocoding failed')
+      }
+      
+      const data = await response.json()
+      
+      // Get the most relevant result
+      if (data.results && data.results.length > 0) {
+        const result = data.results[0]
+        // Return city/town name or admin region
+        return result.name || result.admin1 || 'Unknown location'
+      }
+      
+      return 'Unknown location'
+    } catch (error) {
+      console.error('Error in reverse geocoding:', error)
+      return 'Unknown location'
+    }
+  }
+
+  // Detect location via IP address
+  const detectLocationViaIP = async () => {
+    setIsDetectingLocation(true)
+    try {
+      // Use ipapi.co free API (no key required, 30k requests/month)
+      const response = await fetch('https://ipapi.co/json/')
+      
+      if (!response.ok) {
+        throw new Error('IP location detection failed')
+      }
+      
+      const ipData = await response.json()
+      
+      // Check if it's in South Africa
+      if (ipData.country_code === 'ZA') {
+        const lat = ipData.latitude
+        const lng = ipData.longitude
+        const detectedProvince = detectProvinceFromCoordinates(lat, lng)
+        
+        setData(prev => ({
+          ...prev,
+          coordinates: {
+            lat: lat.toString(),
+            lng: lng.toString()
+          },
+          province: detectedProvince || ipData.region || '',
+          location: ipData.city || 'Unknown location'
+        }))
+      } else {
+        // Not in South Africa, just use what we got
+        setData(prev => ({
+          ...prev,
+          location: ipData.city || 'Unknown location',
+          province: ipData.region || ''
+        }))
+      }
+    } catch (error) {
+      console.error('Error detecting location via IP:', error)
+      alert('Unable to detect location via IP. Please use GPS or enter manually.')
+    } finally {
+      setIsDetectingLocation(false)
+    }
+  }
+
   // Auto-detect user's current location using browser geolocation API
   const detectCurrentLocation = () => {
     if (!navigator.geolocation) {
@@ -127,39 +199,27 @@ export default function AIWizardPage() {
         const lat = position.coords.latitude
         const lng = position.coords.longitude
         
-        // Update coordinates
-        setData({
-          ...data,
+        // Try to reverse geocode to get town name
+        const townName = await detectTownFromCoordinates(lat, lng)
+        const detectedProvince = detectProvinceFromCoordinates(lat, lng)
+        
+        setData(prev => ({
+          ...prev,
           coordinates: {
             lat: lat.toString(),
             lng: lng.toString()
-          }
-        })
-
-        // Try to reverse geocode to get location name and province
-        try {
-          // Use a simple province detection based on coordinates (South Africa specific)
-          const detectedProvince = detectProvinceFromCoordinates(lat, lng)
-          
-          setData(prev => ({
-            ...prev,
-            coordinates: {
-              lat: lat.toString(),
-              lng: lng.toString()
-            },
-            province: detectedProvince,
-            location: prev.location || 'Auto-detected location'
-          }))
-        } catch (error) {
-          console.error('Error reverse geocoding:', error)
-        } finally {
-          setIsDetectingLocation(false)
-        }
+          },
+          province: detectedProvince,
+          location: townName
+        }))
+        
+        setIsDetectingLocation(false)
       },
       (error) => {
         console.error('Error getting location:', error)
-        alert('Unable to retrieve your location. Please enter it manually.')
-        setIsDetectingLocation(false)
+        // Fallback to IP-based detection
+        console.log('Falling back to IP-based location detection...')
+        detectLocationViaIP()
       },
       {
         enableHighAccuracy: true,
@@ -581,23 +641,45 @@ export default function AIWizardPage() {
                     <p className="text-sm text-primary-800 mb-3">
                       Use your device&apos;s GPS to automatically detect your current location and coordinates
                     </p>
-                    <button
-                      onClick={detectCurrentLocation}
-                      disabled={isDetectingLocation}
-                      className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 flex items-center justify-center"
-                    >
-                      {isDetectingLocation ? (
-                        <>
-                          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                          Detecting Location...
-                        </>
-                      ) : (
-                        '🎯 Use My Current Location'
-                      )}
-                    </button>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      <button
+                        onClick={detectCurrentLocation}
+                        disabled={isDetectingLocation}
+                        className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 flex items-center justify-center"
+                      >
+                        {isDetectingLocation ? (
+                          <>
+                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Detecting...
+                          </>
+                        ) : (
+                          '🎯 Use GPS Location'
+                        )}
+                      </button>
+                      <button
+                        onClick={detectLocationViaIP}
+                        disabled={isDetectingLocation}
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center"
+                      >
+                        {isDetectingLocation ? (
+                          <>
+                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Detecting...
+                          </>
+                        ) : (
+                          '🌐 Use IP Location'
+                        )}
+                      </button>
+                    </div>
+                    <p className="text-xs text-gray-600 mt-2">
+                      GPS is more accurate. IP location is used as fallback if GPS fails.
+                    </p>
                   </div>
 
                   <div className="relative">
