@@ -462,11 +462,17 @@ For questions, suggestions, or collaboration opportunities, please open an issue
 
 ### Implementation Guides
 
-- **[PHASE1_GUIDE.md](docs/guides/PHASE1_GUIDE.md)** - Phase 1 implementation (Core data persistence & API routes)
-- **[PHASE3_GUIDE.md](docs/guides/PHASE3_GUIDE.md)** - Phase 3 implementation (Calculator results API & testing) ⭐ NEW
+- **[PHASE1_GUIDE.md](docs/guides/implementation/PHASE1_GUIDE.md)** - Phase 1 implementation (Core data persistence & API routes)
+- **[PHASE3_GUIDE.md](docs/guides/implementation/PHASE3_GUIDE.md)** - Phase 3 implementation (Calculator results API & testing) ⭐ NEW
 - **[TESTING_GUIDE.md](docs/guides/TESTING_GUIDE.md)** - Comprehensive testing documentation ⭐ NEW
-- **[IMPLEMENTATION_COMPLETE.md](docs/guides/IMPLEMENTATION_COMPLETE.md)** - Complete implementation summary
-- **[ENHANCEMENT_ROADMAP.md](docs/guides/ENHANCEMENT_ROADMAP.md)** - Future enhancement roadmap
+- **[IMPLEMENTATION_COMPLETE.md](docs/guides/implementation/IMPLEMENTATION_COMPLETE.md)** - Complete implementation summary
+- **[ENHANCEMENT_ROADMAP.md](docs/guides/implementation/ENHANCEMENT_ROADMAP.md)** - Future enhancement roadmap
+- **[COLLABORATION_FEATURES.md](docs/guides/COLLABORATION_FEATURES.md)** - Comprehensive collaboration features specification ⭐ NEW
+
+### Feature Documentation
+
+- **[AUTHENTICATION.md](docs/guides/AUTHENTICATION.md)** - Authentication system setup and usage
+- **[COLLABORATION_FEATURES.md](docs/guides/COLLABORATION_FEATURES.md)** - Multi-user cooperation, task management, ideation tools ⭐ NEW
 
 ### Testing
 
