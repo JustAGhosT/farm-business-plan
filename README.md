@@ -341,6 +341,13 @@ This repository includes a Next.js-based farm management and planning applicatio
 # Install dependencies
 npm install
 
+# Copy environment variables template (optional)
+cp .env.example .env.local
+
+# For testing Google OAuth UI, set in .env.local:
+# NEXT_PUBLIC_GOOGLE_ENABLED="true"
+# See docs/guides/GOOGLE_LOGIN_SETUP.md for full setup
+
 # Run development server
 npm run dev
 

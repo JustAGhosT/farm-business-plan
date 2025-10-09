@@ -109,26 +109,11 @@ export default function Register() {
               <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
             </div>
           )}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <FormInput label="Full Name" name="name" value={formData.name} onChange={handleChange} onBlur={handleBlur} error={getError('name')} required placeholder="John Doe" disabled={loading} />
-            <FormInput label="Email" name="email" type="email" value={formData.email} onChange={handleChange} onBlur={handleBlur} error={getError('email')} required placeholder="your@email.com" disabled={loading} />
-            <FormInput label="Password" name="password" type="password" value={formData.password} onChange={handleChange} onBlur={handleBlur} error={getError('password')} required placeholder="••••••••" helpText="Must be at least 8 characters" disabled={loading} />
-            <FormInput label="Confirm Password" name="confirmPassword" type="password" value={formData.confirmPassword} onChange={handleChange} onBlur={handleBlur} error={getError('confirmPassword')} required placeholder="••••••••" disabled={loading} />
-            <button type="submit" disabled={loading} className="w-full px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium">
-              {loading ? 'Creating account...' : 'Create Account'}
-            </button>
-          </form>
 
-          {/* OAuth Providers Section */}
+          {/* OAuth Providers Section - Now First */}
           {(process.env.NEXT_PUBLIC_GITHUB_ENABLED === 'true' || process.env.NEXT_PUBLIC_GOOGLE_ENABLED === 'true') && (
             <>
-              <div className="mt-6 flex items-center">
-                <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
-                <span className="px-4 text-sm text-gray-500 dark:text-gray-400">Or continue with</span>
-                <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
-              </div>
-
-              <div className="mt-6 space-y-3">
+              <div className="space-y-3">
                 {process.env.NEXT_PUBLIC_GOOGLE_ENABLED === 'true' && (
                   <button
                     type="button"
@@ -160,8 +145,24 @@ export default function Register() {
                   </button>
                 )}
               </div>
+
+              <div className="mt-6 flex items-center">
+                <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
+                <span className="px-4 text-sm text-gray-500 dark:text-gray-400">or</span>
+                <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
+              </div>
             </>
           )}
+
+          <form onSubmit={handleSubmit} className="space-y-6 mt-6">
+            <FormInput label="Full Name" name="name" value={formData.name} onChange={handleChange} onBlur={handleBlur} error={getError('name')} required placeholder="John Doe" disabled={loading} />
+            <FormInput label="Email" name="email" type="email" value={formData.email} onChange={handleChange} onBlur={handleBlur} error={getError('email')} required placeholder="your@email.com" disabled={loading} />
+            <FormInput label="Password" name="password" type="password" value={formData.password} onChange={handleChange} onBlur={handleBlur} error={getError('password')} required placeholder="••••••••" helpText="Must be at least 8 characters" disabled={loading} />
+            <FormInput label="Confirm Password" name="confirmPassword" type="password" value={formData.confirmPassword} onChange={handleChange} onBlur={handleBlur} error={getError('confirmPassword')} required placeholder="••••••••" disabled={loading} />
+            <button type="submit" disabled={loading} className="w-full px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium">
+              {loading ? 'Creating account...' : 'Create Account'}
+            </button>
+          </form>
 
           <div className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
             Already have an account?{' '}
