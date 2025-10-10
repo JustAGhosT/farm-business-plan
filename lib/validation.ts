@@ -49,10 +49,19 @@ export const TaskSchema = z.object({
   title: z.string().min(1, 'Task title is required').max(255),
   description: z.string().optional(),
   status: z.enum(['pending', 'in-progress', 'completed', 'cancelled']).default('pending'),
-  priority: z.enum(['low', 'medium', 'high']).default('medium'),
+  priority: z.enum(['low', 'medium', 'high', 'critical']).default('medium'),
   category: z.string().max(100).optional(),
   due_date: z.string().optional(), // ISO date string
-  completed_at: z.string().optional() // ISO date string
+  completed_at: z.string().optional(), // ISO date string
+  assigned_to: z.string().uuid().optional(),
+  assigned_by: z.string().uuid().optional(),
+  created_by: z.string().uuid().optional(),
+  estimated_duration: z.number().int().optional(), // in hours
+  actual_duration: z.number().int().optional(), // in hours
+  requires_approval: z.boolean().optional(),
+  approved_by: z.string().uuid().optional(),
+  approved_at: z.string().optional(), // ISO date string
+  notes: z.string().optional()
 })
 
 export type Task = z.infer<typeof TaskSchema>
