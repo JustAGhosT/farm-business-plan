@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { query } from '@/lib/db'
 import { TaskSchema, validateData } from '@/lib/validation'
 
@@ -72,6 +74,7 @@ export async function GET(request: Request) {
  */
 export async function POST(request: Request) {
   try {
+    const session = await getServerSession(authOptions)
     const body = await request.json()
     
     // Validate input
@@ -88,13 +91,16 @@ export async function POST(request: Request) {
     }
 
     const data = validation.data!
+    const createdBy = session?.user?.id || null
 
     const queryText = `
       INSERT INTO tasks (
         farm_plan_id, crop_plan_id, title, description, 
-        status, priority, category, due_date
+        status, priority, category, due_date,
+        assigned_to, assigned_by, created_by, 
+        estimated_duration, requires_approval, notes
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
       RETURNING *
     `
 
@@ -106,14 +112,57 @@ export async function POST(request: Request) {
       data.status || 'pending',
       data.priority || 'medium',
       data.category || null,
-      data.due_date || null
+      data.due_date || null,
+      data.assigned_to || null,
+      createdBy,
+      createdBy,
+      data.estimated_duration || null,
+      data.requires_approval || false,
+      data.notes || null
     ]
 
     const result = await query(queryText, params)
+    const task = result.rows[0]
+
+    // Create notification if task is assigned to someone
+    if (data.assigned_to && data.assigned_to !== createdBy) {
+      await query(
+        `INSERT INTO notifications (
+          user_id, type, title, message, priority, context_type, context_id, action_url
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+        [
+          data.assigned_to,
+          'task-assigned',
+          'New Task Assigned',
+          `You have been assigned a new task: ${data.title}`,
+          data.priority || 'medium',
+          'task',
+          task.id,
+          `/tools/dashboard?task=${task.id}`
+        ]
+      )
+    }
+
+    // Log the change
+    if (session?.user) {
+      await query(
+        `INSERT INTO change_log (
+          target_type, target_id, user_id, user_name, action, description
+        ) VALUES ($1, $2, $3, $4, $5, $6)`,
+        [
+          'task',
+          task.id,
+          session.user.id,
+          session.user.name || session.user.email,
+          'created',
+          `Created task: ${data.title}`
+        ]
+      )
+    }
 
     return NextResponse.json({
       success: true,
-      data: result.rows[0],
+      data: task,
       message: 'Task created successfully'
     }, { status: 201 })
   } catch (error) {
@@ -176,6 +225,22 @@ export async function PATCH(request: Request) {
       fields.push(`due_date = $${paramIndex++}`)
       values.push(updates.due_date)
     }
+    if (updates.assigned_to !== undefined) {
+      fields.push(`assigned_to = $${paramIndex++}`)
+      values.push(updates.assigned_to)
+    }
+    if (updates.estimated_duration !== undefined) {
+      fields.push(`estimated_duration = $${paramIndex++}`)
+      values.push(updates.estimated_duration)
+    }
+    if (updates.actual_duration !== undefined) {
+      fields.push(`actual_duration = $${paramIndex++}`)
+      values.push(updates.actual_duration)
+    }
+    if (updates.notes !== undefined) {
+      fields.push(`notes = $${paramIndex++}`)
+      values.push(updates.notes)
+    }
 
     if (fields.length === 0) {
       return NextResponse.json(
@@ -204,9 +269,49 @@ export async function PATCH(request: Request) {
       )
     }
 
+    const updatedTask = result.rows[0]
+    const session = await getServerSession(authOptions)
+
+    // Send notification if task assignment changed
+    if (updates.assigned_to !== undefined && session?.user) {
+      await query(
+        `INSERT INTO notifications (
+          user_id, type, title, message, priority, context_type, context_id, action_url
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+        [
+          updates.assigned_to,
+          'task-assigned',
+          'Task Reassigned',
+          `Task "${updatedTask.title}" has been assigned to you`,
+          updatedTask.priority || 'medium',
+          'task',
+          updatedTask.id,
+          `/tools/dashboard?task=${updatedTask.id}`
+        ]
+      ).catch(err => console.error('Failed to send notification:', err))
+    }
+
+    // Log the change
+    if (session?.user) {
+      const changedFields = Object.keys(updates).filter(k => k !== 'id').join(', ')
+      await query(
+        `INSERT INTO change_log (
+          target_type, target_id, user_id, user_name, action, description
+        ) VALUES ($1, $2, $3, $4, $5, $6)`,
+        [
+          'task',
+          id,
+          session.user.id,
+          session.user.name || session.user.email,
+          'updated',
+          `Updated task fields: ${changedFields}`
+        ]
+      ).catch(err => console.error('Failed to log change:', err))
+    }
+
     return NextResponse.json({
       success: true,
-      data: result.rows[0],
+      data: updatedTask,
       message: 'Task updated successfully'
     })
   } catch (error) {
