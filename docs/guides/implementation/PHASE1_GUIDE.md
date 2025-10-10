@@ -11,6 +11,7 @@ This document describes the Phase 1 implementation of the Farm Business Plan enh
 ### 1. Database Infrastructure
 
 #### Database Connection Layer (`lib/db.ts`)
+
 - PostgreSQL connection pooling with automatic retry
 - Type-safe query execution
 - Transaction support via client connections
@@ -18,6 +19,7 @@ This document describes the Phase 1 implementation of the Farm Business Plan enh
 - Error handling and logging
 
 **Usage Example**:
+
 ```typescript
 import { query, getClient } from '@/lib/db'
 
@@ -40,11 +42,13 @@ try {
 ```
 
 #### Data Validation (`lib/validation.ts`)
+
 - Zod schemas for all database entities
 - Type-safe validation with automatic type inference
 - Comprehensive error messages
 
 **Available Schemas**:
+
 - `FarmPlanSchema` - Farm plan data
 - `CropPlanSchema` - Crop cultivation plans
 - `TaskSchema` - Farm tasks and activities
@@ -52,6 +56,7 @@ try {
 - `ClimateDataSchema` - Climate information
 
 **Usage Example**:
+
 ```typescript
 import { FarmPlanSchema, validateData } from '@/lib/validation'
 
@@ -71,6 +76,7 @@ const validatedData = validation.data // Fully typed!
 #### Farm Plans API (`/api/farm-plans`)
 
 **GET** - Retrieve farm plans
+
 ```typescript
 // Get all farm plans
 GET /api/farm-plans
@@ -98,6 +104,7 @@ Response:
 ```
 
 **POST** - Create new farm plan
+
 ```typescript
 POST /api/farm-plans
 Content-Type: application/json
@@ -127,6 +134,7 @@ Response:
 #### Tasks API (`/api/tasks`)
 
 **GET** - Retrieve tasks
+
 ```typescript
 // All tasks
 GET /api/tasks
@@ -142,6 +150,7 @@ GET /api/tasks?priority=high
 ```
 
 **POST** - Create new task
+
 ```typescript
 POST /api/tasks
 Content-Type: application/json
@@ -159,6 +168,7 @@ Content-Type: application/json
 ```
 
 **PATCH** - Update task
+
 ```typescript
 PATCH /api/tasks
 Content-Type: application/json
@@ -171,6 +181,7 @@ Content-Type: application/json
 ```
 
 **DELETE** - Delete task
+
 ```typescript
 DELETE /api/tasks?id=uuid
 ```
@@ -184,6 +195,7 @@ DELETE /api/tasks?id=uuid
 Professional toast notifications for user feedback.
 
 **Usage**:
+
 ```typescript
 'use client'
 
@@ -206,12 +218,14 @@ export default function MyComponent() {
 ```
 
 **Toast Types**:
+
 - `success` - Green, for successful operations
 - `error` - Red, for errors
 - `warning` - Yellow, for warnings
 - `info` - Blue, for informational messages
 
 **Options**:
+
 ```typescript
 showToast('success', 'Message here', 3000) // Custom duration (ms)
 showToast('info', 'Message here', 0) // No auto-dismiss
@@ -222,6 +236,7 @@ showToast('info', 'Message here', 0) // No auto-dismiss
 **Components Available**:
 
 1. **LoadingSpinner** - Simple spinner
+
 ```typescript
 import { LoadingSpinner } from '@/components/LoadingStates'
 
@@ -229,6 +244,7 @@ import { LoadingSpinner } from '@/components/LoadingStates'
 ```
 
 2. **LoadingOverlay** - Full-screen loading
+
 ```typescript
 import { LoadingOverlay } from '@/components/LoadingStates'
 
@@ -236,6 +252,7 @@ import { LoadingOverlay } from '@/components/LoadingStates'
 ```
 
 3. **SkeletonCard** - Placeholder for cards
+
 ```typescript
 import { SkeletonCard } from '@/components/LoadingStates'
 
@@ -243,6 +260,7 @@ import { SkeletonCard } from '@/components/LoadingStates'
 ```
 
 4. **SkeletonTable** - Placeholder for tables
+
 ```typescript
 import { SkeletonTable } from '@/components/LoadingStates'
 
@@ -271,17 +289,20 @@ POSTGRES_URL_NON_POOLING="..."
 ### Database Setup
 
 1. **Create Database**:
+
    ```bash
    # Using Neon, Railway, or local PostgreSQL
    createdb farm_business_plan
    ```
 
 2. **Run Schema**:
+
    ```bash
    psql -d farm_business_plan -f db/schema.sql
    ```
 
 3. **Seed Data** (Optional):
+
    ```bash
    psql -d farm_business_plan -f db/seeds/[seed-file].sql
    ```
@@ -332,7 +353,7 @@ export default function FarmPlansPage() {
     try {
       const response = await fetch('/api/farm-plans')
       const data = await response.json()
-      
+
       if (data.success) {
         setPlans(data.data)
       } else {
@@ -512,6 +533,7 @@ curl -X POST http://localhost:3000/api/farm-plans \
 ### 3. Test UI Components
 
 Visit these pages to see the new components:
+
 - Any page will show toast notifications when triggered
 - Loading states appear during data fetching
 - Check browser console for validation errors
@@ -523,11 +545,13 @@ Visit these pages to see the new components:
 ### Database Connection Issues
 
 **Problem**: "Database connection string not configured"
+
 ```
 Solution: Add DATABASE_URL to .env.local
 ```
 
 **Problem**: SSL/TLS connection errors
+
 ```
 Solution: For local dev, use ?sslmode=disable
 For production, ensure SSL is properly configured
@@ -536,6 +560,7 @@ For production, ensure SSL is properly configured
 ### API Errors
 
 **Problem**: Validation errors
+
 ```
 Check the API response for 'details' field with specific errors
 Ensure all required fields are provided
@@ -543,6 +568,7 @@ Verify data types match the schema
 ```
 
 **Problem**: 500 Internal Server Error
+
 ```
 Check server logs (console output)
 Verify database connection
@@ -552,11 +578,13 @@ Check PostgreSQL logs
 ### Build Errors
 
 **Problem**: Type errors with Zod
+
 ```bash
 npm install --save-dev @types/node
 ```
 
 **Problem**: Module resolution errors
+
 ```bash
 # Clear Next.js cache
 rm -rf .next
@@ -568,6 +596,7 @@ npm run build
 ## Next Steps
 
 ### Immediate Tasks (Remaining Phase 1)
+
 1. Add individual farm plan endpoints (GET by ID, PUT, DELETE)
 2. Integrate dashboard with real API data
 3. Add error boundaries throughout the app
@@ -576,6 +605,7 @@ npm run build
 6. Add comprehensive testing
 
 ### Future Phases
+
 - **Phase 2**: User authentication with NextAuth.js
 - **Phase 3**: Enhanced financial calculators with data persistence
 - **Phase 4**: Complete plan generator workflow
@@ -586,12 +616,14 @@ npm run build
 ## Resources
 
 ### Documentation
+
 - [Next.js API Routes](https://nextjs.org/docs/app/building-your-application/routing/route-handlers)
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 - [Zod Documentation](https://zod.dev/)
 - [Tailwind CSS](https://tailwindcss.com/docs)
 
 ### Database Services
+
 - [Neon](https://neon.tech/) - Serverless PostgreSQL
 - [Railway](https://railway.app/) - PostgreSQL hosting
 - [Supabase](https://supabase.com/) - PostgreSQL with additional features
@@ -601,6 +633,7 @@ npm run build
 ## Support
 
 For issues or questions:
+
 1. Check the [ENHANCEMENT_ROADMAP.md](./ENHANCEMENT_ROADMAP.md) for planned features
 2. Review existing documentation in `/docs`
 3. Open an issue on GitHub with:
@@ -611,6 +644,6 @@ For issues or questions:
 
 ---
 
-*Last Updated: January 2025*  
-*Phase: 1 - Core Data Persistence*  
-*Status: Foundation Complete*
+_Last Updated: January 2025_  
+_Phase: 1 - Core Data Persistence_  
+_Status: Foundation Complete_

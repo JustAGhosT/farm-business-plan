@@ -101,8 +101,8 @@ describe('Validation Schemas', () => {
 
     it('should accept valid priority values', () => {
       const priorities = ['low', 'medium', 'high']
-      
-      priorities.forEach(priority => {
+
+      priorities.forEach((priority) => {
         const result = validateData(TaskSchema, { ...validTaskData, priority })
         expect(result.success).toBe(true)
       })
@@ -141,12 +141,21 @@ describe('Validation Schemas', () => {
     })
 
     it('should accept all valid calculator types', () => {
-      const types = ['roi', 'break-even', 'investment', 'loan', 'operating-costs', 'revenue', 'cash-flow', 'profit-margin']
-      
-      types.forEach(calculator_type => {
-        const result = validateData(CalculatorResultSchema, { 
-          ...validCalculatorResult, 
-          calculator_type 
+      const types = [
+        'roi',
+        'break-even',
+        'investment',
+        'loan',
+        'operating-costs',
+        'revenue',
+        'cash-flow',
+        'profit-margin',
+      ]
+
+      types.forEach((calculator_type) => {
+        const result = validateData(CalculatorResultSchema, {
+          ...validCalculatorResult,
+          calculator_type,
         })
         expect(result.success).toBe(true)
       })
@@ -226,8 +235,8 @@ describe('Validation Schemas', () => {
 
     it('should accept valid crop status values', () => {
       const statuses = ['planned', 'planted', 'growing', 'harvested', 'failed']
-      
-      statuses.forEach(status => {
+
+      statuses.forEach((status) => {
         const result = validateData(CropPlanSchema, { ...validCropPlan, status })
         expect(result.success).toBe(true)
       })

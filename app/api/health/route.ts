@@ -7,6 +7,6 @@ export async function GET() {
   return NextResponse.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
-    message: 'Farm Business Plan API is running'
+    message: 'Farm Business Plan API is running',
   })
 }

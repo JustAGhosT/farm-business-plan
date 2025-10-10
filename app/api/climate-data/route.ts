@@ -19,14 +19,14 @@ export async function GET(request: Request) {
       FROM climate_data cd
       JOIN farm_plans fp ON cd.farm_plan_id = fp.id
     `
-    
+
     const params: any[] = []
-    
+
     if (farmPlanId) {
       queryText += ' WHERE cd.farm_plan_id = $1'
       params.push(farmPlanId)
     }
-    
+
     queryText += ' ORDER BY cd.created_at DESC'
 
     const result = await query(queryText, params)
@@ -34,7 +34,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: true,
       data: result.rows,
-      count: result.rows.length
+      count: result.rows.length,
     })
   } catch (error) {
     console.error('Error fetching climate data:', error)
@@ -52,15 +52,15 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    
+
     // Validate input
     const validation = validateData(ClimateDataSchema, body)
     if (!validation.success) {
       return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Validation failed', 
-          details: validation.errors?.issues 
+        {
+          success: false,
+          error: 'Validation failed',
+          details: validation.errors?.issues,
         },
         { status: 400 }
       )
@@ -84,16 +84,19 @@ export async function POST(request: Request) {
       data.annual_rainfall || null,
       data.frost_risk || false,
       data.growing_season_length || null,
-      data.auto_populated || false
+      data.auto_populated || false,
     ]
 
     const result = await query(queryText, params)
 
-    return NextResponse.json({
-      success: true,
-      data: result.rows[0],
-      message: 'Climate data created successfully'
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        success: true,
+        data: result.rows[0],
+        message: 'Climate data created successfully',
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Error creating climate data:', error)
     return NextResponse.json(
@@ -125,11 +128,15 @@ export async function PATCH(request: Request) {
 
     // Build dynamic update query
     const allowedFields = [
-      'avg_temp_summer', 'avg_temp_winter', 'annual_rainfall',
-      'frost_risk', 'growing_season_length', 'auto_populated'
+      'avg_temp_summer',
+      'avg_temp_winter',
+      'annual_rainfall',
+      'frost_risk',
+      'growing_season_length',
+      'auto_populated',
     ]
 
-    allowedFields.forEach(field => {
+    allowedFields.forEach((field) => {
       if (updates[field] !== undefined) {
         setClauses.push(`${field} = $${paramIndex}`)
         params.push(updates[field])
@@ -155,16 +162,13 @@ export async function PATCH(request: Request) {
     const result = await query(queryText, params)
 
     if (result.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Climate data not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'Climate data not found' }, { status: 404 })
     }
 
     return NextResponse.json({
       success: true,
       data: result.rows[0],
-      message: 'Climate data updated successfully'
+      message: 'Climate data updated successfully',
     })
   } catch (error) {
     console.error('Error updating climate data:', error)
@@ -191,21 +195,15 @@ export async function DELETE(request: Request) {
       )
     }
 
-    const result = await query(
-      'DELETE FROM climate_data WHERE id = $1 RETURNING id',
-      [id]
-    )
+    const result = await query('DELETE FROM climate_data WHERE id = $1 RETURNING id', [id])
 
     if (result.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Climate data not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'Climate data not found' }, { status: 404 })
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Climate data deleted successfully'
+      message: 'Climate data deleted successfully',
     })
   } catch (error) {
     console.error('Error deleting climate data:', error)

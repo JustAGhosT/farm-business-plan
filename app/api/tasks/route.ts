@@ -28,28 +28,28 @@ export async function GET(request: Request) {
       LEFT JOIN crop_plans cp ON t.crop_plan_id = cp.id
       WHERE 1=1
     `
-    
+
     const params: any[] = []
     let paramIndex = 1
-    
+
     if (farmPlanId) {
       queryText += ` AND t.farm_plan_id = $${paramIndex}`
       params.push(farmPlanId)
       paramIndex++
     }
-    
+
     if (status) {
       queryText += ` AND t.status = $${paramIndex}`
       params.push(status)
       paramIndex++
     }
-    
+
     if (priority) {
       queryText += ` AND t.priority = $${paramIndex}`
       params.push(priority)
       paramIndex++
     }
-    
+
     queryText += ' ORDER BY t.due_date ASC, t.priority DESC, t.created_at DESC'
 
     const result = await query(queryText, params)
@@ -57,14 +57,11 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: true,
       data: result.rows,
-      count: result.rows.length
+      count: result.rows.length,
     })
   } catch (error) {
     console.error('Error fetching tasks:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch tasks' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Failed to fetch tasks' }, { status: 500 })
   }
 }
 
@@ -76,15 +73,15 @@ export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     const body = await request.json()
-    
+
     // Validate input
     const validation = validateData(TaskSchema, body)
     if (!validation.success) {
       return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Validation failed', 
-          details: validation.errors?.issues 
+        {
+          success: false,
+          error: 'Validation failed',
+          details: validation.errors?.issues,
         },
         { status: 400 }
       )
@@ -118,7 +115,7 @@ export async function POST(request: Request) {
       createdBy,
       data.estimated_duration || null,
       data.requires_approval || false,
-      data.notes || null
+      data.notes || null,
     ]
 
     const result = await query(queryText, params)
@@ -138,7 +135,7 @@ export async function POST(request: Request) {
           data.priority || 'medium',
           'task',
           task.id,
-          `/tools/dashboard?task=${task.id}`
+          `/tools/dashboard?task=${task.id}`,
         ]
       )
     }
@@ -155,22 +152,22 @@ export async function POST(request: Request) {
           session.user.id,
           session.user.name || session.user.email,
           'created',
-          `Created task: ${data.title}`
+          `Created task: ${data.title}`,
         ]
       )
     }
 
-    return NextResponse.json({
-      success: true,
-      data: task,
-      message: 'Task created successfully'
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        success: true,
+        data: task,
+        message: 'Task created successfully',
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Error creating task:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to create task' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Failed to create task' }, { status: 500 })
   }
 }
 
@@ -184,10 +181,7 @@ export async function PATCH(request: Request) {
     const { id, ...updates } = body
 
     if (!id) {
-      return NextResponse.json(
-        { success: false, error: 'Task ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: 'Task ID is required' }, { status: 400 })
     }
 
     // Build dynamic UPDATE query
@@ -206,7 +200,7 @@ export async function PATCH(request: Request) {
     if (updates.status !== undefined) {
       fields.push(`status = $${paramIndex++}`)
       values.push(updates.status)
-      
+
       // If marking as completed, set completed_at
       if (updates.status === 'completed' && !updates.completed_at) {
         fields.push(`completed_at = $${paramIndex++}`)
@@ -243,10 +237,7 @@ export async function PATCH(request: Request) {
     }
 
     if (fields.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'No fields to update' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: 'No fields to update' }, { status: 400 })
     }
 
     fields.push(`updated_at = $${paramIndex++}`)
@@ -263,10 +254,7 @@ export async function PATCH(request: Request) {
     const result = await query(queryText, values)
 
     if (result.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Task not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'Task not found' }, { status: 404 })
     }
 
     const updatedTask = result.rows[0]
@@ -286,14 +274,16 @@ export async function PATCH(request: Request) {
           updatedTask.priority || 'medium',
           'task',
           updatedTask.id,
-          `/tools/dashboard?task=${updatedTask.id}`
+          `/tools/dashboard?task=${updatedTask.id}`,
         ]
-      ).catch(err => console.error('Failed to send notification:', err))
+      ).catch((err) => console.error('Failed to send notification:', err))
     }
 
     // Log the change
     if (session?.user) {
-      const changedFields = Object.keys(updates).filter(k => k !== 'id').join(', ')
+      const changedFields = Object.keys(updates)
+        .filter((k) => k !== 'id')
+        .join(', ')
       await query(
         `INSERT INTO change_log (
           target_type, target_id, user_id, user_name, action, description
@@ -304,22 +294,19 @@ export async function PATCH(request: Request) {
           session.user.id,
           session.user.name || session.user.email,
           'updated',
-          `Updated task fields: ${changedFields}`
+          `Updated task fields: ${changedFields}`,
         ]
-      ).catch(err => console.error('Failed to log change:', err))
+      ).catch((err) => console.error('Failed to log change:', err))
     }
 
     return NextResponse.json({
       success: true,
       data: updatedTask,
-      message: 'Task updated successfully'
+      message: 'Task updated successfully',
     })
   } catch (error) {
     console.error('Error updating task:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to update task' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Failed to update task' }, { status: 500 })
   }
 }
 
@@ -333,31 +320,22 @@ export async function DELETE(request: Request) {
     const id = searchParams.get('id')
 
     if (!id) {
-      return NextResponse.json(
-        { success: false, error: 'Task ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: 'Task ID is required' }, { status: 400 })
     }
 
     const queryText = 'DELETE FROM tasks WHERE id = $1 RETURNING id'
     const result = await query(queryText, [id])
 
     if (result.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Task not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'Task not found' }, { status: 404 })
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Task deleted successfully'
+      message: 'Task deleted successfully',
     })
   } catch (error) {
     console.error('Error deleting task:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to delete task' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Failed to delete task' }, { status: 500 })
   }
 }

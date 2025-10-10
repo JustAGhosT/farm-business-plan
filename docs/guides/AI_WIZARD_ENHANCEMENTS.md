@@ -1,6 +1,7 @@
 # AI Wizard Enhancements
 
 ## Overview
+
 This document describes the new automation features added to the AI Farm Planning Wizard to improve user experience and provide guidance on future automation opportunities.
 
 ## New Features
@@ -10,6 +11,7 @@ This document describes the new automation features added to the AI Farm Plannin
 **Purpose**: Eliminate manual entry of coordinates by using the device's GPS.
 
 **How it works**:
+
 - Click the "🎯 Use My Current Location" button on the Location step
 - Browser requests permission to access location (if not already granted)
 - GPS coordinates are automatically filled in
@@ -17,6 +19,7 @@ This document describes the new automation features added to the AI Farm Plannin
 - Uses approximate coordinate boundaries for South African provinces
 
 **Technical Implementation**:
+
 ```typescript
 // Uses HTML5 Geolocation API
 navigator.geolocation.getCurrentPosition(
@@ -31,12 +34,13 @@ navigator.geolocation.getCurrentPosition(
   {
     enableHighAccuracy: true,
     timeout: 10000,
-    maximumAge: 0
+    maximumAge: 0,
   }
 )
 ```
 
 **Province Detection**:
+
 - Limpopo: lat -22 to -25, lng 28 to 31
 - Mpumalanga: lat -24 to -27, lng 29 to 32
 - Gauteng: lat -25.5 to -26.5, lng 27.5 to 29
@@ -52,12 +56,14 @@ navigator.geolocation.getCurrentPosition(
 **Purpose**: Speed up location entry with suggestions.
 
 **How it works**:
+
 - Start typing in the "Location / Town" field
 - Browser displays matching cities from the datalist
 - Select from the dropdown or continue typing
 - Works offline (no API calls required)
 
 **Supported Locations** (40+ cities):
+
 - **Limpopo**: Bela Bela, Polokwane, Tzaneen, Mokopane, Musina, Thohoyandou
 - **Mpumalanga**: Nelspruit (Mbombela), White River, Barberton, Hazyview, Lydenburg
 - **Gauteng**: Johannesburg, Pretoria, Midrand, Sandton, Roodepoort, Soweto
@@ -69,6 +75,7 @@ navigator.geolocation.getCurrentPosition(
 - **North West**: Rustenburg, Mahikeng, Klerksdorp, Potchefstroom, Brits
 
 **Technical Implementation**:
+
 ```tsx
 <input
   type="text"
@@ -140,6 +147,7 @@ navigator.geolocation.getCurrentPosition(
     - Integration with suppliers for seamless ordering
 
 **Display Format**:
+
 - Shown in a gradient purple-blue box in the Recommendations step
 - Each suggestion is displayed as a card with icon and description
 - Includes a pro tip for getting started with automation
@@ -161,16 +169,19 @@ navigator.geolocation.getCurrentPosition(
 ## Future Enhancements
 
 ### Short Term
+
 - Add reverse geocoding to get city name from coordinates
 - Integrate with real weather APIs
 - Add more cities to autocomplete list
 
 ### Medium Term
+
 - Implement actual weather integration (OpenWeatherMap)
 - Add market price API integration
 - Create IoT sensor integration templates
 
 ### Long Term
+
 - Build full automation platform
 - Integrate with farm equipment (smart irrigation, IoT sensors)
 - Develop mobile app with push notifications
@@ -178,6 +189,7 @@ navigator.geolocation.getCurrentPosition(
 ## Testing
 
 The features have been tested with:
+
 - ✅ TypeScript compilation (no errors)
 - ✅ ESLint validation (no warnings)
 - ✅ Next.js build (successful)
@@ -189,6 +201,7 @@ The features have been tested with:
 All changes are in: `app/tools/ai-wizard/page.tsx`
 
 Key functions:
+
 - `detectCurrentLocation()`: Handles GPS detection
 - `detectProvinceFromCoordinates()`: Maps coordinates to provinces
 - `generateAutomationSuggestions()`: Creates the 10 automation suggestions

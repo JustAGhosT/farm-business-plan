@@ -60,6 +60,7 @@ npm run dev
 ### Quick Deploy (Recommended)
 
 1. **Push to GitHub**:
+
    ```bash
    git add .
    git commit -m "Initial commit"
@@ -91,10 +92,11 @@ npm run dev
      - Name: `NETLIFY_SITE_ID`, Value: [your site ID]
 
 3. **Deploy**:
+
    ```bash
    # Push to main branch triggers production deployment
    git push origin main
-   
+
    # Push to develop branch triggers staging deployment
    git push origin develop
    ```
@@ -136,6 +138,7 @@ psql $DATABASE_URL -f db/migrations/001_initial_schema.sql
    - Add: `DATABASE_URL` = `postgresql://user:pass@host:5432/dbname`
 
 3. **Apply schema**:
+
    ```bash
    psql your-database-url -f db/schema.sql
    psql your-database-url -f db/migrations/001_initial_schema.sql
@@ -227,6 +230,7 @@ netlify env:list
 ---
 
 **Estimated Setup Time:**
+
 - Basic deployment (no database): 10-15 minutes
 - With Netlify DB: 20-30 minutes
 - With external database: 30-45 minutes

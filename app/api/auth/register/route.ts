@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic'
 const RegisterSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters')
+  password: z.string().min(8, 'Password must be at least 8 characters'),
 })
 
 /**
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
         {
           success: false,
           error: 'Validation failed',
-          details: validation.error.issues
+          details: validation.error.issues,
         },
         { status: 400 }
       )
@@ -36,16 +36,13 @@ export async function POST(request: Request) {
     const { name, email, password } = validation.data
 
     // Check if user already exists
-    const existingUser = await query(
-      'SELECT id FROM users WHERE email = $1',
-      [email]
-    )
+    const existingUser = await query('SELECT id FROM users WHERE email = $1', [email])
 
     if (existingUser.rows.length > 0) {
       return NextResponse.json(
         {
           success: false,
-          error: 'User with this email already exists'
+          error: 'User with this email already exists',
         },
         { status: 409 }
       )
@@ -72,9 +69,9 @@ export async function POST(request: Request) {
           name: user.name,
           email: user.email,
           role: user.role,
-          createdAt: user.created_at
+          createdAt: user.created_at,
         },
-        message: 'User registered successfully'
+        message: 'User registered successfully',
       },
       { status: 201 }
     )
@@ -83,7 +80,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         success: false,
-        error: 'Failed to register user'
+        error: 'Failed to register user',
       },
       { status: 500 }
     )

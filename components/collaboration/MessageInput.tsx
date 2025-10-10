@@ -28,7 +28,7 @@ export default function MessageInput({
   parentMessageId,
   placeholder = 'Type your message...',
   onMessageSent,
-  onCancel
+  onCancel,
 }: MessageInputProps) {
   const { data: session } = useSession()
   const [content, setContent] = useState('')
@@ -56,25 +56,28 @@ export default function MessageInput({
     const cursorPos = textarea.selectionStart
     const textBeforeCursor = content.substring(0, cursorPos)
     const lastAtIndex = textBeforeCursor.lastIndexOf('@')
-    
+
     if (lastAtIndex !== -1) {
       const textAfterAt = textBeforeCursor.substring(lastAtIndex + 1)
       const hasSpace = textAfterAt.includes(' ')
-      
+
       if (!hasSpace) {
         setMentionSearch(textAfterAt)
         setShowMentions(true)
         setCursorPosition(lastAtIndex)
         // TODO: Fetch users matching search
         // For now, using mock data
-        setMentionUsers([
-          { id: '1', name: 'John Farmer', email: 'john@farm.com' },
-          { id: '2', name: 'Jane Agronomist', email: 'jane@farm.com' },
-          { id: '3', name: 'Bob Manager', email: 'bob@farm.com' }
-        ].filter(u => 
-          u.name.toLowerCase().includes(textAfterAt.toLowerCase()) ||
-          u.email.toLowerCase().includes(textAfterAt.toLowerCase())
-        ))
+        setMentionUsers(
+          [
+            { id: '1', name: 'John Farmer', email: 'john@farm.com' },
+            { id: '2', name: 'Jane Agronomist', email: 'jane@farm.com' },
+            { id: '3', name: 'Bob Manager', email: 'bob@farm.com' },
+          ].filter(
+            (u) =>
+              u.name.toLowerCase().includes(textAfterAt.toLowerCase()) ||
+              u.email.toLowerCase().includes(textAfterAt.toLowerCase())
+          )
+        )
         setSelectedMentionIndex(0)
       } else {
         setShowMentions(false)
@@ -88,14 +91,10 @@ export default function MessageInput({
     if (showMentions && mentionUsers.length > 0) {
       if (e.key === 'ArrowDown') {
         e.preventDefault()
-        setSelectedMentionIndex(prev => 
-          prev < mentionUsers.length - 1 ? prev + 1 : 0
-        )
+        setSelectedMentionIndex((prev) => (prev < mentionUsers.length - 1 ? prev + 1 : 0))
       } else if (e.key === 'ArrowUp') {
         e.preventDefault()
-        setSelectedMentionIndex(prev => 
-          prev > 0 ? prev - 1 : mentionUsers.length - 1
-        )
+        setSelectedMentionIndex((prev) => (prev > 0 ? prev - 1 : mentionUsers.length - 1))
       } else if (e.key === 'Enter' || e.key === 'Tab') {
         e.preventDefault()
         insertMention(mentionUsers[selectedMentionIndex])
@@ -118,7 +117,7 @@ export default function MessageInput({
     const newContent = `${beforeMention}@${user.name} ${afterCursor}`
     setContent(newContent)
     setShowMentions(false)
-    
+
     // Set cursor position after mention
     setTimeout(() => {
       const newPos = cursorPosition + user.name.length + 2
@@ -129,7 +128,7 @@ export default function MessageInput({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!content.trim() || sending) return
     if (!session?.user) {
       alert('Please sign in to send messages')
@@ -148,8 +147,8 @@ export default function MessageInput({
           context_type: contextType,
           context_id: contextId,
           context_section: contextSection,
-          parent_message_id: parentMessageId
-        })
+          parent_message_id: parentMessageId,
+        }),
       })
 
       const data = await response.json()
@@ -180,7 +179,10 @@ export default function MessageInput({
 
   return (
     <div className="relative">
-      <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700"
+      >
         <div className="p-4">
           <textarea
             ref={textareaRef}
@@ -242,8 +244,19 @@ export default function MessageInput({
               {sending ? (
                 <span className="flex items-center gap-2">
                   <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
                   </svg>
                   Sending...
                 </span>

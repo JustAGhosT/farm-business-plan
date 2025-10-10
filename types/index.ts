@@ -101,7 +101,14 @@ export interface Task {
 export interface Activity {
   id: string
   date: Date
-  type: 'planting' | 'irrigation' | 'fertilization' | 'pest-control' | 'harvest' | 'maintenance' | 'other'
+  type:
+    | 'planting'
+    | 'irrigation'
+    | 'fertilization'
+    | 'pest-control'
+    | 'harvest'
+    | 'maintenance'
+    | 'other'
   cropId?: string
   description: string
   cost?: number
@@ -335,7 +342,14 @@ export interface TaskTemplate {
   id: string
   name: string
   description: string
-  category: 'planting' | 'irrigation' | 'fertilization' | 'pest-control' | 'harvest' | 'maintenance' | 'general'
+  category:
+    | 'planting'
+    | 'irrigation'
+    | 'fertilization'
+    | 'pest-control'
+    | 'harvest'
+    | 'maintenance'
+    | 'general'
   subtasks: SubTask[]
   estimatedDuration: number // in hours
   recurrence?: RecurrencePattern
@@ -366,7 +380,12 @@ export interface RecurrencePattern {
 }
 
 export interface WeatherTrigger {
-  condition: 'temperature-below' | 'temperature-above' | 'frost-warning' | 'rain-expected' | 'drought-conditions'
+  condition:
+    | 'temperature-below'
+    | 'temperature-above'
+    | 'frost-warning'
+    | 'rain-expected'
+    | 'drought-conditions'
   threshold?: number
   enabled: boolean
 }
@@ -374,7 +393,15 @@ export interface WeatherTrigger {
 export interface Notification {
   id: string
   userId: string
-  type: 'task-assigned' | 'approval-requested' | 'approval-completed' | 'mention' | 'deadline-approaching' | 'workflow-update' | 'message' | 'alert'
+  type:
+    | 'task-assigned'
+    | 'approval-requested'
+    | 'approval-completed'
+    | 'mention'
+    | 'deadline-approaching'
+    | 'workflow-update'
+    | 'message'
+    | 'alert'
   title: string
   message: string
   priority: 'low' | 'medium' | 'high' | 'critical'

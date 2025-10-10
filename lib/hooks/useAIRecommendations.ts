@@ -17,7 +17,10 @@ interface UseAIRecommendationsResult {
   error: string | null
   refetch: () => Promise<void>
   createRecommendation: (data: Partial<AIRecommendation>) => Promise<AIRecommendation | null>
-  updateRecommendation: (id: string, data: Partial<AIRecommendation>) => Promise<AIRecommendation | null>
+  updateRecommendation: (
+    id: string,
+    data: Partial<AIRecommendation>
+  ) => Promise<AIRecommendation | null>
   deleteRecommendation: (id: string) => Promise<boolean>
 }
 
@@ -30,7 +33,9 @@ interface AIRecommendationFilters {
  * Custom hook for managing AI recommendations
  * Provides CRUD operations and automatic data fetching with filtering
  */
-export function useAIRecommendations(filters?: AIRecommendationFilters): UseAIRecommendationsResult {
+export function useAIRecommendations(
+  filters?: AIRecommendationFilters
+): UseAIRecommendationsResult {
   const [recommendations, setRecommendations] = useState<AIRecommendation[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -65,72 +70,81 @@ export function useAIRecommendations(filters?: AIRecommendationFilters): UseAIRe
     fetchRecommendations()
   }, [fetchRecommendations])
 
-  const createRecommendation = useCallback(async (data: Partial<AIRecommendation>) => {
-    try {
-      const response = await fetch('/api/ai-recommendations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
+  const createRecommendation = useCallback(
+    async (data: Partial<AIRecommendation>) => {
+      try {
+        const response = await fetch('/api/ai-recommendations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        await fetchRecommendations() // Refresh the list
-        return result.data
-      } else {
-        setError(result.error || 'Failed to create recommendation')
+        if (result.success) {
+          await fetchRecommendations() // Refresh the list
+          return result.data
+        } else {
+          setError(result.error || 'Failed to create recommendation')
+          return null
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
         return null
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      return null
-    }
-  }, [fetchRecommendations])
+    },
+    [fetchRecommendations]
+  )
 
-  const updateRecommendation = useCallback(async (id: string, data: Partial<AIRecommendation>) => {
-    try {
-      const response = await fetch('/api/ai-recommendations', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, ...data })
-      })
+  const updateRecommendation = useCallback(
+    async (id: string, data: Partial<AIRecommendation>) => {
+      try {
+        const response = await fetch('/api/ai-recommendations', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, ...data }),
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        await fetchRecommendations() // Refresh the list
-        return result.data
-      } else {
-        setError(result.error || 'Failed to update recommendation')
+        if (result.success) {
+          await fetchRecommendations() // Refresh the list
+          return result.data
+        } else {
+          setError(result.error || 'Failed to update recommendation')
+          return null
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
         return null
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      return null
-    }
-  }, [fetchRecommendations])
+    },
+    [fetchRecommendations]
+  )
 
-  const deleteRecommendation = useCallback(async (id: string) => {
-    try {
-      const response = await fetch(`/api/ai-recommendations?id=${id}`, {
-        method: 'DELETE'
-      })
+  const deleteRecommendation = useCallback(
+    async (id: string) => {
+      try {
+        const response = await fetch(`/api/ai-recommendations?id=${id}`, {
+          method: 'DELETE',
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        await fetchRecommendations() // Refresh the list
-        return true
-      } else {
-        setError(result.error || 'Failed to delete recommendation')
+        if (result.success) {
+          await fetchRecommendations() // Refresh the list
+          return true
+        } else {
+          setError(result.error || 'Failed to delete recommendation')
+          return false
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
         return false
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      return false
-    }
-  }, [fetchRecommendations])
+    },
+    [fetchRecommendations]
+  )
 
   return {
     recommendations,
@@ -139,14 +153,19 @@ export function useAIRecommendations(filters?: AIRecommendationFilters): UseAIRe
     refetch: fetchRecommendations,
     createRecommendation,
     updateRecommendation,
-    deleteRecommendation
+    deleteRecommendation,
   }
 }
 
 /**
  * Custom hook for fetching AI recommendations for a single farm plan
  */
-export function useAIRecommendationsByFarm(farmPlanId: string | null): Omit<UseAIRecommendationsResult, 'createRecommendation' | 'updateRecommendation' | 'deleteRecommendation'> {
+export function useAIRecommendationsByFarm(
+  farmPlanId: string | null
+): Omit<
+  UseAIRecommendationsResult,
+  'createRecommendation' | 'updateRecommendation' | 'deleteRecommendation'
+> {
   const filters = farmPlanId ? { farm_plan_id: farmPlanId } : undefined
   const { recommendations, loading, error, refetch } = useAIRecommendations(filters)
 
@@ -154,14 +173,19 @@ export function useAIRecommendationsByFarm(farmPlanId: string | null): Omit<UseA
     recommendations,
     loading,
     error,
-    refetch
+    refetch,
   }
 }
 
 /**
  * Custom hook for fetching AI recommendations by category
  */
-export function useAIRecommendationsByCategory(category: string | null): Omit<UseAIRecommendationsResult, 'createRecommendation' | 'updateRecommendation' | 'deleteRecommendation'> {
+export function useAIRecommendationsByCategory(
+  category: string | null
+): Omit<
+  UseAIRecommendationsResult,
+  'createRecommendation' | 'updateRecommendation' | 'deleteRecommendation'
+> {
   const filters = category ? { category } : undefined
   const { recommendations, loading, error, refetch } = useAIRecommendations(filters)
 
@@ -169,6 +193,6 @@ export function useAIRecommendationsByCategory(category: string | null): Omit<Us
     recommendations,
     loading,
     error,
-    refetch
+    refetch,
   }
 }

@@ -13,25 +13,27 @@ This guide provides a framework for planning and implementing the technical infr
 **Complete this assessment for your farm location:**
 
 #### Land Characteristics
-| Aspect | Measurement/Description | Notes |
-|--------|------------------------|-------|
-| Total Area | [Size in hectares/acres] | [Usable area] |
-| Topography | [Flat/sloped/terraced] | [Slope percentage if applicable] |
-| Soil Type | [Sandy/clay/loam/etc.] | [From soil test] |
-| Drainage | [Excellent/good/poor] | [Natural drainage patterns] |
-| Access | [Road quality, distance] | [Equipment access considerations] |
-| Orientation | [Aspect/direction] | [Sun exposure, wind exposure] |
-| Existing Features | [Buildings, trees, water] | [Assets and constraints] |
+
+| Aspect            | Measurement/Description   | Notes                             |
+| ----------------- | ------------------------- | --------------------------------- |
+| Total Area        | [Size in hectares/acres]  | [Usable area]                     |
+| Topography        | [Flat/sloped/terraced]    | [Slope percentage if applicable]  |
+| Soil Type         | [Sandy/clay/loam/etc.]    | [From soil test]                  |
+| Drainage          | [Excellent/good/poor]     | [Natural drainage patterns]       |
+| Access            | [Road quality, distance]  | [Equipment access considerations] |
+| Orientation       | [Aspect/direction]        | [Sun exposure, wind exposure]     |
+| Existing Features | [Buildings, trees, water] | [Assets and constraints]          |
 
 #### Infrastructure Assessment
-| Element | Current Status | Condition | Upgrade Needed | Priority |
-|---------|---------------|-----------|----------------|----------|
-| Water supply | [Available/not available] | [Condition] | [Yes/No] | [High/Med/Low] |
-| Electricity | [Available/not available] | [Capacity] | [Yes/No] | [High/Med/Low] |
-| Fencing | [Present/absent] | [Condition] | [Yes/No] | [High/Med/Low] |
-| Storage facilities | [Present/absent] | [Condition] | [Yes/No] | [High/Med/Low] |
-| Roads/paths | [Present/absent] | [Condition] | [Yes/No] | [High/Med/Low] |
-| Shelter/shade | [Present/absent] | [Type] | [Yes/No] | [High/Med/Low] |
+
+| Element            | Current Status            | Condition   | Upgrade Needed | Priority       |
+| ------------------ | ------------------------- | ----------- | -------------- | -------------- |
+| Water supply       | [Available/not available] | [Condition] | [Yes/No]       | [High/Med/Low] |
+| Electricity        | [Available/not available] | [Capacity]  | [Yes/No]       | [High/Med/Low] |
+| Fencing            | [Present/absent]          | [Condition] | [Yes/No]       | [High/Med/Low] |
+| Storage facilities | [Present/absent]          | [Condition] | [Yes/No]       | [High/Med/Low] |
+| Roads/paths        | [Present/absent]          | [Condition] | [Yes/No]       | [High/Med/Low] |
+| Shelter/shade      | [Present/absent]          | [Type]      | [Yes/No]       | [High/Med/Low] |
 
 ---
 
@@ -45,30 +47,31 @@ This guide provides a framework for planning and implementing the technical infr
 
 **Crop: [Your Crop Name]**
 
-| Parameter | Specification | Justification |
-|-----------|--------------|---------------|
-| Row spacing | [Distance] | [Equipment width, crop needs] |
-| Plant spacing in row | [Distance] | [Growth habit, yield optimization] |
-| Row orientation | [N-S/E-W/contour] | [Sun exposure, drainage, slope] |
-| Path width | [Distance] | [Equipment access, harvest needs] |
-| Border clearance | [Distance] | [Wind, pests, regulations] |
-| Plants per unit area | [Number/hectare] | [Calculation basis] |
-| Total planting capacity | [Total number] | [For available area] |
+| Parameter               | Specification     | Justification                      |
+| ----------------------- | ----------------- | ---------------------------------- |
+| Row spacing             | [Distance]        | [Equipment width, crop needs]      |
+| Plant spacing in row    | [Distance]        | [Growth habit, yield optimization] |
+| Row orientation         | [N-S/E-W/contour] | [Sun exposure, drainage, slope]    |
+| Path width              | [Distance]        | [Equipment access, harvest needs]  |
+| Border clearance        | [Distance]        | [Wind, pests, regulations]         |
+| Plants per unit area    | [Number/hectare]  | [Calculation basis]                |
+| Total planting capacity | [Total number]    | [For available area]               |
 
 #### Area Allocation
 
 **For diversified operations, divide your land:**
 
-| Zone | Area | Primary Crop(s) | Infrastructure Needs | Notes |
-|------|------|-----------------|---------------------|-------|
-| Zone 1 | [Size] | [Crop name(s)] | [List] | [High-value, intensive] |
-| Zone 2 | [Size] | [Crop name(s)] | [List] | [Production area] |
-| Zone 3 | [Size] | [Crop name(s)] | [List] | [Expansion area] |
-| Service Area | [Size] | N/A | [Storage, processing] | [Support infrastructure] |
+| Zone         | Area   | Primary Crop(s) | Infrastructure Needs  | Notes                    |
+| ------------ | ------ | --------------- | --------------------- | ------------------------ |
+| Zone 1       | [Size] | [Crop name(s)]  | [List]                | [High-value, intensive]  |
+| Zone 2       | [Size] | [Crop name(s)]  | [List]                | [Production area]        |
+| Zone 3       | [Size] | [Crop name(s)]  | [List]                | [Expansion area]         |
+| Service Area | [Size] | N/A             | [Storage, processing] | [Support infrastructure] |
 
 ### Visual Layout Diagram Template
 
 Create a diagram showing:
+
 - Field boundaries and dimensions
 - Growing zones and crop locations
 - Irrigation infrastructure layout
@@ -79,6 +82,7 @@ Create a diagram showing:
 - Drainage patterns
 
 **Use tools like:**
+
 - Graph paper for hand-drawn plans
 - SketchUp or similar 3D modeling software
 - Farm management software
@@ -94,25 +98,25 @@ Create a diagram showing:
 
 #### Support System Specifications
 
-| Component | Specification | Quantity | Source/Supplier | Cost Estimate |
-|-----------|--------------|----------|-----------------|---------------|
-| **Posts/Stakes** | | | | |
-| Material | [Wood/metal/concrete] | [Number] | [Supplier] | [Cost] |
-| Height | [Above ground] | | | |
-| Diameter/width | [Size] | | | |
-| Anchor depth | [Below ground] | | | |
-| Spacing | [Distance apart] | | | |
-| **Wire/Cable** | | | | |
-| Type | [Material, gauge] | [Length] | [Supplier] | [Cost] |
-| Strand count | [Single/multi-strand] | | | |
-| Training levels | [Heights] | | | |
-| Tension requirements | [Load capacity] | | | |
-| **Connectors/Fittings** | | | | |
-| Turnbuckles | [Size, type] | [Number] | [Supplier] | [Cost] |
-| Wire clips | [Type] | [Number] | [Supplier] | [Cost] |
-| Anchors | [Type, size] | [Number] | [Supplier] | [Cost] |
-| **Installation** | | | | |
-| Labor | [Hours/days] | [Total] | [Contractor or self] | [Cost] |
+| Component               | Specification         | Quantity | Source/Supplier      | Cost Estimate |
+| ----------------------- | --------------------- | -------- | -------------------- | ------------- |
+| **Posts/Stakes**        |                       |          |                      |               |
+| Material                | [Wood/metal/concrete] | [Number] | [Supplier]           | [Cost]        |
+| Height                  | [Above ground]        |          |                      |               |
+| Diameter/width          | [Size]                |          |                      |               |
+| Anchor depth            | [Below ground]        |          |                      |               |
+| Spacing                 | [Distance apart]      |          |                      |               |
+| **Wire/Cable**          |                       |          |                      |               |
+| Type                    | [Material, gauge]     | [Length] | [Supplier]           | [Cost]        |
+| Strand count            | [Single/multi-strand] |          |                      |               |
+| Training levels         | [Heights]             |          |                      |               |
+| Tension requirements    | [Load capacity]       |          |                      |               |
+| **Connectors/Fittings** |                       |          |                      |               |
+| Turnbuckles             | [Size, type]          | [Number] | [Supplier]           | [Cost]        |
+| Wire clips              | [Type]                | [Number] | [Supplier]           | [Cost]        |
+| Anchors                 | [Type, size]          | [Number] | [Supplier]           | [Cost]        |
+| **Installation**        |                       |          |                      |               |
+| Labor                   | [Hours/days]          | [Total]  | [Contractor or self] | [Cost]        |
 
 #### Support Structure Diagram
 
@@ -128,7 +132,7 @@ graph TB
   E --> G
   F --> G
   end
-  
+
   subgraph Tensioning System
   H[End Post] --> I[Turnbuckle]
   I --> J[Main Wire]
@@ -137,6 +141,7 @@ graph TB
 ```
 
 **Adapt this based on your specific crop needs:**
+
 - Trellis systems (grapes, kiwi, passion fruit)
 - Stake systems (tomatoes, peppers)
 - Overhead wire systems (hops, pole beans)
@@ -150,13 +155,13 @@ graph TB
 
 **Calculate irrigation needs for your crops:**
 
-| Crop | Growth Stage | Daily Water Need (L/plant or L/m²) | Frequency | Total Daily (L) |
-|------|--------------|-------------------------------------|-----------|-----------------|
-| [Crop 1] | Establishment | [Amount] | [Per day] | [Total] |
-| [Crop 1] | Vegetative | [Amount] | [Per day] | [Total] |
-| [Crop 1] | Reproductive | [Amount] | [Per day] | [Total] |
-| [Crop 2] | Establishment | [Amount] | [Per day] | [Total] |
-| [Crop 2] | Production | [Amount] | [Per day] | [Total] |
+| Crop     | Growth Stage  | Daily Water Need (L/plant or L/m²) | Frequency | Total Daily (L) |
+| -------- | ------------- | ---------------------------------- | --------- | --------------- |
+| [Crop 1] | Establishment | [Amount]                           | [Per day] | [Total]         |
+| [Crop 1] | Vegetative    | [Amount]                           | [Per day] | [Total]         |
+| [Crop 1] | Reproductive  | [Amount]                           | [Per day] | [Total]         |
+| [Crop 2] | Establishment | [Amount]                           | [Per day] | [Total]         |
+| [Crop 2] | Production    | [Amount]                           | [Per day] | [Total]         |
 
 **Peak Water Demand:** [Total L/day in highest demand period]
 
@@ -164,13 +169,13 @@ graph TB
 
 **Choose the most appropriate system for your crops and resources:**
 
-| System Type | Advantages | Disadvantages | Cost Range | Best For |
-|-------------|------------|---------------|------------|----------|
-| Drip irrigation | Water-efficient, precise | Higher initial cost | [Range] | Row crops, orchards |
-| Sprinkler | Flexible, cooling effect | Water loss, disease risk | [Range] | Field crops, turf |
-| Micro-sprinkler | Good coverage, flexible | Medium efficiency | [Range] | Orchards, vegetables |
-| Flood/furrow | Low cost | Water wasteful | [Range] | Large fields, certain crops |
-| Sub-surface drip | Very efficient, no evaporation | Expensive, clogging risk | [Range] | High-value crops |
+| System Type      | Advantages                     | Disadvantages            | Cost Range | Best For                    |
+| ---------------- | ------------------------------ | ------------------------ | ---------- | --------------------------- |
+| Drip irrigation  | Water-efficient, precise       | Higher initial cost      | [Range]    | Row crops, orchards         |
+| Sprinkler        | Flexible, cooling effect       | Water loss, disease risk | [Range]    | Field crops, turf           |
+| Micro-sprinkler  | Good coverage, flexible        | Medium efficiency        | [Range]    | Orchards, vegetables        |
+| Flood/furrow     | Low cost                       | Water wasteful           | [Range]    | Large fields, certain crops |
+| Sub-surface drip | Very efficient, no evaporation | Expensive, clogging risk | [Range]    | High-value crops            |
 
 **Selected System:** [Your choice]
 **Justification:** [Reasons based on crops, budget, water availability]
@@ -178,45 +183,49 @@ graph TB
 ### Irrigation System Components
 
 #### Water Source
-| Component | Specification | Quantity | Cost | Notes |
-|-----------|--------------|----------|------|-------|
-| Source type | [Well/river/municipal/rainwater] | N/A | [Cost] | [Reliability] |
-| Storage tank | [Capacity in L] | [Number] | [Cost] | [Material, placement] |
-| Pump | [Power, flow rate] | [Number] | [Cost] | [Type, efficiency] |
-| Filtration | [Type, mesh size] | [Number] | [Cost] | [Based on water quality] |
-| Pressure regulation | [Type, pressure range] | [Number] | [Cost] | [System requirements] |
+
+| Component           | Specification                    | Quantity | Cost   | Notes                    |
+| ------------------- | -------------------------------- | -------- | ------ | ------------------------ |
+| Source type         | [Well/river/municipal/rainwater] | N/A      | [Cost] | [Reliability]            |
+| Storage tank        | [Capacity in L]                  | [Number] | [Cost] | [Material, placement]    |
+| Pump                | [Power, flow rate]               | [Number] | [Cost] | [Type, efficiency]       |
+| Filtration          | [Type, mesh size]                | [Number] | [Cost] | [Based on water quality] |
+| Pressure regulation | [Type, pressure range]           | [Number] | [Cost] | [System requirements]    |
 
 #### Distribution Network
-| Component | Specification | Length/Quantity | Cost | Notes |
-|-----------|--------------|-----------------|------|-------|
-| Main line | [Diameter, material] | [Length in m] | [Cost] | [From source to zones] |
-| Sub-mains | [Diameter, material] | [Length in m] | [Cost] | [Zone distribution] |
-| Laterals | [Diameter, material] | [Length in m] | [Cost] | [To individual plants/rows] |
-| Fittings | [Types needed] | [List quantities] | [Cost] | [Connectors, valves, etc.] |
+
+| Component | Specification        | Length/Quantity   | Cost   | Notes                       |
+| --------- | -------------------- | ----------------- | ------ | --------------------------- |
+| Main line | [Diameter, material] | [Length in m]     | [Cost] | [From source to zones]      |
+| Sub-mains | [Diameter, material] | [Length in m]     | [Cost] | [Zone distribution]         |
+| Laterals  | [Diameter, material] | [Length in m]     | [Cost] | [To individual plants/rows] |
+| Fittings  | [Types needed]       | [List quantities] | [Cost] | [Connectors, valves, etc.]  |
 
 #### Emission Devices
-| Component | Specification | Quantity | Cost | Notes |
-|-----------|--------------|----------|------|-------|
-| Emitter type | [Dripper/sprinkler/etc.] | [Number] | [Cost] | [Flow rate] |
-| Flow rate | [L/hour per emitter] | N/A | N/A | [Crop requirements] |
-| Spacing | [Distance between emitters] | N/A | N/A | [Plant spacing] |
-| Per plant/area | [Number per plant] | [Total needed] | [Total cost] | [Coverage pattern] |
+
+| Component      | Specification               | Quantity       | Cost         | Notes               |
+| -------------- | --------------------------- | -------------- | ------------ | ------------------- |
+| Emitter type   | [Dripper/sprinkler/etc.]    | [Number]       | [Cost]       | [Flow rate]         |
+| Flow rate      | [L/hour per emitter]        | N/A            | N/A          | [Crop requirements] |
+| Spacing        | [Distance between emitters] | N/A            | N/A          | [Plant spacing]     |
+| Per plant/area | [Number per plant]          | [Total needed] | [Total cost] | [Coverage pattern]  |
 
 ### Control and Automation
 
 **Select appropriate control system:**
 
-| Feature | Basic Manual | Semi-Automatic | Fully Automatic | Your Selection |
-|---------|--------------|----------------|-----------------|----------------|
-| Control method | Manual valves | Timers | Controller + sensors | [Choice] |
-| Cost | Low | Medium | High | [Cost] |
-| Labor required | High | Medium | Low | [Hours/week] |
-| Flexibility | Low | Medium | High | [Rating] |
-| Zone control | Limited | Yes | Yes | [# zones] |
-| Weather integration | No | No | Yes | [Available?] |
-| Remote monitoring | No | No | Yes | [Needed?] |
+| Feature             | Basic Manual  | Semi-Automatic | Fully Automatic      | Your Selection |
+| ------------------- | ------------- | -------------- | -------------------- | -------------- |
+| Control method      | Manual valves | Timers         | Controller + sensors | [Choice]       |
+| Cost                | Low           | Medium         | High                 | [Cost]         |
+| Labor required      | High          | Medium         | Low                  | [Hours/week]   |
+| Flexibility         | Low           | Medium         | High                 | [Rating]       |
+| Zone control        | Limited       | Yes            | Yes                  | [# zones]      |
+| Weather integration | No            | No             | Yes                  | [Available?]   |
+| Remote monitoring   | No            | No             | Yes                  | [Needed?]      |
 
 **Selected Control System Components:**
+
 - Controller: [Type, brand, features]
 - Sensors: [Soil moisture, weather, flow, pressure]
 - Valves: [Solenoid, manual backup]
@@ -254,30 +263,33 @@ graph LR
 **Plan supporting infrastructure for your operation:**
 
 #### Storage Facilities
-| Facility Type | Size | Specifications | Cost | Priority |
-|---------------|------|----------------|------|----------|
-| Tool storage | [Dimensions] | [Materials, features] | [Cost] | [High/Med/Low] |
-| Input storage | [Dimensions] | [Secure, climate control] | [Cost] | [High/Med/Low] |
-| Produce storage | [Dimensions] | [Refrigeration, shelving] | [Cost] | [High/Med/Low] |
-| Equipment shelter | [Dimensions] | [Cover for machinery] | [Cost] | [High/Med/Low] |
+
+| Facility Type     | Size         | Specifications            | Cost   | Priority       |
+| ----------------- | ------------ | ------------------------- | ------ | -------------- |
+| Tool storage      | [Dimensions] | [Materials, features]     | [Cost] | [High/Med/Low] |
+| Input storage     | [Dimensions] | [Secure, climate control] | [Cost] | [High/Med/Low] |
+| Produce storage   | [Dimensions] | [Refrigeration, shelving] | [Cost] | [High/Med/Low] |
+| Equipment shelter | [Dimensions] | [Cover for machinery]     | [Cost] | [High/Med/Low] |
 
 #### Processing Area (if applicable)
-| Feature | Specification | Cost | Priority |
-|---------|--------------|------|----------|
-| Washing station | [Size, water supply] | [Cost] | [High/Med/Low] |
-| Sorting/grading area | [Size, equipment] | [Cost] | [High/Med/Low] |
-| Packing area | [Size, materials] | [Cost] | [High/Med/Low] |
-| Cold storage | [Capacity, temperature] | [Cost] | [High/Med/Low] |
+
+| Feature              | Specification           | Cost   | Priority       |
+| -------------------- | ----------------------- | ------ | -------------- |
+| Washing station      | [Size, water supply]    | [Cost] | [High/Med/Low] |
+| Sorting/grading area | [Size, equipment]       | [Cost] | [High/Med/Low] |
+| Packing area         | [Size, materials]       | [Cost] | [High/Med/Low] |
+| Cold storage         | [Capacity, temperature] | [Cost] | [High/Med/Low] |
 
 #### Other Infrastructure
-| Item | Specification | Cost | Priority | Notes |
-|------|--------------|------|----------|-------|
-| Fencing | [Length, type, height] | [Cost] | [Priority] | [Security, animals] |
-| Access roads | [Length, surface] | [Cost] | [Priority] | [All-weather access] |
-| Shade structures | [Area, type] | [Cost] | [Priority] | [Climate needs] |
-| Windbreaks | [Length, type] | [Cost] | [Priority] | [Wind protection] |
-| Composting area | [Size] | [Cost] | [Priority] | [Organic matter] |
-| Office/admin space | [Size] | [Cost] | [Priority] | [Records, planning] |
+
+| Item               | Specification          | Cost   | Priority   | Notes                |
+| ------------------ | ---------------------- | ------ | ---------- | -------------------- |
+| Fencing            | [Length, type, height] | [Cost] | [Priority] | [Security, animals]  |
+| Access roads       | [Length, surface]      | [Cost] | [Priority] | [All-weather access] |
+| Shade structures   | [Area, type]           | [Cost] | [Priority] | [Climate needs]      |
+| Windbreaks         | [Length, type]         | [Cost] | [Priority] | [Wind protection]    |
+| Composting area    | [Size]                 | [Cost] | [Priority] | [Organic matter]     |
+| Office/admin space | [Size]                 | [Cost] | [Priority] | [Records, planning]  |
 
 ---
 
@@ -288,22 +300,24 @@ graph LR
 **Inventory of required equipment:**
 
 #### Major Equipment
-| Equipment | Specification | Quantity | Cost | Purchase/Lease/Rent | Priority |
-|-----------|--------------|----------|------|---------------------|----------|
-| Tractor | [HP, features] | [#] | [Cost] | [Option] | [Priority] |
-| Implements | [List types] | [#] | [Cost] | [Option] | [Priority] |
-| Sprayer | [Capacity, type] | [#] | [Cost] | [Option] | [Priority] |
-| Harvesting equipment | [Type] | [#] | [Cost] | [Option] | [Priority] |
+
+| Equipment            | Specification    | Quantity | Cost   | Purchase/Lease/Rent | Priority   |
+| -------------------- | ---------------- | -------- | ------ | ------------------- | ---------- |
+| Tractor              | [HP, features]   | [#]      | [Cost] | [Option]            | [Priority] |
+| Implements           | [List types]     | [#]      | [Cost] | [Option]            | [Priority] |
+| Sprayer              | [Capacity, type] | [#]      | [Cost] | [Option]            | [Priority] |
+| Harvesting equipment | [Type]           | [#]      | [Cost] | [Option]            | [Priority] |
 
 #### Hand Tools and Small Equipment
-| Tool Type | Items Needed | Quantity | Cost | Priority |
-|-----------|--------------|----------|------|----------|
-| Digging tools | [Shovels, forks, etc.] | [#] | [Cost] | [Priority] |
-| Cutting tools | [Pruners, saws, knives] | [#] | [Cost] | [Priority] |
-| Measuring tools | [Tape, pH meter, etc.] | [#] | [Cost] | [Priority] |
-| Safety equipment | [Gloves, boots, PPE] | [#] | [Cost] | [High] |
-| Harvest containers | [Bins, baskets, crates] | [#] | [Cost] | [Priority] |
-| Maintenance tools | [Basic tool set] | [#] | [Cost] | [Priority] |
+
+| Tool Type          | Items Needed            | Quantity | Cost   | Priority   |
+| ------------------ | ----------------------- | -------- | ------ | ---------- |
+| Digging tools      | [Shovels, forks, etc.]  | [#]      | [Cost] | [Priority] |
+| Cutting tools      | [Pruners, saws, knives] | [#]      | [Cost] | [Priority] |
+| Measuring tools    | [Tape, pH meter, etc.]  | [#]      | [Cost] | [Priority] |
+| Safety equipment   | [Gloves, boots, PPE]    | [#]      | [Cost] | [High]     |
+| Harvest containers | [Bins, baskets, crates] | [#]      | [Cost] | [Priority] |
+| Maintenance tools  | [Basic tool set]        | [#]      | [Cost] | [Priority] |
 
 ---
 
@@ -344,6 +358,7 @@ graph LR
 Use this checklist to track technical implementation:
 
 ### Site Preparation
+
 - [ ] Site survey and assessment completed
 - [ ] Soil testing done
 - [ ] Land clearing completed (if needed)
@@ -351,6 +366,7 @@ Use this checklist to track technical implementation:
 - [ ] Access roads established
 
 ### Infrastructure Installation
+
 - [ ] Water source secured
 - [ ] Irrigation system installed and tested
 - [ ] Electrical supply connected (if needed)
@@ -359,12 +375,14 @@ Use this checklist to track technical implementation:
 - [ ] Support structures installed
 
 ### Equipment and Tools
+
 - [ ] Major equipment acquired
 - [ ] Hand tools purchased
 - [ ] Safety equipment obtained
 - [ ] Equipment properly stored
 
 ### System Testing
+
 - [ ] Irrigation system pressure tested
 - [ ] Water distribution verified
 - [ ] Electrical systems checked
@@ -372,6 +390,7 @@ Use this checklist to track technical implementation:
 - [ ] Safety systems verified
 
 ### Final Preparations
+
 - [ ] Planting areas prepared
 - [ ] Inputs and materials stocked
 - [ ] Staff training completed
@@ -381,6 +400,7 @@ Use this checklist to track technical implementation:
 ---
 
 **Next Steps:**
+
 1. Customize this guide for your specific crops and location
 2. Get professional advice for complex systems (irrigation design, electrical)
 3. Obtain necessary quotes and compare suppliers

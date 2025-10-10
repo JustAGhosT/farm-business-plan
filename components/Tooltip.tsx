@@ -11,11 +11,7 @@ interface TooltipProps {
 /**
  * Tooltip component for displaying helpful information on hover
  */
-export default function Tooltip({ 
-  content, 
-  children, 
-  position = 'top' 
-}: TooltipProps) {
+export default function Tooltip({ content, children, position = 'top' }: TooltipProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [coords, setCoords] = useState({ top: 0, left: 0 })
   const triggerRef = useRef<HTMLDivElement>(null)
@@ -75,10 +71,13 @@ export default function Tooltip({
           {content}
           <div
             className={`absolute w-2 h-2 bg-gray-900 dark:bg-gray-700 transform rotate-45 ${
-              position === 'top' ? 'bottom-[-4px] left-1/2 -translate-x-1/2' :
-              position === 'bottom' ? 'top-[-4px] left-1/2 -translate-x-1/2' :
-              position === 'left' ? 'right-[-4px] top-1/2 -translate-y-1/2' :
-              'left-[-4px] top-1/2 -translate-y-1/2'
+              position === 'top'
+                ? 'bottom-[-4px] left-1/2 -translate-x-1/2'
+                : position === 'bottom'
+                  ? 'top-[-4px] left-1/2 -translate-x-1/2'
+                  : position === 'left'
+                    ? 'right-[-4px] top-1/2 -translate-y-1/2'
+                    : 'left-[-4px] top-1/2 -translate-y-1/2'
             }`}
           />
         </div>
@@ -98,12 +97,7 @@ export function HelpTooltip({ content }: { content: string }) {
         className="inline-flex items-center justify-center w-5 h-5 ml-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
         aria-label="Help"
       >
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"

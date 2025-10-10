@@ -7,19 +7,23 @@ The Farm Business Plan application now includes Google OAuth authentication, all
 ## Features Implemented
 
 ### 1. Google OAuth Integration
+
 - **Sign in with Google** button on the login page
 - Automatic user account creation on first Google login
 - Seamless authentication flow with NextAuth.js
 - Profile information (name, email) synced from Google account
 
 ### 2. Route Protection
+
 Protected routes (require login):
+
 - `/tools/dashboard` - Operations dashboard
 - `/tools/ai-wizard` - AI planning wizard
 - `/tools/plan-generator` - Business plan generator
 - `/tools/reports` - Financial reports
 
 Public routes (no login required):
+
 - `/` - Landing page
 - `/docs/*` - All documentation
 - `/tools/calculators/*` - Financial calculators
@@ -27,6 +31,7 @@ Public routes (no login required):
 - `/auth/*` - Authentication pages
 
 ### 3. Enhanced Landing Page
+
 - Prominent "Sign In" and "Get Started Free" buttons
 - "Free Public Resources" section highlighting public content
 - "Why Create an Account?" benefits section
@@ -38,11 +43,13 @@ Public routes (no login required):
 ### Local Development
 
 1. **Copy environment variables**
+
 ```bash
 cp .env.example .env.local
 ```
 
 2. **Set required variables in `.env.local`**
+
 ```bash
 # NextAuth Configuration
 NEXTAUTH_SECRET="generate-with-openssl-rand-base64-32"
@@ -53,12 +60,14 @@ DATABASE_URL="postgresql://user:password@localhost:5432/farm_plan"
 ```
 
 3. **Enable Google OAuth (optional for UI testing)**
+
 ```bash
 # These enable the Google button in UI even without real credentials
 NEXT_PUBLIC_GOOGLE_ENABLED="true"
 ```
 
 4. **Run development server**
+
 ```bash
 npm run dev
 ```
@@ -76,6 +85,7 @@ npm run dev
      - Production: `https://your-domain.com/api/auth/callback/google`
 
 2. **Configure Environment Variables**
+
 ```bash
 # Google OAuth Credentials
 GOOGLE_ID="your-google-client-id.apps.googleusercontent.com"
@@ -158,6 +168,7 @@ CREATE TABLE users (
 ### Testing Protected Routes
 
 1. **Without Authentication**
+
 ```bash
 # Should redirect to sign-in
 curl -L http://localhost:3000/tools/dashboard
@@ -165,6 +176,7 @@ curl -L http://localhost:3000/tools/dashboard
 ```
 
 2. **Public Routes**
+
 ```bash
 # Should load without redirect
 curl http://localhost:3000/docs/executive-summary
@@ -183,21 +195,25 @@ curl http://localhost:3000/tools/calculators
 ## Troubleshooting
 
 ### Google Button Not Showing
+
 - Check `NEXT_PUBLIC_GOOGLE_ENABLED="true"` in `.env.local`
 - Restart dev server after changing environment variables
 - Verify browser console for errors
 
 ### OAuth Redirect Errors
+
 - Verify redirect URI matches exactly in Google Cloud Console
 - Check `NEXTAUTH_URL` matches your domain
 - Ensure HTTPS in production
 
 ### Database Connection Issues
+
 - Verify `DATABASE_URL` is correct
 - Ensure database is running
 - Check users table exists with correct schema
 
 ### Session Issues
+
 - Generate a secure `NEXTAUTH_SECRET`: `openssl rand -base64 32`
 - Clear browser cookies and try again
 - Check Next.js server logs for errors
@@ -253,6 +269,7 @@ Middleware checks auth
 ## Support
 
 For issues or questions:
+
 1. Check the [AUTHENTICATION.md](./AUTHENTICATION.md) guide
 2. Review [GitHub Issues](https://github.com/JustAGhosT/farm-business-plan/issues)
 3. Open a new issue with details about your problem

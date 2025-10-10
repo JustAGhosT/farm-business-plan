@@ -4,32 +4,32 @@ on:
   push:
     branches: [main, develop]
     paths:
-      - "app/**"
-      - "components/**"
-      - "types/**"
-      - "package.json"
-      - "package-lock.json"
-      - "next.config.js"
-      - "tsconfig.json"
-      - "tailwind.config.ts"
-      - "postcss.config.js"
-      - ".eslintrc.json"
-      - "netlify.toml"
-      - ".github/workflows/netlify-deploy.yml"
+      - 'app/**'
+      - 'components/**'
+      - 'types/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'next.config.js'
+      - 'tsconfig.json'
+      - 'tailwind.config.ts'
+      - 'postcss.config.js'
+      - '.eslintrc.json'
+      - 'netlify.toml'
+      - '.github/workflows/netlify-deploy.yml'
   pull_request:
     paths:
-      - "app/**"
-      - "components/**"
-      - "types/**"
-      - "package.json"
-      - "package-lock.json"
-      - "next.config.js"
-      - "tsconfig.json"
-      - "tailwind.config.ts"
-      - "postcss.config.js"
-      - ".eslintrc.json"
-      - "netlify.toml"
-      - ".github/workflows/netlify-deploy.yml"
+      - 'app/**'
+      - 'components/**'
+      - 'types/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'next.config.js'
+      - 'tsconfig.json'
+      - 'tailwind.config.ts'
+      - 'postcss.config.js'
+      - '.eslintrc.json'
+      - 'netlify.toml'
+      - '.github/workflows/netlify-deploy.yml'
   workflow_dispatch:
 
 jobs:
@@ -45,15 +45,15 @@ jobs:
         working-directory: .
     steps:
       - name: Checkout
-        uses: actions/checkout@v5        
+        uses: actions/checkout@v5
         with:
           ssh-key: ${{ secrets.DEPLOY_NETLIFY }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -119,8 +119,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci

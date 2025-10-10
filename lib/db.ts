@@ -11,7 +11,9 @@ export function getPool(): Pool {
     const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL
 
     if (!connectionString) {
-      throw new Error('Database connection string not configured. Set DATABASE_URL or POSTGRES_URL environment variable.')
+      throw new Error(
+        'Database connection string not configured. Set DATABASE_URL or POSTGRES_URL environment variable.'
+      )
     }
 
     pool = new Pool({
@@ -42,15 +44,15 @@ export async function query<T extends QueryResultRow = any>(
 ): Promise<QueryResult<T>> {
   const pool = getPool()
   const start = Date.now()
-  
+
   try {
     const result = await pool.query<T>(text, params)
     const duration = Date.now() - start
-    
+
     if (process.env.NODE_ENV === 'development') {
       console.log('Executed query', { text, duration, rows: result.rowCount })
     }
-    
+
     return result
   } catch (error) {
     console.error('Database query error:', error)

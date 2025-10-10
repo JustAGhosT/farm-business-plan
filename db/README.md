@@ -20,6 +20,7 @@ db/
 Netlify DB is a serverless PostgreSQL database powered by Neon, with automatic provisioning and configuration.
 
 **Prerequisites:**
+
 - Netlify account
 - Netlify CLI installed: `npm install -g netlify-cli`
 - Site deployed to Netlify (or in development)
@@ -27,14 +28,15 @@ Netlify DB is a serverless PostgreSQL database powered by Neon, with automatic p
 **Setup Steps:**
 
 1. **Initialize Netlify DB:**
+
    ```bash
    # From your project root
    npx netlify db init
-   
+
    # Or if you have Netlify CLI globally installed
    netlify db init
    ```
-   
+
    This will:
    - Create a Neon PostgreSQL database
    - Set up connection pooling
@@ -43,29 +45,33 @@ Netlify DB is a serverless PostgreSQL database powered by Neon, with automatic p
      - `DATABASE_URL_POOLER`: Pooled connection (recommended for serverless)
 
 2. **Install the Netlify Neon package** (already included in dependencies):
+
    ```bash
    npm install @netlify/neon
    ```
 
 3. **Get your database connection URL:**
+
    ```bash
    # View environment variables
    netlify env:list
-   
+
    # Get DATABASE_URL
    netlify env:get DATABASE_URL
    ```
 
 4. **Apply database schema:**
+
    ```bash
    # Set the DATABASE_URL from Netlify
    export DATABASE_URL=$(netlify env:get DATABASE_URL)
-   
+
    # Apply schema
    psql $DATABASE_URL -f db/schema.sql
    ```
 
 5. **Run migrations:**
+
    ```bash
    # Run migrations in order
    psql $DATABASE_URL -f db/migrations/001_initial_schema.sql
@@ -79,6 +85,7 @@ Netlify DB is a serverless PostgreSQL database powered by Neon, with automatic p
    ```
 
 **Important Notes:**
+
 - Environment variables are automatically injected in Netlify Functions
 - Use `DATABASE_URL_POOLER` in production for better performance
 - Database credentials are managed by Netlify (no manual configuration needed)
@@ -89,25 +96,29 @@ Netlify DB is a serverless PostgreSQL database powered by Neon, with automatic p
 For local development or self-hosted deployments:
 
 1. **Install PostgreSQL** (if not already installed)
+
    ```bash
    # Ubuntu/Debian
    sudo apt-get install postgresql postgresql-contrib
-   
+
    # macOS with Homebrew
    brew install postgresql
    ```
 
 2. **Create Database**
+
    ```bash
    createdb farm_business_plan
    ```
 
 3. **Run Schema**
+
    ```bash
    psql -U your_username -d farm_business_plan -f db/schema.sql
    ```
 
 4. **Run Migrations** (in order)
+
    ```bash
    psql -U your_username -d farm_business_plan -f db/migrations/001_initial_schema.sql
    psql -U your_username -d farm_business_plan -f db/migrations/002_add_authentication.sql
@@ -124,10 +135,12 @@ For local development or self-hosted deployments:
 ### For Netlify DB
 
 When using Netlify DB, these are automatically set:
+
 - `DATABASE_URL`: Direct connection to Neon PostgreSQL
 - `DATABASE_URL_POOLER`: Pooled connection (recommended for serverless functions)
 
 No manual configuration needed - these are injected automatically in:
+
 - Netlify Functions (serverless API routes)
 - Build environment
 - Deploy previews
@@ -167,9 +180,10 @@ See `app/api/db-test/route.ts` for a complete example of using PostgreSQL with c
 **Key Points:**
 
 1. **Use Connection Pooling**: For serverless functions, use `pg.Pool` instead of direct connections
+
    ```typescript
    import { Pool } from 'pg'
-   
+
    const pool = new Pool({
      connectionString: process.env.DATABASE_URL_POOLER || process.env.DATABASE_URL,
      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined,
@@ -182,6 +196,7 @@ See `app/api/db-test/route.ts` for a complete example of using PostgreSQL with c
    - Better suited for serverless environments
 
 3. **Handle Errors Gracefully**: Always wrap database calls in try-catch blocks
+
    ```typescript
    try {
      const result = await pool.query('SELECT * FROM table')
@@ -193,11 +208,12 @@ See `app/api/db-test/route.ts` for a complete example of using PostgreSQL with c
    ```
 
 4. **Test Database Connectivity**:
+
    ```bash
    # Local development
    npm run dev
    curl http://localhost:3000/api/db-test
-   
+
    # Production
    curl https://your-site.netlify.app/api/db-test
    ```
@@ -218,8 +234,6 @@ See `app/api/db-test/route.ts` for a complete example of using PostgreSQL with c
 - **Handle connection errors**: Implement retry logic for transient failures
 - **Monitor connection pool**: Track active connections in production
 
-
-
 ## Migration Strategy
 
 ### Creating New Migrations
@@ -230,6 +244,7 @@ See `app/api/db-test/route.ts` for a complete example of using PostgreSQL with c
 4. Document the migration purpose at the top
 
 Example:
+
 ```sql
 -- Migration: 002_add_user_authentication
 -- Description: Adds user authentication tables
@@ -252,6 +267,7 @@ COMMIT;
 Migrations should be run in sequential order. The GitHub Actions workflow `database-deploy.yml` will automatically run migrations when changes are pushed to the main branch.
 
 For manual migration:
+
 ```bash
 psql -U username -d dbname -f db/migrations/XXX_migration_name.sql
 ```
@@ -276,11 +292,13 @@ psql -U username -d dbname -f db/migrations/XXX_migration_name.sql
 ## Backup and Restore
 
 ### Backup Database
+
 ```bash
 pg_dump farm_business_plan > backup_$(date +%Y%m%d_%H%M%S).sql
 ```
 
 ### Restore Database
+
 ```bash
 psql farm_business_plan < backup_file.sql
 ```
@@ -290,14 +308,14 @@ psql farm_business_plan < backup_file.sql
 Example connection using Node.js:
 
 ```javascript
-import { Pool } from 'pg';
+import { Pool } from 'pg'
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+})
 
-export default pool;
+export default pool
 ```
 
 ## Development vs Production

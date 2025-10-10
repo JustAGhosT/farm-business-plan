@@ -6,7 +6,12 @@ import { Approval, ApprovalWorkflow, ApprovalStage } from '@/types'
 interface ApprovalCardProps {
   workflow: ApprovalWorkflow
   stage: ApprovalStage
-  onApprove: (stageId: string, decision: 'approved' | 'rejected', comments: string, signature?: string) => Promise<void>
+  onApprove: (
+    stageId: string,
+    decision: 'approved' | 'rejected',
+    comments: string,
+    signature?: string
+  ) => Promise<void>
 }
 
 export default function ApprovalCard({ workflow, stage, onApprove }: ApprovalCardProps) {
@@ -44,10 +49,14 @@ export default function ApprovalCard({ workflow, stage, onApprove }: ApprovalCar
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'approved': return 'bg-green-100 text-green-800'
-      case 'rejected': return 'bg-red-100 text-red-800'
-      case 'in-progress': return 'bg-blue-100 text-blue-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'approved':
+        return 'bg-green-100 text-green-800'
+      case 'rejected':
+        return 'bg-red-100 text-red-800'
+      case 'in-progress':
+        return 'bg-blue-100 text-blue-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
     }
   }
 
@@ -56,7 +65,8 @@ export default function ApprovalCard({ workflow, stage, onApprove }: ApprovalCar
     return d.toLocaleDateString('en-ZA', { month: 'short', day: 'numeric', year: 'numeric' })
   }
 
-  const isOverdue = stage.deadline && new Date(stage.deadline) < new Date() && stage.status === 'pending'
+  const isOverdue =
+    stage.deadline && new Date(stage.deadline) < new Date() && stage.status === 'pending'
 
   return (
     <div className="border rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow">
@@ -64,11 +74,15 @@ export default function ApprovalCard({ workflow, stage, onApprove }: ApprovalCar
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
             <h3 className="font-semibold text-lg">{workflow.name}</h3>
-            <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(stage.status)}`}>
+            <span
+              className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(stage.status)}`}
+            >
               {stage.status.replace('-', ' ').toUpperCase()}
             </span>
           </div>
-          <p className="text-sm text-gray-600">Stage {stage.order}: {stage.name}</p>
+          <p className="text-sm text-gray-600">
+            Stage {stage.order}: {stage.name}
+          </p>
         </div>
         {isOverdue && (
           <span className="px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">
@@ -117,7 +131,7 @@ export default function ApprovalCard({ workflow, stage, onApprove }: ApprovalCar
               </div>
 
               {/* Optional signature field - always show */}
-          {true && (
+              {true && (
                 <div>
                   <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
                     <input

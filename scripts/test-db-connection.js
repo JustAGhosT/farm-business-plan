@@ -2,7 +2,7 @@
 
 /**
  * Database Connection Test Script
- * 
+ *
  * This script tests the database connection and verifies that required tables exist.
  * Run with: node scripts/test-db-connection.js
  */
@@ -24,7 +24,7 @@ async function testConnection() {
 
   const pool = new Pool({
     connectionString,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
   })
 
   try {
@@ -32,13 +32,17 @@ async function testConnection() {
     console.log('Testing connection to:', connectionString.replace(/:[^:@]+@/, ':****@'))
     const versionResult = await pool.query('SELECT version()')
     console.log('✅ Database connected successfully!')
-    console.log('📊 PostgreSQL version:', versionResult.rows[0].version.split(' ')[0], versionResult.rows[0].version.split(' ')[1])
+    console.log(
+      '📊 PostgreSQL version:',
+      versionResult.rows[0].version.split(' ')[0],
+      versionResult.rows[0].version.split(' ')[1]
+    )
     console.log()
 
     // Check for required tables
     console.log('Checking required tables...')
     const requiredTables = ['users', 'farm_plans', 'crop_plans', 'tasks', 'climate_data']
-    
+
     for (const tableName of requiredTables) {
       const result = await pool.query(
         `SELECT EXISTS (
@@ -48,7 +52,7 @@ async function testConnection() {
         )`,
         [tableName]
       )
-      
+
       if (result.rows[0].exists) {
         console.log(`  ✅ ${tableName}`)
       } else {
@@ -80,7 +84,6 @@ async function testConnection() {
 
     console.log('✅ Database setup looks good!')
     console.log()
-
   } catch (error) {
     console.error('❌ Database connection failed!')
     console.error('Error:', error.message)

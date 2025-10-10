@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 /**
  * GET /api/weather
  * Get weather data and forecast using Open-Meteo API (free, no API key required)
- * 
+ *
  * Query parameters:
  * - lat: Latitude (required)
  * - lng: Longitude (required)
@@ -31,10 +31,7 @@ export async function GET(request: Request) {
     const longitude = parseFloat(lng)
 
     if (isNaN(latitude) || isNaN(longitude)) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid coordinates' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: 'Invalid coordinates' }, { status: 400 })
     }
 
     if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
@@ -49,9 +46,18 @@ export async function GET(request: Request) {
     const openMeteoUrl = new URL('https://api.open-meteo.com/v1/forecast')
     openMeteoUrl.searchParams.append('latitude', latitude.toString())
     openMeteoUrl.searchParams.append('longitude', longitude.toString())
-    openMeteoUrl.searchParams.append('current', 'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,weather_code,wind_speed_10m,wind_direction_10m')
-    openMeteoUrl.searchParams.append('hourly', 'temperature_2m,precipitation_probability,precipitation,weather_code,soil_temperature_0cm,soil_moisture_0_to_1cm')
-    openMeteoUrl.searchParams.append('daily', 'weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,precipitation_sum,rain_sum,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max')
+    openMeteoUrl.searchParams.append(
+      'current',
+      'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,weather_code,wind_speed_10m,wind_direction_10m'
+    )
+    openMeteoUrl.searchParams.append(
+      'hourly',
+      'temperature_2m,precipitation_probability,precipitation,weather_code,soil_temperature_0cm,soil_moisture_0_to_1cm'
+    )
+    openMeteoUrl.searchParams.append(
+      'daily',
+      'weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,precipitation_sum,rain_sum,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max'
+    )
     openMeteoUrl.searchParams.append('timezone', 'auto')
     openMeteoUrl.searchParams.append('forecast_days', forecastDays)
 
@@ -83,22 +89,23 @@ export async function GET(request: Request) {
         windDirection: weatherData.current?.wind_direction_10m,
         weatherDescription: getWeatherDescription(weatherData.current?.weather_code),
       },
-      daily: weatherData.daily?.time?.map((date: string, index: number) => ({
-        date,
-        weatherCode: weatherData.daily.weather_code[index],
-        weatherDescription: getWeatherDescription(weatherData.daily.weather_code[index]),
-        temperatureMax: weatherData.daily.temperature_2m_max[index],
-        temperatureMin: weatherData.daily.temperature_2m_min[index],
-        apparentTemperatureMax: weatherData.daily.apparent_temperature_max[index],
-        apparentTemperatureMin: weatherData.daily.apparent_temperature_min[index],
-        sunrise: weatherData.daily.sunrise[index],
-        sunset: weatherData.daily.sunset[index],
-        precipitationSum: weatherData.daily.precipitation_sum[index],
-        rainSum: weatherData.daily.rain_sum[index],
-        precipitationProbabilityMax: weatherData.daily.precipitation_probability_max[index],
-        windSpeedMax: weatherData.daily.wind_speed_10m_max[index],
-        windGustsMax: weatherData.daily.wind_gusts_10m_max[index],
-      })) || [],
+      daily:
+        weatherData.daily?.time?.map((date: string, index: number) => ({
+          date,
+          weatherCode: weatherData.daily.weather_code[index],
+          weatherDescription: getWeatherDescription(weatherData.daily.weather_code[index]),
+          temperatureMax: weatherData.daily.temperature_2m_max[index],
+          temperatureMin: weatherData.daily.temperature_2m_min[index],
+          apparentTemperatureMax: weatherData.daily.apparent_temperature_max[index],
+          apparentTemperatureMin: weatherData.daily.apparent_temperature_min[index],
+          sunrise: weatherData.daily.sunrise[index],
+          sunset: weatherData.daily.sunset[index],
+          precipitationSum: weatherData.daily.precipitation_sum[index],
+          rainSum: weatherData.daily.rain_sum[index],
+          precipitationProbabilityMax: weatherData.daily.precipitation_probability_max[index],
+          windSpeedMax: weatherData.daily.wind_speed_10m_max[index],
+          windGustsMax: weatherData.daily.wind_gusts_10m_max[index],
+        })) || [],
       hourly: {
         time: weatherData.hourly?.time || [],
         temperature: weatherData.hourly?.temperature_2m || [],
@@ -121,10 +128,10 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error('Error fetching weather data:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Failed to fetch weather data',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     )
@@ -137,7 +144,7 @@ export async function GET(request: Request) {
  */
 function getWeatherDescription(code: number | undefined): string {
   if (code === undefined) return 'Unknown'
-  
+
   const weatherCodes: Record<number, string> = {
     0: 'Clear sky',
     1: 'Mainly clear',
@@ -201,12 +208,14 @@ function generateFarmingAlerts(weatherData: any): Array<{
     alerts.push({
       type: 'frost',
       severity: currentTemp < 0 ? 'critical' : 'warning',
-      message: currentTemp < 0 
-        ? 'FROST ALERT: Temperature below freezing' 
-        : 'Frost risk: Low temperatures expected',
-      details: frostRiskDays > 0 
-        ? `Frost risk for next ${frostRiskDays} day(s). Protect sensitive crops.` 
-        : 'Current temperature near freezing point.',
+      message:
+        currentTemp < 0
+          ? 'FROST ALERT: Temperature below freezing'
+          : 'Frost risk: Low temperatures expected',
+      details:
+        frostRiskDays > 0
+          ? `Frost risk for next ${frostRiskDays} day(s). Protect sensitive crops.`
+          : 'Current temperature near freezing point.',
     })
   }
 
@@ -244,8 +253,9 @@ function generateFarmingAlerts(weatherData: any): Array<{
   }
 
   // Optimal planting conditions
-  const optimalDays = dailyMinTemps.filter((temp: number, idx: number) => 
-    temp > 10 && temp < 30 && dailyPrecipitation[idx] < 10 && dailyPrecipitation[idx] > 0
+  const optimalDays = dailyMinTemps.filter(
+    (temp: number, idx: number) =>
+      temp > 10 && temp < 30 && dailyPrecipitation[idx] < 10 && dailyPrecipitation[idx] > 0
   ).length
   if (optimalDays >= 2) {
     alerts.push({

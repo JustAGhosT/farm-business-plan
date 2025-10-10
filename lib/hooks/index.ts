@@ -20,25 +20,25 @@ export { useCropPlans, useCropPlansByFarm } from './useCropPlans'
 export type { CropPlan } from './useCropPlans'
 
 // Financial Data
-export { 
-  useFinancialData, 
-  useFinancialDataByCrop, 
-  useFinancialDataByFarm 
+export {
+  useFinancialData,
+  useFinancialDataByCrop,
+  useFinancialDataByFarm,
 } from './useFinancialData'
 export type { FinancialData } from './useFinancialData'
 
 // Crop Templates
-export { 
-  useCropTemplates, 
-  usePublicCropTemplates, 
-  useCropTemplatesByCategory 
+export {
+  useCropTemplates,
+  usePublicCropTemplates,
+  useCropTemplatesByCategory,
 } from './useCropTemplates'
 export type { CropTemplate } from './useCropTemplates'
 
 // AI Recommendations
-export { 
-  useAIRecommendations, 
-  useAIRecommendationsByFarm, 
-  useAIRecommendationsByCategory 
+export {
+  useAIRecommendations,
+  useAIRecommendationsByFarm,
+  useAIRecommendationsByCategory,
 } from './useAIRecommendations'
 export type { AIRecommendation } from './useAIRecommendations'

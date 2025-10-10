@@ -40,11 +40,9 @@ export function useFarmPlans(ownerId?: string): UseFarmPlansResult {
     try {
       setLoading(true)
       setError(null)
-      
-      const url = ownerId 
-        ? `/api/farm-plans?owner_id=${ownerId}`
-        : '/api/farm-plans'
-      
+
+      const url = ownerId ? `/api/farm-plans?owner_id=${ownerId}` : '/api/farm-plans'
+
       const response = await fetch(url)
       const result = await response.json()
 
@@ -64,72 +62,81 @@ export function useFarmPlans(ownerId?: string): UseFarmPlansResult {
     fetchFarmPlans()
   }, [fetchFarmPlans])
 
-  const createFarmPlan = useCallback(async (data: Partial<FarmPlan>) => {
-    try {
-      const response = await fetch('/api/farm-plans', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
+  const createFarmPlan = useCallback(
+    async (data: Partial<FarmPlan>) => {
+      try {
+        const response = await fetch('/api/farm-plans', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        await fetchFarmPlans() // Refresh the list
-        return result.data
-      } else {
-        setError(result.error || 'Failed to create farm plan')
+        if (result.success) {
+          await fetchFarmPlans() // Refresh the list
+          return result.data
+        } else {
+          setError(result.error || 'Failed to create farm plan')
+          return null
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
         return null
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      return null
-    }
-  }, [fetchFarmPlans])
+    },
+    [fetchFarmPlans]
+  )
 
-  const updateFarmPlan = useCallback(async (id: string, data: Partial<FarmPlan>) => {
-    try {
-      const response = await fetch(`/api/farm-plans/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
+  const updateFarmPlan = useCallback(
+    async (id: string, data: Partial<FarmPlan>) => {
+      try {
+        const response = await fetch(`/api/farm-plans/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        await fetchFarmPlans() // Refresh the list
-        return result.data
-      } else {
-        setError(result.error || 'Failed to update farm plan')
+        if (result.success) {
+          await fetchFarmPlans() // Refresh the list
+          return result.data
+        } else {
+          setError(result.error || 'Failed to update farm plan')
+          return null
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
         return null
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      return null
-    }
-  }, [fetchFarmPlans])
+    },
+    [fetchFarmPlans]
+  )
 
-  const deleteFarmPlan = useCallback(async (id: string) => {
-    try {
-      const response = await fetch(`/api/farm-plans/${id}`, {
-        method: 'DELETE'
-      })
+  const deleteFarmPlan = useCallback(
+    async (id: string) => {
+      try {
+        const response = await fetch(`/api/farm-plans/${id}`, {
+          method: 'DELETE',
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        await fetchFarmPlans() // Refresh the list
-        return true
-      } else {
-        setError(result.error || 'Failed to delete farm plan')
+        if (result.success) {
+          await fetchFarmPlans() // Refresh the list
+          return true
+        } else {
+          setError(result.error || 'Failed to delete farm plan')
+          return false
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
         return false
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      return false
-    }
-  }, [fetchFarmPlans])
+    },
+    [fetchFarmPlans]
+  )
 
   return {
     farmPlans,
@@ -138,7 +145,7 @@ export function useFarmPlans(ownerId?: string): UseFarmPlansResult {
     refetch: fetchFarmPlans,
     createFarmPlan,
     updateFarmPlan,
-    deleteFarmPlan
+    deleteFarmPlan,
   }
 }
 
@@ -190,6 +197,6 @@ export function useFarmPlan(id: string | null): UseFarmPlanResult {
     farmPlan,
     loading,
     error,
-    refetch: fetchFarmPlan
+    refetch: fetchFarmPlan,
   }
 }

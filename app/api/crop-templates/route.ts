@@ -19,22 +19,22 @@ export async function GET(request: Request) {
       SELECT * FROM crop_templates
       WHERE 1=1
     `
-    
+
     const params: any[] = []
     let paramIndex = 1
-    
+
     if (category) {
       queryText += ` AND category = $${paramIndex}`
       params.push(category)
       paramIndex++
     }
-    
+
     if (isPublic !== null && isPublic !== undefined) {
       queryText += ` AND is_public = $${paramIndex}`
       params.push(isPublic === 'true')
       paramIndex++
     }
-    
+
     queryText += ' ORDER BY name ASC'
 
     const result = await query(queryText, params)
@@ -42,7 +42,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: true,
       data: result.rows,
-      count: result.rows.length
+      count: result.rows.length,
     })
   } catch (error) {
     console.error('Error fetching crop templates:', error)
@@ -60,15 +60,15 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    
+
     // Validate input
     const validation = validateData(CropTemplateSchema, body)
     if (!validation.success) {
       return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Validation failed', 
-          details: validation.errors?.issues 
+        {
+          success: false,
+          error: 'Validation failed',
+          details: validation.errors?.issues,
         },
         { status: 400 }
       )
@@ -95,16 +95,19 @@ export async function POST(request: Request) {
       data.growing_requirements ? JSON.stringify(data.growing_requirements) : null,
       data.market_info ? JSON.stringify(data.market_info) : null,
       data.is_public !== undefined ? data.is_public : true,
-      data.created_by || null
+      data.created_by || null,
     ]
 
     const result = await query(queryText, params)
 
-    return NextResponse.json({
-      success: true,
-      data: result.rows[0],
-      message: 'Crop template created successfully'
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        success: true,
+        data: result.rows[0],
+        message: 'Crop template created successfully',
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Error creating crop template:', error)
     return NextResponse.json(
@@ -136,13 +139,24 @@ export async function PATCH(request: Request) {
 
     // Build dynamic update query
     const allowedFields = [
-      'name', 'description', 'category', 'technical_specs',
-      'financial_projections', 'growing_requirements', 'market_info', 'is_public'
+      'name',
+      'description',
+      'category',
+      'technical_specs',
+      'financial_projections',
+      'growing_requirements',
+      'market_info',
+      'is_public',
     ]
 
-    const jsonFields = ['technical_specs', 'financial_projections', 'growing_requirements', 'market_info']
+    const jsonFields = [
+      'technical_specs',
+      'financial_projections',
+      'growing_requirements',
+      'market_info',
+    ]
 
-    allowedFields.forEach(field => {
+    allowedFields.forEach((field) => {
       if (updates[field] !== undefined) {
         // Convert objects to JSON string for JSONB fields
         if (jsonFields.includes(field) && updates[field] !== null) {
@@ -183,7 +197,7 @@ export async function PATCH(request: Request) {
     return NextResponse.json({
       success: true,
       data: result.rows[0],
-      message: 'Crop template updated successfully'
+      message: 'Crop template updated successfully',
     })
   } catch (error) {
     console.error('Error updating crop template:', error)
@@ -210,10 +224,7 @@ export async function DELETE(request: Request) {
       )
     }
 
-    const result = await query(
-      'DELETE FROM crop_templates WHERE id = $1 RETURNING id',
-      [id]
-    )
+    const result = await query('DELETE FROM crop_templates WHERE id = $1 RETURNING id', [id])
 
     if (result.rows.length === 0) {
       return NextResponse.json(
@@ -224,7 +235,7 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: 'Crop template deleted successfully'
+      message: 'Crop template deleted successfully',
     })
   } catch (error) {
     console.error('Error deleting crop template:', error)

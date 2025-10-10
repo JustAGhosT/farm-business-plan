@@ -7,6 +7,7 @@ This checklist helps verify that the MIME type fix is working correctly after de
 After deployment completes, check these in your browser:
 
 ### 1. Visual Check
+
 - [ ] Visit https://farmplan.netlify.app/
 - [ ] Page loads with proper styling (green header, styled buttons, proper layout)
 - [ ] No console errors in browser DevTools
@@ -16,17 +17,20 @@ After deployment completes, check these in your browser:
 Open browser DevTools (F12) → Network tab:
 
 #### CSS Files
+
 - [ ] Look for `/_next/static/css/*.css` requests
 - [ ] Status should be **200** (not 404)
 - [ ] Content-Type should be **text/css** (not text/html)
 - [ ] Cache-Control should be **public, max-age=31536000, immutable**
 
-#### JavaScript Files  
+#### JavaScript Files
+
 - [ ] Look for `/_next/static/chunks/*.js` requests
 - [ ] Status should be **200**
 - [ ] Content-Type should be **application/javascript**
 
 #### Example of Correct Network Response:
+
 ```
 Request URL: https://farmplan.netlify.app/_next/static/css/3d45d3d4a4ee1e3e.css
 Status: 200 OK
@@ -35,6 +39,7 @@ Cache-Control: public, max-age=31536000, immutable
 ```
 
 #### Example of INCORRECT Response (The Bug):
+
 ```
 Request URL: https://farmplan.netlify.app/_next/static/css/3d45d3d4a4ee1e3e.css
 Status: 404 Not Found
@@ -42,6 +47,7 @@ Content-Type: text/html    ❌ This is wrong!
 ```
 
 ### 3. Console Check
+
 Open browser DevTools (F12) → Console tab:
 
 - [ ] No errors like: "Refused to apply style because its MIME type"
@@ -51,6 +57,7 @@ Open browser DevTools (F12) → Console tab:
 ## If Issues Persist
 
 ### Step 1: Clear Netlify Cache
+
 1. Go to Netlify Dashboard
 2. Select your site (farmplan)
 3. Go to: Site Settings → Build & deploy
@@ -58,12 +65,15 @@ Open browser DevTools (F12) → Console tab:
 5. Wait for deployment to complete (~2-3 minutes)
 
 ### Step 2: Hard Refresh Browser
+
 - **Chrome/Edge:** Ctrl+Shift+R (Windows) or Cmd+Shift+R (Mac)
 - **Firefox:** Ctrl+F5 (Windows) or Cmd+Shift+R (Mac)
 - **Safari:** Cmd+Option+R (Mac)
 
 ### Step 3: Check Netlify Configuration
+
 Verify in the repository that `netlify.toml` has:
+
 ```toml
 [build]
   command = "npm run build"
@@ -76,6 +86,7 @@ Verify in the repository that `netlify.toml` has:
 **Note**: Do NOT set a `publish` directory when using `@netlify/plugin-nextjs`. The plugin automatically manages the build output.
 
 ### Step 4: Check Build Logs
+
 1. Go to Netlify Dashboard → Deploys
 2. Click on the latest deploy
 3. Expand "Build logs"
@@ -87,6 +98,7 @@ Verify in the repository that `netlify.toml` has:
 ## Advanced Debugging
 
 ### Test Specific CSS File
+
 ```bash
 # Check if CSS file returns correct Content-Type
 curl -I https://farmplan.netlify.app/_next/static/css/YOUR-CSS-FILE.css
@@ -97,6 +109,7 @@ curl -I https://farmplan.netlify.app/_next/static/css/YOUR-CSS-FILE.css
 ```
 
 ### Test API Routes (Bonus Check)
+
 ```bash
 # Health check endpoint
 curl https://farmplan.netlify.app/api/health
@@ -107,6 +120,7 @@ curl https://farmplan.netlify.app/api/health
 ## Success Criteria
 
 All of these should be true:
+
 - ✅ Page loads with proper styling
 - ✅ No console errors about MIME types
 - ✅ CSS files return 200 with Content-Type: text/css
@@ -116,6 +130,7 @@ All of these should be true:
 ## Need Help?
 
 If the issue persists after following these steps:
+
 1. Check the [DEPLOYMENT.md](./DEPLOYMENT.md) troubleshooting section
 2. Open an issue on GitHub with:
    - Browser console errors (screenshot)

@@ -71,74 +71,83 @@ export function useTasks(filters?: TaskFilters): UseTasksResult {
     fetchTasks()
   }, [fetchTasks])
 
-  const createTask = useCallback(async (data: Partial<Task>) => {
-    try {
-      const response = await fetch('/api/tasks', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
+  const createTask = useCallback(
+    async (data: Partial<Task>) => {
+      try {
+        const response = await fetch('/api/tasks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        await fetchTasks() // Refresh the list
-        return result.data
-      } else {
-        setError(result.error || 'Failed to create task')
+        if (result.success) {
+          await fetchTasks() // Refresh the list
+          return result.data
+        } else {
+          setError(result.error || 'Failed to create task')
+          return null
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
         return null
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      return null
-    }
-  }, [fetchTasks])
+    },
+    [fetchTasks]
+  )
 
-  const updateTask = useCallback(async (id: string, data: Partial<Task>) => {
-    try {
-      const response = await fetch('/api/tasks', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, ...data })
-      })
+  const updateTask = useCallback(
+    async (id: string, data: Partial<Task>) => {
+      try {
+        const response = await fetch('/api/tasks', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, ...data }),
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        await fetchTasks() // Refresh the list
-        return result.data
-      } else {
-        setError(result.error || 'Failed to update task')
+        if (result.success) {
+          await fetchTasks() // Refresh the list
+          return result.data
+        } else {
+          setError(result.error || 'Failed to update task')
+          return null
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
         return null
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      return null
-    }
-  }, [fetchTasks])
+    },
+    [fetchTasks]
+  )
 
-  const deleteTask = useCallback(async (id: string) => {
-    try {
-      const response = await fetch('/api/tasks', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id })
-      })
+  const deleteTask = useCallback(
+    async (id: string) => {
+      try {
+        const response = await fetch('/api/tasks', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id }),
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        await fetchTasks() // Refresh the list
-        return true
-      } else {
-        setError(result.error || 'Failed to delete task')
+        if (result.success) {
+          await fetchTasks() // Refresh the list
+          return true
+        } else {
+          setError(result.error || 'Failed to delete task')
+          return false
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
         return false
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      return false
-    }
-  }, [fetchTasks])
+    },
+    [fetchTasks]
+  )
 
   return {
     tasks,
@@ -147,6 +156,6 @@ export function useTasks(filters?: TaskFilters): UseTasksResult {
     refetch: fetchTasks,
     createTask,
     updateTask,
-    deleteTask
+    deleteTask,
   }
 }

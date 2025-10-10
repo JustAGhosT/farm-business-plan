@@ -14,10 +14,7 @@ export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
     }
 
     const { searchParams } = new URL(request.url)
@@ -37,22 +34,22 @@ export async function GET(request: Request) {
       LEFT JOIN users gb ON up.granted_by = gb.id
       WHERE 1=1
     `
-    
+
     const params: any[] = []
     let paramIndex = 1
-    
+
     if (userId) {
       queryText += ` AND up.user_id = $${paramIndex}`
       params.push(userId)
       paramIndex++
     }
-    
+
     if (farmPlanId) {
       queryText += ` AND up.farm_plan_id = $${paramIndex}`
       params.push(farmPlanId)
       paramIndex++
     }
-    
+
     queryText += ' ORDER BY up.created_at DESC'
 
     const result = await query(queryText, params)
@@ -60,7 +57,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: true,
       data: result.rows,
-      count: result.rows.length
+      count: result.rows.length,
     })
   } catch (error) {
     console.error('Error fetching permissions:', error)
@@ -79,10 +76,7 @@ export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
     }
 
     const body = await request.json()
@@ -96,7 +90,7 @@ export async function POST(request: Request) {
       can_approve = false,
       can_invite = false,
       custom_permissions,
-      expires_at
+      expires_at,
     } = body
 
     // Validate required fields
@@ -125,11 +119,8 @@ export async function POST(request: Request) {
 
     if (granterPermCheck.rows.length === 0 || !granterPermCheck.rows[0].can_invite) {
       // Check if user is admin
-      const userCheck = await query(
-        'SELECT role FROM users WHERE id = $1',
-        [session.user.id]
-      )
-      
+      const userCheck = await query('SELECT role FROM users WHERE id = $1', [session.user.id])
+
       if (!userCheck.rows[0] || userCheck.rows[0].role !== 'admin') {
         return NextResponse.json(
           { success: false, error: 'You do not have permission to grant permissions' },
@@ -168,14 +159,17 @@ export async function POST(request: Request) {
         can_invite,
         custom_permissions ? JSON.stringify(custom_permissions) : null,
         session.user.id,
-        expires_at || null
+        expires_at || null,
       ]
     )
 
-    return NextResponse.json({
-      success: true,
-      data: result.rows[0]
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        success: true,
+        data: result.rows[0],
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Error creating permission:', error)
     return NextResponse.json(
@@ -193,20 +187,14 @@ export async function DELETE(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
     }
 
     const { searchParams } = new URL(request.url)
     const permissionId = searchParams.get('id')
 
     if (!permissionId) {
-      return NextResponse.json(
-        { success: false, error: 'Missing permission ID' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: 'Missing permission ID' }, { status: 400 })
     }
 
     // Check if user has permission to revoke
@@ -219,19 +207,13 @@ export async function DELETE(request: Request) {
     )
 
     if (permCheck.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Permission not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'Permission not found' }, { status: 404 })
     }
 
     if (!permCheck.rows[0].can_invite) {
       // Check if user is admin
-      const userCheck = await query(
-        'SELECT role FROM users WHERE id = $1',
-        [session.user.id]
-      )
-      
+      const userCheck = await query('SELECT role FROM users WHERE id = $1', [session.user.id])
+
       if (!userCheck.rows[0] || userCheck.rows[0].role !== 'admin') {
         return NextResponse.json(
           { success: false, error: 'You do not have permission to revoke permissions' },
@@ -244,7 +226,7 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: 'Permission revoked successfully'
+      message: 'Permission revoked successfully',
     })
   } catch (error) {
     console.error('Error deleting permission:', error)

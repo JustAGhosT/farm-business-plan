@@ -14,10 +14,7 @@ export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
     }
 
     const { searchParams } = new URL(request.url)
@@ -30,25 +27,25 @@ export async function GET(request: Request) {
       SELECT * FROM notifications
       WHERE user_id = $1
     `
-    
+
     const params: any[] = [session.user.id]
     let paramIndex = 2
-    
+
     if (isRead !== null && isRead !== undefined) {
       queryText += ` AND is_read = $${paramIndex}`
       params.push(isRead === 'true')
       paramIndex++
     }
-    
+
     if (type) {
       queryText += ` AND type = $${paramIndex}`
       params.push(type)
       paramIndex++
     }
-    
+
     // Don't show expired notifications
     queryText += ` AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)`
-    
+
     queryText += ` ORDER BY created_at DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`
     params.push(limit, offset)
 
@@ -67,7 +64,7 @@ export async function GET(request: Request) {
       success: true,
       data: result.rows,
       count: result.rows.length,
-      unreadCount: parseInt(unreadResult.rows[0]?.unread_count || '0')
+      unreadCount: parseInt(unreadResult.rows[0]?.unread_count || '0'),
     })
   } catch (error) {
     console.error('Error fetching notifications:', error)
@@ -86,10 +83,7 @@ export async function PATCH(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
     }
 
     const body = await request.json()
@@ -106,7 +100,7 @@ export async function PATCH(request: Request) {
 
       return NextResponse.json({
         success: true,
-        message: 'All notifications marked as read'
+        message: 'All notifications marked as read',
       })
     }
 
@@ -121,7 +115,7 @@ export async function PATCH(request: Request) {
 
       return NextResponse.json({
         success: true,
-        message: `${ids.length} notifications marked as read`
+        message: `${ids.length} notifications marked as read`,
       })
     }
 
@@ -144,7 +138,7 @@ export async function PATCH(request: Request) {
 
       return NextResponse.json({
         success: true,
-        data: result.rows[0]
+        data: result.rows[0],
       })
     }
 
@@ -169,10 +163,7 @@ export async function DELETE(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
     }
 
     const { searchParams } = new URL(request.url)
@@ -191,15 +182,12 @@ export async function DELETE(request: Request) {
     )
 
     if (result.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Notification not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'Notification not found' }, { status: 404 })
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Notification deleted successfully'
+      message: 'Notification deleted successfully',
     })
   } catch (error) {
     console.error('Error deleting notification:', error)

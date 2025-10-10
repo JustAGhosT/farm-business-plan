@@ -8,15 +8,17 @@ export const FarmPlanSchema = z.object({
   name: z.string().min(1, 'Farm name is required').max(255),
   location: z.string().min(1, 'Location is required').max(255),
   province: z.string().max(100).optional(),
-  coordinates: z.object({
-    lat: z.number().min(-90).max(90),
-    lng: z.number().min(-180).max(180)
-  }).optional(),
+  coordinates: z
+    .object({
+      lat: z.number().min(-90).max(90),
+      lng: z.number().min(-180).max(180),
+    })
+    .optional(),
   farm_size: z.number().positive('Farm size must be positive'),
   soil_type: z.string().max(255).optional(),
   water_source: z.string().optional(),
   status: z.enum(['draft', 'active', 'completed', 'archived']).default('draft'),
-  owner_id: z.string().uuid().optional()
+  owner_id: z.string().uuid().optional(),
 })
 
 export type FarmPlan = z.infer<typeof FarmPlanSchema>
@@ -34,7 +36,7 @@ export const CropPlanSchema = z.object({
   harvest_date: z.string().optional(), // ISO date string
   expected_yield: z.number().optional(),
   yield_unit: z.string().max(50).optional(),
-  status: z.enum(['planned', 'planted', 'growing', 'harvested', 'failed']).default('planned')
+  status: z.enum(['planned', 'planted', 'growing', 'harvested', 'failed']).default('planned'),
 })
 
 export type CropPlan = z.infer<typeof CropPlanSchema>
@@ -61,7 +63,7 @@ export const TaskSchema = z.object({
   requires_approval: z.boolean().optional(),
   approved_by: z.string().uuid().optional(),
   approved_at: z.string().optional(), // ISO date string
-  notes: z.string().optional()
+  notes: z.string().optional(),
 })
 
 export type Task = z.infer<typeof TaskSchema>
@@ -79,7 +81,7 @@ export const FinancialDataSchema = z.object({
   annual_operating_costs: z.number().optional(),
   projected_revenue: z.number().optional(),
   break_even_point: z.number().int().optional(),
-  roi_percentage: z.number().optional()
+  roi_percentage: z.number().optional(),
 })
 
 export type FinancialData = z.infer<typeof FinancialDataSchema>
@@ -95,7 +97,7 @@ export const ClimateDataSchema = z.object({
   annual_rainfall: z.number().optional(),
   frost_risk: z.boolean().default(false),
   growing_season_length: z.number().int().optional(),
-  auto_populated: z.boolean().default(false)
+  auto_populated: z.boolean().default(false),
 })
 
 export type ClimateData = z.infer<typeof ClimateDataSchema>
@@ -108,12 +110,21 @@ export const CalculatorResultSchema = z.object({
   farm_plan_id: z.string().uuid().optional().nullable(),
   crop_plan_id: z.string().uuid().optional().nullable(),
   user_id: z.string().uuid().optional().nullable(),
-  calculator_type: z.enum(['roi', 'break-even', 'investment', 'loan', 'operating-costs', 'revenue', 'cash-flow', 'profit-margin']),
+  calculator_type: z.enum([
+    'roi',
+    'break-even',
+    'investment',
+    'loan',
+    'operating-costs',
+    'revenue',
+    'cash-flow',
+    'profit-margin',
+  ]),
   input_data: z.any(), // Simplified to z.any() to avoid Zod v4 record issues
   results: z.any(), // Simplified to z.any() to avoid Zod v4 record issues
   notes: z.string().optional(),
   created_at: z.string().optional(),
-  updated_at: z.string().optional()
+  updated_at: z.string().optional(),
 })
 
 export type CalculatorResult = z.infer<typeof CalculatorResultSchema>
@@ -131,7 +142,7 @@ export const CropTemplateSchema = z.object({
   growing_requirements: z.any().optional(), // JSONB field
   market_info: z.any().optional(), // JSONB field
   is_public: z.boolean().default(true),
-  created_by: z.string().uuid().optional()
+  created_by: z.string().uuid().optional(),
 })
 
 export type CropTemplate = z.infer<typeof CropTemplateSchema>
@@ -144,7 +155,7 @@ export const AIRecommendationSchema = z.object({
   farm_plan_id: z.string().uuid(),
   recommendation_text: z.string().min(1, 'Recommendation text is required'),
   category: z.string().max(100).optional(),
-  priority: z.number().int().default(0)
+  priority: z.number().int().default(0),
 })
 
 export type AIRecommendation = z.infer<typeof AIRecommendationSchema>
@@ -152,7 +163,10 @@ export type AIRecommendation = z.infer<typeof AIRecommendationSchema>
 /**
  * Validation helper function
  */
-export function validateData<T>(schema: z.ZodSchema<T>, data: unknown): {
+export function validateData<T>(
+  schema: z.ZodSchema<T>,
+  data: unknown
+): {
   success: boolean
   data?: T
   errors?: z.ZodError

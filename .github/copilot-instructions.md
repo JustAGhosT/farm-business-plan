@@ -16,6 +16,7 @@ This repository contains comprehensive business plan documentation and serves as
 ## File Organization
 
 ### Root Level Files
+
 - `README.md` - Main project overview and table of contents
 - `executive-summary.md` - High-level business plan summary
 - `technical-implementation.md` - Technical specifications and implementation details
@@ -27,10 +28,13 @@ This repository contains comprehensive business plan documentation and serves as
 - `appendices.md` - Supporting documentation and references
 
 ### Assets Directory
+
 - `assets/` - Contains images, diagrams, and other media files
 
 ### Future Application Structure
+
 When building the Next.js application, follow these conventions:
+
 - `/app` - Next.js app directory with routing
 - `/components` - Reusable React components for farm management features
 - `/lib` - Utility functions, data models, and business logic
@@ -42,6 +46,7 @@ When building the Next.js application, follow these conventions:
 ## Documentation Standards
 
 ### Writing Style
+
 - Use clear, professional business language
 - Maintain consistency with existing terminology and tone
 - Use South African English spelling conventions
@@ -49,6 +54,7 @@ When building the Next.js application, follow these conventions:
 - Write with consideration for both documentation and future application UI/UX
 
 ### Markdown Formatting
+
 - Use proper heading hierarchy (H1 for document titles, H2 for major sections, H3 for subsections)
 - Use tables for structured data (financial projections, schedules, metrics)
 - Use emoji icons consistently with existing documentation (e.g., 🌱 :seedling:, 📊 :chart_with_upwards_trend:, 💰 :moneybag:)
@@ -56,6 +62,7 @@ When building the Next.js application, follow these conventions:
 - Use Mermaid diagrams for process flows and timelines where applicable
 
 ### Code Standards (for Next.js Application)
+
 - Use TypeScript for type safety
 - Follow Next.js 14+ conventions (App Router)
 - Use Tailwind CSS for styling
@@ -65,12 +72,14 @@ When building the Next.js application, follow these conventions:
 - Follow React best practices (hooks, composition, performance optimization)
 
 ### Content Guidelines
+
 - **Financial Data**: Use South African Rand (ZAR/R) for all monetary values
 - **Measurements**: Use metric system (meters, kilograms, liters, Celsius)
 - **Dates**: Use format "Month Year" or "DD MMM YYYY" for consistency
 - **Location References**: Always specify "Bela Bela, Limpopo Province, South Africa"
 
 ### Technical Specifications
+
 - Include specific measurements and quantities
 - Provide actionable implementation details
 - Reference local conditions (climate, soil, regulations)
@@ -79,12 +88,14 @@ When building the Next.js application, follow these conventions:
 ## Agricultural Context
 
 ### Key Crops (Diversified Farm Management)
+
 1. **Dragon Fruit** - Wall-farming initiative with detailed technical specifications
 2. **Moringa** - Leaf harvest and production management
 3. **Lucerne** - High-value forage crop cultivation
 4. **Additional Crops** - System designed to accommodate various crop types
 
 ### Farm Management Features
+
 - Multi-crop planning and tracking
 - Financial projections and ROI analysis per crop
 - Operations scheduling and task management
@@ -93,12 +104,14 @@ When building the Next.js application, follow these conventions:
 - Risk assessment and mitigation planning
 
 ### Climate Considerations
+
 - Hot summers (28°C average in summer)
 - Mild winters (16°C average in winter)
 - Seasonal rainfall patterns
 - Frost protection requirements
 
 ### Local Context
+
 - Small-scale diversified farming operation
 - Focus on sustainable practices
 - Water efficiency optimization
@@ -108,6 +121,7 @@ When building the Next.js application, follow these conventions:
 ## Application Development Guidelines
 
 ### Next.js Best Practices
+
 - Use Server Components by default, Client Components when needed
 - Implement proper data fetching patterns (server-side when possible)
 - Optimize for performance (image optimization, lazy loading, code splitting)
@@ -116,6 +130,7 @@ When building the Next.js application, follow these conventions:
 - Follow accessibility guidelines (WCAG 2.1)
 
 ### Database and Data Management
+
 - Design schema to support multiple crop types and farm operations
 - Implement proper data validation and sanitization
 - Use efficient queries and caching strategies
@@ -123,6 +138,7 @@ When building the Next.js application, follow these conventions:
 - Enable data export/import for backup and migration
 
 ### UI/UX Principles
+
 - Clean, intuitive interface for farm managers
 - Dashboard with key metrics and quick actions
 - Mobile-responsive design for field use
@@ -132,6 +148,7 @@ When building the Next.js application, follow these conventions:
 ## Making Changes
 
 ### When Adding Documentation Content
+
 - Ensure new content aligns with existing business plan structure
 - Maintain consistency in financial calculations and projections
 - Cross-reference related sections appropriately
@@ -139,6 +156,7 @@ When building the Next.js application, follow these conventions:
 - Consider how content will translate to the application interface
 
 ### When Adding Application Code
+
 - Follow the established file structure and naming conventions
 - Write components that are reusable across different crop types
 - Implement features that scale to multiple farms/crops
@@ -147,6 +165,7 @@ When building the Next.js application, follow these conventions:
 - Document complex algorithms or business rules
 
 ### When Updating Content
+
 - Preserve existing formatting and structure
 - Maintain version numbers and dates where present
 - Ensure calculations remain accurate and consistent
@@ -154,6 +173,7 @@ When building the Next.js application, follow these conventions:
 - Update both documentation and corresponding application features if applicable
 
 ### Quality Checklist
+
 - [ ] Uses correct South African terminology and measurements
 - [ ] Financial figures are accurate and consistent across documents
 - [ ] References to location, climate, and regulations are current
@@ -169,6 +189,7 @@ When building the Next.js application, follow these conventions:
 ## Common Tasks
 
 ### Adding Financial Data
+
 - Always use ZAR (R) currency
 - Maintain consistent decimal places (typically 2)
 - Update related summaries if modifying projections
@@ -176,6 +197,7 @@ When building the Next.js application, follow these conventions:
 - Design financial models to work with multiple crop types
 
 ### Adding Technical Specifications
+
 - Include measurements with units
 - Provide source/justification where applicable
 - Reference local suppliers or standards
@@ -183,6 +205,7 @@ When building the Next.js application, follow these conventions:
 - Structure data for easy integration into the application
 
 ### Adding Operational Procedures
+
 - Use step-by-step formatting
 - Include safety warnings where appropriate
 - Specify required tools or materials
@@ -190,6 +213,7 @@ When building the Next.js application, follow these conventions:
 - Consider how procedures will be tracked/managed in the application
 
 ### Building Application Features
+
 - Start with reusable components (buttons, forms, cards)
 - Implement crop-agnostic data models and logic
 - Add comprehensive error handling
@@ -200,18 +224,21 @@ When building the Next.js application, follow these conventions:
 ## Resources and References
 
 ### Useful Information
+
 - Jekyll configuration in `_config.yml` for GitHub Pages
 - Local climate data available in appendices
 - Contact directories for suppliers and services
 - Regulatory compliance checklists
 
 ### External References
+
 - South African agricultural regulations
 - Local market pricing for various crops
 - Bela Bela climate data
 - Sustainable farming practices
 
 ### Technology Stack
+
 - **Framework**: Next.js 14+ (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
@@ -223,6 +250,7 @@ When building the Next.js application, follow these conventions:
 ## Collaboration
 
 When suggesting changes or additions:
+
 - Consider the diversified farm management context (not just dragon fruit)
 - Prioritize practical, implementable solutions for multiple crop types
 - Respect budget constraints mentioned in financial analysis

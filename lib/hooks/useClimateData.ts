@@ -66,72 +66,81 @@ export function useClimateData(filters?: ClimateDataFilters): UseClimateDataResu
     fetchClimateData()
   }, [fetchClimateData])
 
-  const createClimateData = useCallback(async (data: Partial<ClimateData>) => {
-    try {
-      const response = await fetch('/api/climate-data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
+  const createClimateData = useCallback(
+    async (data: Partial<ClimateData>) => {
+      try {
+        const response = await fetch('/api/climate-data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        await fetchClimateData() // Refresh the list
-        return result.data
-      } else {
-        setError(result.error || 'Failed to create climate data')
+        if (result.success) {
+          await fetchClimateData() // Refresh the list
+          return result.data
+        } else {
+          setError(result.error || 'Failed to create climate data')
+          return null
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
         return null
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      return null
-    }
-  }, [fetchClimateData])
+    },
+    [fetchClimateData]
+  )
 
-  const updateClimateData = useCallback(async (id: string, data: Partial<ClimateData>) => {
-    try {
-      const response = await fetch('/api/climate-data', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, ...data })
-      })
+  const updateClimateData = useCallback(
+    async (id: string, data: Partial<ClimateData>) => {
+      try {
+        const response = await fetch('/api/climate-data', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, ...data }),
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        await fetchClimateData() // Refresh the list
-        return result.data
-      } else {
-        setError(result.error || 'Failed to update climate data')
+        if (result.success) {
+          await fetchClimateData() // Refresh the list
+          return result.data
+        } else {
+          setError(result.error || 'Failed to update climate data')
+          return null
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
         return null
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      return null
-    }
-  }, [fetchClimateData])
+    },
+    [fetchClimateData]
+  )
 
-  const deleteClimateData = useCallback(async (id: string) => {
-    try {
-      const response = await fetch(`/api/climate-data?id=${id}`, {
-        method: 'DELETE'
-      })
+  const deleteClimateData = useCallback(
+    async (id: string) => {
+      try {
+        const response = await fetch(`/api/climate-data?id=${id}`, {
+          method: 'DELETE',
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        await fetchClimateData() // Refresh the list
-        return true
-      } else {
-        setError(result.error || 'Failed to delete climate data')
+        if (result.success) {
+          await fetchClimateData() // Refresh the list
+          return true
+        } else {
+          setError(result.error || 'Failed to delete climate data')
+          return false
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
         return false
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      return false
-    }
-  }, [fetchClimateData])
+    },
+    [fetchClimateData]
+  )
 
   return {
     climateData,
@@ -140,14 +149,16 @@ export function useClimateData(filters?: ClimateDataFilters): UseClimateDataResu
     refetch: fetchClimateData,
     createClimateData,
     updateClimateData,
-    deleteClimateData
+    deleteClimateData,
   }
 }
 
 /**
  * Custom hook for fetching climate data for a single farm plan
  */
-export function useClimateDataByFarm(farmPlanId: string | null): Omit<UseClimateDataResult, 'createClimateData' | 'updateClimateData' | 'deleteClimateData'> {
+export function useClimateDataByFarm(
+  farmPlanId: string | null
+): Omit<UseClimateDataResult, 'createClimateData' | 'updateClimateData' | 'deleteClimateData'> {
   const filters = farmPlanId ? { farm_plan_id: farmPlanId } : undefined
   const { climateData, loading, error, refetch } = useClimateData(filters)
 
@@ -155,6 +166,6 @@ export function useClimateDataByFarm(farmPlanId: string | null): Omit<UseClimate
     climateData,
     loading,
     error,
-    refetch
+    refetch,
   }
 }

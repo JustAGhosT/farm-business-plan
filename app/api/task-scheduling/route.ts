@@ -28,7 +28,7 @@ export async function POST(request: Request) {
       WHERE cp.farm_plan_id = $1
     `
     const queryParams: any[] = [farm_plan_id]
-    
+
     if (crop_plan_id) {
       cropPlansQuery += ' AND cp.id = $2'
       queryParams.push(crop_plan_id)
@@ -37,10 +37,7 @@ export async function POST(request: Request) {
     const cropPlansResult = await query(cropPlansQuery, queryParams)
 
     if (cropPlansResult.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'No crop plans found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'No crop plans found' }, { status: 404 })
     }
 
     const generatedTasks: any[] = []
@@ -68,7 +65,7 @@ export async function POST(request: Request) {
           'pending',
           task.priority,
           task.category,
-          task.due_date
+          task.due_date,
         ]
 
         const result = await query(insertQuery, insertParams)
@@ -76,26 +73,32 @@ export async function POST(request: Request) {
       }
     }
 
-    return NextResponse.json({
-      success: true,
-      data: generatedTasks,
-      count: generatedTasks.length,
-      message: `Successfully generated ${generatedTasks.length} automated tasks`
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        success: true,
+        data: generatedTasks,
+        count: generatedTasks.length,
+        message: `Successfully generated ${generatedTasks.length} automated tasks`,
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Error generating tasks:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Failed to generate tasks',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     )
   }
 }
 
-function generateCropTasks(cropPlan: any, plantingDate: Date): Array<{
+function generateCropTasks(
+  cropPlan: any,
+  plantingDate: Date
+): Array<{
   title: string
   description: string
   priority: string
@@ -120,7 +123,7 @@ function generateCropTasks(cropPlan: any, plantingDate: Date): Array<{
     description: `Prepare ${hectares} hectares for planting. Till soil, add compost, test pH.`,
     priority: 'high',
     category: 'soil_preparation',
-    due_date: addDays(plantingDate, -14).toISOString()
+    due_date: addDays(plantingDate, -14).toISOString(),
   })
 
   tasks.push({
@@ -128,7 +131,7 @@ function generateCropTasks(cropPlan: any, plantingDate: Date): Array<{
     description: `Order seeds for ${hectares} hectares.`,
     priority: 'high',
     category: 'procurement',
-    due_date: addDays(plantingDate, -21).toISOString()
+    due_date: addDays(plantingDate, -21).toISOString(),
   })
 
   tasks.push({
@@ -136,7 +139,7 @@ function generateCropTasks(cropPlan: any, plantingDate: Date): Array<{
     description: `Plant ${cropName} in ${hectares} hectares.`,
     priority: 'urgent',
     category: 'planting',
-    due_date: plantingDate.toISOString()
+    due_date: plantingDate.toISOString(),
   })
 
   // Irrigation
@@ -147,7 +150,7 @@ function generateCropTasks(cropPlan: any, plantingDate: Date): Array<{
         description: `Check irrigation for ${cropName}.`,
         priority: 'medium',
         category: 'irrigation',
-        due_date: addDays(plantingDate, i * calendar.irrigationFrequencyDays).toISOString()
+        due_date: addDays(plantingDate, i * calendar.irrigationFrequencyDays).toISOString(),
       })
     }
   }
@@ -160,7 +163,7 @@ function generateCropTasks(cropPlan: any, plantingDate: Date): Array<{
         description: `Apply ${app.type} at rate ${app.rate}`,
         priority: 'high',
         category: 'fertilization',
-        due_date: addDays(plantingDate, app.daysAfterPlanting).toISOString()
+        due_date: addDays(plantingDate, app.daysAfterPlanting).toISOString(),
       })
     })
   }
@@ -171,7 +174,7 @@ function generateCropTasks(cropPlan: any, plantingDate: Date): Array<{
     description: `Prepare for harvest of ${cropName}.`,
     priority: 'high',
     category: 'harvest',
-    due_date: addDays(plantingDate, calendar.daysToHarvest - 7).toISOString()
+    due_date: addDays(plantingDate, calendar.daysToHarvest - 7).toISOString(),
   })
 
   tasks.push({
@@ -179,7 +182,7 @@ function generateCropTasks(cropPlan: any, plantingDate: Date): Array<{
     description: `Harvest ${cropName} from ${hectares} hectares.`,
     priority: 'urgent',
     category: 'harvest',
-    due_date: addDays(plantingDate, calendar.daysToHarvest).toISOString()
+    due_date: addDays(plantingDate, calendar.daysToHarvest).toISOString(),
   })
 
   return tasks
@@ -192,28 +195,28 @@ function getCropCalendar(cropName: string) {
       irrigationFrequencyDays: 7,
       fertilizerApplications: [
         { type: 'NPK', daysAfterPlanting: 30, rate: '100g/plant' },
-        { type: 'Phosphorus', daysAfterPlanting: 90, rate: '50g/plant' }
-      ]
+        { type: 'Phosphorus', daysAfterPlanting: 90, rate: '50g/plant' },
+      ],
     },
-    'moringa': {
+    moringa: {
       daysToHarvest: 60,
       irrigationFrequencyDays: 5,
-      fertilizerApplications: [
-        { type: 'Compost', daysAfterPlanting: 20, rate: '2kg/plant' }
-      ]
+      fertilizerApplications: [{ type: 'Compost', daysAfterPlanting: 20, rate: '2kg/plant' }],
     },
-    'lucerne': {
+    lucerne: {
       daysToHarvest: 90,
       irrigationFrequencyDays: 10,
-      fertilizerApplications: []
-    }
+      fertilizerApplications: [],
+    },
   }
 
-  return calendars[cropName] || {
-    daysToHarvest: 90,
-    irrigationFrequencyDays: 7,
-    fertilizerApplications: []
-  }
+  return (
+    calendars[cropName] || {
+      daysToHarvest: 90,
+      irrigationFrequencyDays: 7,
+      fertilizerApplications: [],
+    }
+  )
 }
 
 function addDays(date: Date, days: number): Date {

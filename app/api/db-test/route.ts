@@ -19,7 +19,7 @@ export async function GET() {
   try {
     // Test database connection
     const result = await pool.query('SELECT NOW() as current_time, version() as version')
-    
+
     return NextResponse.json({
       success: true,
       message: 'Database connected successfully',
@@ -28,12 +28,15 @@ export async function GET() {
     })
   } catch (error) {
     console.error('Database connection error:', error)
-    
-    return NextResponse.json({
-      success: false,
-      message: 'Database connection failed',
-      error: error instanceof Error ? error.message : 'Unknown error',
-    }, { status: 500 })
+
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Database connection failed',
+        error: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    )
   }
 }
 

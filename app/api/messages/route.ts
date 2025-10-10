@@ -14,10 +14,7 @@ export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
     }
 
     const { searchParams } = new URL(request.url)
@@ -38,28 +35,28 @@ export async function GET(request: Request) {
       JOIN users u ON m.sender_id = u.id
       WHERE m.is_deleted = false
     `
-    
+
     const params: any[] = []
     let paramIndex = 1
-    
+
     if (threadId) {
       queryText += ` AND m.thread_id = $${paramIndex}`
       params.push(threadId)
       paramIndex++
     }
-    
+
     if (contextType) {
       queryText += ` AND m.context_type = $${paramIndex}`
       params.push(contextType)
       paramIndex++
     }
-    
+
     if (contextId) {
       queryText += ` AND m.context_id = $${paramIndex}`
       params.push(contextId)
       paramIndex++
     }
-    
+
     queryText += ` ORDER BY m.created_at ASC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`
     params.push(limit, offset)
 
@@ -81,14 +78,11 @@ export async function GET(request: Request) {
       success: true,
       data: result.rows,
       count: result.rows.length,
-      unreadCount: parseInt(unreadResult.rows[0]?.unread_count || '0')
+      unreadCount: parseInt(unreadResult.rows[0]?.unread_count || '0'),
     })
   } catch (error) {
     console.error('Error fetching messages:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch messages' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Failed to fetch messages' }, { status: 500 })
   }
 }
 
@@ -100,21 +94,12 @@ export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
     }
 
     const body = await request.json()
-    const {
-      thread_id,
-      content,
-      context_type,
-      context_id,
-      context_section,
-      parent_message_id
-    } = body
+    const { thread_id, content, context_type, context_id, context_section, parent_message_id } =
+      body
 
     // Validate required fields
     if (!content || !content.trim()) {
@@ -129,7 +114,10 @@ export async function POST(request: Request) {
       const validTypes = ['farm-plan', 'crop-plan', 'task', 'document', 'general']
       if (!validTypes.includes(context_type)) {
         return NextResponse.json(
-          { success: false, error: `Invalid context_type. Must be one of: ${validTypes.join(', ')}` },
+          {
+            success: false,
+            error: `Invalid context_type. Must be one of: ${validTypes.join(', ')}`,
+          },
           { status: 400 }
         )
       }
@@ -153,24 +141,23 @@ export async function POST(request: Request) {
         context_type || null,
         context_id || null,
         context_section || null,
-        parent_message_id || null
+        parent_message_id || null,
       ]
     )
 
     const message = result.rows[0]
 
     // Process @mentions
-    const mentionCount = await query(
-      'SELECT process_message_mentions($1, $2) as count',
-      [message.id, content]
-    )
+    const mentionCount = await query('SELECT process_message_mentions($1, $2) as count', [
+      message.id,
+      content,
+    ])
 
     // Create notifications for mentions
     if (mentionCount.rows[0]?.count > 0) {
-      const mentions = await query(
-        'SELECT user_id FROM message_mentions WHERE message_id = $1',
-        [message.id]
-      )
+      const mentions = await query('SELECT user_id FROM message_mentions WHERE message_id = $1', [
+        message.id,
+      ])
 
       for (const mention of mentions.rows) {
         await query(
@@ -185,7 +172,7 @@ export async function POST(request: Request) {
             'medium',
             'message',
             message.id,
-            `/messages?thread_id=${finalThreadId}`
+            `/messages?thread_id=${finalThreadId}`,
           ]
         )
       }
@@ -202,20 +189,20 @@ export async function POST(request: Request) {
         session.user.id,
         session.user.name || session.user.email,
         'created',
-        `Posted message in thread`
+        `Posted message in thread`,
       ]
     )
 
-    return NextResponse.json({
-      success: true,
-      data: message
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        success: true,
+        data: message,
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Error creating message:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to create message' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Failed to create message' }, { status: 500 })
   }
 }
 
@@ -227,10 +214,7 @@ export async function PATCH(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
     }
 
     const body = await request.json()
@@ -250,10 +234,7 @@ export async function PATCH(request: Request) {
     )
 
     if (checkResult.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Message not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'Message not found' }, { status: 404 })
     }
 
     if (checkResult.rows[0].sender_id !== session.user.id) {
@@ -290,14 +271,11 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json({
       success: true,
-      data: result.rows[0]
+      data: result.rows[0],
     })
   } catch (error) {
     console.error('Error updating message:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to update message' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Failed to update message' }, { status: 500 })
   }
 }
 
@@ -309,20 +287,14 @@ export async function DELETE(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
     }
 
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
 
     if (!id) {
-      return NextResponse.json(
-        { success: false, error: 'Message ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: 'Message ID is required' }, { status: 400 })
     }
 
     // Check if message exists and user is the sender or admin
@@ -332,19 +304,12 @@ export async function DELETE(request: Request) {
     )
 
     if (checkResult.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Message not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'Message not found' }, { status: 404 })
     }
 
-    const userCheck = await query(
-      'SELECT role FROM users WHERE id = $1',
-      [session.user.id]
-    )
+    const userCheck = await query('SELECT role FROM users WHERE id = $1', [session.user.id])
 
-    if (checkResult.rows[0].sender_id !== session.user.id && 
-        userCheck.rows[0]?.role !== 'admin') {
+    if (checkResult.rows[0].sender_id !== session.user.id && userCheck.rows[0]?.role !== 'admin') {
       return NextResponse.json(
         { success: false, error: 'You can only delete your own messages' },
         { status: 403 }
@@ -352,20 +317,14 @@ export async function DELETE(request: Request) {
     }
 
     // Soft delete
-    await query(
-      'UPDATE messages SET is_deleted = true WHERE id = $1',
-      [id]
-    )
+    await query('UPDATE messages SET is_deleted = true WHERE id = $1', [id])
 
     return NextResponse.json({
       success: true,
-      message: 'Message deleted successfully'
+      message: 'Message deleted successfully',
     })
   } catch (error) {
     console.error('Error deleting message:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to delete message' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Failed to delete message' }, { status: 500 })
   }
 }

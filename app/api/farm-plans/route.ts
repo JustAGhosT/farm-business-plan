@@ -23,14 +23,14 @@ export async function GET(request: Request) {
       LEFT JOIN crop_plans cp ON fp.id = cp.farm_plan_id
       LEFT JOIN tasks t ON fp.id = t.farm_plan_id
     `
-    
+
     const params: any[] = []
-    
+
     if (ownerId) {
       queryText += ' WHERE fp.owner_id = $1'
       params.push(ownerId)
     }
-    
+
     queryText += ' GROUP BY fp.id ORDER BY fp.created_at DESC'
 
     const result = await query(queryText, params)
@@ -38,7 +38,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: true,
       data: result.rows,
-      count: result.rows.length
+      count: result.rows.length,
     })
   } catch (error) {
     console.error('Error fetching farm plans:', error)
@@ -56,15 +56,15 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    
+
     // Validate input
     const validation = validateData(FarmPlanSchema, body)
     if (!validation.success) {
       return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Validation failed', 
-          details: validation.errors?.issues 
+        {
+          success: false,
+          error: 'Validation failed',
+          details: validation.errors?.issues,
         },
         { status: 400 }
       )
@@ -90,16 +90,19 @@ export async function POST(request: Request) {
       data.soil_type || null,
       data.water_source || null,
       data.status || 'draft',
-      data.owner_id || null
+      data.owner_id || null,
     ]
 
     const result = await query(queryText, params)
 
-    return NextResponse.json({
-      success: true,
-      data: result.rows[0],
-      message: 'Farm plan created successfully'
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        success: true,
+        data: result.rows[0],
+        message: 'Farm plan created successfully',
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Error creating farm plan:', error)
     return NextResponse.json(

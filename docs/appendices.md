@@ -154,71 +154,82 @@ Storage Facilities:
 ```markdown
 # Daily Operations Checklist
 
-Date: ______________
-Weather: ___________  Temperature: _____  Rainfall: _____
-Inspector: __________  Start Time: _____  End Time: _____
+Date: **\*\***\_\_**\*\***
+Weather: \***\*\_\_\_\*\*** Temperature: **\_** Rainfall: **\_**
+Inspector: \***\*\_\_\*\*** Start Time: **\_** End Time: **\_**
 
 ## Morning Inspection
 
 ### Irrigation System
-- [ ] Water pressure: _____ [bar/PSI] (Target: _____)
-- [ ] Flow rate check: _____ [L/h] (Target: _____)
-- [ ] Visual leak inspection: [Pass/Fail] Notes: __________
-- [ ] Filter pressure: _____ (Cleaning needed: Yes/No)
+
+- [ ] Water pressure: **\_** [bar/PSI] (Target: **\_**)
+- [ ] Flow rate check: **\_** [L/h] (Target: **\_**)
+- [ ] Visual leak inspection: [Pass/Fail] Notes: \***\*\_\_\*\***
+- [ ] Filter pressure: **\_** (Cleaning needed: Yes/No)
 - [ ] Automation system status: [OK/Issue]
 
 ### Crop Health
+
 - [ ] [Crop 1] Section A: [Condition notes]
 - [ ] [Crop 1] Section B: [Condition notes]
 - [ ] [Crop 2] Section C: [Condition notes]
-- [ ] Pest pressure: [None/Low/Medium/High] Action: _____
-- [ ] Disease signs: [None/Suspected] Details: __________
-- [ ] Water stress signs: [Yes/No] Action: __________
+- [ ] Pest pressure: [None/Low/Medium/High] Action: **\_**
+- [ ] Disease signs: [None/Suspected] Details: \***\*\_\_\*\***
+- [ ] Water stress signs: [Yes/No] Action: \***\*\_\_\*\***
 
 ### Infrastructure
+
 - [ ] Fences and gates: [Condition]
 - [ ] Support structures: [Condition]
 - [ ] Paths and access: [Condition]
 - [ ] Storage facilities: [Condition]
 
 ### Environmental
+
 - [ ] Soil moisture: [Reading or assessment]
 - [ ] Wind conditions: [Calm/Moderate/High]
 - [ ] Forecast for next 24 hours: [Summary]
 
 ## Midday Check (if applicable)
+
 - [ ] [Task 1]
 - [ ] [Task 2]
 
 ## Evening Inspection
 
 ### System Status
-- [ ] Irrigation completed: [Yes/No] Duration: _____
+
+- [ ] Irrigation completed: [Yes/No] Duration: **\_**
 - [ ] All equipment secured: [Yes/No]
-- [ ] Storage temperatures: _____ °C (Target: _____)
+- [ ] Storage temperatures: **\_** °C (Target: **\_**)
 - [ ] Facility locked: [Yes/No]
 
 ### Documentation
+
 - [ ] Production records updated
 - [ ] Inventory checked
 - [ ] Issues logged
 - [ ] Tomorrow's plan prepared
 
 ## Issues Identified
-1. ___________________________________ Priority: [High/Med/Low]
-2. ___________________________________ Priority: [High/Med/Low]
-3. ___________________________________ Priority: [High/Med/Low]
+
+1. **\*\***\*\*\*\***\*\***\_\_\_**\*\***\*\*\*\***\*\*** Priority: [High/Med/Low]
+2. **\*\***\*\*\*\***\*\***\_\_\_**\*\***\*\*\*\***\*\*** Priority: [High/Med/Low]
+3. **\*\***\*\*\*\***\*\***\_\_\_**\*\***\*\*\*\***\*\*** Priority: [High/Med/Low]
 
 ## Actions Taken
-1. ___________________________________
-2. ___________________________________
-3. ___________________________________
+
+1. ***
+2. ***
+3. ***
 
 ## Notes/Observations
-_________________________________________________________________________
-_________________________________________________________________________
 
-Signature: ___________________  Time: __________
+---
+
+---
+
+Signature: **\*\*\*\***\_\_\_**\*\*\*\*** Time: \***\*\_\_\*\***
 ```
 
 ### B. Weekly Maintenance Checklist Template
@@ -226,43 +237,50 @@ Signature: ___________________  Time: __________
 ```markdown
 # Weekly Maintenance Checklist
 
-Week of: ____________  Completed by: ________________
+Week of: \***\*\_\_\_\_\*\*** Completed by: **\*\***\_\_\_\_**\*\***
 
 ## Irrigation System
-- [ ] Filter cleaning/backwash - Date: _____ Notes: _____
-- [ ] Emitter inspection (sample check) - Issues: _____
-- [ ] Pressure test all zones - Results: _____
-- [ ] Check for leaks throughout system - Repairs needed: _____
-- [ ] Fertigation system inspection - Status: _____
+
+- [ ] Filter cleaning/backwash - Date: **\_** Notes: **\_**
+- [ ] Emitter inspection (sample check) - Issues: **\_**
+- [ ] Pressure test all zones - Results: **\_**
+- [ ] Check for leaks throughout system - Repairs needed: **\_**
+- [ ] Fertigation system inspection - Status: **\_**
 
 ## Equipment
-- [ ] Hand tools inventory and condition - Missing/damaged: _____
-- [ ] Power equipment check (oil, fuel, condition) - Service needed: _____
-- [ ] Sprayers/applicators cleaned - Condition: _____
-- [ ] Safety equipment inspection - Replace: _____
+
+- [ ] Hand tools inventory and condition - Missing/damaged: **\_**
+- [ ] Power equipment check (oil, fuel, condition) - Service needed: **\_**
+- [ ] Sprayers/applicators cleaned - Condition: **\_**
+- [ ] Safety equipment inspection - Replace: **\_**
 
 ## Crops
-- [ ] Pest monitoring traps checked - Counts: _____
-- [ ] Disease scouting - Findings: _____
-- [ ] Growth measurements - [Crop]: _____ cm
-- [ ] Pruning/training needs - Priority areas: _____
-- [ ] Harvest forecast update - Est. quantities: _____
+
+- [ ] Pest monitoring traps checked - Counts: **\_**
+- [ ] Disease scouting - Findings: **\_**
+- [ ] Growth measurements - [Crop]: **\_** cm
+- [ ] Pruning/training needs - Priority areas: **\_**
+- [ ] Harvest forecast update - Est. quantities: **\_**
 
 ## Infrastructure
-- [ ] Support structures inspection - Repairs: _____
-- [ ] Fencing perimeter check - Issues: _____
-- [ ] Storage area organization - Action taken: _____
-- [ ] Drainage channels clear - Blockages removed: _____
+
+- [ ] Support structures inspection - Repairs: **\_**
+- [ ] Fencing perimeter check - Issues: **\_**
+- [ ] Storage area organization - Action taken: **\_**
+- [ ] Drainage channels clear - Blockages removed: **\_**
 
 ## Administrative
+
 - [ ] Records updated and filed
 - [ ] Inventory reconciliation
 - [ ] Orders placed for supplies
 - [ ] Schedule next week's tasks
 
 ## Notes
-_________________________________________________________________________
-_________________________________________________________________________
+
+---
+
+---
 ```
 
 ### C. Harvest Log Template
@@ -270,39 +288,43 @@ _________________________________________________________________________
 ```markdown
 # Harvest Log
 
-Date: ____________  Harvester(s): ____________________
-Crop: ____________  Block/Section: __________________
-Weather: __________  Start Time: _____  End Time: _____
+Date: \***\*\_\_\_\_\*\*** Harvester(s): **\*\*\*\***\_\_\_\_**\*\*\*\***
+Crop: \***\*\_\_\_\_\*\*** Block/Section: **\*\*\*\***\_\_**\*\*\*\***
+Weather: \***\*\_\_\*\*** Start Time: **\_** End Time: **\_**
 
 ## Harvest Details
 
-| Grade/Quality | Quantity | Unit | Container # | Notes |
-|---------------|----------|------|-------------|-------|
-| Premium/Grade A | | kg/lbs/units | | |
-| Standard/Grade B | | kg/lbs/units | | |
-| Processing/Grade C | | kg/lbs/units | | |
-| Reject/Compost | | kg/lbs/units | | |
-| **TOTAL** | | | | |
+| Grade/Quality      | Quantity | Unit         | Container # | Notes |
+| ------------------ | -------- | ------------ | ----------- | ----- |
+| Premium/Grade A    |          | kg/lbs/units |             |       |
+| Standard/Grade B   |          | kg/lbs/units |             |       |
+| Processing/Grade C |          | kg/lbs/units |             |       |
+| Reject/Compost     |          | kg/lbs/units |             |       |
+| **TOTAL**          |          |              |             |       |
 
 ## Quality Assessment
+
 - Overall quality: [Excellent/Good/Fair/Poor]
-- Average size: _____
-- Average color: _____
-- Firmness: _____
-- Brix/other metric: _____
+- Average size: **\_**
+- Average color: **\_**
+- Firmness: **\_**
+- Brix/other metric: **\_**
 
 ## Post-Harvest
-- Time to cooling: _____ minutes
-- Storage temperature achieved: _____ °C
+
+- Time to cooling: **\_** minutes
+- Storage temperature achieved: **\_** °C
 - Cleaning/sorting completed: [Yes/No]
 - Packaging completed: [Yes/No]
 - Ready for sale/delivery: [Yes/No]
 
 ## Issues/Notes
-_________________________________________________________________________
-_________________________________________________________________________
 
-Supervisor Approval: ___________________  Date: __________
+---
+
+---
+
+Supervisor Approval: **\*\*\*\***\_\_\_**\*\*\*\*** Date: \***\*\_\_\*\***
 ```
 
 ---
@@ -317,6 +339,7 @@ Supervisor Approval: ___________________  Date: __________
 # Personal Protective Equipment (PPE) Requirements
 
 ## General Farm Work
+
 - Sturdy work boots with toe protection
 - Long pants and long-sleeved shirt
 - Sun hat or cap
@@ -324,6 +347,7 @@ Supervisor Approval: ___________________  Date: __________
 - Work gloves
 
 ## Pesticide/Chemical Application
+
 - Chemical-resistant gloves
 - Long-sleeved coveralls or chemical suit
 - Face shield or goggles
@@ -332,6 +356,7 @@ Supervisor Approval: ___________________  Date: __________
 - Hat
 
 ## Equipment Operation
+
 - Safety glasses or goggles
 - Hearing protection (if noisy equipment)
 - Gloves appropriate for task
@@ -339,12 +364,14 @@ Supervisor Approval: ___________________  Date: __________
 - High-visibility vest (if working near vehicles)
 
 ## Harvesting
+
 - Clean, food-safe gloves
 - Knee pads (if ground-level crops)
 - Sun protection
 - Hydration pack or water bottle
 
 ## Post-Harvest Processing
+
 - Food-safe gloves
 - Hair net or cap
 - Clean apron
@@ -358,39 +385,44 @@ Supervisor Approval: ___________________  Date: __________
 
 ## Emergency Contacts
 
-| Emergency Type | Contact | Phone | Location |
-|----------------|---------|-------|----------|
-| Emergency Services | [911 or local] | | |
-| Fire Department | [Department] | | |
-| Police | [Station] | | |
-| Hospital/Clinic | [Name] | | [Address] |
-| Poison Control | [Center] | | |
-| Farm Owner | [Name] | | |
-| Farm Manager | [Name] | | |
-| Veterinarian (if animals) | [Name] | | |
-| Equipment Repair | [Company] | | |
-| Electrician | [Name] | | |
-| Plumber | [Name] | | |
+| Emergency Type            | Contact        | Phone | Location  |
+| ------------------------- | -------------- | ----- | --------- |
+| Emergency Services        | [911 or local] |       |           |
+| Fire Department           | [Department]   |       |           |
+| Police                    | [Station]      |       |           |
+| Hospital/Clinic           | [Name]         |       | [Address] |
+| Poison Control            | [Center]       |       |           |
+| Farm Owner                | [Name]         |       |           |
+| Farm Manager              | [Name]         |       |           |
+| Veterinarian (if animals) | [Name]         |       |           |
+| Equipment Repair          | [Company]      |       |           |
+| Electrician               | [Name]         |       |           |
+| Plumber                   | [Name]         |       |           |
 
 ## First Aid Kit Locations
+
 - Location 1: [Specific place, what's included]
 - Location 2: [Specific place, what's included]
 - Location 3: [Specific place, what's included]
 
 ## Fire Extinguisher Locations
+
 - Location 1: [Place, type, last inspection date]
 - Location 2: [Place, type, last inspection date]
 
 ## Assembly Point
+
 Primary: [Location description]
 Secondary: [Alternative location]
 
 ## Evacuation Routes
+
 [Describe routes from different areas of farm]
 
 ## Emergency Procedures
 
 ### Medical Emergency
+
 1. Assess situation and ensure scene is safe
 2. Call emergency services immediately
 3. Provide first aid if trained
@@ -399,6 +431,7 @@ Secondary: [Alternative location]
 6. Document incident
 
 ### Fire
+
 1. Alert all personnel - sound alarm
 2. If small and safe, use appropriate extinguisher
 3. If large or spreading, evacuate immediately
@@ -408,6 +441,7 @@ Secondary: [Alternative location]
 7. Do not re-enter until cleared by authorities
 
 ### Chemical Spill
+
 1. Alert others in area
 2. Refer to product Safety Data Sheet (SDS)
 3. Use appropriate PPE
@@ -417,6 +451,7 @@ Secondary: [Alternative location]
 7. Document incident
 
 ### Severe Weather
+
 1. Monitor weather forecasts
 2. Secure loose equipment and materials
 3. If tornado/severe storm, move to shelter
@@ -424,6 +459,7 @@ Secondary: [Alternative location]
 5. Document damage for insurance
 
 ### Equipment Failure
+
 1. Stop operation immediately
 2. Assess safety of situation
 3. Isolate power source if applicable
@@ -437,23 +473,24 @@ Secondary: [Alternative location]
 ```markdown
 # Safety Training Record
 
-Employee: ________________  Date of Hire: __________
+Employee: **\*\***\_\_\_\_**\*\*** Date of Hire: \***\*\_\_\*\***
 
-| Date | Training Topic | Trainer | Duration | Employee Signature | Trainer Signature |
-|------|----------------|---------|----------|-------------------|-------------------|
-| | Farm safety orientation | | | | |
-| | PPE use and care | | | | |
-| | Emergency procedures | | | | |
-| | Chemical handling | | | | |
-| | Equipment operation | | | | |
-| | First aid basics | | | | |
-| | Fire safety | | | | |
-| | Heat stress prevention | | | | |
+| Date | Training Topic          | Trainer | Duration | Employee Signature | Trainer Signature |
+| ---- | ----------------------- | ------- | -------- | ------------------ | ----------------- |
+|      | Farm safety orientation |         |          |                    |                   |
+|      | PPE use and care        |         |          |                    |                   |
+|      | Emergency procedures    |         |          |                    |                   |
+|      | Chemical handling       |         |          |                    |                   |
+|      | Equipment operation     |         |          |                    |                   |
+|      | First aid basics        |         |          |                    |                   |
+|      | Fire safety             |         |          |                    |                   |
+|      | Heat stress prevention  |         |          |                    |                   |
 
 ## Annual Refresher Training
+
 | Year | Date | Topics Covered | Trainer | Signature |
-|------|------|----------------|---------|-----------|
-| | | | | |
+| ---- | ---- | -------------- | ------- | --------- |
+|      |      |                |         |           |
 ```
 
 ---
@@ -465,43 +502,47 @@ Employee: ________________  Date of Hire: __________
 ```markdown
 # Monthly Financial Summary
 
-Month: ____________  Year: ______
+Month: \***\*\_\_\_\_\*\*** Year: **\_\_**
 
 ## Income
-| Date | Product/Service | Quantity | Price | Total | Customer | Payment Method |
-|------|----------------|----------|-------|-------|----------|----------------|
-| | | | | | | |
-| | | | | | | |
-| **TOTAL INCOME** | | | | **$_____** | | |
+
+| Date             | Product/Service | Quantity | Price | Total           | Customer | Payment Method |
+| ---------------- | --------------- | -------- | ----- | --------------- | -------- | -------------- |
+|                  |                 |          |       |                 |          |                |
+|                  |                 |          |       |                 |          |                |
+| **TOTAL INCOME** |                 |          |       | **$**\_\*\*\*\* |          |                |
 
 ## Expenses
 
 ### Operating Costs
-| Date | Category | Description | Amount | Payment Method | Receipt # |
-|------|----------|-------------|--------|----------------|-----------|
-| | Labor | | | | |
-| | Inputs (fertilizer, seeds, etc.) | | | | |
-| | Utilities (water, electric) | | | | |
-| | Fuel | | | | |
-| | Packaging | | | | |
-| | Marketing | | | | |
-| | Transportation | | | | |
-| | Maintenance | | | | |
-| | Other | | | | |
-| **SUBTOTAL** | | | **$_____** | | |
+
+| Date         | Category                         | Description | Amount          | Payment Method | Receipt # |
+| ------------ | -------------------------------- | ----------- | --------------- | -------------- | --------- |
+|              | Labor                            |             |                 |                |           |
+|              | Inputs (fertilizer, seeds, etc.) |             |                 |                |           |
+|              | Utilities (water, electric)      |             |                 |                |           |
+|              | Fuel                             |             |                 |                |           |
+|              | Packaging                        |             |                 |                |           |
+|              | Marketing                        |             |                 |                |           |
+|              | Transportation                   |             |                 |                |           |
+|              | Maintenance                      |             |                 |                |           |
+|              | Other                            |             |                 |                |           |
+| **SUBTOTAL** |                                  |             | **$**\_\*\*\*\* |                |           |
 
 ### Capital Expenses
-| Date | Item | Description | Amount | Payment Method | Receipt # |
-|------|------|-------------|--------|----------------|-----------|
-| | | | | | |
-| **SUBTOTAL** | | | **$_____** | | |
+
+| Date         | Item | Description | Amount          | Payment Method | Receipt # |
+| ------------ | ---- | ----------- | --------------- | -------------- | --------- |
+|              |      |             |                 |                |           |
+| **SUBTOTAL** |      |             | **$**\_\*\*\*\* |                |           |
 
 ## Summary
-- Total Income: $_____
-- Total Operating Expenses: $_____
-- Total Capital Expenses: $_____
-- Net Income (Operating): $_____
-- Cumulative YTD Net Income: $_____
+
+- Total Income: $**\_**
+- Total Operating Expenses: $**\_**
+- Total Capital Expenses: $**\_**
+- Net Income (Operating): $**\_**
+- Cumulative YTD Net Income: $**\_**
 ```
 
 ### B. Inventory Tracking Template
@@ -509,29 +550,29 @@ Month: ____________  Year: ______
 ```markdown
 # Inventory Log
 
-Date: ____________  Updated by: ________________
+Date: \***\*\_\_\_\_\*\*** Updated by: **\*\***\_\_\_\_**\*\***
 
 ## Inputs and Supplies
 
-| Item | Unit | Opening Balance | Purchased | Used | Current Balance | Reorder Level | Status |
-|------|------|-----------------|-----------|------|-----------------|---------------|--------|
-| [Fertilizer type] | kg | | | | | | |
-| [Seeds/plants] | units | | | | | | |
-| [Pest control] | L | | | | | | |
-| [Packaging] | units | | | | | | |
-| [Other] | | | | | | | |
+| Item              | Unit  | Opening Balance | Purchased | Used | Current Balance | Reorder Level | Status |
+| ----------------- | ----- | --------------- | --------- | ---- | --------------- | ------------- | ------ |
+| [Fertilizer type] | kg    |                 |           |      |                 |               |        |
+| [Seeds/plants]    | units |                 |           |      |                 |               |        |
+| [Pest control]    | L     |                 |           |      |                 |               |        |
+| [Packaging]       | units |                 |           |      |                 |               |        |
+| [Other]           |       |                 |           |      |                 |               |        |
 
 ## Harvested Product Inventory
 
 | Product | Grade | Quantity | Unit | Storage Location | Date In | Condition | Notes |
-|---------|-------|----------|------|------------------|---------|-----------|-------|
-| | | | | | | | |
+| ------- | ----- | -------- | ---- | ---------------- | ------- | --------- | ----- |
+|         |       |          |      |                  |         |           |       |
 
 ## Equipment Inventory
 
 | Equipment | Condition | Last Service | Next Service Due | Location | Notes |
-|-----------|-----------|--------------|------------------|----------|-------|
-| | | | | | |
+| --------- | --------- | ------------ | ---------------- | -------- | ----- |
+|           |           |              |                  |          |       |
 ```
 
 ---
@@ -543,31 +584,32 @@ Date: ____________  Updated by: ________________
 ```markdown
 # Crop Production Calendar
 
-Crop: ________________  Variety: ________________
+Crop: **\*\***\_\_\_\_**\*\*** Variety: **\*\***\_\_\_\_**\*\***
 
 ## Annual Production Cycle
 
 | Month | Growth Stage | Key Activities | Inputs Needed | Labor Hours | Expected Yield |
-|-------|--------------|----------------|---------------|-------------|----------------|
-| Jan | [Stage] | [Activities] | [Inputs] | [Hours] | |
-| Feb | [Stage] | [Activities] | [Inputs] | [Hours] | |
-| Mar | [Stage] | [Activities] | [Inputs] | [Hours] | |
-| Apr | [Stage] | [Activities] | [Inputs] | [Hours] | |
-| May | [Stage] | [Activities] | [Inputs] | [Hours] | |
-| Jun | [Stage] | [Activities] | [Inputs] | [Hours] | |
-| Jul | [Stage] | [Activities] | [Inputs] | [Hours] | |
-| Aug | [Stage] | [Activities] | [Inputs] | [Hours] | |
-| Sep | [Stage] | [Activities] | [Inputs] | [Hours] | |
-| Oct | [Stage] | [Activities] | [Inputs] | [Hours] | |
-| Nov | [Stage] | [Activities] | [Inputs] | [Hours] | |
-| Dec | [Stage] | [Activities] | [Inputs] | [Hours] | |
+| ----- | ------------ | -------------- | ------------- | ----------- | -------------- |
+| Jan   | [Stage]      | [Activities]   | [Inputs]      | [Hours]     |                |
+| Feb   | [Stage]      | [Activities]   | [Inputs]      | [Hours]     |                |
+| Mar   | [Stage]      | [Activities]   | [Inputs]      | [Hours]     |                |
+| Apr   | [Stage]      | [Activities]   | [Inputs]      | [Hours]     |                |
+| May   | [Stage]      | [Activities]   | [Inputs]      | [Hours]     |                |
+| Jun   | [Stage]      | [Activities]   | [Inputs]      | [Hours]     |                |
+| Jul   | [Stage]      | [Activities]   | [Inputs]      | [Hours]     |                |
+| Aug   | [Stage]      | [Activities]   | [Inputs]      | [Hours]     |                |
+| Sep   | [Stage]      | [Activities]   | [Inputs]      | [Hours]     |                |
+| Oct   | [Stage]      | [Activities]   | [Inputs]      | [Hours]     |                |
+| Nov   | [Stage]      | [Activities]   | [Inputs]      | [Hours]     |                |
+| Dec   | [Stage]      | [Activities]   | [Inputs]      | [Hours]     |                |
 
 ## Critical Dates
-- Planting date(s): _________
-- First harvest: _________
-- Peak harvest: _________
-- Last harvest: _________
-- Replanting (if applicable): _________
+
+- Planting date(s): \***\*\_\*\***
+- First harvest: \***\*\_\*\***
+- Peak harvest: \***\*\_\*\***
+- Last harvest: \***\*\_\*\***
+- Replanting (if applicable): \***\*\_\*\***
 ```
 
 ### B. Local Climate Data Template
@@ -575,34 +617,36 @@ Crop: ________________  Variety: ________________
 ```markdown
 # Local Climate Reference
 
-Location: __________________  Elevation: __________
+Location: **\*\*\*\***\_\_**\*\*\*\*** Elevation: \***\*\_\_\*\***
 
 ## Monthly Averages
 
 | Month | Avg High Temp | Avg Low Temp | Rainfall | Humidity | Notes |
-|-------|---------------|--------------|----------|----------|-------|
-| Jan | °C / °F | °C / °F | mm / in | % | |
-| Feb | | | | | |
-| Mar | | | | | |
-| Apr | | | | | |
-| May | | | | | |
-| Jun | | | | | |
-| Jul | | | | | |
-| Aug | | | | | |
-| Sep | | | | | |
-| Oct | | | | | |
-| Nov | | | | | |
-| Dec | | | | | |
+| ----- | ------------- | ------------ | -------- | -------- | ----- |
+| Jan   | °C / °F       | °C / °F      | mm / in  | %        |       |
+| Feb   |               |              |          |          |       |
+| Mar   |               |              |          |          |       |
+| Apr   |               |              |          |          |       |
+| May   |               |              |          |          |       |
+| Jun   |               |              |          |          |       |
+| Jul   |               |              |          |          |       |
+| Aug   |               |              |          |          |       |
+| Sep   |               |              |          |          |       |
+| Oct   |               |              |          |          |       |
+| Nov   |               |              |          |          |       |
+| Dec   |               |              |          |          |       |
 
 ## Frost Dates
-- Average last spring frost: _________
-- Average first fall frost: _________
-- Growing season length: _____ days
+
+- Average last spring frost: \***\*\_\*\***
+- Average first fall frost: \***\*\_\*\***
+- Growing season length: **\_** days
 
 ## Extreme Events
-- Record high: _____ °C/°F (Date: _____)
-- Record low: _____ °C/°F (Date: _____)
-- Maximum rainfall (24h): _____ mm/in (Date: _____)
+
+- Record high: **\_** °C/°F (Date: **\_**)
+- Record low: **\_** °C/°F (Date: **\_**)
+- Maximum rainfall (24h): **\_** mm/in (Date: **\_**)
 - Typical drought periods: [Months]
 - Severe weather patterns: [Description]
 ```
@@ -615,20 +659,20 @@ Location: __________________  Elevation: __________
 ## Inputs and Materials
 
 | Supplier | Products/Services | Contact Person | Phone | Email | Address | Terms | Notes |
-|----------|-------------------|----------------|-------|-------|---------|-------|-------|
-| | | | | | | | |
+| -------- | ----------------- | -------------- | ----- | ----- | ------- | ----- | ----- |
+|          |                   |                |       |       |         |       |       |
 
 ## Equipment and Services
 
 | Provider | Service | Contact | Phone | Email | Emergency # | Response Time | Notes |
-|----------|---------|---------|-------|-------|-------------|---------------|-------|
-| | | | | | | | |
+| -------- | ------- | ------- | ----- | ----- | ----------- | ------------- | ----- |
+|          |         |         |       |       |             |               |       |
 
 ## Market Contacts
 
 | Buyer/Outlet | Products | Contact | Phone | Email | Payment Terms | Volume | Notes |
-|--------------|----------|---------|-------|-------|---------------|--------|-------|
-| | | | | | | | |
+| ------------ | -------- | ------- | ----- | ----- | ------------- | ------ | ----- |
+|              |          |         |       |       |               |        |       |
 ```
 
 ---
@@ -642,23 +686,23 @@ Location: __________________  Elevation: __________
 
 ## Required Licenses and Permits
 
-| License/Permit | Issuing Authority | Issue Date | Expiry Date | Renewal Date | Status | Notes |
-|----------------|-------------------|------------|-------------|--------------|--------|-------|
-| Business license | | | | | | |
-| Agricultural permit | | | | | | |
-| Water use permit | | | | | | |
-| Food handling cert | | | | | | |
-| Organic certification | | | | | | |
-| [Other] | | | | | | |
+| License/Permit        | Issuing Authority | Issue Date | Expiry Date | Renewal Date | Status | Notes |
+| --------------------- | ----------------- | ---------- | ----------- | ------------ | ------ | ----- |
+| Business license      |                   |            |             |              |        |       |
+| Agricultural permit   |                   |            |             |              |        |       |
+| Water use permit      |                   |            |             |              |        |       |
+| Food handling cert    |                   |            |             |              |        |       |
+| Organic certification |                   |            |             |              |        |       |
+| [Other]               |                   |            |             |              |        |       |
 
 ## Certifications
 
 | Certification | Certifying Body | Certificate # | Valid From | Valid To | Annual Audit | Status |
-|---------------|----------------|---------------|------------|----------|--------------|--------|
-| [GAP/GHP] | | | | | | |
-| [Organic] | | | | | | |
-| [Food Safety] | | | | | | |
-| [Other] | | | | | | |
+| ------------- | --------------- | ------------- | ---------- | -------- | ------------ | ------ |
+| [GAP/GHP]     |                 |               |            |          |              |        |
+| [Organic]     |                 |               |            |          |              |        |
+| [Food Safety] |                 |               |            |          |              |        |
+| [Other]       |                 |               |            |          |              |        |
 
 ## Compliance Requirements
 
@@ -678,12 +722,14 @@ Location: __________________  Elevation: __________
 ### Recommended Resources
 
 **Books and Publications:**
+
 - [Add references specific to your crops and region]
 - Agricultural extension service publications
 - Industry best practice guides
 - Sustainable farming resources
 
 **Online Resources:**
+
 - Government agricultural department websites
 - University extension services
 - Industry associations
@@ -691,6 +737,7 @@ Location: __________________  Elevation: __________
 - Market price information sources
 
 **Local Resources:**
+
 - Agricultural extension office contact
 - Soil testing laboratory
 - Equipment suppliers
@@ -721,14 +768,15 @@ Ensure you have customized and completed:
 **Note:** These templates should be customized for your specific operation, printed for easy access, and updated regularly to reflect current practices and requirements.
 
 [Previous](implementation-timeline.md) | [Back to Main Plan](diversified-farm-plan.md)
-| Controllers   | Quarterly     | Calibrate, test          | Multimeter         |
-| Structures    | Bi-annual     | Inspect, tighten         | Socket set         |
+| Controllers | Quarterly | Calibrate, test | Multimeter |
+| Structures | Bi-annual | Inspect, tighten | Socket set |
 
 ## 8.5 Reference Materials
 
 ### A. Local Climate Data
+
 | **Month** | **Avg Temp (°C)** | **Rainfall (mm)** | **Humidity (%)** |
-|-----------|-------------------|-------------------|------------------|
+| --------- | ----------------- | ----------------- | ---------------- |
 | Jan       | 28                | 85                | 65               |
 | Feb       | 27                | 75                | 68               |
 | Mar       | 26                | 65                | 70               |
@@ -743,11 +791,12 @@ Ensure you have customized and completed:
 | Dec       | 27                | 80                | 65               |
 
 ### B. Soil Management Guidelines
+
 ```yaml
 Optimal Soil Parameters:
   pH: 6.0-6.5
   EC: 1.5-2.0 mS/cm
-  Organic Matter: >2%
+  Organic Matter: >2
 
 Nutrient Ranges (ppm):
   Nitrogen: 150-200
@@ -765,56 +814,63 @@ Soil Structure:
 ## 8.6 Contact Directory
 
 ### A. Emergency Contacts
+
 ```yaml
 Medical:
-  Ambulance: "10177"
-  Hospital: "014 736 2121"
-  Doctor: "014 736 2675"
+  Ambulance: '10177'
+  Hospital: '014 736 2121'
+  Doctor: '014 736 2675'
 
 Security:
-  Police: "10111"
-  Farm Watch: "082 XXX XXXX"
-  Security Company: "014 736 XXXX"
+  Police: '10111'
+  Farm Watch: '082 XXX XXXX'
+  Security Company: '014 736 XXXX'
 
 Technical:
-  Electrician: "083 XXX XXXX"
-  Plumber: "082 XXX XXXX"
-  Equipment: "014 736 XXXX"
+  Electrician: '083 XXX XXXX'
+  Plumber: '082 XXX XXXX'
+  Equipment: '014 736 XXXX'
 ```
 
 ### B. Supplier Directory
-| **Category**  | **Supplier** | **Contact**     | **Account No.** |
-|---------------|--------------|-----------------|-----------------|
-| Irrigation    | WaterTech    | 014 736 XXXX    | ACC001          |
-| Fertilizer    | AgriChem     | 014 736 XXXX    | ACC002          |
-| Equipment     | FarmTech     | 014 736 XXXX    | ACC003          |
-| Transport     | LogiCo       | 014 736 XXXX    | ACC004          |
+
+| **Category** | **Supplier** | **Contact**  | **Account No.** |
+| ------------ | ------------ | ------------ | --------------- |
+| Irrigation   | WaterTech    | 014 736 XXXX | ACC001          |
+| Fertilizer   | AgriChem     | 014 736 XXXX | ACC002          |
+| Equipment    | FarmTech     | 014 736 XXXX | ACC003          |
+| Transport    | LogiCo       | 014 736 XXXX | ACC004          |
 
 ## 8.7 Regulatory Compliance
 
 ### A. Required Permits
-| **Permit Type** | **Number**   | **Expiry** | **Renewal Process** |
-|-----------------|-------------|------------|---------------------|
-| Water Use       | WU2025-001  | 2027-12-31 | 90 days prior       |
-| Business        | BL2025-123  | 2026-06-30 | 60 days prior       |
-| Export          | EX2025-456  | 2026-12-31 | 30 days prior       |
-| Chemical        | CH2025-789  | 2026-03-31 | 45 days prior       |
+
+| **Permit Type** | **Number** | **Expiry** | **Renewal Process** |
+| --------------- | ---------- | ---------- | ------------------- |
+| Water Use       | WU2025-001 | 2027-12-31 | 90 days prior       |
+| Business        | BL2025-123 | 2026-06-30 | 60 days prior       |
+| Export          | EX2025-456 | 2026-12-31 | 30 days prior       |
+| Chemical        | CH2025-789 | 2026-03-31 | 45 days prior       |
 
 ### B. Compliance Checklist
+
 ```markdown
 ## Monthly Checks
+
 - [ ] Water usage recording
 - [ ] Chemical storage inspection
 - [ ] Safety equipment check
 - [ ] Staff training records
 
 ## Quarterly Reports
+
 - [ ] Environmental impact
 - [ ] Water quality tests
 - [ ] Waste management
 - [ ] Employment equity
 
 ## Annual Requirements
+
 - [ ] License renewals
 - [ ] Insurance updates
 - [ ] Audit preparations
@@ -824,4 +880,3 @@ Technical:
 [Previous](implementation-timeline.md) | [Next](../README.md)
 
 <!-- Version: 1.0.1 -->
-

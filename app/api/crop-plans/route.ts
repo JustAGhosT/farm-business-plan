@@ -27,22 +27,22 @@ export async function GET(request: Request) {
       LEFT JOIN tasks t ON cp.id = t.crop_plan_id
       WHERE 1=1
     `
-    
+
     const params: any[] = []
     let paramIndex = 1
-    
+
     if (farmPlanId) {
       queryText += ` AND cp.farm_plan_id = $${paramIndex}`
       params.push(farmPlanId)
       paramIndex++
     }
-    
+
     if (status) {
       queryText += ` AND cp.status = $${paramIndex}`
       params.push(status)
       paramIndex++
     }
-    
+
     queryText += ' GROUP BY cp.id, fp.name ORDER BY cp.created_at DESC'
 
     const result = await query(queryText, params)
@@ -50,7 +50,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: true,
       data: result.rows,
-      count: result.rows.length
+      count: result.rows.length,
     })
   } catch (error) {
     console.error('Error fetching crop plans:', error)
@@ -68,15 +68,15 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    
+
     // Validate input
     const validation = validateData(CropPlanSchema, body)
     if (!validation.success) {
       return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Validation failed', 
-          details: validation.errors?.issues 
+        {
+          success: false,
+          error: 'Validation failed',
+          details: validation.errors?.issues,
         },
         { status: 400 }
       )
@@ -102,16 +102,19 @@ export async function POST(request: Request) {
       data.harvest_date || null,
       data.expected_yield || null,
       data.yield_unit || null,
-      data.status || 'planned'
+      data.status || 'planned',
     ]
 
     const result = await query(queryText, params)
 
-    return NextResponse.json({
-      success: true,
-      data: result.rows[0],
-      message: 'Crop plan created successfully'
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        success: true,
+        data: result.rows[0],
+        message: 'Crop plan created successfully',
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Error creating crop plan:', error)
     return NextResponse.json(
@@ -143,11 +146,17 @@ export async function PATCH(request: Request) {
 
     // Build dynamic update query
     const allowedFields = [
-      'crop_name', 'crop_variety', 'planting_area', 'planting_date',
-      'harvest_date', 'expected_yield', 'yield_unit', 'status'
+      'crop_name',
+      'crop_variety',
+      'planting_area',
+      'planting_date',
+      'harvest_date',
+      'expected_yield',
+      'yield_unit',
+      'status',
     ]
 
-    allowedFields.forEach(field => {
+    allowedFields.forEach((field) => {
       if (updates[field] !== undefined) {
         setClauses.push(`${field} = $${paramIndex}`)
         params.push(updates[field])
@@ -173,16 +182,13 @@ export async function PATCH(request: Request) {
     const result = await query(queryText, params)
 
     if (result.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Crop plan not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'Crop plan not found' }, { status: 404 })
     }
 
     return NextResponse.json({
       success: true,
       data: result.rows[0],
-      message: 'Crop plan updated successfully'
+      message: 'Crop plan updated successfully',
     })
   } catch (error) {
     console.error('Error updating crop plan:', error)
@@ -209,21 +215,15 @@ export async function DELETE(request: Request) {
       )
     }
 
-    const result = await query(
-      'DELETE FROM crop_plans WHERE id = $1 RETURNING id',
-      [id]
-    )
+    const result = await query('DELETE FROM crop_plans WHERE id = $1 RETURNING id', [id])
 
     if (result.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Crop plan not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'Crop plan not found' }, { status: 404 })
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Crop plan deleted successfully'
+      message: 'Crop plan deleted successfully',
     })
   } catch (error) {
     console.error('Error deleting crop plan:', error)

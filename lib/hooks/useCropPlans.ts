@@ -72,72 +72,81 @@ export function useCropPlans(filters?: CropPlanFilters): UseCropPlansResult {
     fetchCropPlans()
   }, [fetchCropPlans])
 
-  const createCropPlan = useCallback(async (data: Partial<CropPlan>) => {
-    try {
-      const response = await fetch('/api/crop-plans', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
+  const createCropPlan = useCallback(
+    async (data: Partial<CropPlan>) => {
+      try {
+        const response = await fetch('/api/crop-plans', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        await fetchCropPlans() // Refresh the list
-        return result.data
-      } else {
-        setError(result.error || 'Failed to create crop plan')
+        if (result.success) {
+          await fetchCropPlans() // Refresh the list
+          return result.data
+        } else {
+          setError(result.error || 'Failed to create crop plan')
+          return null
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
         return null
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      return null
-    }
-  }, [fetchCropPlans])
+    },
+    [fetchCropPlans]
+  )
 
-  const updateCropPlan = useCallback(async (id: string, data: Partial<CropPlan>) => {
-    try {
-      const response = await fetch('/api/crop-plans', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, ...data })
-      })
+  const updateCropPlan = useCallback(
+    async (id: string, data: Partial<CropPlan>) => {
+      try {
+        const response = await fetch('/api/crop-plans', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, ...data }),
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        await fetchCropPlans() // Refresh the list
-        return result.data
-      } else {
-        setError(result.error || 'Failed to update crop plan')
+        if (result.success) {
+          await fetchCropPlans() // Refresh the list
+          return result.data
+        } else {
+          setError(result.error || 'Failed to update crop plan')
+          return null
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
         return null
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      return null
-    }
-  }, [fetchCropPlans])
+    },
+    [fetchCropPlans]
+  )
 
-  const deleteCropPlan = useCallback(async (id: string) => {
-    try {
-      const response = await fetch(`/api/crop-plans?id=${id}`, {
-        method: 'DELETE'
-      })
+  const deleteCropPlan = useCallback(
+    async (id: string) => {
+      try {
+        const response = await fetch(`/api/crop-plans?id=${id}`, {
+          method: 'DELETE',
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        await fetchCropPlans() // Refresh the list
-        return true
-      } else {
-        setError(result.error || 'Failed to delete crop plan')
+        if (result.success) {
+          await fetchCropPlans() // Refresh the list
+          return true
+        } else {
+          setError(result.error || 'Failed to delete crop plan')
+          return false
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
         return false
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      return false
-    }
-  }, [fetchCropPlans])
+    },
+    [fetchCropPlans]
+  )
 
   return {
     cropPlans,
@@ -146,14 +155,16 @@ export function useCropPlans(filters?: CropPlanFilters): UseCropPlansResult {
     refetch: fetchCropPlans,
     createCropPlan,
     updateCropPlan,
-    deleteCropPlan
+    deleteCropPlan,
   }
 }
 
 /**
  * Custom hook for fetching crop plans for a single farm
  */
-export function useCropPlansByFarm(farmPlanId: string | null): Omit<UseCropPlansResult, 'createCropPlan' | 'updateCropPlan' | 'deleteCropPlan'> {
+export function useCropPlansByFarm(
+  farmPlanId: string | null
+): Omit<UseCropPlansResult, 'createCropPlan' | 'updateCropPlan' | 'deleteCropPlan'> {
   const filters = farmPlanId ? { farm_plan_id: farmPlanId } : undefined
   const { cropPlans, loading, error, refetch } = useCropPlans(filters)
 
@@ -161,6 +172,6 @@ export function useCropPlansByFarm(farmPlanId: string | null): Omit<UseCropPlans
     cropPlans,
     loading,
     error,
-    refetch
+    refetch,
   }
 }

@@ -16,11 +16,17 @@ export async function POST(request: Request) {
     const { stage_id, status, comments, signature } = body
 
     if (!stage_id || !status) {
-      return NextResponse.json({ success: false, error: 'stage_id and status required' }, { status: 400 })
+      return NextResponse.json(
+        { success: false, error: 'stage_id and status required' },
+        { status: 400 }
+      )
     }
 
     if (!['approved', 'rejected'].includes(status)) {
-      return NextResponse.json({ success: false, error: 'Status must be approved or rejected' }, { status: 400 })
+      return NextResponse.json(
+        { success: false, error: 'Status must be approved or rejected' },
+        { status: 400 }
+      )
     }
 
     // Update approval
@@ -33,7 +39,10 @@ export async function POST(request: Request) {
     )
 
     if (result.rows.length === 0) {
-      return NextResponse.json({ success: false, error: 'Approval not found or not authorized' }, { status: 404 })
+      return NextResponse.json(
+        { success: false, error: 'Approval not found or not authorized' },
+        { status: 404 }
+      )
     }
 
     // Check stage approval status
@@ -43,12 +52,22 @@ export async function POST(request: Request) {
     await query(
       `INSERT INTO change_log (target_type, target_id, user_id, user_name, action, description)
        VALUES ($1, $2, $3, $4, $5, $6)`,
-      ['approval', result.rows[0].id, session.user.id, session.user.name || session.user.email, status, `${status} approval stage`]
+      [
+        'approval',
+        result.rows[0].id,
+        session.user.id,
+        session.user.name || session.user.email,
+        status,
+        `${status} approval stage`,
+      ]
     )
 
     return NextResponse.json({ success: true, data: result.rows[0] })
   } catch (error) {
     console.error('Error processing approval:', error)
-    return NextResponse.json({ success: false, error: 'Failed to process approval' }, { status: 500 })
+    return NextResponse.json(
+      { success: false, error: 'Failed to process approval' },
+      { status: 500 }
+    )
   }
 }

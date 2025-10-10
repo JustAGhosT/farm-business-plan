@@ -25,19 +25,22 @@ export default function OperatingCostsCalculator() {
   const handleFixedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFixedCosts({
       ...fixedCosts,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     })
   }
 
   const handleVariableChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setVariableCosts({
       ...variableCosts,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     })
   }
 
   const totalFixed = Object.values(fixedCosts).reduce((sum, val) => sum + (parseFloat(val) || 0), 0)
-  const totalVariable = Object.values(variableCosts).reduce((sum, val) => sum + (parseFloat(val) || 0), 0)
+  const totalVariable = Object.values(variableCosts).reduce(
+    (sum, val) => sum + (parseFloat(val) || 0),
+    0
+  )
   const totalMonthly = totalFixed + totalVariable
   const totalAnnual = totalMonthly * 12
 
@@ -46,19 +49,24 @@ export default function OperatingCostsCalculator() {
       style: 'currency',
       currency: 'ZAR',
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0
+      maximumFractionDigits: 0,
     }).format(value)
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
       <div className="container mx-auto px-4 py-8 max-w-5xl">
-        <Link 
-          href="/tools/calculators" 
+        <Link
+          href="/tools/calculators"
           className="inline-flex items-center text-primary-600 hover:text-primary-700 mb-6 transition-colors"
         >
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
           </svg>
           Back to Calculators
         </Link>
@@ -76,10 +84,13 @@ export default function OperatingCostsCalculator() {
             {/* Fixed Costs */}
             <div>
               <h2 className="text-xl font-semibold mb-4">Fixed Costs (Monthly)</h2>
-              
+
               <div className="space-y-3">
                 <div>
-                  <label htmlFor="utilities" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="utilities"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Utilities (ZAR)
                   </label>
                   <input
@@ -109,7 +120,10 @@ export default function OperatingCostsCalculator() {
                 </div>
 
                 <div>
-                  <label htmlFor="maintenance" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="maintenance"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Maintenance (ZAR)
                   </label>
                   <input
@@ -124,7 +138,10 @@ export default function OperatingCostsCalculator() {
                 </div>
 
                 <div>
-                  <label htmlFor="insurance" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="insurance"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Insurance (ZAR)
                   </label>
                   <input
@@ -154,7 +171,10 @@ export default function OperatingCostsCalculator() {
                 </div>
 
                 <div>
-                  <label htmlFor="fixedOther" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="fixedOther"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Other Fixed (ZAR)
                   </label>
                   <input
@@ -180,7 +200,7 @@ export default function OperatingCostsCalculator() {
             {/* Variable Costs */}
             <div>
               <h2 className="text-xl font-semibold mb-4">Variable Costs (Monthly)</h2>
-              
+
               <div className="space-y-3">
                 <div>
                   <label htmlFor="seeds" className="block text-sm font-medium text-gray-700 mb-1">
@@ -198,7 +218,10 @@ export default function OperatingCostsCalculator() {
                 </div>
 
                 <div>
-                  <label htmlFor="fertilizer" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="fertilizer"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Fertilizer (ZAR)
                   </label>
                   <input
@@ -213,7 +236,10 @@ export default function OperatingCostsCalculator() {
                 </div>
 
                 <div>
-                  <label htmlFor="pesticides" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="pesticides"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Pesticides (ZAR)
                   </label>
                   <input
@@ -228,7 +254,10 @@ export default function OperatingCostsCalculator() {
                 </div>
 
                 <div>
-                  <label htmlFor="packaging" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="packaging"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Packaging (ZAR)
                   </label>
                   <input
@@ -258,7 +287,10 @@ export default function OperatingCostsCalculator() {
                 </div>
 
                 <div>
-                  <label htmlFor="variableOther" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="variableOther"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Other Variable (ZAR)
                   </label>
                   <input
@@ -284,7 +316,7 @@ export default function OperatingCostsCalculator() {
             {/* Summary */}
             <div>
               <h2 className="text-xl font-semibold mb-4">Cost Summary</h2>
-              
+
               <div className="space-y-4">
                 <div className="bg-primary-50 rounded-lg p-4 border-2 border-primary-200">
                   <div className="text-sm text-gray-600 mb-1">Total Monthly Costs</div>
@@ -305,23 +337,31 @@ export default function OperatingCostsCalculator() {
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span>Fixed Costs</span>
-                      <span className="font-medium">{totalMonthly > 0 ? ((totalFixed / totalMonthly) * 100).toFixed(1) : 0}%</span>
+                      <span className="font-medium">
+                        {totalMonthly > 0 ? ((totalFixed / totalMonthly) * 100).toFixed(1) : 0}%
+                      </span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-blue-500 h-2 rounded-full" 
-                        style={{ width: `${totalMonthly > 0 ? (totalFixed / totalMonthly) * 100 : 0}%` }}
+                      <div
+                        className="bg-blue-500 h-2 rounded-full"
+                        style={{
+                          width: `${totalMonthly > 0 ? (totalFixed / totalMonthly) * 100 : 0}%`,
+                        }}
                       ></div>
                     </div>
 
                     <div className="flex justify-between text-sm mt-3">
                       <span>Variable Costs</span>
-                      <span className="font-medium">{totalMonthly > 0 ? ((totalVariable / totalMonthly) * 100).toFixed(1) : 0}%</span>
+                      <span className="font-medium">
+                        {totalMonthly > 0 ? ((totalVariable / totalMonthly) * 100).toFixed(1) : 0}%
+                      </span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-green-500 h-2 rounded-full" 
-                        style={{ width: `${totalMonthly > 0 ? (totalVariable / totalMonthly) * 100 : 0}%` }}
+                      <div
+                        className="bg-green-500 h-2 rounded-full"
+                        style={{
+                          width: `${totalMonthly > 0 ? (totalVariable / totalMonthly) * 100 : 0}%`,
+                        }}
                       ></div>
                     </div>
                   </div>
@@ -329,13 +369,12 @@ export default function OperatingCostsCalculator() {
 
                 <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
                   <p className="text-sm text-blue-800">
-                    <strong>Cost Structure:</strong> {
-                      totalFixed > totalVariable 
-                        ? 'Fixed costs dominate. Focus on increasing production to spread fixed costs.'
-                        : totalVariable > totalFixed * 1.5
+                    <strong>Cost Structure:</strong>{' '}
+                    {totalFixed > totalVariable
+                      ? 'Fixed costs dominate. Focus on increasing production to spread fixed costs.'
+                      : totalVariable > totalFixed * 1.5
                         ? 'High variable costs. Look for ways to reduce per-unit costs.'
-                        : 'Balanced cost structure. Monitor both fixed and variable expenses.'
-                    }
+                        : 'Balanced cost structure. Monitor both fixed and variable expenses.'}
                   </p>
                 </div>
 

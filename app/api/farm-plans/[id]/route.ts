@@ -9,10 +9,7 @@ export const dynamic = 'force-dynamic'
  * GET /api/farm-plans/[id]
  * Get a single farm plan by ID
  */
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
     const { id } = params
 
@@ -31,15 +28,12 @@ export async function GET(
     const result = await query(queryText, [id])
 
     if (result.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Farm plan not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'Farm plan not found' }, { status: 404 })
     }
 
     return NextResponse.json({
       success: true,
-      data: result.rows[0]
+      data: result.rows[0],
     })
   } catch (error) {
     console.error('Error fetching farm plan:', error)
@@ -54,10 +48,7 @@ export async function GET(
  * PUT /api/farm-plans/[id]
  * Update an existing farm plan
  */
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
     const { id } = params
     const body = await request.json()
@@ -69,7 +60,7 @@ export async function PUT(
         {
           success: false,
           error: 'Validation failed',
-          details: validation.errors?.issues
+          details: validation.errors?.issues,
         },
         { status: 400 }
       )
@@ -116,10 +107,7 @@ export async function PUT(
     }
 
     if (fields.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'No fields to update' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: 'No fields to update' }, { status: 400 })
     }
 
     // Add updated_at timestamp
@@ -136,16 +124,13 @@ export async function PUT(
     const result = await query(queryText, values)
 
     if (result.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Farm plan not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'Farm plan not found' }, { status: 404 })
     }
 
     return NextResponse.json({
       success: true,
       data: result.rows[0],
-      message: 'Farm plan updated successfully'
+      message: 'Farm plan updated successfully',
     })
   } catch (error) {
     console.error('Error updating farm plan:', error)
@@ -160,10 +145,7 @@ export async function PUT(
  * DELETE /api/farm-plans/[id]
  * Delete a farm plan
  */
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   try {
     const { id } = params
 
@@ -172,10 +154,7 @@ export async function DELETE(
     const checkResult = await query(checkQuery, [id])
 
     if (checkResult.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Farm plan not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'Farm plan not found' }, { status: 404 })
     }
 
     // Delete farm plan (cascade will handle related records)
@@ -184,7 +163,7 @@ export async function DELETE(
 
     return NextResponse.json({
       success: true,
-      message: 'Farm plan deleted successfully'
+      message: 'Farm plan deleted successfully',
     })
   } catch (error) {
     console.error('Error deleting farm plan:', error)

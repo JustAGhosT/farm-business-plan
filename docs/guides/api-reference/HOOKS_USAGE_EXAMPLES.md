@@ -68,7 +68,7 @@ import { useRouter } from 'next/navigation'
 export default function CreateFarmPlanForm() {
   const router = useRouter()
   const { createFarmPlan, loading, error } = useFarmPlans()
-  
+
   const [formData, setFormData] = useState({
     name: '',
     location: '',
@@ -80,7 +80,7 @@ export default function CreateFarmPlanForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     const newPlan = await createFarmPlan({
       name: formData.name,
       location: formData.location,
@@ -200,14 +200,14 @@ export default function CropPlansList({ farmPlanId }: CropPlansListProps) {
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-bold">Crop Plans</h2>
-      
+
       {cropPlans.length === 0 ? (
         <p className="text-gray-600">No crop plans yet. Add your first crop!</p>
       ) : (
         <div className="grid gap-4">
           {cropPlans.map(crop => {
             const financial = getFinancialDataForCrop(crop.id)
-            
+
             return (
               <div key={crop.id} className="bg-white rounded-lg shadow p-6">
                 <div className="flex justify-between items-start mb-4">
@@ -303,12 +303,12 @@ export default function TasksManager({ farmPlanId }: TasksManagerProps) {
   const { tasks, loading, error, updateTask, deleteTask } = useTasks({ farm_plan_id: farmPlanId })
   const [filter, setFilter] = useState<'all' | 'pending' | 'in-progress' | 'completed'>('all')
 
-  const filteredTasks = filter === 'all' 
-    ? tasks 
+  const filteredTasks = filter === 'all'
+    ? tasks
     : tasks.filter(task => task.status === filter)
 
   const handleStatusChange = async (taskId: string, newStatus: string) => {
-    await updateTask(taskId, { 
+    await updateTask(taskId, {
       status: newStatus as any,
       ...(newStatus === 'completed' && { completed_at: new Date().toISOString() })
     })
@@ -333,8 +333,8 @@ export default function TasksManager({ farmPlanId }: TasksManagerProps) {
               key={status}
               onClick={() => setFilter(status)}
               className={`px-3 py-1 rounded ${
-                filter === status 
-                  ? 'bg-primary-600 text-white' 
+                filter === status
+                  ? 'bg-primary-600 text-white'
                   : 'bg-gray-200 text-gray-700'
               }`}
             >
@@ -354,12 +354,12 @@ export default function TasksManager({ farmPlanId }: TasksManagerProps) {
                 type="checkbox"
                 checked={task.status === 'completed'}
                 onChange={() => handleStatusChange(
-                  task.id, 
+                  task.id,
                   task.status === 'completed' ? 'pending' : 'completed'
                 )}
                 className="w-5 h-5"
               />
-              
+
               <div className="flex-1">
                 <h3 className={`font-semibold ${
                   task.status === 'completed' ? 'line-through text-gray-500' : ''
@@ -432,7 +432,7 @@ export default function AIRecommendations({ farmPlanId }: AIRecommendationsProps
   if (error) return <div>Error: {error}</div>
 
   const categories = ['all', ...new Set(recommendations.map(r => r.category).filter(Boolean))]
-  
+
   const filteredRecommendations = selectedCategory === 'all'
     ? recommendations
     : recommendations.filter(r => r.category === selectedCategory)
@@ -519,7 +519,7 @@ export default function ClimateDisplay({ farmPlanId }: ClimateDisplayProps) {
           </span>
         )}
       </h3>
-      
+
       <div className="grid md:grid-cols-2 gap-4">
         <div className="bg-white rounded-lg p-4">
           <p className="text-sm text-gray-600">Average Summer Temp</p>
@@ -527,21 +527,21 @@ export default function ClimateDisplay({ farmPlanId }: ClimateDisplayProps) {
             {climate.avg_temp_summer}°C
           </p>
         </div>
-        
+
         <div className="bg-white rounded-lg p-4">
           <p className="text-sm text-gray-600">Average Winter Temp</p>
           <p className="text-2xl font-bold text-blue-600">
             {climate.avg_temp_winter}°C
           </p>
         </div>
-        
+
         <div className="bg-white rounded-lg p-4">
           <p className="text-sm text-gray-600">Annual Rainfall</p>
           <p className="text-2xl font-bold text-blue-500">
             {climate.annual_rainfall} mm
           </p>
         </div>
-        
+
         <div className="bg-white rounded-lg p-4">
           <p className="text-sm text-gray-600">Frost Risk</p>
           <p className={`text-2xl font-bold ${

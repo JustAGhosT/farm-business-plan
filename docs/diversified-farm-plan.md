@@ -39,6 +39,7 @@ Complete this assessment for your specific location:
 - **Extreme Weather**: [Drought, floods, hail, high winds, etc.]
 
 **Example (Reference Only - Replace with Your Data):**
+
 ```
 Location: Bela Bela, Limpopo Province, South Africa
 Climate: Subtropical, hot summers and mild winters
@@ -50,6 +51,7 @@ Irrigation: Required during dry winter months
 ```
 
 **Climate Considerations for Crop Selection:**
+
 - [Identify heat-loving vs. cold-tolerant crop requirements]
 - [Note water availability and irrigation needs]
 - [Consider frost protection requirements]
@@ -72,23 +74,25 @@ Conduct soil testing and complete this assessment:
 
 **Soil Requirements by Crop Type (General Guidelines):**
 
-| Crop Category | Preferred Soil | pH Range | Drainage | Special Needs |
-|---------------|----------------|----------|----------|---------------|
-| Deep-rooted perennials | Deep, well-drained | 6.0-7.5 | Good to excellent | Avoid compaction |
-| Shallow-rooted annuals | Medium texture | 6.0-7.0 | Moderate to good | Organic matter |
-| Fodder/forage crops | Deep, fertile loam | 6.5-7.5 | Good | Level ground for harvest |
-| Fruit crops | Well-drained | 6.0-7.0 | Excellent | Avoid waterlogging |
-| Root vegetables | Loose, friable | 6.0-6.8 | Excellent | Free of stones |
+| Crop Category          | Preferred Soil     | pH Range | Drainage          | Special Needs            |
+| ---------------------- | ------------------ | -------- | ----------------- | ------------------------ |
+| Deep-rooted perennials | Deep, well-drained | 6.0-7.5  | Good to excellent | Avoid compaction         |
+| Shallow-rooted annuals | Medium texture     | 6.0-7.0  | Moderate to good  | Organic matter           |
+| Fodder/forage crops    | Deep, fertile loam | 6.5-7.5  | Good              | Level ground for harvest |
+| Fruit crops            | Well-drained       | 6.0-7.0  | Excellent         | Avoid waterlogging       |
+| Root vegetables        | Loose, friable     | 6.0-6.8  | Excellent         | Free of stones           |
 
 **Soil Improvement Plan:**
 
 Based on your soil test results, plan amendments:
+
 - **pH Adjustment**: [Add lime if acidic, sulfur if alkaline]
 - **Organic Matter**: [Compost, manure, green manure - amounts and timing]
 - **Drainage Improvement**: [Raised beds, drainage ditches, soil structure improvement]
 - **Nutrient Supplementation**: [Specific fertilizers or amendments needed]
 
 **Example (Reference Only):**
+
 ```
 For crops like moringa and dragonfruit in Bela Bela:
 - Well-drained sandy or loamy soil preferred
@@ -117,26 +121,27 @@ For lucerne/alfalfa:
 
 Determine the minimum viable plot size for your chosen crops:
 
-| Crop Type | Minimum Viable | Small Scale | Commercial Scale |
-|-----------|----------------|-------------|------------------|
-| Annual vegetables | 0.1 ha | 0.25-0.5 ha | 1+ ha |
-| Perennial herbs/greens | 0.1 ha | 0.25-0.5 ha | 1+ ha |
-| Fodder crops | 0.5 ha | 1-2 ha | 5+ ha |
-| Fruit crops (intensive) | 0.1 ha | 0.5-1 ha | 2+ ha |
-| Tree crops | 0.25 ha | 0.5-2 ha | 5+ ha |
+| Crop Type               | Minimum Viable | Small Scale | Commercial Scale |
+| ----------------------- | -------------- | ----------- | ---------------- |
+| Annual vegetables       | 0.1 ha         | 0.25-0.5 ha | 1+ ha            |
+| Perennial herbs/greens  | 0.1 ha         | 0.25-0.5 ha | 1+ ha            |
+| Fodder crops            | 0.5 ha         | 1-2 ha      | 5+ ha            |
+| Fruit crops (intensive) | 0.1 ha         | 0.5-1 ha    | 2+ ha            |
+| Tree crops              | 0.25 ha        | 0.5-2 ha    | 5+ ha            |
 
 **Your Land Allocation Plan:**
 
-| Crop/Purpose | Area (ha or %) | Rationale |
-|--------------|----------------|-----------|
-| [Crop 1] | [Area] | [Primary income, quick returns, market demand, etc.] |
-| [Crop 2] | [Area] | [Diversification, different season, risk management] |
-| [Crop 3] | [Area] | [Long-term investment, premium pricing, etc.] |
-| Infrastructure | [Area] | [Nursery, storage, pathways, equipment] |
-| Future expansion | [Area] | [Reserve for trials and scaling] |
-| **Total** | [Total] | |
+| Crop/Purpose     | Area (ha or %) | Rationale                                            |
+| ---------------- | -------------- | ---------------------------------------------------- |
+| [Crop 1]         | [Area]         | [Primary income, quick returns, market demand, etc.] |
+| [Crop 2]         | [Area]         | [Diversification, different season, risk management] |
+| [Crop 3]         | [Area]         | [Long-term investment, premium pricing, etc.]        |
+| Infrastructure   | [Area]         | [Nursery, storage, pathways, equipment]              |
+| Future expansion | [Area]         | [Reserve for trials and scaling]                     |
+| **Total**        | [Total]        |                                                      |
 
 **Example Allocation (1 hectare diversified farm - Reference Only):**
+
 ```
 - Primary crop (e.g., lucerne): 0.5 ha (50%) - Steady income
 - Secondary crop (e.g., moringa): 0.3 ha (30%) - High value, early returns
@@ -163,6 +168,7 @@ This section provides a framework for analyzing and documenting each crop in you
 #### A. Crop Overview
 
 **Basic Information:**
+
 - **Common Name**: [Name]
 - **Scientific Name**: [Botanical name if relevant]
 - **Crop Category**: [Annual/perennial, vegetable/fruit/herb/forage/grain]
@@ -171,6 +177,7 @@ This section provides a framework for analyzing and documenting each crop in you
 - **Market Positioning**: [Fresh market/processing/commodity/premium/niche]
 
 **Why This Crop:**
+
 - [Market demand and opportunity]
 - [Suitability to your climate and soil]
 - [Alignment with your resources and skills]
@@ -178,29 +185,31 @@ This section provides a framework for analyzing and documenting each crop in you
 
 #### B. Climate and Site Requirements
 
-| Factor | Requirement | Your Site Match |
-|--------|-------------|-----------------|
-| Temperature range | [Optimal range] | [Your data] |
-| Frost tolerance | [Sensitive/tolerant/hardy] | [Your frost risk] |
-| Water needs | [High/moderate/low] | [Your water availability] |
-| Light requirements | [Full sun/partial/shade] | [Your site conditions] |
-| Soil type preference | [Specific needs] | [Your soil type] |
-| pH requirements | [Range] | [Your soil pH] |
-| Drainage needs | [Poor/good/excellent] | [Your drainage] |
+| Factor               | Requirement                | Your Site Match           |
+| -------------------- | -------------------------- | ------------------------- |
+| Temperature range    | [Optimal range]            | [Your data]               |
+| Frost tolerance      | [Sensitive/tolerant/hardy] | [Your frost risk]         |
+| Water needs          | [High/moderate/low]        | [Your water availability] |
+| Light requirements   | [Full sun/partial/shade]   | [Your site conditions]    |
+| Soil type preference | [Specific needs]           | [Your soil type]          |
+| pH requirements      | [Range]                    | [Your soil pH]            |
+| Drainage needs       | [Poor/good/excellent]      | [Your drainage]           |
 
 **Site Suitability Score**: [Excellent/Good/Adequate/Needs Improvement]
 
 #### C. Cultivation Requirements
 
 **Land Preparation:**
+
 - [Describe soil preparation, amendments, bed formation]
 - [Timeline for preparation]
 - [Equipment or labor needs]
 
 **Planting:**
+
 - **Method**: [Direct seeding/transplanting/cuttings/divisions]
 - **Optimal planting time**: [Season/months based on your climate]
-- **Spacing**: 
+- **Spacing**:
   - Within row: [Distance]
   - Between rows: [Distance]
   - Plants per hectare: [Density]
@@ -208,6 +217,7 @@ This section provides a framework for analyzing and documenting each crop in you
 - **Seed/planting material quantity**: [Per hectare or area]
 
 **Water Management:**
+
 - **Establishment phase**: [Frequency and amount]
 - **Mature plants**: [Frequency and amount]
 - **Irrigation system**: [Drip/sprinkler/flood/rain-fed]
@@ -215,12 +225,14 @@ This section provides a framework for analyzing and documenting each crop in you
 - **Total seasonal water requirement**: [mm or liters per hectare]
 
 **Fertility and Soil Management:**
+
 - **Pre-plant fertilization**: [Type and amount]
 - **Growing season nutrition**: [Fertilizer schedule]
 - **Organic matter maintenance**: [Mulching, cover crops, compost]
 - **Soil health practices**: [Crop rotation, green manures, etc.]
 
 **Ongoing Care:**
+
 - **Pruning/training**: [Requirements and timing]
 - **Weed management**: [Methods and frequency]
 - **Pest and disease management**: [Common issues and prevention/control]
@@ -228,17 +240,18 @@ This section provides a framework for analyzing and documenting each crop in you
 
 #### D. Production Timeline
 
-| Stage | Timeline | Key Activities | Labor Requirements |
-|-------|----------|----------------|-------------------|
-| Planning & preparation | [Months/weeks] | [Activities] | [Hours or person-days] |
-| Planting | [Timing] | [Activities] | [Labor needs] |
-| Establishment | [Duration] | [Activities] | [Labor needs] |
-| Growth & development | [Duration] | [Activities] | [Labor needs] |
-| First harvest | [Time from planting] | [Activities] | [Labor needs] |
-| Subsequent harvests | [Frequency] | [Activities] | [Labor needs per harvest] |
-| Peak production | [Year or season] | [Activities] | [Labor needs] |
+| Stage                  | Timeline             | Key Activities | Labor Requirements        |
+| ---------------------- | -------------------- | -------------- | ------------------------- |
+| Planning & preparation | [Months/weeks]       | [Activities]   | [Hours or person-days]    |
+| Planting               | [Timing]             | [Activities]   | [Labor needs]             |
+| Establishment          | [Duration]           | [Activities]   | [Labor needs]             |
+| Growth & development   | [Duration]           | [Activities]   | [Labor needs]             |
+| First harvest          | [Time from planting] | [Activities]   | [Labor needs]             |
+| Subsequent harvests    | [Frequency]          | [Activities]   | [Labor needs per harvest] |
+| Peak production        | [Year or season]     | [Activities]   | [Labor needs]             |
 
 **Harvest Specifications:**
+
 - **Harvest indicators**: [How to determine when to harvest]
 - **Harvest method**: [Manual/mechanical, tools needed]
 - **Harvest frequency**: [Once/multiple times per season/continuous]
@@ -253,70 +266,74 @@ This section provides a framework for analyzing and documenting each crop in you
 
 **Initial Investment (per hectare or your unit):**
 
-| Item | Quantity | Unit Cost | Total Cost |
-|------|----------|-----------|------------|
-| Land preparation | [Area] | [Cost] | [Total] |
-| Planting material | [Amount] | [Cost] | [Total] |
-| Irrigation system | [Type/components] | [Cost] | [Total] |
-| Support structures | [If needed] | [Cost] | [Total] |
-| Tools and equipment | [List] | [Cost] | [Total] |
-| Initial fertilizer/amendments | [Amount] | [Cost] | [Total] |
-| Other startup costs | [Specify] | [Cost] | [Total] |
-| **TOTAL INITIAL INVESTMENT** | | | **[Total]** |
+| Item                          | Quantity          | Unit Cost | Total Cost  |
+| ----------------------------- | ----------------- | --------- | ----------- |
+| Land preparation              | [Area]            | [Cost]    | [Total]     |
+| Planting material             | [Amount]          | [Cost]    | [Total]     |
+| Irrigation system             | [Type/components] | [Cost]    | [Total]     |
+| Support structures            | [If needed]       | [Cost]    | [Total]     |
+| Tools and equipment           | [List]            | [Cost]    | [Total]     |
+| Initial fertilizer/amendments | [Amount]          | [Cost]    | [Total]     |
+| Other startup costs           | [Specify]         | [Cost]    | [Total]     |
+| **TOTAL INITIAL INVESTMENT**  |                   |           | **[Total]** |
 
 **Annual Operating Costs:**
 
-| Category | Year 1 | Year 2 | Year 3+ |
-|----------|--------|--------|---------|
-| Irrigation (water, electricity, maintenance) | [Cost] | [Cost] | [Cost] |
-| Fertilizer and amendments | [Cost] | [Cost] | [Cost] |
-| Pest/disease management | [Cost] | [Cost] | [Cost] |
-| Labor (or your time value) | [Cost] | [Cost] | [Cost] |
-| Harvesting and processing | [Cost] | [Cost] | [Cost] |
-| Marketing and distribution | [Cost] | [Cost] | [Cost] |
-| Equipment maintenance | [Cost] | [Cost] | [Cost] |
-| Other operational expenses | [Cost] | [Cost] | [Cost] |
-| **TOTAL ANNUAL COSTS** | **[Total]** | **[Total]** | **[Total]** |
+| Category                                     | Year 1      | Year 2      | Year 3+     |
+| -------------------------------------------- | ----------- | ----------- | ----------- |
+| Irrigation (water, electricity, maintenance) | [Cost]      | [Cost]      | [Cost]      |
+| Fertilizer and amendments                    | [Cost]      | [Cost]      | [Cost]      |
+| Pest/disease management                      | [Cost]      | [Cost]      | [Cost]      |
+| Labor (or your time value)                   | [Cost]      | [Cost]      | [Cost]      |
+| Harvesting and processing                    | [Cost]      | [Cost]      | [Cost]      |
+| Marketing and distribution                   | [Cost]      | [Cost]      | [Cost]      |
+| Equipment maintenance                        | [Cost]      | [Cost]      | [Cost]      |
+| Other operational expenses                   | [Cost]      | [Cost]      | [Cost]      |
+| **TOTAL ANNUAL COSTS**                       | **[Total]** | **[Total]** | **[Total]** |
 
 **Revenue Projections:**
 
-| Product | Year 1 Yield | Price per Unit | Year 1 Revenue | Year 2 Revenue | Year 3 Revenue |
-|---------|--------------|----------------|----------------|----------------|----------------|
-| [Primary product] | [Amount] | [Price] | [Total] | [Total] | [Total] |
-| [Secondary product] | [Amount] | [Price] | [Total] | [Total] | [Total] |
-| [Other products] | [Amount] | [Price] | [Total] | [Total] | [Total] |
-| **TOTAL REVENUE** | | | **[Total]** | **[Total]** | **[Total]** |
+| Product             | Year 1 Yield | Price per Unit | Year 1 Revenue | Year 2 Revenue | Year 3 Revenue |
+| ------------------- | ------------ | -------------- | -------------- | -------------- | -------------- |
+| [Primary product]   | [Amount]     | [Price]        | [Total]        | [Total]        | [Total]        |
+| [Secondary product] | [Amount]     | [Price]        | [Total]        | [Total]        | [Total]        |
+| [Other products]    | [Amount]     | [Price]        | [Total]        | [Total]        | [Total]        |
+| **TOTAL REVENUE**   |              |                | **[Total]**    | **[Total]**    | **[Total]**    |
 
 **Profitability Summary:**
 
-| Metric | Year 1 | Year 2 | Year 3 |
-|--------|--------|--------|--------|
-| Gross Revenue | [Amount] | [Amount] | [Amount] |
-| Total Costs | [Amount] | [Amount] | [Amount] |
-| Net Profit/Loss | [Amount] | [Amount] | [Amount] |
-| Profit Margin | [%] | [%] | [%] |
-| ROI (Cumulative) | [%] | [%] | [%] |
+| Metric           | Year 1   | Year 2   | Year 3   |
+| ---------------- | -------- | -------- | -------- |
+| Gross Revenue    | [Amount] | [Amount] | [Amount] |
+| Total Costs      | [Amount] | [Amount] | [Amount] |
+| Net Profit/Loss  | [Amount] | [Amount] | [Amount] |
+| Profit Margin    | [%]      | [%]      | [%]      |
+| ROI (Cumulative) | [%]      | [%]      | [%]      |
 
 #### F. Market Analysis
 
 **Target Markets:**
+
 - [Primary market channels: farmers markets, wholesale, restaurants, retail, etc.]
 - [Geographic scope: local, regional, national, international]
 - [Customer segments: home consumers, businesses, processors, etc.]
 
 **Competitive Analysis:**
+
 - **Current suppliers**: [Who is currently serving this market]
 - **Your competitive advantage**: [Quality, price, variety, service, location, etc.]
 - **Market gaps**: [Unmet needs or opportunities]
 - **Barriers to entry**: [What challenges you might face]
 
 **Pricing Strategy:**
+
 - **Current market price**: [Range in your target market]
 - **Your target price**: [Pricing strategy]
 - **Price justification**: [Why customers will pay your price]
 - **Volume vs. price strategy**: [Premium-low volume or commodity-high volume]
 
 **Marketing and Sales:**
+
 - **Marketing methods**: [How you will reach customers]
 - **Sales channels**: [How product will get to customers]
 - **Brand positioning**: [Your unique identity]
@@ -326,35 +343,38 @@ This section provides a framework for analyzing and documenting each crop in you
 
 **Production Risks:**
 
-| Risk | Probability | Impact | Mitigation Strategy |
-|------|-------------|--------|---------------------|
-| [Climate/weather extremes] | [High/Med/Low] | [High/Med/Low] | [Prevention or response plan] |
-| [Pest or disease outbreak] | [Level] | [Impact] | [Management approach] |
-| [Water shortage] | [Level] | [Impact] | [Backup plans] |
-| [Poor establishment/survival] | [Level] | [Impact] | [Quality control, backup plantings] |
-| [Other production risks] | [Level] | [Impact] | [Mitigation] |
+| Risk                          | Probability    | Impact         | Mitigation Strategy                 |
+| ----------------------------- | -------------- | -------------- | ----------------------------------- |
+| [Climate/weather extremes]    | [High/Med/Low] | [High/Med/Low] | [Prevention or response plan]       |
+| [Pest or disease outbreak]    | [Level]        | [Impact]       | [Management approach]               |
+| [Water shortage]              | [Level]        | [Impact]       | [Backup plans]                      |
+| [Poor establishment/survival] | [Level]        | [Impact]       | [Quality control, backup plantings] |
+| [Other production risks]      | [Level]        | [Impact]       | [Mitigation]                        |
 
 **Market Risks:**
 
-| Risk | Probability | Impact | Mitigation Strategy |
-|------|-------------|--------|---------------------|
-| [Price fluctuations] | [Level] | [Impact] | [Diversification, contracts, storage] |
-| [Lack of market access] | [Level] | [Impact] | [Market development plan] |
-| [Competition] | [Level] | [Impact] | [Differentiation strategy] |
-| [Change in demand] | [Level] | [Impact] | [Market research, flexibility] |
+| Risk                    | Probability | Impact   | Mitigation Strategy                   |
+| ----------------------- | ----------- | -------- | ------------------------------------- |
+| [Price fluctuations]    | [Level]     | [Impact] | [Diversification, contracts, storage] |
+| [Lack of market access] | [Level]     | [Impact] | [Market development plan]             |
+| [Competition]           | [Level]     | [Impact] | [Differentiation strategy]            |
+| [Change in demand]      | [Level]     | [Impact] | [Market research, flexibility]        |
 
 **Financial Risks:**
+
 - [Cash flow challenges, financing issues, cost overruns]
 - [Mitigation: reserves, financing arrangements, careful budgeting]
 
 #### H. Crop-Specific Strengths and Weaknesses
 
 **Strengths:**
+
 - [List key advantages of this crop for your operation]
 - [What makes it a good fit]
 - [Market opportunities]
 
 **Weaknesses:**
+
 - [Challenges or limitations]
 - [Resource demands]
 - [Market constraints]
@@ -375,22 +395,26 @@ This section provides a framework for analyzing and documenting each crop in you
 Diversifying your agricultural operation provides several strategic advantages:
 
 **Risk Management:**
+
 - Protects against crop-specific diseases, pests, or weather events
 - Buffers market price volatility for any single product
 - Distributes financial risk across multiple revenue streams
 
 **Income Stability:**
+
 - Staggered harvest times provide year-round cash flow
 - Multiple market channels reduce dependence on single buyers
 - Balances quick-return crops with long-term investments
 
 **Resource Optimization:**
+
 - Different crops use resources at different times
 - Complementary crop combinations can improve soil health
 - Maximizes use of land, labor, and infrastructure
 - Enables better labor distribution throughout the year
 
 **Market Advantages:**
+
 - Offers customers a range of products
 - Positions farm as a diversified supplier
 - Enables value-added product development
@@ -400,12 +424,12 @@ Diversifying your agricultural operation provides several strategic advantages:
 
 **Crop Portfolio Strategy:**
 
-| Portfolio Component | Role | Characteristics | Examples |
-|---------------------|------|-----------------|----------|
-| **Foundation Crop(s)** | Primary income, proven market | Reliable, established markets, moderate returns | [Your reliable crop] |
-| **High-Value Crop(s)** | Premium income, competitive advantage | Higher returns, may need specialized skills/infrastructure | [Your premium crop] |
-| **Quick-Return Crop(s)** | Cash flow, early income | Fast production, seasonal, fills income gaps | [Your quick crop] |
-| **Long-Term Investment** | Future income, asset building | Perennials, slow to produce, high long-term returns | [Your perennial crop] |
+| Portfolio Component      | Role                                  | Characteristics                                            | Examples              |
+| ------------------------ | ------------------------------------- | ---------------------------------------------------------- | --------------------- |
+| **Foundation Crop(s)**   | Primary income, proven market         | Reliable, established markets, moderate returns            | [Your reliable crop]  |
+| **High-Value Crop(s)**   | Premium income, competitive advantage | Higher returns, may need specialized skills/infrastructure | [Your premium crop]   |
+| **Quick-Return Crop(s)** | Cash flow, early income               | Fast production, seasonal, fills income gaps               | [Your quick crop]     |
+| **Long-Term Investment** | Future income, asset building         | Perennials, slow to produce, high long-term returns        | [Your perennial crop] |
 
 **Building Your Crop Portfolio:**
 
@@ -420,22 +444,26 @@ Diversifying your agricultural operation provides several strategic advantages:
 Consider these synergies when selecting multiple crops:
 
 **Temporal Complementarity:**
+
 - Crops with different peak labor periods
 - Staggered harvest times for year-round income
 - Crops that use the same infrastructure in different seasons
 
 **Spatial Complementarity:**
+
 - Tall and short crops (intercropping potential)
 - Shade-tolerant crops under tree crops
 - Border crops for pest management or windbreaks
 
 **Resource Complementarity:**
+
 - Light feeders following heavy feeders
 - Nitrogen-fixing crops in rotation
 - Drought-tolerant and water-demanding crops in appropriate zones
 - Deep and shallow-rooted crops
 
 **Market Complementarity:**
+
 - Fresh and processed products
 - Different customer segments (wholesale, retail, direct)
 - Multiple sales channels (farmers market, restaurants, export)
@@ -445,6 +473,7 @@ Consider these synergies when selecting multiple crops:
 When expanding your operation, consider these categories:
 
 **High-Value Specialty Crops:**
+
 - Herbs and spices
 - Exotic fruits
 - Gourmet vegetables
@@ -452,18 +481,21 @@ When expanding your operation, consider these categories:
 - Essential oil crops
 
 **Value-Added Products:**
+
 - Processed products (dried, powdered, extracted)
 - Combined products (spice mixes, herbal teas)
 - Ready-to-eat items
 - Beauty and wellness products
 
 **Livestock Integration (if appropriate):**
+
 - Poultry (eggs, meat)
 - Small ruminants (goats, sheep)
 - Bees (honey, pollination services)
 - Aquaculture (if water available)
 
 **Service-Based Income:**
+
 - Agro-tourism
 - Educational workshops
 - Farm-to-table experiences
@@ -473,13 +505,14 @@ When expanding your operation, consider these categories:
 
 Use this matrix to evaluate potential additional crops:
 
-| Crop Option | Market Demand | Fits Climate/Soil | Resource Requirements | Profit Potential | Skill Level | Priority Score |
-|-------------|---------------|-------------------|-----------------------|------------------|-------------|----------------|
-| [Crop A] | [High/Med/Low] | [Yes/Partial/No] | [Low/Med/High] | [Low/Med/High] | [Low/Med/High] | [Calculate] |
-| [Crop B] | | | | | | |
-| [Crop C] | | | | | | |
+| Crop Option | Market Demand  | Fits Climate/Soil | Resource Requirements | Profit Potential | Skill Level    | Priority Score |
+| ----------- | -------------- | ----------------- | --------------------- | ---------------- | -------------- | -------------- |
+| [Crop A]    | [High/Med/Low] | [Yes/Partial/No]  | [Low/Med/High]        | [Low/Med/High]   | [Low/Med/High] | [Calculate]    |
+| [Crop B]    |                |                   |                       |                  |                |                |
+| [Crop C]    |                |                   |                       |                  |                |                |
 
 **Scoring Guide:**
+
 - Market Demand: High (3), Medium (2), Low (1)
 - Climate/Soil Fit: Yes (3), Partial (2), No (1)
 - Resource Requirements: Low (3), Medium (2), High (1)
@@ -499,41 +532,41 @@ A SWOT analysis helps you understand the internal strengths and weaknesses of yo
 
 **Strengths (Internal Positive Factors):**
 
-| Factor | Description | How to Leverage |
-|--------|-------------|-----------------|
-| [Your strength] | [Details] | [Strategy to maximize] |
-| Resource advantages | [Land, water, capital, skills, location] | [How these help] |
-| Market position | [Access, reputation, relationships] | [Competitive advantage] |
-| Experience/knowledge | [Your expertise] | [Apply to operations] |
+| Factor               | Description                              | How to Leverage         |
+| -------------------- | ---------------------------------------- | ----------------------- |
+| [Your strength]      | [Details]                                | [Strategy to maximize]  |
+| Resource advantages  | [Land, water, capital, skills, location] | [How these help]        |
+| Market position      | [Access, reputation, relationships]      | [Competitive advantage] |
+| Experience/knowledge | [Your expertise]                         | [Apply to operations]   |
 
 **Weaknesses (Internal Challenges):**
 
-| Factor | Description | Mitigation Strategy |
-|--------|-------------|---------------------|
-| [Your weakness] | [Details] | [How to address] |
-| Resource limitations | [Capital, labor, water, land constraints] | [Workarounds] |
-| Skill gaps | [Technical or business skills needed] | [Training plan] |
-| Infrastructure | [Facilities, equipment limitations] | [Improvement plan] |
+| Factor               | Description                               | Mitigation Strategy |
+| -------------------- | ----------------------------------------- | ------------------- |
+| [Your weakness]      | [Details]                                 | [How to address]    |
+| Resource limitations | [Capital, labor, water, land constraints] | [Workarounds]       |
+| Skill gaps           | [Technical or business skills needed]     | [Training plan]     |
+| Infrastructure       | [Facilities, equipment limitations]       | [Improvement plan]  |
 
 **Opportunities (External Favorable Conditions):**
 
-| Factor | Description | Action Plan |
-|--------|-------------|-------------|
-| [Your opportunity] | [Details] | [How to capture] |
-| Market trends | [Growing demand, new markets, price trends] | [Market entry strategy] |
-| Technology | [New methods, equipment, techniques] | [Adoption plan] |
-| Policy/programs | [Grants, subsidies, training programs] | [Application process] |
-| Partnerships | [Collaboration opportunities] | [Outreach plan] |
+| Factor             | Description                                 | Action Plan             |
+| ------------------ | ------------------------------------------- | ----------------------- |
+| [Your opportunity] | [Details]                                   | [How to capture]        |
+| Market trends      | [Growing demand, new markets, price trends] | [Market entry strategy] |
+| Technology         | [New methods, equipment, techniques]        | [Adoption plan]         |
+| Policy/programs    | [Grants, subsidies, training programs]      | [Application process]   |
+| Partnerships       | [Collaboration opportunities]               | [Outreach plan]         |
 
 **Threats (External Risks):**
 
-| Factor | Description | Defense Strategy |
-|--------|-------------|------------------|
-| [Your threat] | [Details] | [Risk mitigation] |
-| Climate risks | [Drought, flood, extreme weather] | [Adaptation measures] |
-| Market risks | [Competition, price volatility, demand changes] | [Diversification, contracts] |
-| Regulatory | [Changing regulations, compliance costs] | [Stay informed, plan ahead] |
-| Biological | [Pests, diseases, invasive species] | [Prevention, monitoring] |
+| Factor        | Description                                     | Defense Strategy             |
+| ------------- | ----------------------------------------------- | ---------------------------- |
+| [Your threat] | [Details]                                       | [Risk mitigation]            |
+| Climate risks | [Drought, flood, extreme weather]               | [Adaptation measures]        |
+| Market risks  | [Competition, price volatility, demand changes] | [Diversification, contracts] |
+| Regulatory    | [Changing regulations, compliance costs]        | [Stay informed, plan ahead]  |
+| Biological    | [Pests, diseases, invasive species]             | [Prevention, monitoring]     |
 
 ### 4.3 Crop-Specific SWOT Template
 
@@ -541,19 +574,19 @@ Complete this for each major crop:
 
 **Crop: [Your Crop Name]**
 
-| **Strengths** | **Weaknesses** |
-|---------------|----------------|
+| **Strengths**                               | **Weaknesses**              |
+| ------------------------------------------- | --------------------------- |
 | [What makes this crop advantageous for you] | [Challenges or limitations] |
-| [Suitability to your resources] | [Resource demands] |
-| [Market opportunities] | [Market constraints] |
-| [Technical advantages] | [Technical challenges] |
+| [Suitability to your resources]             | [Resource demands]          |
+| [Market opportunities]                      | [Market constraints]        |
+| [Technical advantages]                      | [Technical challenges]      |
 
-| **Opportunities** | **Threats** |
-|-------------------|-------------|
-| [Market growth potential] | [Production risks] |
-| [Value-added possibilities] | [Market risks] |
-| [New applications or markets] | [Environmental threats] |
-| [Synergies with other operations] | [Competition] |
+| **Opportunities**                 | **Threats**             |
+| --------------------------------- | ----------------------- |
+| [Market growth potential]         | [Production risks]      |
+| [Value-added possibilities]       | [Market risks]          |
+| [New applications or markets]     | [Environmental threats] |
+| [Synergies with other operations] | [Competition]           |
 
 **Overall Assessment:** [Conclusion about whether this crop should be included and at what scale]
 
@@ -579,48 +612,51 @@ Develop financial projections for your operation using multiple scenarios to und
 
 #### Optimistic Scenario
 
-| Crop | Yield per ha | Price per unit | Gross Revenue | Operating Costs | Net Profit |
-|------|--------------|----------------|---------------|-----------------|------------|
-| [Crop 1] | [Best case yield] | [High price] | [Calculate] | [Costs] | [Calculate] |
-| [Crop 2] | [Best case yield] | [High price] | [Calculate] | [Costs] | [Calculate] |
-| **Total** | | | **[Total]** | **[Total]** | **[Total]** |
+| Crop      | Yield per ha      | Price per unit | Gross Revenue | Operating Costs | Net Profit  |
+| --------- | ----------------- | -------------- | ------------- | --------------- | ----------- |
+| [Crop 1]  | [Best case yield] | [High price]   | [Calculate]   | [Costs]         | [Calculate] |
+| [Crop 2]  | [Best case yield] | [High price]   | [Calculate]   | [Costs]         | [Calculate] |
+| **Total** |                   |                | **[Total]**   | **[Total]**     | **[Total]** |
 
 **Assumptions:**
+
 - [List favorable assumptions: weather, pest control success, market access, etc.]
 
 #### Baseline Scenario
 
-| Crop | Yield per ha | Price per unit | Gross Revenue | Operating Costs | Net Profit |
-|------|--------------|----------------|---------------|-----------------|------------|
-| [Crop 1] | [Typical yield] | [Average price] | [Calculate] | [Costs] | [Calculate] |
-| [Crop 2] | [Typical yield] | [Average price] | [Calculate] | [Costs] | [Calculate] |
-| **Total** | | | **[Total]** | **[Total]** | **[Total]** |
+| Crop      | Yield per ha    | Price per unit  | Gross Revenue | Operating Costs | Net Profit  |
+| --------- | --------------- | --------------- | ------------- | --------------- | ----------- |
+| [Crop 1]  | [Typical yield] | [Average price] | [Calculate]   | [Costs]         | [Calculate] |
+| [Crop 2]  | [Typical yield] | [Average price] | [Calculate]   | [Costs]         | [Calculate] |
+| **Total** |                 |                 | **[Total]**   | **[Total]**     | **[Total]** |
 
 **Assumptions:**
+
 - [List realistic assumptions based on research and local data]
 
 #### Pessimistic Scenario
 
-| Crop | Yield per ha | Price per unit | Gross Revenue | Operating Costs | Net Profit |
-|------|--------------|----------------|---------------|-----------------|------------|
-| [Crop 1] | [Low yield] | [Low price] | [Calculate] | [Costs] | [Calculate] |
-| [Crop 2] | [Low yield] | [Low price] | [Calculate] | [Costs] | [Calculate] |
-| **Total** | | | **[Total]** | **[Total]** | **[Total]** |
+| Crop      | Yield per ha | Price per unit | Gross Revenue | Operating Costs | Net Profit  |
+| --------- | ------------ | -------------- | ------------- | --------------- | ----------- |
+| [Crop 1]  | [Low yield]  | [Low price]    | [Calculate]   | [Costs]         | [Calculate] |
+| [Crop 2]  | [Low yield]  | [Low price]    | [Calculate]   | [Costs]         | [Calculate] |
+| **Total** |              |                | **[Total]**   | **[Total]**     | **[Total]** |
 
 **Assumptions:**
+
 - [List challenging scenarios: drought, disease, market downturn, etc.]
 
 ### 5.4 Multi-Year Financial Projections
 
 **Create 3-5 Year Projections for Your Operation:**
 
-| Year | Optimistic Net Profit | Baseline Net Profit | Pessimistic Net Profit | Notes |
-|------|----------------------|---------------------|------------------------|-------|
-| Year 1 | [Amount] | [Amount] | [Amount] | [Establishment phase] |
-| Year 2 | [Amount] | [Amount] | [Amount] | [Production ramp-up] |
-| Year 3 | [Amount] | [Amount] | [Amount] | [Approaching maturity] |
-| Year 4 | [Amount] | [Amount] | [Amount] | [Full production] |
-| Year 5 | [Amount] | [Amount] | [Amount] | [Optimization] |
+| Year   | Optimistic Net Profit | Baseline Net Profit | Pessimistic Net Profit | Notes                  |
+| ------ | --------------------- | ------------------- | ---------------------- | ---------------------- |
+| Year 1 | [Amount]              | [Amount]            | [Amount]               | [Establishment phase]  |
+| Year 2 | [Amount]              | [Amount]            | [Amount]               | [Production ramp-up]   |
+| Year 3 | [Amount]              | [Amount]            | [Amount]               | [Approaching maturity] |
+| Year 4 | [Amount]              | [Amount]            | [Amount]               | [Full production]      |
+| Year 5 | [Amount]              | [Amount]            | [Amount]               | [Optimization]         |
 
 ### 5.5 Financial Decision Framework
 
@@ -633,23 +669,23 @@ Develop financial projections for your operation using multiple scenarios to und
 
 **Key Financial Metrics to Track:**
 
-| Metric | Target | How to Achieve |
-|--------|--------|----------------|
-| Break-even point | [Timeline] | [Strategy] |
-| Profit margin | [%] | [Cost control, pricing] |
-| Return on investment | [%] | [Efficiency, yield optimization] |
-| Cash flow positive | [When] | [Quick-return crops, staged investment] |
+| Metric               | Target     | How to Achieve                          |
+| -------------------- | ---------- | --------------------------------------- |
+| Break-even point     | [Timeline] | [Strategy]                              |
+| Profit margin        | [%]        | [Cost control, pricing]                 |
+| Return on investment | [%]        | [Efficiency, yield optimization]        |
+| Cash flow positive   | [When]     | [Quick-return crops, staged investment] |
 
 ### 5.6 Sensitivity Analysis
 
 **Identify which variables most impact profitability:**
 
-| Variable | Impact on Net Profit | Mitigation Strategy |
-|----------|----------------------|---------------------|
-| Yield (-20%) | [Impact amount] | [Improve practices, backup plans] |
-| Price (-20%) | [Impact amount] | [Diversify markets, value-added] |
-| Costs (+20%) | [Impact amount] | [Efficiency, bulk purchasing] |
-| Weather events | [Impact amount] | [Insurance, drought-resistant crops] |
+| Variable       | Impact on Net Profit | Mitigation Strategy                  |
+| -------------- | -------------------- | ------------------------------------ |
+| Yield (-20%)   | [Impact amount]      | [Improve practices, backup plans]    |
+| Price (-20%)   | [Impact amount]      | [Diversify markets, value-added]     |
+| Costs (+20%)   | [Impact amount]      | [Efficiency, bulk purchasing]        |
+| Weather events | [Impact amount]      | [Insurance, drought-resistant crops] |
 
 ---
 
@@ -666,6 +702,7 @@ A phased implementation approach reduces risk and allows you to learn and adapt 
 #### Phase 1: Planning and Preparation ([Your Timeframe, e.g., Months 1-4])
 
 **Key Activities:**
+
 - [ ] Finalize farm layout and crop selection
 - [ ] Conduct comprehensive soil testing
 - [ ] Complete climate and water resource assessment
@@ -677,6 +714,7 @@ A phased implementation approach reduces risk and allows you to learn and adapt 
 - [ ] Develop farm management plan
 
 **Outputs:**
+
 - Finalized business plan
 - Secured funding
 - Materials ordered
@@ -685,6 +723,7 @@ A phased implementation approach reduces risk and allows you to learn and adapt 
 #### Phase 2: Site Preparation ([Your Timeframe, e.g., Months 3-6])
 
 **Key Activities:**
+
 - [ ] Clear land and remove vegetation
 - [ ] Conduct soil amendments (pH adjustment, organic matter)
 - [ ] Install irrigation infrastructure
@@ -695,6 +734,7 @@ A phased implementation approach reduces risk and allows you to learn and adapt 
 - [ ] Install weather monitoring equipment
 
 **Outputs:**
+
 - Site prepared for planting
 - Infrastructure in place
 - Systems tested and operational
@@ -702,6 +742,7 @@ A phased implementation approach reduces risk and allows you to learn and adapt 
 #### Phase 3: Initial Planting ([Your Timeframe, e.g., Months 5-8])
 
 **Key Activities:**
+
 - [ ] Plant crops according to optimal timing for your climate
 - [ ] Implement initial irrigation schedule
 - [ ] Apply starting fertilizers and amendments
@@ -711,6 +752,7 @@ A phased implementation approach reduces risk and allows you to learn and adapt 
 - [ ] Implement quality control procedures
 
 **Outputs:**
+
 - All planned crops planted
 - Monitoring systems active
 - Documentation initiated
@@ -718,6 +760,7 @@ A phased implementation approach reduces risk and allows you to learn and adapt 
 #### Phase 4: Establishment and Care ([Your Timeframe, e.g., Months 6-12])
 
 **Key Activities:**
+
 - [ ] Daily/weekly monitoring of plant health
 - [ ] Adjust irrigation based on weather and plant needs
 - [ ] Implement pest and disease management as needed
@@ -728,6 +771,7 @@ A phased implementation approach reduces risk and allows you to learn and adapt 
 - [ ] Refine production practices based on observations
 
 **Outputs:**
+
 - Healthy, established crops
 - Refined growing protocols
 - Market relationships developing
@@ -735,6 +779,7 @@ A phased implementation approach reduces risk and allows you to learn and adapt 
 #### Phase 5: First Harvest ([Your Timeframe, e.g., Months 8-15, varies by crop])
 
 **Key Activities:**
+
 - [ ] Monitor crops for harvest indicators
 - [ ] Implement harvest protocols
 - [ ] Post-harvest handling (cleaning, processing, storage)
@@ -745,6 +790,7 @@ A phased implementation approach reduces risk and allows you to learn and adapt 
 - [ ] Adjust plans based on results
 
 **Outputs:**
+
 - First harvest completed
 - Initial revenue generated
 - Lessons learned documented
@@ -753,6 +799,7 @@ A phased implementation approach reduces risk and allows you to learn and adapt 
 #### Phase 6: Optimization and Scaling ([Your Timeframe, e.g., Year 2-3+])
 
 **Key Activities:**
+
 - [ ] Implement improvements based on Year 1 experience
 - [ ] Optimize irrigation and fertility programs
 - [ ] Refine pest/disease management
@@ -764,6 +811,7 @@ A phased implementation approach reduces risk and allows you to learn and adapt 
 - [ ] Build reserves and reinvest profits
 
 **Outputs:**
+
 - Efficient, optimized operations
 - Strong market position
 - Financial sustainability
@@ -773,33 +821,33 @@ A phased implementation approach reduces risk and allows you to learn and adapt 
 
 **Identify activities that must be completed on schedule:**
 
-| Activity | Deadline | Dependencies | Responsible | Status |
-|----------|----------|--------------|-------------|---------|
-| [Critical activity 1] | [Date] | [What must happen first] | [Person] | [Status] |
-| [Critical activity 2] | [Date] | [Dependencies] | [Person] | [Status] |
+| Activity              | Deadline | Dependencies             | Responsible | Status   |
+| --------------------- | -------- | ------------------------ | ----------- | -------- |
+| [Critical activity 1] | [Date]   | [What must happen first] | [Person]    | [Status] |
+| [Critical activity 2] | [Date]   | [Dependencies]           | [Person]    | [Status] |
 
 ### 6.4 Resource Scheduling
 
 **Plan when you'll need key resources:**
 
-| Resource | Phase 1 | Phase 2 | Phase 3 | Phase 4 | Phase 5 | Phase 6 |
-|----------|---------|---------|---------|---------|---------|---------|
-| Capital | [Amount] | [Amount] | [Amount] | [Amount] | [Amount] | [Amount] |
-| Labor (hours/week) | [Hours] | [Hours] | [Hours] | [Hours] | [Hours] | [Hours] |
-| Water | [Amount] | [Amount] | [Amount] | [Amount] | [Amount] | [Amount] |
-| Expertise needed | [Type] | [Type] | [Type] | [Type] | [Type] | [Type] |
+| Resource           | Phase 1  | Phase 2  | Phase 3  | Phase 4  | Phase 5  | Phase 6  |
+| ------------------ | -------- | -------- | -------- | -------- | -------- | -------- |
+| Capital            | [Amount] | [Amount] | [Amount] | [Amount] | [Amount] | [Amount] |
+| Labor (hours/week) | [Hours]  | [Hours]  | [Hours]  | [Hours]  | [Hours]  | [Hours]  |
+| Water              | [Amount] | [Amount] | [Amount] | [Amount] | [Amount] | [Amount] |
+| Expertise needed   | [Type]   | [Type]   | [Type]   | [Type]   | [Type]   | [Type]   |
 
 ### 6.5 Milestones and Success Indicators
 
 **Define clear milestones to track progress:**
 
-| Milestone | Target Date | Success Criteria | Actual Date | Notes |
-|-----------|-------------|------------------|-------------|-------|
-| Site preparation complete | [Date] | [Criteria] | | |
-| Planting complete | [Date] | [% planted] | | |
-| First harvest | [Date] | [Amount] | | |
-| Break-even | [Date] | [Cash flow positive] | | |
-| Full production | [Date] | [Target yields achieved] | | |
+| Milestone                 | Target Date | Success Criteria         | Actual Date | Notes |
+| ------------------------- | ----------- | ------------------------ | ----------- | ----- |
+| Site preparation complete | [Date]      | [Criteria]               |             |       |
+| Planting complete         | [Date]      | [% planted]              |             |       |
+| First harvest             | [Date]      | [Amount]                 |             |       |
+| Break-even                | [Date]      | [Cash flow positive]     |             |       |
+| Full production           | [Date]      | [Target yields achieved] |             |       |
 
 ---
 
@@ -815,29 +863,31 @@ Effective risk management is essential for agricultural success. Identify potent
 
 #### A. Climate and Weather Risks
 
-| Risk | Likelihood | Impact | Prevention | Response Plan |
-|------|------------|--------|-----------|---------------|
-| Frost damage | [Your assessment] | [Impact level] | [Crop selection, timing, location] | [Covers, irrigation, replanting] |
-| Drought | [Your assessment] | [Impact level] | [Water storage, efficient irrigation, drought-tolerant varieties] | [Water conservation, supplemental irrigation] |
-| Excessive rainfall/flooding | [Your assessment] | [Impact level] | [Drainage, raised beds, site selection] | [Drainage improvements, crop recovery] |
-| Extreme temperatures | [Your assessment] | [Impact level] | [Shade structures, mulching, variety selection] | [Emergency irrigation, recovery protocols] |
-| Hail, wind, storms | [Your assessment] | [Impact level] | [Windbreaks, protective structures] | [Insurance, rapid assessment, replanting] |
+| Risk                        | Likelihood        | Impact         | Prevention                                                        | Response Plan                                 |
+| --------------------------- | ----------------- | -------------- | ----------------------------------------------------------------- | --------------------------------------------- |
+| Frost damage                | [Your assessment] | [Impact level] | [Crop selection, timing, location]                                | [Covers, irrigation, replanting]              |
+| Drought                     | [Your assessment] | [Impact level] | [Water storage, efficient irrigation, drought-tolerant varieties] | [Water conservation, supplemental irrigation] |
+| Excessive rainfall/flooding | [Your assessment] | [Impact level] | [Drainage, raised beds, site selection]                           | [Drainage improvements, crop recovery]        |
+| Extreme temperatures        | [Your assessment] | [Impact level] | [Shade structures, mulching, variety selection]                   | [Emergency irrigation, recovery protocols]    |
+| Hail, wind, storms          | [Your assessment] | [Impact level] | [Windbreaks, protective structures]                               | [Insurance, rapid assessment, replanting]     |
 
 **Climate Risk Mitigation Strategy:**
+
 - [Your specific strategies for your climate risks]
 - [Monitoring and early warning systems]
 - [Diversification across climate-sensitive and resilient crops]
 
 #### B. Biological Risks (Pests, Diseases, Weeds)
 
-| Risk | Likelihood | Impact | Prevention | Response Plan |
-|------|------------|--------|-----------|---------------|
-| [Specific pest threat] | [Level] | [Impact] | [Monitoring, sanitation, resistant varieties] | [IPM, targeted treatments] |
-| [Disease threat] | [Level] | [Impact] | [Crop rotation, resistant varieties, sanitation] | [Early detection, removal, treatment] |
-| [Weed pressure] | [Level] | [Impact] | [Mulching, pre-emergence control, cultivation] | [Mechanical or chemical control] |
-| [Wildlife damage] | [Level] | [Impact] | [Fencing, deterrents, habitat management] | [Repair, enhanced protection] |
+| Risk                   | Likelihood | Impact   | Prevention                                       | Response Plan                         |
+| ---------------------- | ---------- | -------- | ------------------------------------------------ | ------------------------------------- |
+| [Specific pest threat] | [Level]    | [Impact] | [Monitoring, sanitation, resistant varieties]    | [IPM, targeted treatments]            |
+| [Disease threat]       | [Level]    | [Impact] | [Crop rotation, resistant varieties, sanitation] | [Early detection, removal, treatment] |
+| [Weed pressure]        | [Level]    | [Impact] | [Mulching, pre-emergence control, cultivation]   | [Mechanical or chemical control]      |
+| [Wildlife damage]      | [Level]    | [Impact] | [Fencing, deterrents, habitat management]        | [Repair, enhanced protection]         |
 
 **Biological Risk Mitigation Strategy:**
+
 - Implement Integrated Pest Management (IPM)
 - Regular scouting and monitoring
 - Maintain plant health to improve resistance
@@ -846,16 +896,17 @@ Effective risk management is essential for agricultural success. Identify potent
 
 #### C. Market and Financial Risks
 
-| Risk | Likelihood | Impact | Prevention | Response Plan |
-|------|------------|--------|-----------|---------------|
-| Price volatility | [Level] | [Impact] | [Diversification, contracts, storage] | [Adjust marketing, hold inventory] |
-| Market access loss | [Level] | [Impact] | [Multiple channels, customer relationships] | [Develop alternative outlets] |
-| Competition increase | [Level] | [Impact] | [Quality focus, branding, unique products] | [Differentiation, value-added] |
-| Demand changes | [Level] | [Impact] | [Market research, flexibility] | [Pivot to different products/markets] |
-| Cash flow problems | [Level] | [Impact] | [Emergency fund, adequate capital, planning] | [Short-term financing, reduce costs] |
-| Cost increases | [Level] | [Impact] | [Efficiency, bulk purchasing, alternatives] | [Pass-through pricing, substitution] |
+| Risk                 | Likelihood | Impact   | Prevention                                   | Response Plan                         |
+| -------------------- | ---------- | -------- | -------------------------------------------- | ------------------------------------- |
+| Price volatility     | [Level]    | [Impact] | [Diversification, contracts, storage]        | [Adjust marketing, hold inventory]    |
+| Market access loss   | [Level]    | [Impact] | [Multiple channels, customer relationships]  | [Develop alternative outlets]         |
+| Competition increase | [Level]    | [Impact] | [Quality focus, branding, unique products]   | [Differentiation, value-added]        |
+| Demand changes       | [Level]    | [Impact] | [Market research, flexibility]               | [Pivot to different products/markets] |
+| Cash flow problems   | [Level]    | [Impact] | [Emergency fund, adequate capital, planning] | [Short-term financing, reduce costs]  |
+| Cost increases       | [Level]    | [Impact] | [Efficiency, bulk purchasing, alternatives]  | [Pass-through pricing, substitution]  |
 
 **Market Risk Mitigation Strategy:**
+
 - Diversify both products and market channels
 - Build strong customer relationships
 - Maintain financial reserves (3-6 months operating costs)
@@ -864,15 +915,16 @@ Effective risk management is essential for agricultural success. Identify potent
 
 #### D. Operational Risks
 
-| Risk | Likelihood | Impact | Prevention | Response Plan |
-|------|------------|--------|-----------|---------------|
-| Equipment failure | [Level] | [Impact] | [Maintenance, backup systems] | [Repair services, rental equipment] |
-| Labor shortages | [Level] | [Impact] | [Planning, training, mechanization] | [Alternative labor sources, prioritize tasks] |
-| Water supply issues | [Level] | [Impact] | [Storage, efficiency, alternative sources] | [Rationing, prioritize crops] |
-| Infrastructure damage | [Level] | [Impact] | [Quality construction, maintenance] | [Repair protocols, temporary solutions] |
-| Knowledge/skill gaps | [Level] | [Impact] | [Training, advisors, networking] | [Consultants, extension services] |
+| Risk                  | Likelihood | Impact   | Prevention                                 | Response Plan                                 |
+| --------------------- | ---------- | -------- | ------------------------------------------ | --------------------------------------------- |
+| Equipment failure     | [Level]    | [Impact] | [Maintenance, backup systems]              | [Repair services, rental equipment]           |
+| Labor shortages       | [Level]    | [Impact] | [Planning, training, mechanization]        | [Alternative labor sources, prioritize tasks] |
+| Water supply issues   | [Level]    | [Impact] | [Storage, efficiency, alternative sources] | [Rationing, prioritize crops]                 |
+| Infrastructure damage | [Level]    | [Impact] | [Quality construction, maintenance]        | [Repair protocols, temporary solutions]       |
+| Knowledge/skill gaps  | [Level]    | [Impact] | [Training, advisors, networking]           | [Consultants, extension services]             |
 
 **Operational Risk Mitigation Strategy:**
+
 - Implement preventive maintenance programs
 - Cross-train workers for flexibility
 - Build relationships with service providers
@@ -881,14 +933,15 @@ Effective risk management is essential for agricultural success. Identify potent
 
 #### E. Regulatory and Legal Risks
 
-| Risk | Likelihood | Impact | Prevention | Response Plan |
-|------|------------|--------|-----------|---------------|
-| Regulation changes | [Level] | [Impact] | [Stay informed, participate in advocacy] | [Compliance adjustments, legal advice] |
-| Certification requirements | [Level] | [Impact] | [Understand requirements, maintain records] | [Application process, certification support] |
-| Liability issues | [Level] | [Impact] | [Insurance, safety protocols, contracts] | [Legal representation, insurance claims] |
-| Land/water use restrictions | [Level] | [Impact] | [Compliance, good neighbor relations] | [Adaptation, alternative approaches] |
+| Risk                        | Likelihood | Impact   | Prevention                                  | Response Plan                                |
+| --------------------------- | ---------- | -------- | ------------------------------------------- | -------------------------------------------- |
+| Regulation changes          | [Level]    | [Impact] | [Stay informed, participate in advocacy]    | [Compliance adjustments, legal advice]       |
+| Certification requirements  | [Level]    | [Impact] | [Understand requirements, maintain records] | [Application process, certification support] |
+| Liability issues            | [Level]    | [Impact] | [Insurance, safety protocols, contracts]    | [Legal representation, insurance claims]     |
+| Land/water use restrictions | [Level]    | [Impact] | [Compliance, good neighbor relations]       | [Adaptation, alternative approaches]         |
 
 **Regulatory Risk Mitigation Strategy:**
+
 - Stay current on regulations affecting your operation
 - Maintain excellent records and documentation
 - Obtain appropriate insurance coverage
@@ -898,11 +951,11 @@ Effective risk management is essential for agricultural success. Identify potent
 
 **Priority Risks (High likelihood OR high impact):**
 
-| Risk | Mitigation Actions | Timeline | Responsible | Resources Needed |
-|------|-------------------|----------|-------------|------------------|
-| [Priority risk 1] | [Specific actions] | [When] | [Who] | [What] |
-| [Priority risk 2] | [Specific actions] | [When] | [Who] | [What] |
-| [Priority risk 3] | [Specific actions] | [When] | [Who] | [What] |
+| Risk              | Mitigation Actions | Timeline | Responsible | Resources Needed |
+| ----------------- | ------------------ | -------- | ----------- | ---------------- |
+| [Priority risk 1] | [Specific actions] | [When]   | [Who]       | [What]           |
+| [Priority risk 2] | [Specific actions] | [When]   | [Who]       | [What]           |
+| [Priority risk 3] | [Specific actions] | [When]   | [Who]       | [What]           |
 
 ### 7.4 Emergency Preparedness
 
@@ -917,6 +970,7 @@ Effective risk management is essential for agricultural success. Identify potent
 ### 7.5 Risk Monitoring and Review
 
 **Regular Risk Assessment:**
+
 - **Frequency**: [Monthly/quarterly/seasonally]
 - **Process**: [How you'll review risks and update plans]
 - **Documentation**: [Where and how you'll record risk events and responses]
@@ -931,21 +985,25 @@ Effective risk management is essential for agricultural success. Identify potent
 This agricultural business plan template provides a comprehensive framework for developing a successful farming operation, whether focused on a single crop, multiple crops, or a diversified portfolio. By following this systematic approach, you can:
 
 **Build a Solid Foundation:**
+
 - Thoroughly assess your climate, soil, and resources
 - Select crops well-matched to your conditions and capabilities
 - Develop realistic financial projections across multiple scenarios
 
 **Manage Risk Effectively:**
+
 - Identify and plan for potential challenges
 - Implement proven risk mitigation strategies
 - Build resilience through diversification and preparedness
 
 **Create a Path to Profitability:**
+
 - Implement a phased approach that minimizes initial investment
 - Generate early income from quick-return crops
 - Build long-term value with strategic investments
 
 **Adapt and Succeed:**
+
 - Use this template as a living document
 - Adjust based on your results and changing conditions
 - Continuously improve your operation
@@ -981,6 +1039,7 @@ This agricultural business plan template provides a comprehensive framework for 
 **Your Action Plan:**
 
 **Immediate Steps (Next 2-4 Weeks):**
+
 - [ ] Complete climate and soil assessments
 - [ ] Research crops suitable for your conditions
 - [ ] Visit successful local farms for your intended crops
@@ -989,6 +1048,7 @@ This agricultural business plan template provides a comprehensive framework for 
 - [ ] Begin developing your financial model
 
 **Short-Term (Next 1-3 Months):**
+
 - [ ] Finalize crop selection
 - [ ] Complete detailed financial projections
 - [ ] Develop implementation timeline
@@ -998,6 +1058,7 @@ This agricultural business plan template provides a comprehensive framework for 
 - [ ] Begin site preparation (if timing appropriate)
 
 **Medium-Term (3-12 Months):**
+
 - [ ] Implement site preparation
 - [ ] Install infrastructure
 - [ ] Plant first crops
@@ -1008,6 +1069,7 @@ This agricultural business plan template provides a comprehensive framework for 
 ### 8.5 Resources and Support
 
 **Seek guidance from:**
+
 - **Agricultural Extension Services**: Government agricultural advisors
 - **Local Farmer Organizations**: Learning from experienced growers
 - **Industry Associations**: Crop-specific organizations and networks
@@ -1018,6 +1080,7 @@ This agricultural business plan template provides a comprehensive framework for 
 ### 8.6 Ongoing Improvement
 
 **Treat this plan as a living document:**
+
 - Review and update quarterly or seasonally
 - Record actual results vs. projections
 - Document lessons learned
@@ -1025,6 +1088,7 @@ This agricultural business plan template provides a comprehensive framework for 
 - Celebrate successes and learn from challenges
 
 **Continuous improvement through:**
+
 - Keeping detailed production records
 - Analyzing financial performance regularly
 - Seeking feedback from customers
@@ -1038,6 +1102,7 @@ This agricultural business plan template provides a comprehensive framework for 
 Agricultural entrepreneurship offers opportunities for those willing to plan carefully, work hard, and adapt to changing conditions. This template provides the framework, but your knowledge of your specific situation, your dedication, and your willingness to learn will determine your success.
 
 **Remember:**
+
 - Start with thorough planning
 - Begin at an appropriate scale for your resources
 - Focus on quality over quantity

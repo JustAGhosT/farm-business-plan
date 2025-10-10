@@ -14,10 +14,7 @@ export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
     }
 
     const { searchParams } = new URL(request.url)
@@ -36,28 +33,28 @@ export async function GET(request: Request) {
       LEFT JOIN users u ON cl.user_id = u.id
       WHERE 1=1
     `
-    
+
     const params: any[] = []
     let paramIndex = 1
-    
+
     if (targetType) {
       queryText += ` AND cl.target_type = $${paramIndex}`
       params.push(targetType)
       paramIndex++
     }
-    
+
     if (targetId) {
       queryText += ` AND cl.target_id = $${paramIndex}`
       params.push(targetId)
       paramIndex++
     }
-    
+
     if (userId) {
       queryText += ` AND cl.user_id = $${paramIndex}`
       params.push(userId)
       paramIndex++
     }
-    
+
     queryText += ` ORDER BY cl.timestamp DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`
     params.push(limit, offset)
 
@@ -66,7 +63,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: true,
       data: result.rows,
-      count: result.rows.length
+      count: result.rows.length,
     })
   } catch (error) {
     console.error('Error fetching change log:', error)
@@ -85,28 +82,20 @@ export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
     }
 
     const body = await request.json()
-    const {
-      target_type,
-      target_id,
-      action,
-      description,
-      field,
-      old_value,
-      new_value,
-      metadata
-    } = body
+    const { target_type, target_id, action, description, field, old_value, new_value, metadata } =
+      body
 
     // Validate required fields
     if (!target_type || !target_id || !action || !description) {
       return NextResponse.json(
-        { success: false, error: 'Missing required fields: target_type, target_id, action, description' },
+        {
+          success: false,
+          error: 'Missing required fields: target_type, target_id, action, description',
+        },
         { status: 400 }
       )
     }
@@ -115,7 +104,10 @@ export async function POST(request: Request) {
     const validTargetTypes = ['farm-plan', 'crop-plan', 'task', 'financial-data', 'document']
     if (!validTargetTypes.includes(target_type)) {
       return NextResponse.json(
-        { success: false, error: `Invalid target_type. Must be one of: ${validTargetTypes.join(', ')}` },
+        {
+          success: false,
+          error: `Invalid target_type. Must be one of: ${validTargetTypes.join(', ')}`,
+        },
         { status: 400 }
       )
     }
@@ -145,14 +137,17 @@ export async function POST(request: Request) {
         field || null,
         old_value || null,
         new_value || null,
-        metadata ? JSON.stringify(metadata) : null
+        metadata ? JSON.stringify(metadata) : null,
       ]
     )
 
-    return NextResponse.json({
-      success: true,
-      data: result.rows[0]
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        success: true,
+        data: result.rows[0],
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Error creating change log entry:', error)
     return NextResponse.json(

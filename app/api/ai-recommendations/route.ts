@@ -23,22 +23,22 @@ export async function GET(request: Request) {
       JOIN farm_plans fp ON ar.farm_plan_id = fp.id
       WHERE 1=1
     `
-    
+
     const params: any[] = []
     let paramIndex = 1
-    
+
     if (farmPlanId) {
       queryText += ` AND ar.farm_plan_id = $${paramIndex}`
       params.push(farmPlanId)
       paramIndex++
     }
-    
+
     if (category) {
       queryText += ` AND ar.category = $${paramIndex}`
       params.push(category)
       paramIndex++
     }
-    
+
     queryText += ' ORDER BY ar.priority DESC, ar.created_at DESC'
 
     const result = await query(queryText, params)
@@ -46,7 +46,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: true,
       data: result.rows,
-      count: result.rows.length
+      count: result.rows.length,
     })
   } catch (error) {
     console.error('Error fetching AI recommendations:', error)
@@ -64,15 +64,15 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    
+
     // Validate input
     const validation = validateData(AIRecommendationSchema, body)
     if (!validation.success) {
       return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Validation failed', 
-          details: validation.errors?.issues 
+        {
+          success: false,
+          error: 'Validation failed',
+          details: validation.errors?.issues,
         },
         { status: 400 }
       )
@@ -92,16 +92,19 @@ export async function POST(request: Request) {
       data.farm_plan_id,
       data.recommendation_text,
       data.category || null,
-      data.priority || 0
+      data.priority || 0,
     ]
 
     const result = await query(queryText, params)
 
-    return NextResponse.json({
-      success: true,
-      data: result.rows[0],
-      message: 'AI recommendation created successfully'
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        success: true,
+        data: result.rows[0],
+        message: 'AI recommendation created successfully',
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Error creating AI recommendation:', error)
     return NextResponse.json(
@@ -134,7 +137,7 @@ export async function PATCH(request: Request) {
     // Build dynamic update query
     const allowedFields = ['recommendation_text', 'category', 'priority']
 
-    allowedFields.forEach(field => {
+    allowedFields.forEach((field) => {
       if (updates[field] !== undefined) {
         setClauses.push(`${field} = $${paramIndex}`)
         params.push(updates[field])
@@ -169,7 +172,7 @@ export async function PATCH(request: Request) {
     return NextResponse.json({
       success: true,
       data: result.rows[0],
-      message: 'AI recommendation updated successfully'
+      message: 'AI recommendation updated successfully',
     })
   } catch (error) {
     console.error('Error updating AI recommendation:', error)
@@ -196,10 +199,7 @@ export async function DELETE(request: Request) {
       )
     }
 
-    const result = await query(
-      'DELETE FROM ai_recommendations WHERE id = $1 RETURNING id',
-      [id]
-    )
+    const result = await query('DELETE FROM ai_recommendations WHERE id = $1 RETURNING id', [id])
 
     if (result.rows.length === 0) {
       return NextResponse.json(
@@ -210,7 +210,7 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: 'AI recommendation deleted successfully'
+      message: 'AI recommendation deleted successfully',
     })
   } catch (error) {
     console.error('Error deleting AI recommendation:', error)

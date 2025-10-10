@@ -10,14 +10,11 @@ import AuthProvider from '@/components/AuthProvider'
 
 export const metadata: Metadata = {
   title: 'Agricultural Business Plan Template',
-  description: 'Comprehensive framework for developing agricultural business plans and farm management',
+  description:
+    'Comprehensive framework for developing agricultural business plans and farm management',
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="font-sans bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors flex flex-col min-h-screen">
@@ -27,9 +24,7 @@ export default function RootLayout({
               <GlobalKeyboardShortcuts />
               <Header />
               <ThemeToggle />
-              <main className="flex-grow">
-                {children}
-              </main>
+              <main className="flex-grow">{children}</main>
               <Footer />
             </ToastProvider>
           </ThemeProvider>

@@ -9,7 +9,7 @@ describe('Calculator Results API Logic', () => {
     it('should validate a valid calculator result', () => {
       const validResult = createTestCalculatorResult()
       const result = validateData(CalculatorResultSchema, validResult)
-      
+
       expect(result.success).toBe(true)
       expect(result.data).toBeDefined()
       if (result.data) {
@@ -25,7 +25,7 @@ describe('Calculator Results API Logic', () => {
         input_data: {},
         results: {},
       }
-      
+
       const result = validateData(CalculatorResultSchema, invalidResult)
       expect(result.success).toBe(false)
       expect(result.errors).toBeDefined()
@@ -37,15 +37,24 @@ describe('Calculator Results API Logic', () => {
         input_data: {},
         results: {},
       }
-      
+
       const result = validateData(CalculatorResultSchema, invalidResult)
       expect(result.success).toBe(false)
     })
 
     it('should accept all valid calculator types', () => {
-      const types = ['roi', 'break-even', 'investment', 'loan', 'operating-costs', 'revenue', 'cash-flow', 'profit-margin']
-      
-      types.forEach(calculator_type => {
+      const types = [
+        'roi',
+        'break-even',
+        'investment',
+        'loan',
+        'operating-costs',
+        'revenue',
+        'cash-flow',
+        'profit-margin',
+      ]
+
+      types.forEach((calculator_type) => {
         const testResult = createTestCalculatorResult({ calculator_type })
         const result = validateData(CalculatorResultSchema, testResult)
         expect(result.success).toBe(true)
@@ -57,7 +66,7 @@ describe('Calculator Results API Logic', () => {
         farm_plan_id: '123e4567-e89b-12d3-a456-426614174000',
         crop_plan_id: '123e4567-e89b-12d3-a456-426614174001',
       })
-      
+
       const result = validateData(CalculatorResultSchema, resultWithIds)
       expect(result.success).toBe(true)
       if (result.data) {
@@ -72,7 +81,7 @@ describe('Calculator Results API Logic', () => {
         crop_plan_id: null,
         user_id: null,
       })
-      
+
       const result = validateData(CalculatorResultSchema, resultWithNulls)
       expect(result.success).toBe(true)
     })
@@ -81,14 +90,14 @@ describe('Calculator Results API Logic', () => {
   describe('Calculator result data structure', () => {
     it('should have proper input_data structure', () => {
       const testResult = createTestCalculatorResult()
-      
+
       expect(testResult.input_data).toBeDefined()
       expect(typeof testResult.input_data).toBe('object')
     })
 
     it('should have proper results structure', () => {
       const testResult = createTestCalculatorResult()
-      
+
       expect(testResult.results).toBeDefined()
       expect(typeof testResult.results).toBe('object')
     })
@@ -109,7 +118,7 @@ describe('Calculator Results API Logic', () => {
           paybackPeriod: 3.33,
         },
       })
-      
+
       const result = validateData(CalculatorResultSchema, roiResult)
       expect(result.success).toBe(true)
     })
@@ -127,7 +136,7 @@ describe('Calculator Results API Logic', () => {
           breakEvenRevenue: 100000,
         },
       })
-      
+
       const result = validateData(CalculatorResultSchema, breakEvenResult)
       expect(result.success).toBe(true)
     })

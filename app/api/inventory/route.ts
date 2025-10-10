@@ -21,45 +21,43 @@ export async function GET(request: Request) {
       LEFT JOIN farm_plans fp ON i.farm_plan_id = fp.id
       WHERE 1=1
     `
-    
+
     const params: any[] = []
     let paramIndex = 1
-    
+
     if (farmPlanId) {
       queryText += ` AND i.farm_plan_id = $${paramIndex}`
       params.push(farmPlanId)
       paramIndex++
     }
-    
+
     if (category) {
       queryText += ` AND i.category = $${paramIndex}`
       params.push(category)
       paramIndex++
     }
-    
+
     queryText += ' ORDER BY i.item_name ASC'
 
     const result = await query(queryText, params)
 
     // Calculate alerts
-    const items = result.rows.map(item => ({
+    const items = result.rows.map((item) => ({
       ...item,
       isLowStock: item.quantity <= item.reorder_level,
-      stockStatus: getStockStatus(item.quantity, item.reorder_level)
+      stockStatus: getStockStatus(item.quantity, item.reorder_level),
     }))
 
-    const filteredItems = lowStockOnly 
-      ? items.filter(item => item.isLowStock)
-      : items
+    const filteredItems = lowStockOnly ? items.filter((item) => item.isLowStock) : items
 
     return NextResponse.json({
       success: true,
       data: filteredItems,
       count: filteredItems.length,
       alerts: {
-        lowStock: items.filter(i => i.isLowStock).length,
-        critical: items.filter(i => i.quantity === 0).length
-      }
+        lowStock: items.filter((i) => i.isLowStock).length,
+        critical: items.filter((i) => i.quantity === 0).length,
+      },
     })
   } catch (error) {
     console.error('Error fetching inventory:', error)
@@ -86,7 +84,7 @@ export async function POST(request: Request) {
       reorder_level,
       unit_cost,
       supplier,
-      notes
+      notes,
     } = body
 
     if (!farm_plan_id || !item_name || !category || quantity === undefined) {
@@ -114,16 +112,19 @@ export async function POST(request: Request) {
       reorder_level || 0,
       unit_cost || 0,
       supplier || null,
-      notes || null
+      notes || null,
     ]
 
     const result = await query(queryText, params)
 
-    return NextResponse.json({
-      success: true,
-      data: result.rows[0],
-      message: 'Inventory item added successfully'
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        success: true,
+        data: result.rows[0],
+        message: 'Inventory item added successfully',
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Error adding inventory:', error)
     return NextResponse.json(
@@ -169,11 +170,17 @@ export async function PATCH(request: Request) {
       let paramIndex = 1
 
       const allowedFields = [
-        'item_name', 'category', 'quantity', 'unit',
-        'reorder_level', 'unit_cost', 'supplier', 'notes'
+        'item_name',
+        'category',
+        'quantity',
+        'unit',
+        'reorder_level',
+        'unit_cost',
+        'supplier',
+        'notes',
       ]
 
-      allowedFields.forEach(field => {
+      allowedFields.forEach((field) => {
         if (updates[field] !== undefined) {
           fields.push(`${field} = $${paramIndex}`)
           values.push(updates[field])
@@ -182,15 +189,12 @@ export async function PATCH(request: Request) {
       })
 
       if (fields.length === 0) {
-        return NextResponse.json(
-          { success: false, error: 'No fields to update' },
-          { status: 400 }
-        )
+        return NextResponse.json({ success: false, error: 'No fields to update' }, { status: 400 })
       }
 
       fields.push('updated_at = CURRENT_TIMESTAMP')
       values.push(id)
-      
+
       queryText = `
         UPDATE inventory
         SET ${fields.join(', ')}
@@ -210,15 +214,16 @@ export async function PATCH(request: Request) {
     }
 
     const item = result.rows[0]
-    const alert = item.quantity <= item.reorder_level 
-      ? { type: 'low_stock', message: `${item.item_name} is at or below reorder level` }
-      : null
+    const alert =
+      item.quantity <= item.reorder_level
+        ? { type: 'low_stock', message: `${item.item_name} is at or below reorder level` }
+        : null
 
     return NextResponse.json({
       success: true,
       data: item,
       alert,
-      message: 'Inventory updated successfully'
+      message: 'Inventory updated successfully',
     })
   } catch (error) {
     console.error('Error updating inventory:', error)
@@ -245,10 +250,7 @@ export async function DELETE(request: Request) {
       )
     }
 
-    const result = await query(
-      'DELETE FROM inventory WHERE id = $1 RETURNING id',
-      [id]
-    )
+    const result = await query('DELETE FROM inventory WHERE id = $1 RETURNING id', [id])
 
     if (result.rows.length === 0) {
       return NextResponse.json(
@@ -259,7 +261,7 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: 'Inventory item deleted successfully'
+      message: 'Inventory item deleted successfully',
     })
   } catch (error) {
     console.error('Error deleting inventory:', error)

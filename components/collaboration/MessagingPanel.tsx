@@ -19,13 +19,13 @@ export default function MessagingPanel({
   contextId,
   contextSection,
   title = 'Messages',
-  className = ''
+  className = '',
 }: MessagingPanelProps) {
   const [key, setKey] = useState(0)
 
   const handleMessageSent = () => {
     // Force refresh of message thread
-    setKey(prev => prev + 1)
+    setKey((prev) => prev + 1)
   }
 
   return (
