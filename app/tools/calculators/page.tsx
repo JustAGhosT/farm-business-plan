@@ -67,6 +67,14 @@ export default function CalculatorsPage() {
         'border-primary-300 dark:border-primary-700 hover:border-primary-500 dark:hover:border-primary-600',
     },
     {
+      title: 'Portfolio Planner',
+      description: 'Allocate percentages across multiple crops (e.g., 10% Dragon Fruit, 40% Soy, 50% Sunflower)',
+      icon: '🌾',
+      href: '/tools/calculators/portfolio',
+      color:
+        'border-green-300 dark:border-green-700 hover:border-green-500 dark:hover:border-green-600',
+    },
+    {
       title: 'Scenario Comparison',
       description: 'Compare multiple investment scenarios, crops, and what-if analyses side-by-side',
       icon: '🔄',
