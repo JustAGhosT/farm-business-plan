@@ -10,12 +10,13 @@ interface WorkflowProgressProps {
 
 export default function WorkflowProgress({ workflow, stages, approvals }: WorkflowProgressProps) {
   const getStageStatus = (stage: ApprovalStage) => {
-    const stageApprovals = approvals.filter(a => a.stage_id === stage.id)
+    // Use the stage's approvals array which is part of ApprovalStage
+    const stageApprovals = stage.approvals || []
     const approvedCount = stageApprovals.filter(a => a.status === 'approved').length
     
     if (stage.status === 'approved') return 'complete'
     if (stage.status === 'rejected') return 'rejected'
-    if (stage.status === 'in-progress' || approvedCount > 0) return 'in-progress'
+    if (approvedCount > 0) return 'in-progress'
     return 'pending'
   }
 
@@ -57,9 +58,9 @@ export default function WorkflowProgress({ workflow, stages, approvals }: Workfl
   return (
     <div className="bg-white border rounded-lg p-6">
       <div className="mb-4">
-        <h3 className="text-lg font-semibold mb-1">{workflow.title}</h3>
+        <h3 className="text-lg font-semibold mb-1">{workflow.name}</h3>
         <p className="text-sm text-gray-600">
-          Workflow Type: <span className="font-medium">{workflow.workflow_type}</span>
+          Workflow Type: <span className="font-medium">{workflow.type}</span>
         </p>
       </div>
 
@@ -71,7 +72,7 @@ export default function WorkflowProgress({ workflow, stages, approvals }: Workfl
         <div className="flex justify-between">
           {stages.sort((a, b) => a.order - b.order).map((stage, index) => {
             const status = getStageStatus(stage)
-            const stageApprovals = approvals.filter(a => a.stage_id === stage.id)
+            const stageApprovals = stage.approvals || []
             const approvedCount = stageApprovals.filter(a => a.status === 'approved').length
             
             return (
@@ -85,7 +86,7 @@ export default function WorkflowProgress({ workflow, stages, approvals }: Workfl
                 <div className="text-center px-2">
                   <p className="text-sm font-medium mb-1">{stage.name}</p>
                   <p className="text-xs text-gray-500">
-                    {approvedCount}/{stage.required_approvals} approved
+                    {approvedCount}/{stage.requiredApprovals} approved
                   </p>
                   {stage.deadline && (
                     <p className="text-xs text-gray-400 mt-1">
