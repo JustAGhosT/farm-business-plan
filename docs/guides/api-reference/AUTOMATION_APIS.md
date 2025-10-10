@@ -13,6 +13,7 @@ This document provides comprehensive information about the 5 new automation APIs
 **Provider**: Open-Meteo (free, no API key required)
 
 ### Features
+
 - Real-time current weather data
 - 7-day forecast (configurable up to 16 days)
 - Hourly data: temperature, precipitation, soil moisture, soil temperature
@@ -20,17 +21,19 @@ This document provides comprehensive information about the 5 new automation APIs
 - Farming-specific alerts generation
 
 ### Request Parameters
+
 ```
 GET /api/weather?lat=-24.28&lng=28.42&forecast_days=7
 ```
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| lat | number | Yes | Latitude (-90 to 90) |
-| lng | number | Yes | Longitude (-180 to 180) |
-| forecast_days | number | No | Days to forecast (default: 7, max: 16) |
+| Parameter     | Type   | Required | Description                            |
+| ------------- | ------ | -------- | -------------------------------------- |
+| lat           | number | Yes      | Latitude (-90 to 90)                   |
+| lng           | number | Yes      | Longitude (-180 to 180)                |
+| forecast_days | number | No       | Days to forecast (default: 7, max: 16) |
 
 ### Response Structure
+
 ```json
 {
   "success": true,
@@ -64,6 +67,7 @@ GET /api/weather?lat=-24.28&lng=28.42&forecast_days=7
 ```
 
 ### Alert Types
+
 - **Frost Warning**: Temperatures < 2°C (critical if < 0°C)
 - **Heavy Rain**: >25mm per day
 - **Drought**: 5+ consecutive days with <1mm rain
@@ -74,16 +78,17 @@ GET /api/weather?lat=-24.28&lng=28.42&forecast_days=7
 ### Integration Examples
 
 **React/Next.js Component:**
+
 ```tsx
 const fetchWeather = async (lat: number, lng: number) => {
   const response = await fetch(`/api/weather?lat=${lat}&lng=${lng}`)
   const data = await response.json()
-  
+
   if (data.success) {
-    const criticalAlerts = data.data.alerts.filter(a => a.severity === 'critical')
+    const criticalAlerts = data.data.alerts.filter((a) => a.severity === 'critical')
     if (criticalAlerts.length > 0) {
       // Show notifications
-      criticalAlerts.forEach(alert => {
+      criticalAlerts.forEach((alert) => {
         showNotification(alert.message, alert.details)
       })
     }
@@ -92,15 +97,16 @@ const fetchWeather = async (lat: number, lng: number) => {
 ```
 
 **Daily Weather Check (Cron Job):**
+
 ```javascript
 // Run daily at 6 AM
 const checkWeatherForAllFarms = async () => {
   const farms = await getFarmsWithCoordinates()
-  
+
   for (const farm of farms) {
     const weather = await fetch(`/api/weather?lat=${farm.lat}&lng=${farm.lng}`)
     const data = await weather.json()
-    
+
     // Send alerts to farmers
     if (data.data.alerts.length > 0) {
       await sendEmailAlert(farm.email, data.data.alerts)
@@ -117,6 +123,7 @@ const checkWeatherForAllFarms = async () => {
 **Method**: POST
 
 ### Features
+
 - Auto-generates tasks based on crop calendars
 - Crop-specific schedules (dragon fruit, moringa, lucerne, vegetables)
 - Pre-planting, planting, maintenance, and harvest tasks
@@ -124,15 +131,17 @@ const checkWeatherForAllFarms = async () => {
 - Customizable planting dates
 
 ### Request Body
+
 ```json
 {
   "farm_plan_id": 123,
-  "crop_plan_id": 456,  // Optional: generates for all crops if omitted
-  "planting_date": "2025-02-01"  // Optional: uses current date if omitted
+  "crop_plan_id": 456, // Optional: generates for all crops if omitted
+  "planting_date": "2025-02-01" // Optional: uses current date if omitted
 }
 ```
 
 ### Response
+
 ```json
 {
   "success": true,
@@ -145,7 +154,7 @@ const checkWeatherForAllFarms = async () => {
       "category": "soil_preparation",
       "due_date": "2025-01-18T00:00:00Z",
       "status": "pending"
-    },
+    }
     // ... more tasks
   ],
   "count": 25,
@@ -154,6 +163,7 @@ const checkWeatherForAllFarms = async () => {
 ```
 
 ### Task Categories
+
 - `soil_preparation` - Pre-planting soil work
 - `procurement` - Seed/material ordering
 - `planting` - Planting activities
@@ -167,6 +177,7 @@ const checkWeatherForAllFarms = async () => {
 ### Crop Calendars
 
 **Dragon Fruit (180-day cycle)**
+
 - Soil prep: 14 days before planting
 - Seed order: 21 days before
 - Irrigation: Every 7 days
@@ -175,12 +186,14 @@ const checkWeatherForAllFarms = async () => {
 - Harvest: Day 180
 
 **Moringa (60-day cycle)**
+
 - Irrigation: Every 5 days
 - Fertilizer: Days 20, 40
 - Topping: Day 45
 - Harvest: Day 60
 
 **Lucerne (90-day cycle)**
+
 - Irrigation: Every 10 days
 - Fertilizer: Days 14, 60
 - Harvest: Day 90
@@ -195,12 +208,12 @@ const generateTasksForNewCrop = async (farmPlanId: number, cropPlanId: number) =
     body: JSON.stringify({
       farm_plan_id: farmPlanId,
       crop_plan_id: cropPlanId,
-      planting_date: '2025-03-01'
-    })
+      planting_date: '2025-03-01',
+    }),
   })
-  
+
   const result = await response.json()
-  
+
   if (result.success) {
     console.log(`Generated ${result.count} tasks for your crop`)
     // Refresh task dashboard
@@ -217,6 +230,7 @@ const generateTasksForNewCrop = async (farmPlanId: number, cropPlanId: number) =
 **Method**: POST
 
 ### Features
+
 - Multi-year rotation plans (3-5 years recommended)
 - Soil health optimization (nitrogen-fixing crops)
 - Pest & disease cycle disruption
@@ -225,6 +239,7 @@ const generateTasksForNewCrop = async (farmPlanId: number, cropPlanId: number) =
 - Seasonal planning
 
 ### Request Body
+
 ```json
 {
   "farm_plan_id": 123,
@@ -234,6 +249,7 @@ const generateTasksForNewCrop = async (farmPlanId: number, cropPlanId: number) =
 ```
 
 ### Response
+
 ```json
 {
   "success": true,
@@ -254,7 +270,7 @@ const generateTasksForNewCrop = async (farmPlanId: number, cropPlanId: number) =
         "plantingMonth": "September",
         "harvestMonth": "December",
         "notes": "Fixes nitrogen, improves soil structure"
-      },
+      }
       // ... more years
     ],
     "principles": {
@@ -264,7 +280,7 @@ const generateTasksForNewCrop = async (farmPlanId: number, cropPlanId: number) =
       "marketDiversity": "Balance high-value cash crops with stable staple crops"
     },
     "recommendations": [
-      "Always include a nitrogen-fixing crop every 2-3 years to maintain soil fertility",
+      "Always include a nitrogen-fixing crop every 2-3 years to maintain soil fertility"
       // ... more recommendations
     ]
   }
@@ -274,12 +290,14 @@ const generateTasksForNewCrop = async (farmPlanId: number, cropPlanId: number) =
 ### Rotation Sequences
 
 **Default 4-Year Sequence:**
+
 1. **Legumes** (Beans, Lucerne) - Nitrogen fixation
 2. **Leafy Vegetables** (Spinach, Lettuce) - Utilizes nitrogen
 3. **Root Crops** (Carrots, Beetroot) - Different nutrient profile
 4. **Fruiting Crops** (Tomatoes, Peppers) - High value
 
 **Perennial Crops:**
+
 - Dragon Fruit: 3-5 year productive cycle
 - Moringa: Intensive rotation with annual harvests
 
@@ -293,20 +311,18 @@ const planCropRotation = async (farmPlanId: number) => {
     body: JSON.stringify({
       farm_plan_id: farmPlanId,
       hectares: 5.0,
-      years: 4
-    })
+      years: 4,
+    }),
   })
-  
+
   const plan = await response.json()
-  
+
   if (plan.success) {
     // Display rotation calendar
     displayRotationCalendar(plan.data.schedule)
-    
+
     // Show estimated revenue over 4 years
-    const totalRevenue = plan.data.schedule.reduce(
-      (sum, year) => sum + year.estimatedRevenue, 0
-    )
+    const totalRevenue = plan.data.schedule.reduce((sum, year) => sum + year.estimatedRevenue, 0)
     console.log(`Projected 4-year revenue: R${totalRevenue}`)
   }
 }
@@ -320,6 +336,7 @@ const planCropRotation = async (farmPlanId: number) => {
 **Methods**: GET, POST, PATCH, DELETE
 
 ### Features
+
 - 15 expense categories
 - Date range filtering
 - Automatic summaries (total, by category, by month)
@@ -328,6 +345,7 @@ const planCropRotation = async (farmPlanId: number) => {
 - Vendor tracking
 
 ### Expense Categories
+
 1. Seeds & Seedlings
 2. Fertilizer & Amendments
 3. Pesticides & Herbicides
@@ -345,18 +363,20 @@ const planCropRotation = async (farmPlanId: number) => {
 15. Other
 
 ### GET Request
+
 ```
 GET /api/expenses?farm_plan_id=123&category=seeds&start_date=2025-01-01&end_date=2025-12-31
 ```
 
 ### POST Request
+
 ```json
 {
   "farm_plan_id": 123,
   "crop_plan_id": 456,
   "category": "fertilizer",
   "description": "NPK fertilizer for dragon fruit",
-  "amount": 2500.00,
+  "amount": 2500.0,
   "expense_date": "2025-01-15",
   "payment_method": "bank_transfer",
   "vendor": "AgriSupplies Ltd",
@@ -365,6 +385,7 @@ GET /api/expenses?farm_plan_id=123&category=seeds&start_date=2025-01-01&end_date
 ```
 
 ### Response with Summary
+
 ```json
 {
   "success": true,
@@ -393,32 +414,33 @@ GET /api/expenses?farm_plan_id=123&category=seeds&start_date=2025-01-01&end_date
 ### Integration Example
 
 **Expense Dashboard:**
+
 ```tsx
 const ExpenseDashboard = ({ farmPlanId }) => {
   const [expenses, setExpenses] = useState([])
   const [summary, setSummary] = useState(null)
-  
+
   useEffect(() => {
     fetchExpenses()
   }, [farmPlanId])
-  
+
   const fetchExpenses = async () => {
     const response = await fetch(`/api/expenses?farm_plan_id=${farmPlanId}`)
     const data = await response.json()
-    
+
     setExpenses(data.data)
     setSummary(data.summary)
   }
-  
+
   const addExpense = async (expenseData) => {
     await fetch('/api/expenses', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(expenseData)
+      body: JSON.stringify(expenseData),
     })
     fetchExpenses() // Refresh
   }
-  
+
   return (
     <div>
       <h2>Total Expenses: R{summary?.total.toLocaleString()}</h2>
@@ -437,6 +459,7 @@ const ExpenseDashboard = ({ farmPlanId }) => {
 **Methods**: GET, POST, PATCH, DELETE
 
 ### Features
+
 - Item tracking by category
 - Quantity management (add/subtract)
 - Reorder level alerts
@@ -445,17 +468,20 @@ const ExpenseDashboard = ({ farmPlanId }) => {
 - Supplier information
 
 ### Stock Status Levels
+
 - `healthy` - Above 150% of reorder level
 - `warning` - Between 100-150% of reorder level
 - `low_stock` - At or below reorder level
 - `out_of_stock` - Quantity is 0
 
 ### GET Request
+
 ```
 GET /api/inventory?farm_plan_id=123&low_stock=true
 ```
 
 ### Response
+
 ```json
 {
   "success": true,
@@ -467,7 +493,7 @@ GET /api/inventory?farm_plan_id=123&low_stock=true
       "quantity": 150,
       "unit": "seeds",
       "reorder_level": 100,
-      "unit_cost": 15.00,
+      "unit_cost": 15.0,
       "supplier": "DragonSeed Co",
       "isLowStock": false,
       "stockStatus": "healthy"
@@ -481,6 +507,7 @@ GET /api/inventory?farm_plan_id=123&low_stock=true
 ```
 
 ### POST Request
+
 ```json
 {
   "farm_plan_id": 123,
@@ -489,13 +516,14 @@ GET /api/inventory?farm_plan_id=123&low_stock=true
   "quantity": 500,
   "unit": "kg",
   "reorder_level": 100,
-  "unit_cost": 12.50,
+  "unit_cost": 12.5,
   "supplier": "FertCo Ltd",
   "notes": "Bulk purchase discount available"
 }
 ```
 
 ### PATCH Request (Add/Subtract Quantity)
+
 ```json
 {
   "id": 789,
@@ -505,6 +533,7 @@ GET /api/inventory?farm_plan_id=123&low_stock=true
 ```
 
 ### Categories
+
 - seeds
 - fertilizer
 - pesticides
@@ -517,23 +546,24 @@ GET /api/inventory?farm_plan_id=123&low_stock=true
 ### Integration Example
 
 **Inventory Dashboard with Alerts:**
+
 ```tsx
 const InventoryManagement = ({ farmPlanId }) => {
   const [inventory, setInventory] = useState([])
   const [alerts, setAlerts] = useState({ lowStock: 0, critical: 0 })
-  
+
   useEffect(() => {
     fetchInventory()
   }, [farmPlanId])
-  
+
   const fetchInventory = async () => {
     const response = await fetch(`/api/inventory?farm_plan_id=${farmPlanId}`)
     const data = await response.json()
-    
+
     setInventory(data.data)
     setAlerts(data.alerts)
   }
-  
+
   const useItem = async (itemId, quantity) => {
     const response = await fetch('/api/inventory', {
       method: 'PATCH',
@@ -541,25 +571,24 @@ const InventoryManagement = ({ farmPlanId }) => {
       body: JSON.stringify({
         id: itemId,
         action: 'subtract',
-        quantity: quantity
-      })
+        quantity: quantity,
+      }),
     })
-    
+
     const result = await response.json()
-    
+
     if (result.alert) {
       showAlert(result.alert.message)
     }
-    
+
     fetchInventory() // Refresh
   }
-  
+
   return (
     <div>
       {alerts.lowStock > 0 && (
         <Alert>
-          {alerts.lowStock} item(s) need reordering
-          ({alerts.critical} critical)
+          {alerts.lowStock} item(s) need reordering ({alerts.critical} critical)
         </Alert>
       )}
       <InventoryTable items={inventory} onUse={useItem} />
@@ -675,6 +704,7 @@ curl -X POST http://localhost:3000/api/crop-rotation \
 ## Support
 
 For issues or questions:
+
 - GitHub Issues: https://github.com/JustAGhosT/farm-business-plan/issues
 - Documentation: See AI_WIZARD_ENHANCEMENTS.md
 

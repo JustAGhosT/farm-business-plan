@@ -64,14 +64,17 @@ export async function POST(request: Request) {
     const { task_id, depends_on_task_id, dependency_type = 'finish-to-start', lag_days = 0 } = body
 
     if (!task_id || !depends_on_task_id) {
-      return NextResponse.json({ error: 'task_id and depends_on_task_id required' }, { status: 400 })
+      return NextResponse.json(
+        { error: 'task_id and depends_on_task_id required' },
+        { status: 400 }
+      )
     }
 
     // Check for circular dependency
-    const circularCheck = await query(
-      'SELECT check_circular_dependency($1, $2) as is_circular',
-      [task_id, depends_on_task_id]
-    )
+    const circularCheck = await query('SELECT check_circular_dependency($1, $2) as is_circular', [
+      task_id,
+      depends_on_task_id,
+    ])
 
     if (circularCheck.rows[0].is_circular) {
       return NextResponse.json({ error: 'Circular dependency detected' }, { status: 400 })
@@ -89,14 +92,20 @@ export async function POST(request: Request) {
     await query(
       `INSERT INTO change_log (target_type, target_id, action, user_id, description)
        VALUES ($1, $2, $3, $4, $5)`,
-      ['task', task_id, 'add_dependency', session.user.id, 
-       `Added ${dependency_type} dependency on task ${depends_on_task_id}`]
+      [
+        'task',
+        task_id,
+        'add_dependency',
+        session.user.id,
+        `Added ${dependency_type} dependency on task ${depends_on_task_id}`,
+      ]
     )
 
     return NextResponse.json({ dependency: result.rows[0] }, { status: 201 })
   } catch (error: any) {
     console.error('Create task dependency error:', error)
-    if (error.code === '23505') { // Unique violation
+    if (error.code === '23505') {
+      // Unique violation
       return NextResponse.json({ error: 'Dependency already exists' }, { status: 409 })
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
@@ -119,10 +128,7 @@ export async function DELETE(request: Request) {
     }
 
     // Get dependency details before deleting
-    const depResult = await query(
-      'SELECT * FROM task_dependencies WHERE id = $1',
-      [dependencyId]
-    )
+    const depResult = await query('SELECT * FROM task_dependencies WHERE id = $1', [dependencyId])
 
     if (depResult.rows.length === 0) {
       return NextResponse.json({ error: 'Dependency not found' }, { status: 404 })
@@ -137,8 +143,13 @@ export async function DELETE(request: Request) {
     await query(
       `INSERT INTO change_log (target_type, target_id, action, user_id, description)
        VALUES ($1, $2, $3, $4, $5)`,
-      ['task', dependency.task_id, 'remove_dependency', session.user.id, 
-       `Removed dependency on task ${dependency.depends_on_task_id}`]
+      [
+        'task',
+        dependency.task_id,
+        'remove_dependency',
+        session.user.id,
+        `Removed dependency on task ${dependency.depends_on_task_id}`,
+      ]
     )
 
     return NextResponse.json({ message: 'Dependency removed' })

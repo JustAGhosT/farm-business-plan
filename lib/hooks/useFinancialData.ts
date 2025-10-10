@@ -72,72 +72,81 @@ export function useFinancialData(filters?: FinancialDataFilters): UseFinancialDa
     fetchFinancialData()
   }, [fetchFinancialData])
 
-  const createFinancialData = useCallback(async (data: Partial<FinancialData>) => {
-    try {
-      const response = await fetch('/api/financial-data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
+  const createFinancialData = useCallback(
+    async (data: Partial<FinancialData>) => {
+      try {
+        const response = await fetch('/api/financial-data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        await fetchFinancialData() // Refresh the list
-        return result.data
-      } else {
-        setError(result.error || 'Failed to create financial data')
+        if (result.success) {
+          await fetchFinancialData() // Refresh the list
+          return result.data
+        } else {
+          setError(result.error || 'Failed to create financial data')
+          return null
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
         return null
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      return null
-    }
-  }, [fetchFinancialData])
+    },
+    [fetchFinancialData]
+  )
 
-  const updateFinancialData = useCallback(async (id: string, data: Partial<FinancialData>) => {
-    try {
-      const response = await fetch('/api/financial-data', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, ...data })
-      })
+  const updateFinancialData = useCallback(
+    async (id: string, data: Partial<FinancialData>) => {
+      try {
+        const response = await fetch('/api/financial-data', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, ...data }),
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        await fetchFinancialData() // Refresh the list
-        return result.data
-      } else {
-        setError(result.error || 'Failed to update financial data')
+        if (result.success) {
+          await fetchFinancialData() // Refresh the list
+          return result.data
+        } else {
+          setError(result.error || 'Failed to update financial data')
+          return null
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
         return null
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      return null
-    }
-  }, [fetchFinancialData])
+    },
+    [fetchFinancialData]
+  )
 
-  const deleteFinancialData = useCallback(async (id: string) => {
-    try {
-      const response = await fetch(`/api/financial-data?id=${id}`, {
-        method: 'DELETE'
-      })
+  const deleteFinancialData = useCallback(
+    async (id: string) => {
+      try {
+        const response = await fetch(`/api/financial-data?id=${id}`, {
+          method: 'DELETE',
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        await fetchFinancialData() // Refresh the list
-        return true
-      } else {
-        setError(result.error || 'Failed to delete financial data')
+        if (result.success) {
+          await fetchFinancialData() // Refresh the list
+          return true
+        } else {
+          setError(result.error || 'Failed to delete financial data')
+          return false
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
         return false
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      return false
-    }
-  }, [fetchFinancialData])
+    },
+    [fetchFinancialData]
+  )
 
   return {
     financialData,
@@ -146,14 +155,19 @@ export function useFinancialData(filters?: FinancialDataFilters): UseFinancialDa
     refetch: fetchFinancialData,
     createFinancialData,
     updateFinancialData,
-    deleteFinancialData
+    deleteFinancialData,
   }
 }
 
 /**
  * Custom hook for fetching financial data for a single crop plan
  */
-export function useFinancialDataByCrop(cropPlanId: string | null): Omit<UseFinancialDataResult, 'createFinancialData' | 'updateFinancialData' | 'deleteFinancialData'> {
+export function useFinancialDataByCrop(
+  cropPlanId: string | null
+): Omit<
+  UseFinancialDataResult,
+  'createFinancialData' | 'updateFinancialData' | 'deleteFinancialData'
+> {
   const filters = cropPlanId ? { crop_plan_id: cropPlanId } : undefined
   const { financialData, loading, error, refetch } = useFinancialData(filters)
 
@@ -161,14 +175,19 @@ export function useFinancialDataByCrop(cropPlanId: string | null): Omit<UseFinan
     financialData,
     loading,
     error,
-    refetch
+    refetch,
   }
 }
 
 /**
  * Custom hook for fetching financial data for a farm plan
  */
-export function useFinancialDataByFarm(farmPlanId: string | null): Omit<UseFinancialDataResult, 'createFinancialData' | 'updateFinancialData' | 'deleteFinancialData'> {
+export function useFinancialDataByFarm(
+  farmPlanId: string | null
+): Omit<
+  UseFinancialDataResult,
+  'createFinancialData' | 'updateFinancialData' | 'deleteFinancialData'
+> {
   const filters = farmPlanId ? { farm_plan_id: farmPlanId } : undefined
   const { financialData, loading, error, refetch } = useFinancialData(filters)
 
@@ -176,6 +195,6 @@ export function useFinancialDataByFarm(farmPlanId: string | null): Omit<UseFinan
     financialData,
     loading,
     error,
-    refetch
+    refetch,
   }
 }

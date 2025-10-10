@@ -5,6 +5,7 @@ This document provides comprehensive documentation for all custom React hooks av
 ## Overview
 
 All hooks follow a consistent pattern and provide:
+
 - Automatic data fetching on mount
 - Loading and error states
 - CRUD operations (Create, Read, Update, Delete)
@@ -16,14 +17,14 @@ All hooks follow a consistent pattern and provide:
 All hooks can be imported from a single location:
 
 ```typescript
-import { 
-  useFarmPlans, 
-  useTasks, 
+import {
+  useFarmPlans,
+  useTasks,
   useClimateData,
   useCropPlans,
   useFinancialData,
   useCropTemplates,
-  useAIRecommendations
+  useAIRecommendations,
 } from '@/lib/hooks'
 ```
 
@@ -34,14 +35,15 @@ import {
 Manages farm plan data.
 
 **Basic Usage:**
+
 ```typescript
 import { useFarmPlans } from '@/lib/hooks'
 
 function MyComponent() {
-  const { 
-    farmPlans, 
-    loading, 
-    error, 
+  const {
+    farmPlans,
+    loading,
+    error,
     refetch,
     createFarmPlan,
     updateFarmPlan,
@@ -63,11 +65,13 @@ function MyComponent() {
 ```
 
 **Filter by Owner:**
+
 ```typescript
 const { farmPlans } = useFarmPlans('user-uuid')
 ```
 
 **Single Farm Plan:**
+
 ```typescript
 import { useFarmPlan } from '@/lib/hooks'
 
@@ -75,6 +79,7 @@ const { farmPlan, loading, error } = useFarmPlan('farm-plan-uuid')
 ```
 
 **Create Farm Plan:**
+
 ```typescript
 const { createFarmPlan } = useFarmPlans()
 
@@ -83,7 +88,7 @@ const newPlan = await createFarmPlan({
   location: 'Bela Bela',
   province: 'Limpopo',
   farm_size: 5.5,
-  status: 'draft'
+  status: 'draft',
 })
 ```
 
@@ -94,6 +99,7 @@ const newPlan = await createFarmPlan({
 Manages task data for farm operations.
 
 **Basic Usage:**
+
 ```typescript
 import { useTasks } from '@/lib/hooks'
 
@@ -101,25 +107,29 @@ const { tasks, loading, error, createTask, updateTask, deleteTask } = useTasks()
 ```
 
 **Filter by Farm Plan:**
+
 ```typescript
 const { tasks } = useTasks({ farm_plan_id: 'uuid' })
 ```
 
 **Filter by Status:**
+
 ```typescript
 const { tasks } = useTasks({ status: 'pending' })
 ```
 
 **Multiple Filters:**
+
 ```typescript
-const { tasks } = useTasks({ 
+const { tasks } = useTasks({
   farm_plan_id: 'uuid',
   status: 'pending',
-  priority: 'high'
+  priority: 'high',
 })
 ```
 
 **Create Task:**
+
 ```typescript
 const newTask = await createTask({
   farm_plan_id: 'uuid',
@@ -127,7 +137,7 @@ const newTask = await createTask({
   description: 'Plant 100 cuttings in prepared beds',
   status: 'pending',
   priority: 'high',
-  due_date: '2025-02-15'
+  due_date: '2025-02-15',
 })
 ```
 
@@ -138,25 +148,22 @@ const newTask = await createTask({
 Manages climate data associated with farm plans.
 
 **Basic Usage:**
+
 ```typescript
 import { useClimateData } from '@/lib/hooks'
 
-const { 
-  climateData, 
-  loading, 
-  error,
-  createClimateData,
-  updateClimateData,
-  deleteClimateData
-} = useClimateData()
+const { climateData, loading, error, createClimateData, updateClimateData, deleteClimateData } =
+  useClimateData()
 ```
 
 **Filter by Farm Plan:**
+
 ```typescript
 const { climateData } = useClimateData({ farm_plan_id: 'uuid' })
 ```
 
 **Convenience Hook:**
+
 ```typescript
 import { useClimateDataByFarm } from '@/lib/hooks'
 
@@ -164,6 +171,7 @@ const { climateData, loading, error } = useClimateDataByFarm('farm-plan-uuid')
 ```
 
 **Create Climate Data:**
+
 ```typescript
 const newClimateData = await createClimateData({
   farm_plan_id: 'uuid',
@@ -172,7 +180,7 @@ const newClimateData = await createClimateData({
   annual_rainfall: 600,
   frost_risk: false,
   growing_season_length: 210,
-  auto_populated: false
+  auto_populated: false,
 })
 ```
 
@@ -183,30 +191,27 @@ const newClimateData = await createClimateData({
 Manages individual crop plans within farm plans.
 
 **Basic Usage:**
+
 ```typescript
 import { useCropPlans } from '@/lib/hooks'
 
-const { 
-  cropPlans, 
-  loading, 
-  error,
-  createCropPlan,
-  updateCropPlan,
-  deleteCropPlan
-} = useCropPlans()
+const { cropPlans, loading, error, createCropPlan, updateCropPlan, deleteCropPlan } = useCropPlans()
 ```
 
 **Filter by Farm Plan:**
+
 ```typescript
 const { cropPlans } = useCropPlans({ farm_plan_id: 'uuid' })
 ```
 
 **Filter by Status:**
+
 ```typescript
 const { cropPlans } = useCropPlans({ status: 'planted' })
 ```
 
 **Convenience Hook:**
+
 ```typescript
 import { useCropPlansByFarm } from '@/lib/hooks'
 
@@ -214,6 +219,7 @@ const { cropPlans, loading, error } = useCropPlansByFarm('farm-plan-uuid')
 ```
 
 **Create Crop Plan:**
+
 ```typescript
 const newCropPlan = await createCropPlan({
   farm_plan_id: 'uuid',
@@ -224,7 +230,7 @@ const newCropPlan = await createCropPlan({
   harvest_date: '2025-12-01',
   expected_yield: 5000,
   yield_unit: 'kg',
-  status: 'planned'
+  status: 'planned',
 })
 ```
 
@@ -235,30 +241,34 @@ const newCropPlan = await createCropPlan({
 Manages financial projections and analysis for crop plans.
 
 **Basic Usage:**
+
 ```typescript
 import { useFinancialData } from '@/lib/hooks'
 
-const { 
-  financialData, 
-  loading, 
+const {
+  financialData,
+  loading,
   error,
   createFinancialData,
   updateFinancialData,
-  deleteFinancialData
+  deleteFinancialData,
 } = useFinancialData()
 ```
 
 **Filter by Crop Plan:**
+
 ```typescript
 const { financialData } = useFinancialData({ crop_plan_id: 'uuid' })
 ```
 
 **Filter by Farm Plan:**
+
 ```typescript
 const { financialData } = useFinancialData({ farm_plan_id: 'uuid' })
 ```
 
 **Convenience Hooks:**
+
 ```typescript
 import { useFinancialDataByCrop, useFinancialDataByFarm } from '@/lib/hooks'
 
@@ -267,6 +277,7 @@ const { financialData } = useFinancialDataByFarm('farm-plan-uuid')
 ```
 
 **Create Financial Data:**
+
 ```typescript
 const newFinancialData = await createFinancialData({
   crop_plan_id: 'uuid',
@@ -277,7 +288,7 @@ const newFinancialData = await createFinancialData({
   annual_operating_costs: 36000,
   projected_revenue: 150000,
   break_even_point: 18,
-  roi_percentage: 200
+  roi_percentage: 200,
 })
 ```
 
@@ -288,30 +299,34 @@ const newFinancialData = await createFinancialData({
 Manages reusable crop templates with technical specifications.
 
 **Basic Usage:**
+
 ```typescript
 import { useCropTemplates } from '@/lib/hooks'
 
-const { 
-  cropTemplates, 
-  loading, 
+const {
+  cropTemplates,
+  loading,
   error,
   createCropTemplate,
   updateCropTemplate,
-  deleteCropTemplate
+  deleteCropTemplate,
 } = useCropTemplates()
 ```
 
 **Filter by Category:**
+
 ```typescript
 const { cropTemplates } = useCropTemplates({ category: 'fruit' })
 ```
 
 **Filter Public Templates:**
+
 ```typescript
 const { cropTemplates } = useCropTemplates({ is_public: true })
 ```
 
 **Convenience Hooks:**
+
 ```typescript
 import { usePublicCropTemplates, useCropTemplatesByCategory } from '@/lib/hooks'
 
@@ -321,6 +336,7 @@ const { cropTemplates } = useCropTemplatesByCategory('fruit')
 ```
 
 **Create Crop Template:**
+
 ```typescript
 const newTemplate = await createCropTemplate({
   name: 'Dragon Fruit Standard',
@@ -329,23 +345,23 @@ const newTemplate = await createCropTemplate({
   technical_specs: {
     spacing: '3m x 3m',
     support_type: 'trellis',
-    irrigation: 'drip'
+    irrigation: 'drip',
   },
   financial_projections: {
     initial_cost_per_ha: 80000,
-    annual_revenue_per_ha: 150000
+    annual_revenue_per_ha: 150000,
   },
   growing_requirements: {
     temperature_min: 15,
     temperature_max: 35,
     rainfall_min: 400,
-    rainfall_max: 1000
+    rainfall_max: 1000,
   },
   market_info: {
     target_markets: ['local', 'export'],
-    price_per_kg: 30
+    price_per_kg: 30,
   },
-  is_public: true
+  is_public: true,
 })
 ```
 
@@ -356,30 +372,34 @@ const newTemplate = await createCropTemplate({
 Manages AI-generated recommendations for farm plans.
 
 **Basic Usage:**
+
 ```typescript
 import { useAIRecommendations } from '@/lib/hooks'
 
-const { 
-  recommendations, 
-  loading, 
+const {
+  recommendations,
+  loading,
   error,
   createRecommendation,
   updateRecommendation,
-  deleteRecommendation
+  deleteRecommendation,
 } = useAIRecommendations()
 ```
 
 **Filter by Farm Plan:**
+
 ```typescript
 const { recommendations } = useAIRecommendations({ farm_plan_id: 'uuid' })
 ```
 
 **Filter by Category:**
+
 ```typescript
 const { recommendations } = useAIRecommendations({ category: 'irrigation' })
 ```
 
 **Convenience Hooks:**
+
 ```typescript
 import { useAIRecommendationsByFarm, useAIRecommendationsByCategory } from '@/lib/hooks'
 
@@ -388,12 +408,13 @@ const { recommendations } = useAIRecommendationsByCategory('irrigation')
 ```
 
 **Create Recommendation:**
+
 ```typescript
 const newRecommendation = await createRecommendation({
   farm_plan_id: 'uuid',
   recommendation_text: 'Consider installing drip irrigation to reduce water usage by 40%',
   category: 'irrigation',
-  priority: 5
+  priority: 5,
 })
 ```
 
@@ -457,7 +478,7 @@ const { tasks, updateTask } = useTasks()
 const handleToggleComplete = async (taskId: string, currentStatus: string) => {
   // Optimistically update UI
   const newStatus = currentStatus === 'completed' ? 'pending' : 'completed'
-  
+
   // Update via API (automatically refetches)
   await updateTask(taskId, { status: newStatus })
 }
@@ -478,6 +499,7 @@ const selectedPlan: FarmPlan = farmPlans[0]
 ```
 
 Available types:
+
 - `FarmPlan`
 - `Task`
 - `ClimateData`
@@ -533,12 +555,15 @@ const { farmPlans } = useFarmPlans()
 ```typescript
 const { createTask } = useTasks()
 
-const handleCreateTask = useCallback(async (data) => {
-  const newTask = await createTask(data)
-  if (newTask) {
-    console.log('Task created:', newTask.id)
-  }
-}, [createTask])
+const handleCreateTask = useCallback(
+  async (data) => {
+    const newTask = await createTask(data)
+    if (newTask) {
+      console.log('Task created:', newTask.id)
+    }
+  },
+  [createTask]
+)
 ```
 
 ---
@@ -575,10 +600,10 @@ Hooks are ready for pagination support:
 
 ```typescript
 // Future API
-const { cropPlans, hasMore, loadMore } = useCropPlans({ 
+const { cropPlans, hasMore, loadMore } = useCropPlans({
   farm_plan_id: 'uuid',
   page: 1,
-  per_page: 20
+  per_page: 20,
 })
 ```
 
@@ -616,21 +641,27 @@ describe('MyComponent', () => {
 All hooks expect consistent API responses:
 
 **Success:**
+
 ```json
 {
   "success": true,
-  "data": { /* resource or array */ },
+  "data": {
+    /* resource or array */
+  },
   "count": 1,
   "message": "Operation successful"
 }
 ```
 
 **Error:**
+
 ```json
 {
   "success": false,
   "error": "Error message",
-  "details": [ /* validation errors */ ]
+  "details": [
+    /* validation errors */
+  ]
 }
 ```
 
@@ -641,6 +672,7 @@ All hooks expect consistent API responses:
 ### Hook Not Fetching Data
 
 Check that:
+
 1. API endpoint is accessible
 2. Database connection is configured
 3. Required parameters are provided
@@ -649,6 +681,7 @@ Check that:
 ### Stale Data
 
 Force a refetch:
+
 ```typescript
 const { refetch } = useHook()
 await refetch()
@@ -672,6 +705,7 @@ Hooks automatically cleanup on unmount. No manual cleanup needed.
 ## Support
 
 For issues or questions:
+
 1. Check the [Issues](https://github.com/JustAGhosT/farm-business-plan/issues) page
 2. Review [API_ENDPOINTS.md](../API_ENDPOINTS.md) for API details
 3. Check validation schemas in `lib/validation.ts`

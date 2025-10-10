@@ -3,6 +3,7 @@
 ## Overview
 
 This document details the implementation of Phase 3 enhancements for the Farm Business Plan application, focusing on:
+
 1. Calculator results persistence (saving calculations to database)
 2. Comprehensive API testing infrastructure
 3. Enhanced validation and error handling
@@ -31,6 +32,7 @@ CREATE TABLE calculator_results (
 ```
 
 **Supported Calculator Types:**
+
 - `roi` - Return on Investment
 - `break-even` - Break-Even Analysis
 - `investment` - Investment Calculator
@@ -45,6 +47,7 @@ CREATE TABLE calculator_results (
 **GET** `/api/calculator-results` - Retrieve calculator results
 
 Query parameters:
+
 - `farm_plan_id` (optional) - Filter by farm plan
 - `crop_plan_id` (optional) - Filter by crop plan
 - `calculator_type` (optional) - Filter by calculator type
@@ -52,6 +55,7 @@ Query parameters:
 - `limit` (optional, default: 50) - Limit results
 
 Response:
+
 ```json
 {
   "success": true,
@@ -84,6 +88,7 @@ Response:
 **POST** `/api/calculator-results` - Save a new calculator result
 
 Request body:
+
 ```json
 {
   "calculator_type": "roi",
@@ -106,6 +111,7 @@ Request body:
 ```
 
 Response:
+
 ```json
 {
   "success": true,
@@ -119,6 +125,7 @@ Response:
 **DELETE** `/api/calculator-results?id=uuid` - Delete a calculator result
 
 Response:
+
 ```json
 {
   "success": true,
@@ -160,6 +167,7 @@ npm run test:coverage
 #### Test Coverage
 
 Current test coverage:
+
 - **52 tests passing**
 - **Validation schemas**: 90%+ coverage
 - **API logic**: Comprehensive validation testing
@@ -195,22 +203,22 @@ const saveCalculation = async () => {
       initialInvestment: 100000,
       annualRevenue: 50000,
       annualCosts: 20000,
-      years: 5
+      years: 5,
     },
     results: {
       roi: roiValue,
       netProfit: netProfitValue,
       annualNetProfit: annualNetProfitValue,
-      paybackPeriod: paybackPeriodValue
+      paybackPeriod: paybackPeriodValue,
     },
     farm_plan_id: currentFarmPlanId, // Optional
-    notes: 'Q1 2024 projection'
+    notes: 'Q1 2024 projection',
   }
 
   const response = await fetch('/api/calculator-results', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(calculatorResult)
+    body: JSON.stringify(calculatorResult),
   })
 
   const data = await response.json()
@@ -229,7 +237,7 @@ const getROIHistory = async (farmPlanId: string) => {
     `/api/calculator-results?farm_plan_id=${farmPlanId}&calculator_type=roi`
   )
   const data = await response.json()
-  
+
   return data.data // Array of calculator results
 }
 ```
@@ -241,10 +249,10 @@ const getROIHistory = async (farmPlanId: string) => {
 const getRecentCalculations = async () => {
   const response = await fetch('/api/calculator-results?limit=10')
   const data = await response.json()
-  
+
   // Compare results
   const calculations = data.data
-  calculations.forEach(calc => {
+  calculations.forEach((calc) => {
     console.log(`${calc.calculator_type}: ROI ${calc.results.roi}%`)
   })
 }
@@ -274,6 +282,7 @@ npm test
 ```
 
 All tests should pass. Expected output:
+
 ```
 Test Suites: 4 passed, 4 total
 Tests:       52 passed, 52 total
@@ -312,6 +321,7 @@ Build should complete successfully with no errors.
 ## Next Steps
 
 ### Immediate Enhancements
+
 1. **Update Calculator UI Components**
    - Add "Save" button to each calculator
    - Display calculation history
@@ -330,12 +340,14 @@ Build should complete successfully with no errors.
 ### Future Enhancements (Phase 3 continued)
 
 #### Financial Reports Module
+
 - Generate comprehensive financial reports
 - Visual charts and graphs (Chart.js/Recharts)
 - Year-over-year comparisons
 - Budget vs. actual tracking
 
 #### Export & Sharing
+
 - PDF export for financial reports
 - Excel/CSV export for data
 - Email report functionality
@@ -345,11 +357,11 @@ Build should complete successfully with no errors.
 
 ### Calculator Results API
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/calculator-results` | Get all calculator results (with filters) |
-| POST | `/api/calculator-results` | Create new calculator result |
-| DELETE | `/api/calculator-results?id={id}` | Delete calculator result |
+| Method | Endpoint                          | Description                               |
+| ------ | --------------------------------- | ----------------------------------------- |
+| GET    | `/api/calculator-results`         | Get all calculator results (with filters) |
+| POST   | `/api/calculator-results`         | Create new calculator result              |
+| DELETE | `/api/calculator-results?id={id}` | Delete calculator result                  |
 
 ### Request/Response Formats
 
@@ -366,7 +378,7 @@ describe('Schema validation', () => {
     const result = validateData(Schema, validData)
     expect(result.success).toBe(true)
   })
-  
+
   it('should reject invalid data', () => {
     const result = validateData(Schema, invalidData)
     expect(result.success).toBe(false)
@@ -377,6 +389,7 @@ describe('Schema validation', () => {
 ### Test Helpers
 
 Available in `__tests__/utils/test-helpers.ts`:
+
 - `createTestFarmPlan()` - Create test farm plan data
 - `createTestTask()` - Create test task data
 - `createTestCalculatorResult()` - Create test calculator result data
@@ -409,11 +422,12 @@ Available in `__tests__/utils/test-helpers.ts`:
 ✅ **No linting errors**  
 ✅ **Calculator results API functional**  
 ✅ **Validation schemas comprehensive**  
-✅ **Test coverage >90% for validation**  
+✅ **Test coverage >90% for validation**
 
 ## Files Created/Modified
 
 ### New Files
+
 - `db/migrations/003_add_calculator_results.sql` - Database migration
 - `app/api/calculator-results/route.ts` - Calculator results API
 - `jest.config.js` - Jest configuration
@@ -427,6 +441,7 @@ Available in `__tests__/utils/test-helpers.ts`:
 - `PHASE3_GUIDE.md` - This file
 
 ### Modified Files
+
 - `package.json` - Added test scripts and Jest dependency
 - `lib/validation.ts` - Added CalculatorResultSchema
 
@@ -435,5 +450,5 @@ Available in `__tests__/utils/test-helpers.ts`:
 **Phase 3 Status**: ✅ Core Implementation Complete  
 **Next Phase**: Phase 3 Continued - Financial Reports & Export
 
-*Generated: January 2025*  
-*Version: 1.0*
+_Generated: January 2025_  
+_Version: 1.0_

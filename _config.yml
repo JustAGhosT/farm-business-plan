@@ -1,8 +1,8 @@
 # Site Configuration
 title: Farm Business Plan
 description: A comprehensive farm business plan repository.
-url: "https://justaghost.github.io/farm-business-plan/"
-baseurl: "/farm-business-plan/"
+url: 'https://justaghost.github.io/farm-business-plan/'
+baseurl: '/farm-business-plan/'
 theme: minima
 
 # Markdown Processing
@@ -26,7 +26,7 @@ collections:
 # Defaults
 defaults:
   - scope:
-      path: ""
-      type: "docs"
+      path: ''
+      type: 'docs'
     values:
-      layout: "page"
+      layout: 'page'

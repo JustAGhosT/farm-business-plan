@@ -24,9 +24,7 @@ export default function UserProfile() {
   }, [isDropdownOpen])
 
   if (status === 'loading') {
-    return (
-      <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
-    )
+    return <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
   }
 
   if (status === 'unauthenticated' || !session) {
@@ -40,7 +38,10 @@ export default function UserProfile() {
     )
   }
 
-  const userInitial = session.user?.name?.charAt(0).toUpperCase() || session.user?.email?.charAt(0).toUpperCase() || 'U'
+  const userInitial =
+    session.user?.name?.charAt(0).toUpperCase() ||
+    session.user?.email?.charAt(0).toUpperCase() ||
+    'U'
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -52,10 +53,10 @@ export default function UserProfile() {
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white font-semibold text-sm shadow-md">
           {userInitial}
         </div>
-        <svg 
+        <svg
           className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
-          fill="none" 
-          stroke="currentColor" 
+          fill="none"
+          stroke="currentColor"
           viewBox="0 0 24 24"
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -86,7 +87,12 @@ export default function UserProfile() {
             >
               <div className="flex items-center">
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                  />
                 </svg>
                 Dashboard
               </div>
@@ -101,7 +107,12 @@ export default function UserProfile() {
             >
               <div className="flex items-center">
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                  />
                 </svg>
                 Sign Out
               </div>

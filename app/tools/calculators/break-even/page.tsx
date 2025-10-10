@@ -36,7 +36,7 @@ export default function BreakEvenCalculator() {
       breakEvenUnits,
       breakEvenRevenue,
       contributionMargin,
-      contributionMarginRatio
+      contributionMarginRatio,
     })
   }
 
@@ -50,7 +50,7 @@ export default function BreakEvenCalculator() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValues({
       ...values,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     })
   }
 
@@ -59,19 +59,24 @@ export default function BreakEvenCalculator() {
       style: 'currency',
       currency: 'ZAR',
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0
+      maximumFractionDigits: 0,
     }).format(value)
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <Link 
-          href="/tools/calculators" 
+        <Link
+          href="/tools/calculators"
           className="inline-flex items-center text-primary-600 hover:text-primary-700 mb-6 transition-colors"
         >
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
           </svg>
           Back to Calculators
         </Link>
@@ -81,7 +86,9 @@ export default function BreakEvenCalculator() {
             <span className="text-4xl mr-4">⚖️</span>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Break-Even Analysis</h1>
-              <p className="text-gray-600">Determine your break-even point for production and sales</p>
+              <p className="text-gray-600">
+                Determine your break-even point for production and sales
+              </p>
             </div>
           </div>
 
@@ -89,10 +96,13 @@ export default function BreakEvenCalculator() {
             {/* Input Section */}
             <div>
               <h2 className="text-xl font-semibold mb-4">Input Values</h2>
-              
+
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="fixedCosts" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="fixedCosts"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Annual Fixed Costs (ZAR) *
                   </label>
                   <input
@@ -104,11 +114,16 @@ export default function BreakEvenCalculator() {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="e.g., 100000"
                   />
-                  <p className="text-xs text-gray-500 mt-1">Total annual fixed costs (rent, salaries, insurance, etc.)</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Total annual fixed costs (rent, salaries, insurance, etc.)
+                  </p>
                 </div>
 
                 <div>
-                  <label htmlFor="variableCostPerUnit" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="variableCostPerUnit"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Variable Cost per Unit (ZAR) *
                   </label>
                   <input
@@ -121,11 +136,16 @@ export default function BreakEvenCalculator() {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="e.g., 25.50"
                   />
-                  <p className="text-xs text-gray-500 mt-1">Cost per kg/unit (materials, packaging, labor per unit)</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Cost per kg/unit (materials, packaging, labor per unit)
+                  </p>
                 </div>
 
                 <div>
-                  <label htmlFor="pricePerUnit" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="pricePerUnit"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Selling Price per Unit (ZAR) *
                   </label>
                   <input
@@ -138,7 +158,9 @@ export default function BreakEvenCalculator() {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="e.g., 50.00"
                   />
-                  <p className="text-xs text-gray-500 mt-1">Price you charge per kg/unit to customers</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Price you charge per kg/unit to customers
+                  </p>
                 </div>
               </div>
             </div>
@@ -146,7 +168,7 @@ export default function BreakEvenCalculator() {
             {/* Results Section */}
             <div>
               <h2 className="text-xl font-semibold mb-4">Results</h2>
-              
+
               {results ? (
                 <div className="space-y-4">
                   <div className="bg-primary-50 rounded-lg p-4 border-2 border-primary-200">
@@ -178,28 +200,39 @@ export default function BreakEvenCalculator() {
 
                   <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
                     <p className="text-sm text-blue-800">
-                      <strong>Interpretation:</strong> {
-                        results.contributionMarginRatio > 50 
-                          ? 'Excellent margin! You have strong pricing power.' 
-                          : results.contributionMarginRatio > 30 
-                          ? 'Good margin. Consider ways to reduce costs or increase prices.' 
-                          : 'Low margin. Review pricing strategy and cost structure.'
-                      }
+                      <strong>Interpretation:</strong>{' '}
+                      {results.contributionMarginRatio > 50
+                        ? 'Excellent margin! You have strong pricing power.'
+                        : results.contributionMarginRatio > 30
+                          ? 'Good margin. Consider ways to reduce costs or increase prices.'
+                          : 'Low margin. Review pricing strategy and cost structure.'}
                     </p>
                   </div>
 
                   <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                     <h3 className="font-semibold text-green-900 mb-2">What This Means</h3>
                     <p className="text-sm text-green-800">
-                      You need to sell at least <strong>{results.breakEvenUnits.toFixed(0)} units</strong> to cover all your costs. 
-                      Every unit sold beyond this point contributes <strong>{formatCurrency(results.contributionMargin)}</strong> to profit.
+                      You need to sell at least{' '}
+                      <strong>{results.breakEvenUnits.toFixed(0)} units</strong> to cover all your
+                      costs. Every unit sold beyond this point contributes{' '}
+                      <strong>{formatCurrency(results.contributionMargin)}</strong> to profit.
                     </p>
                   </div>
                 </div>
               ) : (
                 <div className="bg-gray-50 rounded-lg p-8 text-center text-gray-500">
-                  <svg className="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  <svg
+                    className="w-16 h-16 mx-auto mb-4 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                    />
                   </svg>
                   <p>Enter your values to see break-even analysis</p>
                 </div>

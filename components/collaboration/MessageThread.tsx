@@ -30,7 +30,12 @@ interface MessageThreadProps {
   onNewMessage?: (message: Message) => void
 }
 
-export default function MessageThread({ threadId, contextType, contextId, onNewMessage }: MessageThreadProps) {
+export default function MessageThread({
+  threadId,
+  contextType,
+  contextId,
+  onNewMessage,
+}: MessageThreadProps) {
   const { data: session } = useSession()
   const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(true)
@@ -98,12 +103,12 @@ export default function MessageThread({ threadId, contextType, contextId, onNewM
 
     try {
       const response = await fetch(`/api/messages?id=${messageId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
       })
       const data = await response.json()
 
       if (data.success) {
-        setMessages(prev => prev.filter(m => m.id !== messageId))
+        setMessages((prev) => prev.filter((m) => m.id !== messageId))
       } else {
         alert(data.error || 'Failed to delete message')
       }
@@ -126,9 +131,7 @@ export default function MessageThread({ threadId, contextType, contextId, onNewM
   if (error) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-        <div className="text-red-600 dark:text-red-400 text-center py-4">
-          {error}
-        </div>
+        <div className="text-red-600 dark:text-red-400 text-center py-4">{error}</div>
       </div>
     )
   }
@@ -146,9 +149,7 @@ export default function MessageThread({ threadId, contextType, contextId, onNewM
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
       <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-          Conversation
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Conversation</h3>
         <p className="text-sm text-gray-500 dark:text-gray-400">
           {messages.length} {messages.length === 1 ? 'message' : 'messages'}
         </p>
@@ -180,7 +181,7 @@ export default function MessageThread({ threadId, contextType, contextId, onNewM
                       </span>
                     </div>
                   )}
-                  
+
                   <div
                     className={`rounded-lg p-3 ${
                       isOwnMessage
@@ -189,11 +190,9 @@ export default function MessageThread({ threadId, contextType, contextId, onNewM
                     }`}
                   >
                     <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
-                    
-                    {message.edited_at && (
-                      <p className="text-xs mt-1 opacity-75">(edited)</p>
-                    )}
-                    
+
+                    {message.edited_at && <p className="text-xs mt-1 opacity-75">(edited)</p>}
+
                     <div className="flex items-center gap-2 mt-2 text-xs opacity-75">
                       <span>{formatTimestamp(message.created_at)}</span>
                       {message.mention_count > 0 && (
@@ -207,7 +206,11 @@ export default function MessageThread({ threadId, contextType, contextId, onNewM
                       {message.reply_count > 0 && (
                         <span className="inline-flex items-center">
                           <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
+                            <path
+                              fillRule="evenodd"
+                              d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
+                              clipRule="evenodd"
+                            />
                           </svg>
                           {message.reply_count}
                         </span>
@@ -241,15 +244,18 @@ export default function MessageThread({ threadId, contextType, contextId, onNewM
       {replyingTo && (
         <div className="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 border-t border-blue-200 dark:border-blue-800">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-blue-600 dark:text-blue-400">
-              Replying to message
-            </span>
+            <span className="text-sm text-blue-600 dark:text-blue-400">Replying to message</span>
             <button
               onClick={() => setReplyingTo(null)}
               className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>

@@ -69,72 +69,81 @@ export function useCropTemplates(filters?: CropTemplateFilters): UseCropTemplate
     fetchCropTemplates()
   }, [fetchCropTemplates])
 
-  const createCropTemplate = useCallback(async (data: Partial<CropTemplate>) => {
-    try {
-      const response = await fetch('/api/crop-templates', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
+  const createCropTemplate = useCallback(
+    async (data: Partial<CropTemplate>) => {
+      try {
+        const response = await fetch('/api/crop-templates', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        await fetchCropTemplates() // Refresh the list
-        return result.data
-      } else {
-        setError(result.error || 'Failed to create crop template')
+        if (result.success) {
+          await fetchCropTemplates() // Refresh the list
+          return result.data
+        } else {
+          setError(result.error || 'Failed to create crop template')
+          return null
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
         return null
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      return null
-    }
-  }, [fetchCropTemplates])
+    },
+    [fetchCropTemplates]
+  )
 
-  const updateCropTemplate = useCallback(async (id: string, data: Partial<CropTemplate>) => {
-    try {
-      const response = await fetch('/api/crop-templates', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, ...data })
-      })
+  const updateCropTemplate = useCallback(
+    async (id: string, data: Partial<CropTemplate>) => {
+      try {
+        const response = await fetch('/api/crop-templates', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, ...data }),
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        await fetchCropTemplates() // Refresh the list
-        return result.data
-      } else {
-        setError(result.error || 'Failed to update crop template')
+        if (result.success) {
+          await fetchCropTemplates() // Refresh the list
+          return result.data
+        } else {
+          setError(result.error || 'Failed to update crop template')
+          return null
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
         return null
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      return null
-    }
-  }, [fetchCropTemplates])
+    },
+    [fetchCropTemplates]
+  )
 
-  const deleteCropTemplate = useCallback(async (id: string) => {
-    try {
-      const response = await fetch(`/api/crop-templates?id=${id}`, {
-        method: 'DELETE'
-      })
+  const deleteCropTemplate = useCallback(
+    async (id: string) => {
+      try {
+        const response = await fetch(`/api/crop-templates?id=${id}`, {
+          method: 'DELETE',
+        })
 
-      const result = await response.json()
+        const result = await response.json()
 
-      if (result.success) {
-        await fetchCropTemplates() // Refresh the list
-        return true
-      } else {
-        setError(result.error || 'Failed to delete crop template')
+        if (result.success) {
+          await fetchCropTemplates() // Refresh the list
+          return true
+        } else {
+          setError(result.error || 'Failed to delete crop template')
+          return false
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
         return false
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      return false
-    }
-  }, [fetchCropTemplates])
+    },
+    [fetchCropTemplates]
+  )
 
   return {
     cropTemplates,
@@ -143,14 +152,19 @@ export function useCropTemplates(filters?: CropTemplateFilters): UseCropTemplate
     refetch: fetchCropTemplates,
     createCropTemplate,
     updateCropTemplate,
-    deleteCropTemplate
+    deleteCropTemplate,
   }
 }
 
 /**
  * Custom hook for fetching public crop templates only
  */
-export function usePublicCropTemplates(category?: string): Omit<UseCropTemplatesResult, 'createCropTemplate' | 'updateCropTemplate' | 'deleteCropTemplate'> {
+export function usePublicCropTemplates(
+  category?: string
+): Omit<
+  UseCropTemplatesResult,
+  'createCropTemplate' | 'updateCropTemplate' | 'deleteCropTemplate'
+> {
   const filters = { is_public: true, ...(category && { category }) }
   const { cropTemplates, loading, error, refetch } = useCropTemplates(filters)
 
@@ -158,14 +172,19 @@ export function usePublicCropTemplates(category?: string): Omit<UseCropTemplates
     cropTemplates,
     loading,
     error,
-    refetch
+    refetch,
   }
 }
 
 /**
  * Custom hook for fetching crop templates by category
  */
-export function useCropTemplatesByCategory(category: string | null): Omit<UseCropTemplatesResult, 'createCropTemplate' | 'updateCropTemplate' | 'deleteCropTemplate'> {
+export function useCropTemplatesByCategory(
+  category: string | null
+): Omit<
+  UseCropTemplatesResult,
+  'createCropTemplate' | 'updateCropTemplate' | 'deleteCropTemplate'
+> {
   const filters = category ? { category } : undefined
   const { cropTemplates, loading, error, refetch } = useCropTemplates(filters)
 
@@ -173,6 +192,6 @@ export function useCropTemplatesByCategory(category: string | null): Omit<UseCro
     cropTemplates,
     loading,
     error,
-    refetch
+    refetch,
   }
 }

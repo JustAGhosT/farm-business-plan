@@ -69,24 +69,28 @@ The framework combines proven business planning methodologies with modern agricu
 This template includes example scenarios to demonstrate how to apply the framework:
 
 ### Example 1: High-Value Leaf Crops
+
 - **Application**: Moringa, herbs, specialty greens
 - **Characteristics**: Quick returns, multiple harvests, value-added products
 - **Setup Investment**: Low to moderate (varies by scale)
 - **Timeframe**: First harvest 3-8 months
 
 ### Example 2: Fodder & Feed Crops
+
 - **Application**: Alfalfa/lucerne, forage grasses, hay production
 - **Characteristics**: Steady demand, perennial production, mechanization potential
 - **Setup Investment**: Moderate (equipment dependent)
 - **Timeframe**: First harvest 3-6 months
 
 ### Example 3: High-Value Fruit Crops
+
 - **Application**: Dragon fruit, exotic fruits, premium produce
 - **Characteristics**: Long-term investment, premium pricing, unique market position
 - **Setup Investment**: High (infrastructure intensive)
 - **Timeframe**: Full production 2-4 years
 
 ### Example 4: Diversified Systems
+
 - **Application**: Multiple crops, staggered income streams, risk distribution
 - **Characteristics**: Balanced portfolio, year-round production, resource optimization
 - **Setup Investment**: Variable based on crop selection
@@ -99,6 +103,7 @@ These examples can be replaced with your specific crops and adjusted to your loc
 ## Planning Framework Components
 
 ### Location and Climate Assessment
+
 - **Climate Analysis**: Temperature ranges, rainfall patterns, seasonal variations
 - **Climate Type**: [Your climate classification - tropical, temperate, arid, etc.]
 - **Growing Season**: [Your primary growing season(s)]
@@ -106,6 +111,7 @@ These examples can be replaced with your specific crops and adjusted to your loc
 - **Irrigation**: [Water availability and requirements analysis]
 
 ### Land and Soil Considerations
+
 - **Land Size**: [Your available land area]
 - **Soil Type**: [Your soil classification and characteristics]
 - **Drainage**: [Drainage assessment and requirements]
@@ -113,16 +119,18 @@ These examples can be replaced with your specific crops and adjusted to your loc
 - **Amendments**: [Required soil improvements]
 
 ### Crop Selection Framework
+
 Use this template to evaluate and select crops for your operation:
 
-| **Crop Category** | **Your Crop** | **Land Allocation** | **Priority** |
-|-------------------|---------------|---------------------|--------------|
-| Primary Income Crop(s) | [Crop 1] | [%] | High |
-| Secondary Crop(s) | [Crop 2] | [%] | Medium |
-| Diversification Crop(s) | [Crop 3] | [%] | Low-Medium |
-| Experimental/Nursery | [Space] | [%] | Development |
+| **Crop Category**       | **Your Crop** | **Land Allocation** | **Priority** |
+| ----------------------- | ------------- | ------------------- | ------------ |
+| Primary Income Crop(s)  | [Crop 1]      | [%]                 | High         |
+| Secondary Crop(s)       | [Crop 2]      | [%]                 | Medium       |
+| Diversification Crop(s) | [Crop 3]      | [%]                 | Low-Medium   |
+| Experimental/Nursery    | [Space]       | [%]                 | Development  |
 
 ### Sample Allocation (1 hectare example)
+
 - **Primary Crop**: 0.4-0.5 ha (40-50%) - Main income generator
 - **Secondary Crop**: 0.3-0.4 ha (30-40%) - Diversification and risk management
 - **Specialty/Premium Crop**: 0.1-0.2 ha (10-20%) - High-value niche market
@@ -170,45 +178,49 @@ Use this template to evaluate and select crops for your operation:
 
 ### Operational Metrics Template
 
-| Metric | Target | Timeline |
-|--------|---------|----------|
-| Plant/Animal Survival Rate | [%] | [Months] |
-| Production Success Rate | [%] | [Months] |
-| Overall Health Score | [%] | Ongoing |
-| Resource Efficiency | [Target] | Ongoing |
+| Metric                     | Target   | Timeline |
+| -------------------------- | -------- | -------- |
+| Plant/Animal Survival Rate | [%]      | [Months] |
+| Production Success Rate    | [%]      | [Months] |
+| Overall Health Score       | [%]      | Ongoing  |
+| Resource Efficiency        | [Target] | Ongoing  |
 
 ### Financial Metrics Template
 
-| Metric | Target | Timeline |
-|--------|---------|----------|
-| Gross Revenue | [Amount] | [Year] |
-| Operating Efficiency | [%] | Ongoing |
-| Net Profit Margin | [%] | [Year] |
-| Cash Flow Positive | [Timeframe] | [Target Date] |
+| Metric               | Target      | Timeline      |
+| -------------------- | ----------- | ------------- |
+| Gross Revenue        | [Amount]    | [Year]        |
+| Operating Efficiency | [%]         | Ongoing       |
+| Net Profit Margin    | [%]         | [Year]        |
+| Cash Flow Positive   | [Timeframe] | [Target Date] |
 
 ---
 
 ## SWOT Analysis Framework
 
 ### Strengths (Customize for your operation)
+
 - [Your crop-specific advantages]
 - [Resource advantages]
 - [Market advantages]
 - [Technical capabilities]
 
 ### Weaknesses (Assess honestly)
+
 - [Capital requirements]
 - [Labor or skill gaps]
 - [Infrastructure limitations]
 - [Market access challenges]
 
 ### Opportunities (Identify potential)
+
 - [Market trends favoring your crops]
 - [Value-added product potential]
 - [New market channels]
 - [Technology adoption benefits]
 
 ### Threats (Plan mitigation)
+
 - [Climate and weather risks]
 - [Market volatility]
 - [Pest and disease pressure]
@@ -219,36 +231,42 @@ Use this template to evaluate and select crops for your operation:
 ## Implementation Timeline Template
 
 ### Phase 1: Planning ([Months/Dates])
+
 - Finalize crop selection and farm layout
 - Conduct site and soil testing
 - Secure financing and permits
 - Order materials, equipment, and inputs
 
 ### Phase 2: Land Preparation ([Months/Dates])
+
 - Clear vegetation and prepare soil
 - Incorporate amendments and improve soil structure
 - Install infrastructure (fencing, irrigation, structures)
 - Prepare planting beds or growing areas
 
 ### Phase 3: Planting ([Months/Dates])
+
 - Plant seeds or transplants according to your crop calendar
 - Establish initial irrigation schedule
 - Implement pest management plan
 - Begin monitoring and record-keeping
 
 ### Phase 4: Establishment ([Months/Dates])
+
 - Intensive monitoring and care
 - Adjust irrigation and fertility programs
 - Pest and disease management
 - Weed control and maintenance
 
 ### Phase 5: Growth & First Harvest ([Timeframe])
+
 - First harvest activities
 - Market development and customer acquisition
 - Refine production practices
 - Monitor quality and yields
 
 ### Phase 6: Full Production ([Timeframe])
+
 - Achieve target production levels
 - Optimize operations for efficiency
 - Evaluate expansion opportunities
@@ -275,6 +293,7 @@ Use this template to evaluate and select crops for your operation:
    - Generate customized business plans
    - Track operations and finances
    - Export reports and documentation
+
 ---
 
 ## Next.js Application
@@ -409,6 +428,7 @@ The application is deployed as a **dynamic Next.js application** with API routes
 4. The site will build and deploy with full serverless function support
 
 **API Endpoints:**
+
 - `/api/health` - Health check endpoint
 - `/api/crops` - Crop data API endpoint
 - `/api/db-test` - Database connectivity test (requires database setup)
@@ -490,6 +510,7 @@ npm run test:coverage
 ```
 
 **Current Test Status:**
+
 - ✅ 52 tests passing
 - ✅ 4 test suites
 - ✅ >90% coverage for validation schemas
@@ -501,6 +522,7 @@ For detailed testing information, see [TESTING_GUIDE.md](docs/guides/TESTING_GUI
 ### Recent Enhancements (Phase 3)
 
 **Calculator Results Persistence** - NEW! ⭐
+
 - Save and retrieve calculator results to database
 - API endpoints for CRUD operations on calculator results
 - Support for 8 calculator types (ROI, break-even, investment, loan, etc.)
@@ -508,6 +530,7 @@ For detailed testing information, see [TESTING_GUIDE.md](docs/guides/TESTING_GUI
 - Full documentation in [PHASE3_GUIDE.md](docs/guides/PHASE3_GUIDE.md)
 
 **Testing Infrastructure** - NEW! ⭐
+
 - Jest configured for Next.js with TypeScript
 - 52 comprehensive tests across validation and API logic
 - Test helpers and utilities for easy test creation

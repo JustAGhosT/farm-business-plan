@@ -17,22 +17,28 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         rehypePlugins={[rehypeRaw, rehypeSanitize]}
         components={{
           h1: ({ children }) => (
-            <h1 className="text-4xl font-bold mb-6 mt-8 pb-3 border-b-4 border-primary-500 dark:border-primary-600 text-gray-900 dark:text-white">{children}</h1>
+            <h1 className="text-4xl font-bold mb-6 mt-8 pb-3 border-b-4 border-primary-500 dark:border-primary-600 text-gray-900 dark:text-white">
+              {children}
+            </h1>
           ),
           h2: ({ children }) => (
-            <h2 className="text-3xl font-bold mb-5 mt-8 text-primary-700 dark:text-primary-400">{children}</h2>
+            <h2 className="text-3xl font-bold mb-5 mt-8 text-primary-700 dark:text-primary-400">
+              {children}
+            </h2>
           ),
           h3: ({ children }) => (
-            <h3 className="text-2xl font-bold mb-4 mt-6 text-gray-900 dark:text-white">{children}</h3>
+            <h3 className="text-2xl font-bold mb-4 mt-6 text-gray-900 dark:text-white">
+              {children}
+            </h3>
           ),
           h4: ({ children }) => (
-            <h4 className="text-xl font-bold mb-3 mt-5 text-gray-900 dark:text-white">{children}</h4>
+            <h4 className="text-xl font-bold mb-3 mt-5 text-gray-900 dark:text-white">
+              {children}
+            </h4>
           ),
           table: ({ children }) => (
             <div className="overflow-x-auto my-8 rounded-lg border border-gray-300 dark:border-gray-700 shadow-md">
-              <table className="min-w-full border-collapse">
-                {children}
-              </table>
+              <table className="min-w-full border-collapse">{children}</table>
             </div>
           ),
           th: ({ children }) => (
@@ -41,10 +47,17 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
             </th>
           ),
           td: ({ children }) => (
-            <td className="border border-gray-300 dark:border-gray-700 px-5 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors text-gray-700 dark:text-gray-300">{children}</td>
+            <td className="border border-gray-300 dark:border-gray-700 px-5 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors text-gray-700 dark:text-gray-300">
+              {children}
+            </td>
           ),
           a: ({ href, children }) => (
-            <a href={href} className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 underline font-medium hover:no-underline transition-all" target={href?.startsWith('http') ? '_blank' : undefined} rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}>
+            <a
+              href={href}
+              className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 underline font-medium hover:no-underline transition-all"
+              target={href?.startsWith('http') ? '_blank' : undefined}
+              rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+            >
               {children}
             </a>
           ),
@@ -57,11 +70,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
                 </code>
               )
             }
-            return (
-              <code className={className}>
-                {children}
-              </code>
-            )
+            return <code className={className}>{children}</code>
           },
           pre: ({ children }) => (
             <pre className="bg-gray-100 dark:bg-gray-900 p-6 rounded-xl overflow-x-auto my-6 border-2 border-gray-200 dark:border-gray-700 shadow-inner">
@@ -69,10 +78,14 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
             </pre>
           ),
           ul: ({ children }) => (
-            <ul className="list-disc list-inside space-y-3 my-6 text-gray-700 dark:text-gray-300">{children}</ul>
+            <ul className="list-disc list-inside space-y-3 my-6 text-gray-700 dark:text-gray-300">
+              {children}
+            </ul>
           ),
           ol: ({ children }) => (
-            <ol className="list-decimal list-inside space-y-3 my-6 text-gray-700 dark:text-gray-300">{children}</ol>
+            <ol className="list-decimal list-inside space-y-3 my-6 text-gray-700 dark:text-gray-300">
+              {children}
+            </ol>
           ),
           blockquote: ({ children }) => (
             <blockquote className="border-l-4 border-primary-500 dark:border-primary-600 pl-6 italic my-6 text-gray-700 dark:text-gray-300 bg-primary-50 dark:bg-primary-900/20 py-4 rounded-r-lg">

@@ -31,21 +31,24 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
       required_approvals: 1,
       approvers: [],
       deadline_days: 7,
-      requires_signature: false
-    }
+      requires_signature: false,
+    },
   ])
   const [currentApprover, setCurrentApprover] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const addStage = () => {
-    setStages([...stages, {
-      name: '',
-      description: '',
-      required_approvals: 1,
-      approvers: [],
-      deadline_days: 7,
-      requires_signature: false
-    }])
+    setStages([
+      ...stages,
+      {
+        name: '',
+        description: '',
+        required_approvals: 1,
+        approvers: [],
+        deadline_days: 7,
+        requires_signature: false,
+      },
+    ])
   }
 
   const removeStage = (index: number) => {
@@ -70,24 +73,26 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
 
   const removeApprover = (stageIndex: number, approverId: string) => {
     const newStages = [...stages]
-    newStages[stageIndex].approvers = newStages[stageIndex].approvers.filter(id => id !== approverId)
+    newStages[stageIndex].approvers = newStages[stageIndex].approvers.filter(
+      (id) => id !== approverId
+    )
     setStages(newStages)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!title.trim()) {
       alert('Please provide a workflow title')
       return
     }
 
-    if (stages.some(s => !s.name.trim())) {
+    if (stages.some((s) => !s.name.trim())) {
       alert('All stages must have a name')
       return
     }
 
-    if (stages.some(s => s.approvers.length === 0)) {
+    if (stages.some((s) => s.approvers.length === 0)) {
       alert('All stages must have at least one approver')
       return
     }
@@ -97,18 +102,20 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
       await onSubmit({
         title,
         workflow_type: workflowType,
-        stages
+        stages,
       })
       // Reset form
       setTitle('')
-      setStages([{
-        name: '',
-        description: '',
-        required_approvals: 1,
-        approvers: [],
-        deadline_days: 7,
-        requires_signature: false
-      }])
+      setStages([
+        {
+          name: '',
+          description: '',
+          required_approvals: 1,
+          approvers: [],
+          deadline_days: 7,
+          requires_signature: false,
+        },
+      ])
     } catch (error) {
       console.error('Failed to create workflow:', error)
       alert('Failed to create workflow. Please try again.')
@@ -179,9 +186,7 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
       {/* Stages */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <label className="block text-sm font-medium text-gray-700">
-            Approval Stages
-          </label>
+          <label className="block text-sm font-medium text-gray-700">Approval Stages</label>
           <button
             type="button"
             onClick={addStage}
@@ -244,7 +249,9 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
                       type="number"
                       min="1"
                       value={stage.required_approvals}
-                      onChange={(e) => updateStage(index, 'required_approvals', parseInt(e.target.value))}
+                      onChange={(e) =>
+                        updateStage(index, 'required_approvals', parseInt(e.target.value))
+                      }
                       className="w-full px-3 py-2 border rounded-md"
                     />
                   </div>
@@ -256,7 +263,9 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
                       type="number"
                       min="1"
                       value={stage.deadline_days}
-                      onChange={(e) => updateStage(index, 'deadline_days', parseInt(e.target.value))}
+                      onChange={(e) =>
+                        updateStage(index, 'deadline_days', parseInt(e.target.value))
+                      }
                       className="w-full px-3 py-2 border rounded-md"
                     />
                   </div>
@@ -270,7 +279,9 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
                       onChange={(e) => updateStage(index, 'requires_signature', e.target.checked)}
                       className="mr-2 rounded"
                     />
-                    <span className="text-sm font-medium text-gray-700">Require Digital Signature</span>
+                    <span className="text-sm font-medium text-gray-700">
+                      Require Digital Signature
+                    </span>
                   </label>
                 </div>
 
@@ -299,7 +310,10 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {stage.approvers.map((approverId) => (
-                      <span key={approverId} className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
+                      <span
+                        key={approverId}
+                        className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm"
+                      >
                         {approverId}
                         <button
                           type="button"

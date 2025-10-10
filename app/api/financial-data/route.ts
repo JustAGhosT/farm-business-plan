@@ -26,22 +26,22 @@ export async function GET(request: Request) {
       JOIN farm_plans fp ON cp.farm_plan_id = fp.id
       WHERE 1=1
     `
-    
+
     const params: any[] = []
     let paramIndex = 1
-    
+
     if (cropPlanId) {
       queryText += ` AND fd.crop_plan_id = $${paramIndex}`
       params.push(cropPlanId)
       paramIndex++
     }
-    
+
     if (farmPlanId) {
       queryText += ` AND cp.farm_plan_id = $${paramIndex}`
       params.push(farmPlanId)
       paramIndex++
     }
-    
+
     queryText += ' ORDER BY fd.created_at DESC'
 
     const result = await query(queryText, params)
@@ -49,7 +49,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: true,
       data: result.rows,
-      count: result.rows.length
+      count: result.rows.length,
     })
   } catch (error) {
     console.error('Error fetching financial data:', error)
@@ -67,15 +67,15 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    
+
     // Validate input
     const validation = validateData(FinancialDataSchema, body)
     if (!validation.success) {
       return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Validation failed', 
-          details: validation.errors?.issues 
+        {
+          success: false,
+          error: 'Validation failed',
+          details: validation.errors?.issues,
         },
         { status: 400 }
       )
@@ -102,16 +102,19 @@ export async function POST(request: Request) {
       data.annual_operating_costs || null,
       data.projected_revenue || null,
       data.break_even_point || null,
-      data.roi_percentage || null
+      data.roi_percentage || null,
     ]
 
     const result = await query(queryText, params)
 
-    return NextResponse.json({
-      success: true,
-      data: result.rows[0],
-      message: 'Financial data created successfully'
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        success: true,
+        data: result.rows[0],
+        message: 'Financial data created successfully',
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Error creating financial data:', error)
     return NextResponse.json(
@@ -143,12 +146,17 @@ export async function PATCH(request: Request) {
 
     // Build dynamic update query
     const allowedFields = [
-      'initial_investment', 'fixed_costs', 'variable_costs',
-      'monthly_operating_costs', 'annual_operating_costs',
-      'projected_revenue', 'break_even_point', 'roi_percentage'
+      'initial_investment',
+      'fixed_costs',
+      'variable_costs',
+      'monthly_operating_costs',
+      'annual_operating_costs',
+      'projected_revenue',
+      'break_even_point',
+      'roi_percentage',
     ]
 
-    allowedFields.forEach(field => {
+    allowedFields.forEach((field) => {
       if (updates[field] !== undefined) {
         setClauses.push(`${field} = $${paramIndex}`)
         params.push(updates[field])
@@ -183,7 +191,7 @@ export async function PATCH(request: Request) {
     return NextResponse.json({
       success: true,
       data: result.rows[0],
-      message: 'Financial data updated successfully'
+      message: 'Financial data updated successfully',
     })
   } catch (error) {
     console.error('Error updating financial data:', error)
@@ -210,10 +218,7 @@ export async function DELETE(request: Request) {
       )
     }
 
-    const result = await query(
-      'DELETE FROM financial_data WHERE id = $1 RETURNING id',
-      [id]
-    )
+    const result = await query('DELETE FROM financial_data WHERE id = $1 RETURNING id', [id])
 
     if (result.rows.length === 0) {
       return NextResponse.json(
@@ -224,7 +229,7 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: 'Financial data deleted successfully'
+      message: 'Financial data deleted successfully',
     })
   } catch (error) {
     console.error('Error deleting financial data:', error)

@@ -71,11 +71,13 @@ You should see the users table structure. If successful, registration should now
 ### Still getting 500 errors?
 
 1. Check database connection:
+
    ```bash
    psql $DATABASE_URL -c "SELECT version();"
    ```
 
 2. Verify users table exists:
+
    ```bash
    psql $DATABASE_URL -c "SELECT table_name FROM information_schema.tables WHERE table_name = 'users';"
    ```

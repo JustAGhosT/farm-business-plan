@@ -11,7 +11,7 @@ export const authOptions: NextAuthOptions = {
       name: 'credentials',
       credentials: {
         email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' }
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -20,10 +20,7 @@ export const authOptions: NextAuthOptions = {
 
         try {
           // Query user from database
-          const result = await query(
-            'SELECT * FROM users WHERE email = $1',
-            [credentials.email]
-          )
+          const result = await query('SELECT * FROM users WHERE email = $1', [credentials.email])
 
           const user = result.rows[0]
 
@@ -42,21 +39,21 @@ export const authOptions: NextAuthOptions = {
             id: user.id,
             email: user.email,
             name: user.name,
-            role: user.role
+            role: user.role,
           }
         } catch (error) {
           console.error('Auth error:', error)
           throw new Error('Authentication failed')
         }
-      }
+      },
     }),
     // GitHub OAuth (requires GITHUB_ID and GITHUB_SECRET env vars)
     ...(process.env.GITHUB_ID && process.env.GITHUB_SECRET
       ? [
           GitHubProvider({
             clientId: process.env.GITHUB_ID,
-            clientSecret: process.env.GITHUB_SECRET
-          })
+            clientSecret: process.env.GITHUB_SECRET,
+          }),
         ]
       : []),
     // Google OAuth (requires GOOGLE_ID and GOOGLE_SECRET env vars)
@@ -64,15 +61,15 @@ export const authOptions: NextAuthOptions = {
       ? [
           GoogleProvider({
             clientId: process.env.GOOGLE_ID,
-            clientSecret: process.env.GOOGLE_SECRET
-          })
+            clientSecret: process.env.GOOGLE_SECRET,
+          }),
         ]
-      : [])
+      : []),
   ],
   pages: {
     signIn: '/auth/signin',
     signOut: '/auth/signout',
-    error: '/auth/error'
+    error: '/auth/error',
   },
   callbacks: {
     async jwt({ token, user, account }) {
@@ -84,10 +81,7 @@ export const authOptions: NextAuthOptions = {
       // Handle OAuth sign-in
       if (account?.provider && account.provider !== 'credentials') {
         // Check if user exists or create new user
-        const result = await query(
-          'SELECT * FROM users WHERE email = $1',
-          [token.email]
-        )
+        const result = await query('SELECT * FROM users WHERE email = $1', [token.email])
 
         if (result.rows.length === 0) {
           // Create new user from OAuth
@@ -113,11 +107,11 @@ export const authOptions: NextAuthOptions = {
         session.user.role = token.role as string
       }
       return session
-    }
+    },
   },
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60 // 30 days
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  secret: process.env.NEXTAUTH_SECRET
+  secret: process.env.NEXTAUTH_SECRET,
 }

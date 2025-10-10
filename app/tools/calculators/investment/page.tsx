@@ -25,7 +25,7 @@ export default function InvestmentCalculator() {
   const handleInvestmentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInvestment({
       ...investment,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     })
   }
 
@@ -40,11 +40,13 @@ export default function InvestmentCalculator() {
   }
 
   const totalInvestment = Object.values(investment).reduce(
-    (sum, val) => sum + (parseFloat(val) || 0), 0
+    (sum, val) => sum + (parseFloat(val) || 0),
+    0
   )
 
   const totalFunding = fundingSources.reduce(
-    (sum, source) => sum + (parseFloat(source.amount) || 0), 0
+    (sum, source) => sum + (parseFloat(source.amount) || 0),
+    0
   )
 
   const fundingGap = totalInvestment - totalFunding
@@ -54,19 +56,24 @@ export default function InvestmentCalculator() {
       style: 'currency',
       currency: 'ZAR',
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0
+      maximumFractionDigits: 0,
     }).format(value)
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
       <div className="container mx-auto px-4 py-8 max-w-5xl">
-        <Link 
-          href="/tools/calculators" 
+        <Link
+          href="/tools/calculators"
           className="inline-flex items-center text-primary-600 hover:text-primary-700 mb-6 transition-colors"
         >
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
           </svg>
           Back to Calculators
         </Link>
@@ -84,10 +91,13 @@ export default function InvestmentCalculator() {
             {/* Investment Breakdown */}
             <div>
               <h2 className="text-xl font-semibold mb-4">Investment Breakdown</h2>
-              
+
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="landPrep" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="landPrep"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Land Preparation (ZAR)
                   </label>
                   <input
@@ -103,7 +113,10 @@ export default function InvestmentCalculator() {
                 </div>
 
                 <div>
-                  <label htmlFor="infrastructure" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="infrastructure"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Infrastructure (ZAR)
                   </label>
                   <input
@@ -119,7 +132,10 @@ export default function InvestmentCalculator() {
                 </div>
 
                 <div>
-                  <label htmlFor="equipment" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="equipment"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Equipment & Tools (ZAR)
                   </label>
                   <input
@@ -135,7 +151,10 @@ export default function InvestmentCalculator() {
                 </div>
 
                 <div>
-                  <label htmlFor="initialInputs" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="initialInputs"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Initial Inputs (ZAR)
                   </label>
                   <input
@@ -151,7 +170,10 @@ export default function InvestmentCalculator() {
                 </div>
 
                 <div>
-                  <label htmlFor="workingCapital" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="workingCapital"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Working Capital (ZAR)
                   </label>
                   <input
@@ -163,7 +185,9 @@ export default function InvestmentCalculator() {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="e.g., 40000"
                   />
-                  <p className="text-xs text-gray-500 mt-1">Operating expenses for first 3-6 months</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Operating expenses for first 3-6 months
+                  </p>
                 </div>
 
                 <div className="bg-primary-50 rounded-lg p-4 border-2 border-primary-200">
@@ -178,7 +202,7 @@ export default function InvestmentCalculator() {
             {/* Funding Sources */}
             <div>
               <h2 className="text-xl font-semibold mb-4">Funding Sources</h2>
-              
+
               <div className="space-y-4 mb-4">
                 {fundingSources.map((source, index) => (
                   <div key={index} className="flex gap-2">
@@ -218,13 +242,19 @@ export default function InvestmentCalculator() {
                     {formatCurrency(totalFunding)}
                   </div>
                   <div className="text-xs text-gray-500 mt-2">
-                    {totalInvestment > 0 ? `${((totalFunding / totalInvestment) * 100).toFixed(1)}% of required` : '0% of required'}
+                    {totalInvestment > 0
+                      ? `${((totalFunding / totalInvestment) * 100).toFixed(1)}% of required`
+                      : '0% of required'}
                   </div>
                 </div>
 
-                <div className={`rounded-lg p-4 border-2 ${fundingGap > 0 ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'}`}>
+                <div
+                  className={`rounded-lg p-4 border-2 ${fundingGap > 0 ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'}`}
+                >
                   <div className="text-sm text-gray-600 mb-1">Funding Gap</div>
-                  <div className={`text-2xl font-bold ${fundingGap > 0 ? 'text-red-700' : 'text-green-700'}`}>
+                  <div
+                    className={`text-2xl font-bold ${fundingGap > 0 ? 'text-red-700' : 'text-green-700'}`}
+                  >
                     {formatCurrency(Math.abs(fundingGap))}
                   </div>
                   <div className="text-xs text-gray-500 mt-2">
@@ -235,24 +265,26 @@ export default function InvestmentCalculator() {
                 {totalInvestment > 0 && (
                   <div className="bg-white rounded-lg p-4 border border-gray-200">
                     <h3 className="font-semibold text-gray-900 mb-3">Funding Breakdown</h3>
-                    {fundingSources.filter(s => parseFloat(s.amount) > 0).map((source, index) => {
-                      const amount = parseFloat(source.amount) || 0
-                      const percentage = (amount / totalInvestment) * 100
-                      return (
-                        <div key={index} className="mb-2">
-                          <div className="flex justify-between text-sm mb-1">
-                            <span>{source.name || 'Unnamed Source'}</span>
-                            <span className="font-medium">{percentage.toFixed(1)}%</span>
+                    {fundingSources
+                      .filter((s) => parseFloat(s.amount) > 0)
+                      .map((source, index) => {
+                        const amount = parseFloat(source.amount) || 0
+                        const percentage = (amount / totalInvestment) * 100
+                        return (
+                          <div key={index} className="mb-2">
+                            <div className="flex justify-between text-sm mb-1">
+                              <span>{source.name || 'Unnamed Source'}</span>
+                              <span className="font-medium">{percentage.toFixed(1)}%</span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-2">
+                              <div
+                                className="bg-primary-600 h-2 rounded-full"
+                                style={{ width: `${Math.min(percentage, 100)}%` }}
+                              ></div>
+                            </div>
                           </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-primary-600 h-2 rounded-full" 
-                              style={{ width: `${Math.min(percentage, 100)}%` }}
-                            ></div>
-                          </div>
-                        </div>
-                      )
-                    })}
+                        )
+                      })}
                   </div>
                 )}
               </div>

@@ -81,7 +81,7 @@ export function useFormValidation(rules: ValidationRules) {
     const newErrors: ValidationErrors = {}
     let isValid = true
 
-    Object.keys(rules).forEach(name => {
+    Object.keys(rules).forEach((name) => {
       const error = validateField(name, formData[name] || '')
       if (error) {
         newErrors[name] = error
@@ -94,16 +94,16 @@ export function useFormValidation(rules: ValidationRules) {
   }
 
   const handleBlur = (name: string, value: string) => {
-    setTouched(prev => new Set(prev).add(name))
+    setTouched((prev) => new Set(prev).add(name))
     const error = validateField(name, value)
-    setErrors(prev => ({
+    setErrors((prev) => ({
       ...prev,
-      [name]: error || ''
+      [name]: error || '',
     }))
   }
 
   const clearError = (name: string) => {
-    setErrors(prev => {
+    setErrors((prev) => {
       const newErrors = { ...prev }
       delete newErrors[name]
       return newErrors
@@ -123,7 +123,7 @@ export function useFormValidation(rules: ValidationRules) {
     clearError,
     clearAllErrors,
     hasError: (name: string) => touched.has(name) && !!errors[name],
-    getError: (name: string) => touched.has(name) ? errors[name] : undefined
+    getError: (name: string) => (touched.has(name) ? errors[name] : undefined),
   }
 }
 
@@ -163,11 +163,14 @@ export function FormInput({
   max,
   step,
   disabled = false,
-  className = ''
+  className = '',
 }: FormInputProps) {
   return (
     <div className={className}>
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+      <label
+        htmlFor={name}
+        className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+      >
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </label>
@@ -193,7 +196,12 @@ export function FormInput({
       {error && (
         <p className="mt-1 text-sm text-red-600 dark:text-red-400 flex items-center">
           <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
           {error}
         </p>
@@ -235,11 +243,14 @@ export function FormTextarea({
   helpText,
   rows = 4,
   disabled = false,
-  className = ''
+  className = '',
 }: FormTextareaProps) {
   return (
     <div className={className}>
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+      <label
+        htmlFor={name}
+        className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+      >
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </label>
@@ -262,7 +273,12 @@ export function FormTextarea({
       {error && (
         <p className="mt-1 text-sm text-red-600 dark:text-red-400 flex items-center">
           <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
           {error}
         </p>

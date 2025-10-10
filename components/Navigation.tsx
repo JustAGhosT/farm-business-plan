@@ -6,32 +6,32 @@ import UserProfile from '@/components/UserProfile'
 export default function Navigation() {
   return (
     <nav className="hidden md:flex items-center space-x-6">
-      <Link 
-        href="/" 
+      <Link
+        href="/"
         className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition-colors font-medium"
       >
         Home
       </Link>
-      <Link 
-        href="/docs/diversified-farm-plan" 
+      <Link
+        href="/docs/diversified-farm-plan"
         className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition-colors font-medium"
       >
         Documentation
       </Link>
-      <Link 
-        href="/tools/calculators" 
+      <Link
+        href="/tools/calculators"
         className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition-colors font-medium"
       >
         Calculators
       </Link>
-      <Link 
-        href="/tools/dashboard" 
+      <Link
+        href="/tools/dashboard"
         className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition-colors font-medium"
       >
         Dashboard
       </Link>
-      <a 
-        href="https://github.com/JustAGhosT/farm-business-plan" 
+      <a
+        href="https://github.com/JustAGhosT/farm-business-plan"
         target="_blank"
         rel="noopener noreferrer"
         className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition-colors font-medium"

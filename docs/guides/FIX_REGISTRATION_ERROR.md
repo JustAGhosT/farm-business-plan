@@ -3,6 +3,7 @@
 ## Problem Description
 
 When trying to register a new user, you may encounter:
+
 - **500 Internal Server Error** from `/api/auth/register`
 - **TypeError: Cannot read properties of undefined (reading 'toLowerCase')** in browser console
 
@@ -29,6 +30,7 @@ const keyMatch = shortcut.key.toLowerCase() === event.key.toLowerCase()
 ### 2. Created Authentication Migration ✅
 
 Created `db/migrations/002_add_authentication.sql` with:
+
 - Users table schema
 - Email index for fast lookups
 - owner_id foreign key in farm_plans
@@ -101,6 +103,7 @@ npm run db:test
 ```
 
 Expected output:
+
 ```
 🔍 Testing database connection...
 
@@ -123,6 +126,7 @@ Checking required tables...
 ### 2. Test Registration
 
 1. Start the development server:
+
    ```bash
    npm run dev
    ```
@@ -151,6 +155,7 @@ psql $DATABASE_URL -c "SELECT id, name, email, role, created_at FROM users;"
 **Problem**: The migration wasn't applied.
 
 **Solution**:
+
 ```bash
 psql $DATABASE_URL -f db/migrations/002_add_authentication.sql
 ```
@@ -160,6 +165,7 @@ psql $DATABASE_URL -f db/migrations/002_add_authentication.sql
 **Problem**: DATABASE_URL not set or PostgreSQL not running.
 
 **Solution**:
+
 1. Check `.env.local` has DATABASE_URL
 2. Verify PostgreSQL is running: `pg_isready`
 3. Test connection manually: `psql $DATABASE_URL -c "SELECT 1"`
@@ -170,6 +176,7 @@ psql $DATABASE_URL -f db/migrations/002_add_authentication.sql
 
 **Solution**:
 Add to `.env.local`:
+
 ```env
 NEXTAUTH_SECRET="your-secret-key"  # Generate with: openssl rand -base64 32
 NEXTAUTH_URL="http://localhost:3000"
@@ -180,6 +187,7 @@ NEXTAUTH_URL="http://localhost:3000"
 **Problem**: Old build cached in browser.
 
 **Solution**:
+
 1. Hard refresh browser (Ctrl+Shift+R / Cmd+Shift+R)
 2. Clear browser cache
 3. Restart development server
@@ -207,17 +215,20 @@ NEXTAUTH_URL="http://localhost:3000"
 ## What Changed in This Fix
 
 ### Files Modified:
+
 - ✅ `components/KeyboardShortcuts.tsx` - Added event.key safety checks
 - ✅ `db/schema.sql` - Added users table
 - ✅ `db/README.md` - Updated migration instructions
 
 ### Files Created:
+
 - ✅ `db/migrations/002_add_authentication.sql` - Authentication migration
 - ✅ `SETUP_DATABASE.md` - Quick setup guide
 - ✅ `scripts/test-db-connection.js` - Database test utility
 - ✅ `FIX_REGISTRATION_ERROR.md` - This file
 
 ### Dependencies Added:
+
 - ✅ `dotenv` (dev dependency for test script)
 
 ## Need More Help?

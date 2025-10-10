@@ -14,6 +14,6 @@ export async function GET() {
   return NextResponse.json({
     success: true,
     data: crops,
-    count: crops.length
+    count: crops.length,
   })
 }

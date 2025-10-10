@@ -7,14 +7,14 @@ Quick reference card for all custom hooks in the Farm Business Plan application.
 ## Import Statement
 
 ```typescript
-import { 
+import {
   useFarmPlans,
   useTasks,
   useClimateData,
   useCropPlans,
   useFinancialData,
   useCropTemplates,
-  useAIRecommendations
+  useAIRecommendations,
 } from '@/lib/hooks'
 ```
 
@@ -26,7 +26,8 @@ import {
 
 ```typescript
 // All farm plans
-const { farmPlans, loading, error, refetch, createFarmPlan, updateFarmPlan, deleteFarmPlan } = useFarmPlans()
+const { farmPlans, loading, error, refetch, createFarmPlan, updateFarmPlan, deleteFarmPlan } =
+  useFarmPlans()
 
 // By owner
 const { farmPlans } = useFarmPlans('owner-uuid')
@@ -58,11 +59,11 @@ const { tasks, loading, error, createTask, updateTask, deleteTask } = useTasks()
 const { tasks } = useTasks({ farm_plan_id: 'uuid', status: 'pending', priority: 'high' })
 
 // Create
-await createTask({ 
-  farm_plan_id: 'uuid', 
-  title: 'Plant crops', 
-  status: 'pending', 
-  priority: 'high' 
+await createTask({
+  farm_plan_id: 'uuid',
+  title: 'Plant crops',
+  status: 'pending',
+  priority: 'high',
 })
 
 // Update
@@ -80,7 +81,8 @@ await deleteTask('uuid')
 
 ```typescript
 // All climate data
-const { climateData, loading, error, createClimateData, updateClimateData, deleteClimateData } = useClimateData()
+const { climateData, loading, error, createClimateData, updateClimateData, deleteClimateData } =
+  useClimateData()
 
 // By farm plan
 const { climateData } = useClimateData({ farm_plan_id: 'uuid' })
@@ -94,7 +96,7 @@ await createClimateData({
   avg_temp_summer: 28.5,
   avg_temp_winter: 16.2,
   annual_rainfall: 600,
-  frost_risk: false
+  frost_risk: false,
 })
 ```
 
@@ -119,7 +121,7 @@ await createCropPlan({
   farm_plan_id: 'uuid',
   crop_name: 'Dragon Fruit',
   planting_area: 2.5,
-  status: 'planned'
+  status: 'planned',
 })
 
 // Update
@@ -134,7 +136,14 @@ await updateCropPlan('uuid', { status: 'planted' })
 
 ```typescript
 // All financial data
-const { financialData, loading, error, createFinancialData, updateFinancialData, deleteFinancialData } = useFinancialData()
+const {
+  financialData,
+  loading,
+  error,
+  createFinancialData,
+  updateFinancialData,
+  deleteFinancialData,
+} = useFinancialData()
 
 // By crop plan
 const { financialData } = useFinancialData({ crop_plan_id: 'uuid' })
@@ -151,7 +160,7 @@ await createFinancialData({
   crop_plan_id: 'uuid',
   initial_investment: 50000,
   projected_revenue: 150000,
-  roi_percentage: 200
+  roi_percentage: 200,
 })
 ```
 
@@ -163,7 +172,14 @@ await createFinancialData({
 
 ```typescript
 // All templates
-const { cropTemplates, loading, error, createCropTemplate, updateCropTemplate, deleteCropTemplate } = useCropTemplates()
+const {
+  cropTemplates,
+  loading,
+  error,
+  createCropTemplate,
+  updateCropTemplate,
+  deleteCropTemplate,
+} = useCropTemplates()
 
 // By category
 const { cropTemplates } = useCropTemplates({ category: 'fruit' })
@@ -181,7 +197,7 @@ await createCropTemplate({
   name: 'Dragon Fruit Standard',
   category: 'fruit',
   is_public: true,
-  technical_specs: { spacing: '3m x 3m' }
+  technical_specs: { spacing: '3m x 3m' },
 })
 ```
 
@@ -193,7 +209,14 @@ await createCropTemplate({
 
 ```typescript
 // All recommendations
-const { recommendations, loading, error, createRecommendation, updateRecommendation, deleteRecommendation } = useAIRecommendations()
+const {
+  recommendations,
+  loading,
+  error,
+  createRecommendation,
+  updateRecommendation,
+  deleteRecommendation,
+} = useAIRecommendations()
 
 // By farm plan
 const { recommendations } = useAIRecommendations({ farm_plan_id: 'uuid' })
@@ -210,7 +233,7 @@ await createRecommendation({
   farm_plan_id: 'uuid',
   recommendation_text: 'Consider drip irrigation',
   category: 'irrigation',
-  priority: 5
+  priority: 5,
 })
 ```
 
@@ -255,29 +278,29 @@ const { cropPlans } = useCropPlansByFarm(farmPlanId)
 
 All hooks return an object with:
 
-| Key | Type | Description |
-|-----|------|-------------|
-| `data` | Array/Object | The fetched data |
-| `loading` | boolean | Loading state |
-| `error` | string \| null | Error message if any |
-| `refetch` | function | Manually refetch data |
-| `create*` | function | Create new item |
-| `update*` | function | Update existing item |
-| `delete*` | function | Delete item |
+| Key       | Type           | Description           |
+| --------- | -------------- | --------------------- |
+| `data`    | Array/Object   | The fetched data      |
+| `loading` | boolean        | Loading state         |
+| `error`   | string \| null | Error message if any  |
+| `refetch` | function       | Manually refetch data |
+| `create*` | function       | Create new item       |
+| `update*` | function       | Update existing item  |
+| `delete*` | function       | Delete item           |
 
 ---
 
 ## TypeScript Types
 
 ```typescript
-import { 
+import {
   type FarmPlan,
   type Task,
   type ClimateData,
   type CropPlan,
   type FinancialData,
   type CropTemplate,
-  type AIRecommendation
+  type AIRecommendation,
 } from '@/lib/hooks'
 ```
 

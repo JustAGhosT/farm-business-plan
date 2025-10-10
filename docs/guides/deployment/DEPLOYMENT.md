@@ -13,11 +13,13 @@ The application automatically deploys to Netlify as a **dynamic Next.js applicat
 **Workflow File:** `.github/workflows/netlify-deploy.yml`
 
 **Triggers:**
+
 - Push to `main` branch → Production deployment
 - Push to `develop` branch → Staging deployment
 - Pull requests → Preview deployment with URL comment
 
 **Setup Requirements:**
+
 1. Create a Netlify account and site
 2. **Unlink Continuous Deployment (Optional but Recommended):**
    - By default, Netlify automatically deploys on every push when linked to GitHub
@@ -50,6 +52,7 @@ The application automatically deploys to Netlify as a **dynamic Next.js applicat
 If you're experiencing deployment issues, particularly with private repositories, you may need to configure an SSH deploy key. The `DEPLOY_NETLIFY` secret contains the private key used by GitHub Actions to checkout your repository.
 
 1. **Generate the SSH key pair**:
+
    ```bash
    ssh-keygen -t ed25519 -C "netlify-deploy" -f ~/.ssh/deploy_netlify
    # Press Enter to skip passphrase (required for CI/CD)
@@ -78,12 +81,14 @@ If you're experiencing deployment issues, particularly with private repositories
    ```
 
 **When to Use Deploy Keys:**
+
 - Private repositories that need custom checkout authentication
 - When you want dedicated keys per repository for security
 - When experiencing "Permission denied" or authentication errors during checkout
 - As an alternative to using the default `GITHUB_TOKEN`
 
 **Features:**
+
 - Automatic dependency caching for faster builds
 - Linting validation before deployment
 - Build artifact uploads for debugging
@@ -92,12 +97,14 @@ If you're experiencing deployment issues, particularly with private repositories
 - Deployment status comments on PRs
 
 **Deployment URLs:**
+
 - **Production**: [https://farmplan.netlify.app/](https://farmplan.netlify.app/)
 - **Staging**: Automatically deployed from `develop` branch
 - **Preview**: Unique URLs generated for each pull request
 
 **API Routes:**
 The application includes API routes that are deployed as serverless functions:
+
 - `/api/health` - Health check endpoint
 - `/api/crops` - Crop data API endpoint
 - `/api/db-test` - Database connectivity test endpoint (requires database setup)
@@ -110,6 +117,7 @@ The application supports database deployment with automated migrations using **N
 **Workflow File:** `.github/workflows/database-deploy.yml`
 
 **Triggers:**
+
 - Push to `main` with database file changes
 - Manual workflow dispatch (for controlled deployments)
 
@@ -122,10 +130,11 @@ Netlify DB provides a serverless PostgreSQL database powered by Neon, with autom
 **Setup Steps:**
 
 1. **Enable Netlify DB for your site:**
+
    ```bash
    # Using Netlify CLI (requires Netlify account linked)
    npx netlify db init
-   
+
    # This will:
    # - Create a Neon PostgreSQL database
    # - Set up connection pooling
@@ -135,10 +144,11 @@ Netlify DB provides a serverless PostgreSQL database powered by Neon, with autom
    ```
 
 2. **Install the Netlify Neon package** (already included):
+
    ```bash
    npm install @netlify/neon
    ```
-   
+
    This package is included in dependencies and enables automatic database provisioning during build/deploy.
 
 3. **Environment Variables** (automatically set by Netlify):
@@ -154,6 +164,7 @@ Netlify DB provides a serverless PostgreSQL database powered by Neon, with autom
    ```
 
 **Important Notes:**
+
 - Database is automatically provisioned on first deploy after adding `@netlify/neon`
 - Environment variables are injected automatically in serverless functions
 - Use `DATABASE_URL_POOLER` in production for better performance
@@ -164,6 +175,7 @@ Netlify DB provides a serverless PostgreSQL database powered by Neon, with autom
 You can also use an external PostgreSQL database (e.g., Heroku, AWS RDS, DigitalOcean).
 
 **Setup Requirements:**
+
 1. Set up PostgreSQL database (staging and production)
 2. Add GitHub repository secrets:
    - `DATABASE_URL`: Staging database connection string
@@ -173,6 +185,7 @@ You can also use an external PostgreSQL database (e.g., Heroku, AWS RDS, Digital
    - Add `DATABASE_URL` with your production connection string
 
 **Features:**
+
 - Schema validation before migration
 - Dry-run mode for testing
 - Automatic backups before production deployments
@@ -180,6 +193,7 @@ You can also use an external PostgreSQL database (e.g., Heroku, AWS RDS, Digital
 - Optional seeding for staging environment
 
 **Manual Trigger:**
+
 ```bash
 # Via GitHub UI: Actions → Database Deployment → Run workflow
 # Select environment: staging or production
@@ -261,17 +275,20 @@ NODE_ENV="development"
 
 **Automatic Environment Variables (Netlify DB):**
 When using Netlify DB, these are automatically set:
+
 - `DATABASE_URL`: Direct connection to Neon PostgreSQL
 - `DATABASE_URL_POOLER`: Pooled connection (recommended for serverless functions)
 
 **Manual Environment Variables:**
 Add these in Netlify Dashboard → Site Settings → Environment Variables:
+
 - `DATABASE_URL`: Your database connection string (if not using Netlify DB)
 - `NEXT_PUBLIC_API_URL`: Your production API URL (e.g., `https://farmplan.netlify.app`)
 
 ### For GitHub Actions
 
 Required secrets in repository settings (Settings → Secrets and variables → Actions):
+
 - `NETLIFY_AUTH_TOKEN` - Your Netlify personal access token (primary name used in workflow)
   - Alternative name: `NETLIFY_DEPLOY_TOKEN` (for backward compatibility)
 - `NETLIFY_SITE_ID` - Your Netlify site API ID
@@ -280,6 +297,7 @@ Required secrets in repository settings (Settings → Secrets and variables → 
 - `DATABASE_URL_PRODUCTION` - Database connection string for production (if using external database)
 
 **Important Notes:**
+
 - The workflow checks for `NETLIFY_AUTH_TOKEN` first
 - Both `NETLIFY_AUTH_TOKEN` and `NETLIFY_DEPLOY_TOKEN` are accepted for backward compatibility
 - When using Netlify DB, database environment variables are automatically injected
@@ -290,6 +308,7 @@ Required secrets in repository settings (Settings → Secrets and variables → 
 Before deploying to production:
 
 ### Pre-Deployment
+
 - [ ] All tests pass locally (if tests exist)
 - [ ] Linting passes with no errors (`npm run lint`)
 - [ ] Type checking passes (`npx tsc --noEmit`)
@@ -298,6 +317,7 @@ Before deploying to production:
 - [ ] `.env.example` file is up to date
 
 ### GitHub Configuration
+
 - [ ] Secrets added to GitHub repository (Settings → Secrets and variables → Actions)
   - [ ] `NETLIFY_AUTH_TOKEN` configured
   - [ ] `NETLIFY_SITE_ID` configured
@@ -307,6 +327,7 @@ Before deploying to production:
 - [ ] Deploy key added to repository (Settings → Deploy keys) - if using private repo
 
 ### Netlify Configuration
+
 - [ ] Netlify site created
 - [ ] Netlify CLI installed locally (`npm install -g netlify-cli`)
 - [ ] **Optional**: Continuous deployment unlinked (if using GitHub Actions for deployment control)
@@ -316,6 +337,7 @@ Before deploying to production:
 - [ ] Node version specified in `netlify.toml` or `.nvmrc`
 
 ### Database Setup (if using Netlify DB)
+
 - [ ] Netlify DB initialized (`npx netlify db init`)
 - [ ] `@netlify/neon` package installed (already in dependencies)
 - [ ] Database schema applied (`psql $DATABASE_URL -f db/schema.sql`)
@@ -323,6 +345,7 @@ Before deploying to production:
 - [ ] Database connection tested
 
 ### Post-Deployment Verification
+
 - [ ] Production site is accessible
 - [ ] API routes are working (`/api/health`, `/api/crops`)
 - [ ] Database connectivity verified (if using database)
@@ -369,12 +392,12 @@ Before deploying to production:
 
 ### Quick Fix: Common Issues
 
-| Issue | Quick Solution |
-|-------|---------------|
-| Build fails in GitHub Actions | ✅ Run `npm run build` locally to identify the issue |
-| Deployment fails | ✅ Check Netlify CLI authentication and site ID |
-| API routes return 404 | ✅ Ensure Netlify Next.js Runtime is enabled |
-| Functions timeout | ✅ Check Netlify function logs and increase timeout if needed |
+| Issue                                | Quick Solution                                                   |
+| ------------------------------------ | ---------------------------------------------------------------- |
+| Build fails in GitHub Actions        | ✅ Run `npm run build` locally to identify the issue             |
+| Deployment fails                     | ✅ Check Netlify CLI authentication and site ID                  |
+| API routes return 404                | ✅ Ensure Netlify Next.js Runtime is enabled                     |
+| Functions timeout                    | ✅ Check Netlify function logs and increase timeout if needed    |
 | CSS/JS files return MIME type errors | ✅ Ensure `@netlify/plugin-nextjs` is configured in netlify.toml |
 
 ### Build Failures
@@ -398,23 +421,24 @@ Before deploying to production:
    - `NETLIFY_DEPLOY_TOKEN` - Your Netlify personal access token
    - `NETLIFY_SITE_ID` - Your Netlify site API ID
    - `DEPLOY_NETLIFY` - SSH deploy key (if using private repository)
-   
 2. **Check Deploy Key Configuration** (for private repositories):
+
    ```bash
    # Verify the deploy key is properly configured
    # The public key should be added to: Repository → Settings → Deploy keys
    # The private key should be in: Repository → Settings → Secrets → DEPLOY_NETLIFY
-   
+
    # Test SSH access (locally)
    ssh -T git@github.com -i ~/.ssh/deploy_netlify
    ```
 
 3. **Check Netlify CLI Authentication**:
+
    ```bash
    # Test your token locally
    export NETLIFY_AUTH_TOKEN="your-token-here"
    netlify sites:list
-   
+
    # Test deployment (the CLI will use netlify.toml configuration)
    netlify deploy --message="Test deploy"
    ```
@@ -442,24 +466,26 @@ If you see errors like "Refused to apply style because its MIME type ('text/html
 **Solution**:
 
 1. **Configure netlify.toml correctly**:
+
    ```toml
    [build]
      command = "npm run build"
      # Do NOT set publish directory - let the plugin handle it
-   
+
    [[plugins]]
      package = "@netlify/plugin-nextjs"
    ```
-   
+
    **Important**: When using `@netlify/plugin-nextjs`, do NOT specify a `publish` directory in netlify.toml. The plugin automatically handles the `.next` directory and static asset routing. Setting `publish = "."` or `publish = ".next"` can cause the error: "Your publish directory cannot be the same as the base directory of your site."
 
 2. **Add explicit headers** (already configured in netlify.toml):
+
    ```toml
    [[headers]]
      for = "/_next/static/*"
      [headers.values]
        Cache-Control = "public, max-age=31536000, immutable"
-   
+
    [[headers]]
      for = "/*.css"
      [headers.values]
@@ -467,10 +493,11 @@ If you see errors like "Refused to apply style because its MIME type ('text/html
    ```
 
 3. **Clear Netlify cache and redeploy**:
+
    ```bash
    # Via Netlify CLI
    netlify deploy --prod --build
-   
+
    # Or via Netlify Dashboard
    # Site Settings → Build & deploy → Clear cache and deploy site
    ```
@@ -494,6 +521,7 @@ If API routes are not working after deployment:
    - Check for errors or timeouts in the function logs
 
 3. **Test API Routes Locally**:
+
    ```bash
    npm run dev
    # Test: http://localhost:3000/api/health
@@ -501,6 +529,7 @@ If API routes are not working after deployment:
    ```
 
 4. **Production Testing**:
+
    ```bash
    # Test production API endpoints
    curl https://your-site.netlify.app/api/health
@@ -516,6 +545,7 @@ If API routes are not working after deployment:
 **Problem: Database connection fails in serverless functions**
 
 Solution:
+
 1. Verify `DATABASE_URL` is set in Netlify environment variables
 2. Use `DATABASE_URL_POOLER` for connection pooling in serverless context
 3. Check connection string format:
@@ -526,6 +556,7 @@ Solution:
 **Problem: Netlify DB not provisioning automatically**
 
 Solution:
+
 1. Ensure `@netlify/neon` is in `package.json` dependencies
 2. Run `npx netlify db init` manually to provision the database
 3. Check Netlify Dashboard → Integrations for Neon integration status
@@ -534,6 +565,7 @@ Solution:
 **Problem: Database migrations not running**
 
 Solution:
+
 1. Manually run migrations using the DATABASE_URL from Netlify:
    ```bash
    # Get the DATABASE_URL from Netlify Dashboard → Environment Variables
@@ -551,6 +583,7 @@ Solution:
 **Problem: Connection pool exhausted**
 
 Solution:
+
 1. Use `DATABASE_URL_POOLER` instead of `DATABASE_URL` in API routes
 2. Close database connections properly after each request
 3. Implement connection pooling in your application code
@@ -559,6 +592,7 @@ Solution:
 **Problem: Cannot connect to database from local development**
 
 Solution:
+
 1. Ensure PostgreSQL is running locally
 2. Verify `.env.local` has correct `DATABASE_URL`
 3. Check if local database exists: `psql -l | grep farm_business_plan`
@@ -566,6 +600,7 @@ Solution:
 5. Apply schema: `psql farm_business_plan < db/schema.sql`
 
 **Testing Database Connectivity:**
+
 ```bash
 # Test connection with psql
 psql $DATABASE_URL -c "SELECT version();"
@@ -581,6 +616,7 @@ node -e "const { Pool } = require('pg'); const pool = new Pool({connectionString
 ## Support
 
 For deployment issues:
+
 1. Check workflow logs in GitHub Actions
 2. Review Netlify deployment logs
 3. Consult database README: `db/README.md`

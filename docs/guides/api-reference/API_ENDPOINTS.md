@@ -11,12 +11,14 @@ This document describes the new API endpoints that were added to provide complet
 Manages climate data associated with farm plans.
 
 **Endpoints:**
+
 - `GET /api/climate-data` - List all climate data (filter by farm_plan_id)
 - `POST /api/climate-data` - Create new climate data entry
 - `PATCH /api/climate-data` - Update climate data
 - `DELETE /api/climate-data?id=<uuid>` - Delete climate data
 
 **Example Usage:**
+
 ```bash
 # Get climate data for a specific farm
 curl "http://localhost:3000/api/climate-data?farm_plan_id=<uuid>"
@@ -54,12 +56,14 @@ curl -X DELETE "http://localhost:3000/api/climate-data?id=<uuid>"
 Manages individual crop planning within farm plans.
 
 **Endpoints:**
+
 - `GET /api/crop-plans` - List all crop plans (filter by farm_plan_id or status)
 - `POST /api/crop-plans` - Create new crop plan
 - `PATCH /api/crop-plans` - Update crop plan
 - `DELETE /api/crop-plans?id=<uuid>` - Delete crop plan
 
 **Example Usage:**
+
 ```bash
 # Get all crop plans for a farm
 curl "http://localhost:3000/api/crop-plans?farm_plan_id=<uuid>"
@@ -96,6 +100,7 @@ curl -X DELETE "http://localhost:3000/api/crop-plans?id=<uuid>"
 ```
 
 **Response Includes:**
+
 - All crop plan details
 - Associated farm plan name
 - Count of financial data entries
@@ -108,12 +113,14 @@ curl -X DELETE "http://localhost:3000/api/crop-plans?id=<uuid>"
 Manages financial projections and analysis for crop plans.
 
 **Endpoints:**
+
 - `GET /api/financial-data` - List financial data (filter by crop_plan_id or farm_plan_id)
 - `POST /api/financial-data` - Create financial data entry
 - `PATCH /api/financial-data` - Update financial data
 - `DELETE /api/financial-data?id=<uuid>` - Delete financial data
 
 **Example Usage:**
+
 ```bash
 # Get financial data for a crop plan
 curl "http://localhost:3000/api/financial-data?crop_plan_id=<uuid>"
@@ -150,6 +157,7 @@ curl -X DELETE "http://localhost:3000/api/financial-data?id=<uuid>"
 ```
 
 **Response Includes:**
+
 - All financial metrics
 - Associated crop name and planting area
 - Farm plan name
@@ -161,12 +169,14 @@ curl -X DELETE "http://localhost:3000/api/financial-data?id=<uuid>"
 Manages reusable crop templates with technical specifications and projections.
 
 **Endpoints:**
+
 - `GET /api/crop-templates` - List all templates (filter by category or is_public)
 - `POST /api/crop-templates` - Create new template
 - `PATCH /api/crop-templates` - Update template
 - `DELETE /api/crop-templates?id=<uuid>` - Delete template
 
 **Example Usage:**
+
 ```bash
 # Get all public templates
 curl "http://localhost:3000/api/crop-templates?is_public=true"
@@ -217,6 +227,7 @@ curl -X DELETE "http://localhost:3000/api/crop-templates?id=<uuid>"
 ```
 
 **Features:**
+
 - JSONB fields for flexible data storage
 - Public/private template visibility
 - Category-based organization
@@ -229,12 +240,14 @@ curl -X DELETE "http://localhost:3000/api/crop-templates?id=<uuid>"
 Manages AI-generated recommendations for farm plans.
 
 **Endpoints:**
+
 - `GET /api/ai-recommendations` - List recommendations (filter by farm_plan_id or category)
 - `POST /api/ai-recommendations` - Create new recommendation
 - `PATCH /api/ai-recommendations` - Update recommendation
 - `DELETE /api/ai-recommendations?id=<uuid>` - Delete recommendation
 
 **Example Usage:**
+
 ```bash
 # Get all recommendations for a farm
 curl "http://localhost:3000/api/ai-recommendations?farm_plan_id=<uuid>"
@@ -266,6 +279,7 @@ curl -X DELETE "http://localhost:3000/api/ai-recommendations?id=<uuid>"
 ```
 
 **Features:**
+
 - Priority-based ordering
 - Category classification
 - Linked to farm plans
@@ -278,25 +292,32 @@ curl -X DELETE "http://localhost:3000/api/ai-recommendations?id=<uuid>"
 All endpoints follow a consistent response format:
 
 ### Success Response
+
 ```json
 {
   "success": true,
-  "data": { /* resource data */ },
+  "data": {
+    /* resource data */
+  },
   "message": "Operation completed successfully",
   "count": 1
 }
 ```
 
 ### Error Response
+
 ```json
 {
   "success": false,
   "error": "Error message",
-  "details": [ /* validation errors if applicable */ ]
+  "details": [
+    /* validation errors if applicable */
+  ]
 }
 ```
 
 ### HTTP Status Codes
+
 - `200` - Success (GET, PATCH, DELETE)
 - `201` - Created (POST)
 - `400` - Bad Request (validation errors)
@@ -309,16 +330,16 @@ All endpoints follow a consistent response format:
 
 ### Database Tables → API Endpoints
 
-| Table Name | API Endpoint | Status |
-|------------|--------------|--------|
-| users | `/api/auth` | ✅ Existing |
-| farm_plans | `/api/farm-plans` | ✅ Existing |
-| climate_data | `/api/climate-data` | ✅ **NEW** |
-| crop_plans | `/api/crop-plans` | ✅ **NEW** |
-| financial_data | `/api/financial-data` | ✅ **NEW** |
-| tasks | `/api/tasks` | ✅ Existing |
-| crop_templates | `/api/crop-templates` | ✅ **NEW** |
-| ai_recommendations | `/api/ai-recommendations` | ✅ **NEW** |
+| Table Name         | API Endpoint              | Status      |
+| ------------------ | ------------------------- | ----------- |
+| users              | `/api/auth`               | ✅ Existing |
+| farm_plans         | `/api/farm-plans`         | ✅ Existing |
+| climate_data       | `/api/climate-data`       | ✅ **NEW**  |
+| crop_plans         | `/api/crop-plans`         | ✅ **NEW**  |
+| financial_data     | `/api/financial-data`     | ✅ **NEW**  |
+| tasks              | `/api/tasks`              | ✅ Existing |
+| crop_templates     | `/api/crop-templates`     | ✅ **NEW**  |
+| ai_recommendations | `/api/ai-recommendations` | ✅ **NEW**  |
 | calculator_results | `/api/calculator-results` | ✅ Existing |
 
 **Total**: 9 database tables with complete API coverage
@@ -340,6 +361,7 @@ All new endpoints use Zod validation schemas defined in `lib/validation.ts`:
 ## Testing
 
 ### Manual Testing
+
 ```bash
 # Start development server
 npm run dev
@@ -353,6 +375,7 @@ curl http://localhost:3000/api/ai-recommendations
 ```
 
 ### Database Test Utility
+
 ```bash
 # Verify database setup and table existence
 npm run db:test
@@ -363,6 +386,7 @@ npm run db:test
 ## Implementation Details
 
 ### Features Implemented
+
 ✅ Full CRUD operations (GET, POST, PATCH, DELETE)  
 ✅ Query filtering and search parameters  
 ✅ Input validation with Zod schemas  
@@ -371,15 +395,17 @@ npm run db:test
 ✅ Proper HTTP status codes  
 ✅ TypeScript type safety  
 ✅ Dynamic query building  
-✅ NULL-safe field updates  
+✅ NULL-safe field updates
 
 ### Security Considerations
+
 - Input validation on all POST/PATCH requests
 - Parameterized queries to prevent SQL injection
 - Error messages don't expose sensitive information
 - UUID-based identifiers for all resources
 
 ### Performance
+
 - Indexed foreign keys for fast lookups
 - Efficient JOIN queries
 - Pagination-ready (can add limit/offset)
@@ -390,6 +416,7 @@ npm run db:test
 ## Next Steps
 
 ### Recommended Enhancements
+
 1. **Authentication** - Add user authentication checks to protect endpoints
 2. **Pagination** - Add limit/offset parameters for large datasets
 3. **Sorting** - Add sort parameters (e.g., `?sort=created_at&order=desc`)
@@ -421,6 +448,7 @@ psql $DATABASE_URL -f db/schema.sql
 **Added 5 new API endpoints** with complete CRUD operations, covering all previously missing database tables. All endpoints follow consistent patterns, include proper validation, error handling, and are production-ready.
 
 **Files Changed:**
+
 - `app/api/climate-data/route.ts` (new)
 - `app/api/crop-plans/route.ts` (new)
 - `app/api/financial-data/route.ts` (new)

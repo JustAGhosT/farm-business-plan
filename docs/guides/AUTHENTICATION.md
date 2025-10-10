@@ -3,6 +3,7 @@
 ## Overview
 
 The Farm Business Plan application uses NextAuth.js for authentication, supporting:
+
 - Email/password authentication with bcrypt
 - OAuth providers (GitHub, Google)
 - JWT-based sessions
@@ -31,7 +32,7 @@ CREATE TABLE users (
 CREATE INDEX idx_users_email ON users(email);
 
 -- Update farm_plans to reference users
-ALTER TABLE farm_plans 
+ALTER TABLE farm_plans
 ADD COLUMN IF NOT EXISTS owner_id UUID REFERENCES users(id) ON DELETE CASCADE;
 
 -- Create index on owner_id for faster lookups
@@ -98,8 +99,8 @@ const response = await fetch('/api/auth/register', {
   body: JSON.stringify({
     name: 'John Doe',
     email: 'john@example.com',
-    password: 'securepassword123'
-  })
+    password: 'securepassword123',
+  }),
 })
 ```
 
@@ -112,7 +113,7 @@ import { signIn } from 'next-auth/react'
 await signIn('credentials', {
   email: 'john@example.com',
   password: 'securepassword123',
-  callbackUrl: '/tools/dashboard'
+  callbackUrl: '/tools/dashboard',
 })
 
 // OAuth
@@ -153,10 +154,7 @@ export async function GET(request: Request) {
   const session = await getServerSession(authOptions)
 
   if (!session) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    )
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   // Continue with authenticated request
@@ -203,10 +201,7 @@ Check role in API routes:
 const session = await getServerSession(authOptions)
 
 if (session?.user?.role !== 'admin') {
-  return NextResponse.json(
-    { error: 'Forbidden' },
-    { status: 403 }
-  )
+  return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 }
 ```
 
@@ -273,15 +268,19 @@ DATABASE_URL="postgresql://..."
 ## Troubleshooting
 
 ### "NEXTAUTH_SECRET is not set"
+
 Add `NEXTAUTH_SECRET` to your `.env.local` file
 
 ### "Database connection failed"
+
 Check `DATABASE_URL` is correct and database is running
 
 ### "OAuth callback error"
+
 Verify callback URLs in OAuth provider settings match your configuration
 
 ### "Session undefined"
+
 Ensure `SessionProvider` is wrapping your components and session callback is configured correctly
 
 ## Next Steps

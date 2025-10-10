@@ -3,6 +3,7 @@
 ## 🚀 Quick Start
 
 ### Running Tests
+
 ```bash
 npm test                    # Run all tests
 npm run test:watch          # Watch mode
@@ -12,6 +13,7 @@ npm run test:coverage       # Coverage report
 ### API Endpoints
 
 #### Calculator Results API
+
 ```bash
 # Get all calculator results
 GET /api/calculator-results
@@ -36,6 +38,7 @@ DELETE /api/calculator-results?id=<uuid>
 ```
 
 ### Calculator Types Supported
+
 1. `roi` - Return on Investment
 2. `break-even` - Break-Even Analysis
 3. `investment` - Investment Calculator
@@ -46,12 +49,14 @@ DELETE /api/calculator-results?id=<uuid>
 8. `profit-margin` - Profit Margin
 
 ## 📊 Test Status
+
 - **Total Tests**: 52
 - **Test Suites**: 4
 - **Status**: ✅ All Passing
 - **Coverage**: >90% for validation
 
 ## 📚 Documentation
+
 - **PHASE3_GUIDE.md** - Complete implementation guide
 - **TESTING_GUIDE.md** - Testing documentation
 - **README.md** - Updated with Phase 3 features
@@ -59,11 +64,13 @@ DELETE /api/calculator-results?id=<uuid>
 ## 🗄️ Database
 
 ### Migration
+
 ```bash
 psql -d your_database -f db/migrations/003_add_calculator_results.sql
 ```
 
 ### Table Schema
+
 ```sql
 calculator_results (
     id UUID PRIMARY KEY,
@@ -81,34 +88,38 @@ calculator_results (
 ## 🔍 Testing Examples
 
 ### Validation Test
+
 ```typescript
 import { CalculatorResultSchema, validateData } from '@/lib/validation'
 
 const result = validateData(CalculatorResultSchema, {
   calculator_type: 'roi',
   input_data: { initialInvestment: 100000 },
-  results: { roi: 50 }
+  results: { roi: 50 },
 })
 
 expect(result.success).toBe(true)
 ```
 
 ### Using Test Helpers
+
 ```typescript
 import { createTestCalculatorResult } from '../utils/test-helpers'
 
 const calcResult = createTestCalculatorResult({
-  calculator_type: 'break-even'
+  calculator_type: 'break-even',
 })
 ```
 
 ## 📈 Next Steps
+
 1. Add "Save" button to calculator UI
 2. Create calculator history view
 3. Build comparison feature
 4. Implement financial reports with charts
 
 ## 🛠️ Build & Deploy
+
 ```bash
 npm run build              # Build for production
 npm run lint               # Check code quality
@@ -116,6 +127,7 @@ npm test                   # Run all tests
 ```
 
 ## ✅ Checklist for Completion
+
 - [x] Calculator results database table
 - [x] API endpoints (GET, POST, DELETE)
 - [x] Validation schemas
@@ -128,6 +140,7 @@ npm test                   # Run all tests
 - [x] Production-ready
 
 ## 💡 Tips
+
 - Use `npm run test:watch` during development
 - Check `TESTING_GUIDE.md` for detailed test writing guidelines
 - All calculator results are stored in JSONB for flexibility

@@ -39,8 +39,8 @@ export default function OnlineUsers({ farmPlanId, refreshInterval = 10000 }: Onl
             farm_plan_id: farmPlanId,
             current_section: window.location.pathname,
             action: 'viewing',
-            session_id: sessionId
-          })
+            session_id: sessionId,
+          }),
         })
       } catch (err) {
         console.error('Failed to send heartbeat:', err)
@@ -79,10 +79,10 @@ export default function OnlineUsers({ farmPlanId, refreshInterval = 10000 }: Onl
     return () => {
       clearInterval(heartbeatInterval)
       clearInterval(fetchInterval)
-      
+
       // Remove user from online status
       fetch(`/api/online-users?session_id=${sessionId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
       }).catch(console.error)
     }
   }, [session, farmPlanId, sessionId, refreshInterval])
@@ -132,11 +132,9 @@ export default function OnlineUsers({ farmPlanId, refreshInterval = 10000 }: Onl
           </span>
         )}
       </h3>
-      
+
       {users.length === 0 ? (
-        <p className="text-xs text-gray-500 dark:text-gray-400">
-          No other users online
-        </p>
+        <p className="text-xs text-gray-500 dark:text-gray-400">No other users online</p>
       ) : (
         <div className="space-y-2">
           {users.map((user) => (
@@ -145,7 +143,8 @@ export default function OnlineUsers({ farmPlanId, refreshInterval = 10000 }: Onl
               className="flex items-start gap-2 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center text-primary-600 dark:text-primary-400 font-medium text-sm">
-                {user.user_name?.charAt(0)?.toUpperCase() || user.user_email?.charAt(0)?.toUpperCase()}
+                {user.user_name?.charAt(0)?.toUpperCase() ||
+                  user.user_email?.charAt(0)?.toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1">

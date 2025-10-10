@@ -19,7 +19,7 @@ export async function GET(request: Request) {
     let queryText = `SELECT w.*, u.name as creator_name FROM approval_workflows w JOIN users u ON w.created_by = u.id WHERE 1=1`
     const params: any[] = []
     let paramIndex = 1
-    
+
     if (targetType) {
       queryText += ` AND w.target_type = $${paramIndex++}`
       params.push(targetType)
@@ -28,14 +28,17 @@ export async function GET(request: Request) {
       queryText += ` AND w.target_id = $${paramIndex++}`
       params.push(targetId)
     }
-    
+
     queryText += ` ORDER BY w.created_at DESC`
     const result = await query(queryText, params)
 
     return NextResponse.json({ success: true, data: result.rows })
   } catch (error) {
     console.error('Error fetching workflows:', error)
-    return NextResponse.json({ success: false, error: 'Failed to fetch workflows' }, { status: 500 })
+    return NextResponse.json(
+      { success: false, error: 'Failed to fetch workflows' },
+      { status: 500 }
+    )
   }
 }
 
@@ -50,7 +53,10 @@ export async function POST(request: Request) {
     const { name, type = 'sequential', target_type, target_id, stages } = body
 
     if (!name || !target_type || !target_id || !stages?.length) {
-      return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 })
+      return NextResponse.json(
+        { success: false, error: 'Missing required fields' },
+        { status: 400 }
+      )
     }
 
     const workflowResult = await query(
@@ -69,11 +75,11 @@ export async function POST(request: Request) {
         [workflow.id, i + 1, stage.name, stage.required_approvals || 1]
       )
 
-      for (const approver of (stage.approvers || [])) {
-        await query(
-          `INSERT INTO approval_stage_approvers (stage_id, user_id) VALUES ($1, $2)`,
-          [stageResult.rows[0].id, approver.user_id]
-        )
+      for (const approver of stage.approvers || []) {
+        await query(`INSERT INTO approval_stage_approvers (stage_id, user_id) VALUES ($1, $2)`, [
+          stageResult.rows[0].id,
+          approver.user_id,
+        ])
         await query(
           `INSERT INTO approvals (stage_id, user_id, user_name, status)
            VALUES ($1, $2, $3, $4)`,
@@ -85,6 +91,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, data: workflow }, { status: 201 })
   } catch (error) {
     console.error('Error creating workflow:', error)
-    return NextResponse.json({ success: false, error: 'Failed to create workflow' }, { status: 500 })
+    return NextResponse.json(
+      { success: false, error: 'Failed to create workflow' },
+      { status: 500 }
+    )
   }
 }

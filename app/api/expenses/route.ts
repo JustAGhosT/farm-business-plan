@@ -23,34 +23,34 @@ export async function GET(request: Request) {
       LEFT JOIN crop_plans cp ON e.crop_plan_id = cp.id
       WHERE 1=1
     `
-    
+
     const params: any[] = []
     let paramIndex = 1
-    
+
     if (farmPlanId) {
       queryText += ` AND e.farm_plan_id = $${paramIndex}`
       params.push(farmPlanId)
       paramIndex++
     }
-    
+
     if (category) {
       queryText += ` AND e.category = $${paramIndex}`
       params.push(category)
       paramIndex++
     }
-    
+
     if (startDate) {
       queryText += ` AND e.expense_date >= $${paramIndex}`
       params.push(startDate)
       paramIndex++
     }
-    
+
     if (endDate) {
       queryText += ` AND e.expense_date <= $${paramIndex}`
       params.push(endDate)
       paramIndex++
     }
-    
+
     queryText += ' ORDER BY e.expense_date DESC, e.created_at DESC'
 
     const result = await query(queryText, params)
@@ -62,14 +62,11 @@ export async function GET(request: Request) {
       success: true,
       data: result.rows,
       count: result.rows.length,
-      summary
+      summary,
     })
   } catch (error) {
     console.error('Error fetching expenses:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch expenses' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Failed to fetch expenses' }, { status: 500 })
   }
 }
 
@@ -89,7 +86,7 @@ export async function POST(request: Request) {
       expense_date,
       payment_method,
       vendor,
-      receipt_url
+      receipt_url,
     } = body
 
     if (!farm_plan_id || !category || !amount || !expense_date) {
@@ -117,22 +114,22 @@ export async function POST(request: Request) {
       expense_date,
       payment_method || null,
       vendor || null,
-      receipt_url || null
+      receipt_url || null,
     ]
 
     const result = await query(queryText, params)
 
-    return NextResponse.json({
-      success: true,
-      data: result.rows[0],
-      message: 'Expense created successfully'
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        success: true,
+        data: result.rows[0],
+        message: 'Expense created successfully',
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Error creating expense:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to create expense' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Failed to create expense' }, { status: 500 })
   }
 }
 
@@ -146,10 +143,7 @@ export async function PATCH(request: Request) {
     const { id, ...updates } = body
 
     if (!id) {
-      return NextResponse.json(
-        { success: false, error: 'Expense ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: 'Expense ID is required' }, { status: 400 })
     }
 
     const fields: string[] = []
@@ -157,11 +151,17 @@ export async function PATCH(request: Request) {
     let paramIndex = 1
 
     const allowedFields = [
-      'category', 'description', 'amount', 'expense_date',
-      'payment_method', 'vendor', 'receipt_url', 'crop_plan_id'
+      'category',
+      'description',
+      'amount',
+      'expense_date',
+      'payment_method',
+      'vendor',
+      'receipt_url',
+      'crop_plan_id',
     ]
 
-    allowedFields.forEach(field => {
+    allowedFields.forEach((field) => {
       if (updates[field] !== undefined) {
         fields.push(`${field} = $${paramIndex}`)
         values.push(updates[field])
@@ -170,10 +170,7 @@ export async function PATCH(request: Request) {
     })
 
     if (fields.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'No fields to update' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: 'No fields to update' }, { status: 400 })
     }
 
     values.push(id)
@@ -187,23 +184,17 @@ export async function PATCH(request: Request) {
     const result = await query(queryText, values)
 
     if (result.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Expense not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'Expense not found' }, { status: 404 })
     }
 
     return NextResponse.json({
       success: true,
       data: result.rows[0],
-      message: 'Expense updated successfully'
+      message: 'Expense updated successfully',
     })
   } catch (error) {
     console.error('Error updating expense:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to update expense' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Failed to update expense' }, { status: 500 })
   }
 }
 
@@ -217,35 +208,22 @@ export async function DELETE(request: Request) {
     const id = searchParams.get('id')
 
     if (!id) {
-      return NextResponse.json(
-        { success: false, error: 'Expense ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: 'Expense ID is required' }, { status: 400 })
     }
 
-    const result = await query(
-      'DELETE FROM expenses WHERE id = $1 RETURNING id',
-      [id]
-    )
-
+    const result = await query('DELETE FROM expenses WHERE id = $1 RETURNING id', [id])
 
     if (result.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Expense not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'Expense not found' }, { status: 404 })
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Expense deleted successfully'
+      message: 'Expense deleted successfully',
     })
   } catch (error) {
     console.error('Error deleting expense:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to delete expense' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Failed to delete expense' }, { status: 500 })
   }
 }
 
@@ -254,10 +232,10 @@ function calculateExpenseSummary(expenses: any[]) {
     total: 0,
     byCategory: {} as Record<string, number>,
     byMonth: {} as Record<string, number>,
-    count: expenses.length
+    count: expenses.length,
   }
 
-  expenses.forEach(expense => {
+  expenses.forEach((expense) => {
     const amount = parseFloat(expense.amount) || 0
     summary.total += amount
 
@@ -279,9 +257,11 @@ function calculateExpenseSummary(expenses: any[]) {
 
   // Calculate category percentages
   summary.categoryPercentages = {}
-  Object.keys(summary.byCategory).forEach(category => {
-    summary.categoryPercentages[category] = 
-      ((summary.byCategory[category] / summary.total) * 100).toFixed(2)
+  Object.keys(summary.byCategory).forEach((category) => {
+    summary.categoryPercentages[category] = (
+      (summary.byCategory[category] / summary.total) *
+      100
+    ).toFixed(2)
   })
 
   return summary

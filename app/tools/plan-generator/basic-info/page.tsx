@@ -22,40 +22,40 @@ export default function BasicInfoForm() {
       required: true,
       minLength: 2,
       maxLength: 100,
-      message: 'Farm name must be between 2 and 100 characters'
+      message: 'Farm name must be between 2 and 100 characters',
     },
     ownerName: {
       required: true,
       minLength: 2,
       maxLength: 100,
-      message: 'Owner name must be between 2 and 100 characters'
+      message: 'Owner name must be between 2 and 100 characters',
     },
     location: {
       required: true,
       minLength: 3,
-      message: 'Please provide a valid location'
+      message: 'Please provide a valid location',
     },
     farmSize: {
       required: true,
       min: 0.01,
       max: 100000,
-      message: 'Farm size must be greater than 0'
+      message: 'Farm size must be greater than 0',
     },
     contactEmail: {
       pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-      message: 'Please enter a valid email address'
+      message: 'Please enter a valid email address',
     },
     contactPhone: {
       pattern: /^[\d\s\+\-\(\)]+$/,
-      message: 'Please enter a valid phone number'
-    }
+      message: 'Please enter a valid phone number',
+    },
   }
 
   const { errors, validateForm, handleBlur, getError } = useFormValidation(validationRules)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     // Validate form
     if (!validateForm(formData)) {
       return
@@ -70,19 +70,24 @@ export default function BasicInfoForm() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     })
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
       <div className="container mx-auto px-4 py-8 max-w-3xl">
-        <Link 
-          href="/tools/plan-generator" 
+        <Link
+          href="/tools/plan-generator"
           className="inline-flex items-center text-primary-600 hover:text-primary-700 mb-6 transition-colors"
         >
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
           </svg>
           Back to Plan Generator
         </Link>
@@ -197,7 +202,7 @@ export default function BasicInfoForm() {
 
         <div className="mt-8 bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
           <p className="text-sm text-blue-800">
-            <strong>💡 Tip:</strong> This information will be used throughout your business plan. 
+            <strong>💡 Tip:</strong> This information will be used throughout your business plan.
             You can always come back and edit it later.
           </p>
         </div>

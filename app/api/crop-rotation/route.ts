@@ -21,16 +21,10 @@ export async function POST(request: Request) {
     }
 
     // Get farm plan details
-    const farmPlanResult = await query(
-      'SELECT * FROM farm_plans WHERE id = $1',
-      [farm_plan_id]
-    )
+    const farmPlanResult = await query('SELECT * FROM farm_plans WHERE id = $1', [farm_plan_id])
 
     if (farmPlanResult.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Farm plan not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'Farm plan not found' }, { status: 404 })
     }
 
     const farmPlan = farmPlanResult.rows[0]
@@ -41,25 +35,20 @@ export async function POST(request: Request) {
       [farm_plan_id]
     )
 
-    const rotationPlan = generateRotationPlan(
-      farmPlan,
-      existingCropsResult.rows,
-      hectares,
-      years
-    )
+    const rotationPlan = generateRotationPlan(farmPlan, existingCropsResult.rows, hectares, years)
 
     return NextResponse.json({
       success: true,
       data: rotationPlan,
-      message: `Generated ${years}-year crop rotation plan`
+      message: `Generated ${years}-year crop rotation plan`,
     })
   } catch (error) {
     console.error('Error generating crop rotation:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Failed to generate crop rotation plan',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     )
@@ -92,7 +81,7 @@ function generateRotationPlan(
   for (let year = 0; year < years; year++) {
     const cropIndex = year % sequence.length
     const crop = sequence[cropIndex]
-    
+
     plan.push({
       year: currentYear + year,
       season: year % 2 === 0 ? 'Spring/Summer' : 'Fall/Winter',
@@ -104,7 +93,7 @@ function generateRotationPlan(
       estimatedRevenue: calculateRevenue(crop.name, hectares),
       plantingMonth: crop.plantingMonth,
       harvestMonth: crop.harvestMonth,
-      notes: crop.notes
+      notes: crop.notes,
     })
   }
 
@@ -117,9 +106,9 @@ function generateRotationPlan(
       nutrientManagement: 'Alternate between nitrogen-fixing and heavy-feeding crops',
       pestControl: 'Rotate crop families to disrupt pest and disease cycles',
       soilHealth: 'Include cover crops and green manure in rotation',
-      marketDiversity: 'Balance high-value cash crops with stable staple crops'
+      marketDiversity: 'Balance high-value cash crops with stable staple crops',
     },
-    recommendations: generateRotationRecommendations(plan)
+    recommendations: generateRotationRecommendations(plan),
   }
 }
 
@@ -133,7 +122,7 @@ function getCropRotationSequences() {
         marketDemand: 'medium',
         plantingMonth: 'September',
         harvestMonth: 'December',
-        notes: 'Fixes nitrogen, improves soil structure'
+        notes: 'Fixes nitrogen, improves soil structure',
       },
       {
         name: 'Leafy Vegetables (e.g., Spinach, Lettuce)',
@@ -142,7 +131,7 @@ function getCropRotationSequences() {
         marketDemand: 'high',
         plantingMonth: 'March',
         harvestMonth: 'May',
-        notes: 'Benefits from nitrogen left by legumes'
+        notes: 'Benefits from nitrogen left by legumes',
       },
       {
         name: 'Root Crops (e.g., Carrots, Beetroot)',
@@ -151,7 +140,7 @@ function getCropRotationSequences() {
         marketDemand: 'medium',
         plantingMonth: 'August',
         harvestMonth: 'November',
-        notes: 'Different root zone from previous crops'
+        notes: 'Different root zone from previous crops',
       },
       {
         name: 'Fruiting Crops (e.g., Tomatoes, Peppers)',
@@ -160,8 +149,8 @@ function getCropRotationSequences() {
         marketDemand: 'high',
         plantingMonth: 'October',
         harvestMonth: 'February',
-        notes: 'Heavy feeders, add compost before planting'
-      }
+        notes: 'Heavy feeders, add compost before planting',
+      },
     ],
     'dragon-fruit': [
       {
@@ -171,10 +160,10 @@ function getCropRotationSequences() {
         marketDemand: 'high',
         plantingMonth: 'Year-round',
         harvestMonth: 'Year 2+',
-        notes: '3-5 year productive cycle'
-      }
+        notes: '3-5 year productive cycle',
+      },
     ],
-    'moringa': [
+    moringa: [
       {
         name: 'Moringa',
         benefits: 'Fast-growing, multiple harvests',
@@ -182,9 +171,9 @@ function getCropRotationSequences() {
         marketDemand: 'medium',
         plantingMonth: 'Spring',
         harvestMonth: 'Multiple',
-        notes: 'Can be intercropped'
-      }
-    ]
+        notes: 'Can be intercropped',
+      },
+    ],
   }
 }
 
@@ -195,7 +184,7 @@ function calculateRevenue(cropName: string, hectares: number): number {
     'Root Crops (e.g., Carrots, Beetroot)': 80000,
     'Fruiting Crops (e.g., Tomatoes, Peppers)': 150000,
     'Dragon Fruit': 200000,
-    'Moringa': 85000
+    Moringa: 85000,
   }
 
   return (revenuePerHectare[cropName] || 60000) * hectares
@@ -204,16 +193,20 @@ function calculateRevenue(cropName: string, hectares: number): number {
 function generateRotationRecommendations(plan: any[]): string[] {
   const recommendations = []
 
-  recommendations.push('Always include a nitrogen-fixing crop every 2-3 years to maintain soil fertility')
+  recommendations.push(
+    'Always include a nitrogen-fixing crop every 2-3 years to maintain soil fertility'
+  )
   recommendations.push('Add organic compost between crop cycles to improve soil structure')
   recommendations.push('Consider cover crops during fallow periods to prevent erosion')
   recommendations.push('Test soil pH and nutrients before each planting season')
   recommendations.push('Keep detailed records of crop performance for future planning')
 
   // Check for diversity
-  const uniqueCrops = new Set(plan.map(p => p.crop)).size
+  const uniqueCrops = new Set(plan.map((p) => p.crop)).size
   if (uniqueCrops < 3) {
-    recommendations.push('Consider increasing crop diversity for better soil health and risk management')
+    recommendations.push(
+      'Consider increasing crop diversity for better soil health and risk management'
+    )
   }
 
   return recommendations

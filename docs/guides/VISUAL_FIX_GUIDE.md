@@ -3,6 +3,7 @@
 ## 🔴 Before (Broken State)
 
 ### User Experience
+
 ```
 User fills registration form → Clicks "Create Account"
     ↓
@@ -14,6 +15,7 @@ User fills registration form → Clicks "Create Account"
 ### Technical Issues
 
 **Issue 1: Missing Database Table**
+
 ```javascript
 // Registration API tries to insert into users table
 const result = await query(
@@ -26,10 +28,11 @@ const result = await query(
 ```
 
 **Issue 2: KeyboardShortcuts TypeError**
+
 ```typescript
 // Old code - no null check
 const handleKeyDown = (event: KeyboardEvent) => {
-  shortcuts.forEach(shortcut => {
+  shortcuts.forEach((shortcut) => {
     const keyMatch = shortcut.key.toLowerCase() === event.key.toLowerCase()
     // ❌ CRASH: event.key can be undefined!
   })
@@ -41,6 +44,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
 ## 🟢 After (Fixed State)
 
 ### User Experience
+
 ```
 User fills registration form → Clicks "Create Account"
     ↓
@@ -53,6 +57,7 @@ User fills registration form → Clicks "Create Account"
 ### Technical Fixes
 
 **Fix 1: Users Table Created**
+
 ```sql
 -- Migration: 002_add_authentication.sql
 CREATE TABLE IF NOT EXISTS users (
@@ -68,13 +73,14 @@ CREATE TABLE IF NOT EXISTS users (
 ```
 
 **Fix 2: KeyboardShortcuts SafeGuarded**
+
 ```typescript
 // New code - with null check
 const handleKeyDown = (event: KeyboardEvent) => {
   // ✅ Guard against undefined event.key
   if (!event.key) return
-  
-  shortcuts.forEach(shortcut => {
+
+  shortcuts.forEach((shortcut) => {
     const keyMatch = shortcut.key.toLowerCase() === event.key.toLowerCase()
     // ✅ Safe! No more crashes
   })
@@ -85,14 +91,14 @@ const handleKeyDown = (event: KeyboardEvent) => {
 
 ## 📊 Side-by-Side Comparison
 
-| Aspect | Before 🔴 | After 🟢 |
-|--------|----------|---------|
-| **Registration** | ❌ 500 Error | ✅ Success |
-| **Users Table** | ❌ Missing | ✅ Exists |
-| **KeyboardShortcuts** | ❌ Crashes on undefined key | ✅ Safely handles undefined |
-| **Console Errors** | ❌ TypeError visible | ✅ No errors |
-| **Database Schema** | ❌ Incomplete | ✅ Complete |
-| **Documentation** | ⚠️ Mentioned but not implemented | ✅ Fully implemented |
+| Aspect                | Before 🔴                        | After 🟢                    |
+| --------------------- | -------------------------------- | --------------------------- |
+| **Registration**      | ❌ 500 Error                     | ✅ Success                  |
+| **Users Table**       | ❌ Missing                       | ✅ Exists                   |
+| **KeyboardShortcuts** | ❌ Crashes on undefined key      | ✅ Safely handles undefined |
+| **Console Errors**    | ❌ TypeError visible             | ✅ No errors                |
+| **Database Schema**   | ❌ Incomplete                    | ✅ Complete                 |
+| **Documentation**     | ⚠️ Mentioned but not implemented | ✅ Fully implemented        |
 
 ---
 
@@ -101,12 +107,14 @@ const handleKeyDown = (event: KeyboardEvent) => {
 ### Files Modified
 
 1. **components/KeyboardShortcuts.tsx**
+
    ```diff
    + // Guard against undefined event.key
    + if (!event.key) return
    ```
 
 2. **db/schema.sql**
+
    ```diff
    + -- ============================================
    + -- USERS TABLE
@@ -144,10 +152,13 @@ const handleKeyDown = (event: KeyboardEvent) => {
 ## 🧪 Verification Steps
 
 ### Step 1: Check Database
+
 ```bash
 npm run db:test
 ```
+
 **Expected Output:**
+
 ```
 ✅ Database connected successfully!
 ✅ users
@@ -160,16 +171,20 @@ npm run db:test
 ```
 
 ### Step 2: Test Registration
+
 1. Start dev server: `npm run dev`
 2. Navigate to: http://localhost:3000/auth/register
 3. Fill form and submit
 4. Should redirect to sign-in page
 
 ### Step 3: Verify User Created
+
 ```bash
 psql $DATABASE_URL -c "SELECT id, name, email, role FROM users;"
 ```
+
 **Expected Output:**
+
 ```
                   id                  |    name    |       email        | role
 --------------------------------------+------------+-------------------+------
@@ -194,9 +209,10 @@ psql $DATABASE_URL -c "SELECT id, name, email, role FROM users;"
 **Root Cause**: Missing users table + unsafe event.key handling  
 **Solution**: Created migration + added null checks  
 **Result**: ✅ Registration works perfectly  
-**Status**: 🟢 Fixed and tested  
+**Status**: 🟢 Fixed and tested
 
-**Time to Fix for Users**: ~1 minute  
+**Time to Fix for Users**: ~1 minute
+
 ```bash
 psql $DATABASE_URL -f db/migrations/002_add_authentication.sql
 npm run db:test
