@@ -13,12 +13,7 @@ interface GridProps {
   className?: string
 }
 
-export function Grid({
-  children,
-  cols = { md: 2, lg: 3 },
-  gap = 6,
-  className = '',
-}: GridProps) {
+export function Grid({ children, cols = { md: 2, lg: 3 }, gap = 6, className = '' }: GridProps) {
   const colClasses = []
 
   if (cols.default) colClasses.push(`grid-cols-${cols.default}`)
@@ -27,7 +22,5 @@ export function Grid({
   if (cols.lg) colClasses.push(`lg:grid-cols-${cols.lg}`)
   if (cols.xl) colClasses.push(`xl:grid-cols-${cols.xl}`)
 
-  return (
-    <div className={`grid ${colClasses.join(' ')} gap-${gap} ${className}`}>{children}</div>
-  )
+  return <div className={`grid ${colClasses.join(' ')} gap-${gap} ${className}`}>{children}</div>
 }

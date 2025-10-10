@@ -820,9 +820,7 @@ export default function PortfolioPlanner() {
                       current.results.paybackPeriod < prev.results.paybackPeriod ? current : prev
                     )
                     const bestProfit = portfoliosWithResults.reduce((prev, current) =>
-                      current.results.totalNetProfit > prev.results.totalNetProfit
-                        ? current
-                        : prev
+                      current.results.totalNetProfit > prev.results.totalNetProfit ? current : prev
                     )
 
                     return (

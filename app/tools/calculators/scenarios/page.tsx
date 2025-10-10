@@ -148,10 +148,7 @@ export default function ScenarioComparison() {
     {
       metric: 'Profit Margin',
       ...scenariosWithResults.reduce((acc, s) => {
-        acc[s.name] = Math.min(
-          ((s.annualRevenue - s.annualCosts) / s.annualRevenue) * 100,
-          100
-        )
+        acc[s.name] = Math.min(((s.annualRevenue - s.annualCosts) / s.annualRevenue) * 100, 100)
         return acc
       }, {} as any),
     },

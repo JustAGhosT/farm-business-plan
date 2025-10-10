@@ -344,9 +344,7 @@ export default function Home() {
 
             <Card href="/docs/technical-implementation" variant="bordered">
               <CardTitle>🔧 Technical Implementation</CardTitle>
-              <CardDescription>
-                Technical specifications and implementation details
-              </CardDescription>
+              <CardDescription>Technical specifications and implementation details</CardDescription>
             </Card>
 
             <Card href="/docs/financial-analysis" variant="bordered">
