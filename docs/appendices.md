@@ -154,9 +154,9 @@ Storage Facilities:
 ```markdown
 # Daily Operations Checklist
 
-Date: ******\_\_******
-Weather: ****\_\_\_**** Temperature: **\_** Rainfall: **\_**
-Inspector: ****\_\_**** Start Time: **\_** End Time: **\_**
+Date: **\*\***\_\_**\*\***
+Weather: \***\*\_\_\_\*\*** Temperature: **\_** Rainfall: **\_**
+Inspector: \***\*\_\_\*\*** Start Time: **\_** End Time: **\_**
 
 ## Morning Inspection
 
@@ -164,7 +164,7 @@ Inspector: ****\_\_**** Start Time: **\_** End Time: **\_**
 
 - [ ] Water pressure: **\_** [bar/PSI] (Target: **\_**)
 - [ ] Flow rate check: **\_** [L/h] (Target: **\_**)
-- [ ] Visual leak inspection: [Pass/Fail] Notes: ****\_\_****
+- [ ] Visual leak inspection: [Pass/Fail] Notes: \***\*\_\_\*\***
 - [ ] Filter pressure: **\_** (Cleaning needed: Yes/No)
 - [ ] Automation system status: [OK/Issue]
 
@@ -174,8 +174,8 @@ Inspector: ****\_\_**** Start Time: **\_** End Time: **\_**
 - [ ] [Crop 1] Section B: [Condition notes]
 - [ ] [Crop 2] Section C: [Condition notes]
 - [ ] Pest pressure: [None/Low/Medium/High] Action: **\_**
-- [ ] Disease signs: [None/Suspected] Details: ****\_\_****
-- [ ] Water stress signs: [Yes/No] Action: ****\_\_****
+- [ ] Disease signs: [None/Suspected] Details: \***\*\_\_\*\***
+- [ ] Water stress signs: [Yes/No] Action: \***\*\_\_\*\***
 
 ### Infrastructure
 
@@ -213,9 +213,9 @@ Inspector: ****\_\_**** Start Time: **\_** End Time: **\_**
 
 ## Issues Identified
 
-1. ****************\_\_\_**************** Priority: [High/Med/Low]
-2. ****************\_\_\_**************** Priority: [High/Med/Low]
-3. ****************\_\_\_**************** Priority: [High/Med/Low]
+1. **\*\***\*\*\*\***\*\***\_\_\_**\*\***\*\*\*\***\*\*** Priority: [High/Med/Low]
+2. **\*\***\*\*\*\***\*\***\_\_\_**\*\***\*\*\*\***\*\*** Priority: [High/Med/Low]
+3. **\*\***\*\*\*\***\*\***\_\_\_**\*\***\*\*\*\***\*\*** Priority: [High/Med/Low]
 
 ## Actions Taken
 
@@ -229,7 +229,7 @@ Inspector: ****\_\_**** Start Time: **\_** End Time: **\_**
 
 ---
 
-Signature: ********\_\_\_******** Time: ****\_\_****
+Signature: **\*\*\*\***\_\_\_**\*\*\*\*** Time: \***\*\_\_\*\***
 ```
 
 ### B. Weekly Maintenance Checklist Template
@@ -237,7 +237,7 @@ Signature: ********\_\_\_******** Time: ****\_\_****
 ```markdown
 # Weekly Maintenance Checklist
 
-Week of: ****\_\_\_\_**** Completed by: ******\_\_\_\_******
+Week of: \***\*\_\_\_\_\*\*** Completed by: **\*\***\_\_\_\_**\*\***
 
 ## Irrigation System
 
@@ -288,9 +288,9 @@ Week of: ****\_\_\_\_**** Completed by: ******\_\_\_\_******
 ```markdown
 # Harvest Log
 
-Date: ****\_\_\_\_**** Harvester(s): ********\_\_\_\_********
-Crop: ****\_\_\_\_**** Block/Section: ********\_\_********
-Weather: ****\_\_**** Start Time: **\_** End Time: **\_**
+Date: \***\*\_\_\_\_\*\*** Harvester(s): **\*\*\*\***\_\_\_\_**\*\*\*\***
+Crop: \***\*\_\_\_\_\*\*** Block/Section: **\*\*\*\***\_\_**\*\*\*\***
+Weather: \***\*\_\_\*\*** Start Time: **\_** End Time: **\_**
 
 ## Harvest Details
 
@@ -324,7 +324,7 @@ Weather: ****\_\_**** Start Time: **\_** End Time: **\_**
 
 ---
 
-Supervisor Approval: ********\_\_\_******** Date: ****\_\_****
+Supervisor Approval: **\*\*\*\***\_\_\_**\*\*\*\*** Date: \***\*\_\_\*\***
 ```
 
 ---
@@ -473,7 +473,7 @@ Secondary: [Alternative location]
 ```markdown
 # Safety Training Record
 
-Employee: ******\_\_\_\_****** Date of Hire: ****\_\_****
+Employee: **\*\***\_\_\_\_**\*\*** Date of Hire: \***\*\_\_\*\***
 
 | Date | Training Topic          | Trainer | Duration | Employee Signature | Trainer Signature |
 | ---- | ----------------------- | ------- | -------- | ------------------ | ----------------- |
@@ -502,39 +502,39 @@ Employee: ******\_\_\_\_****** Date of Hire: ****\_\_****
 ```markdown
 # Monthly Financial Summary
 
-Month: ****\_\_\_\_**** Year: **\_\_**
+Month: \***\*\_\_\_\_\*\*** Year: **\_\_**
 
 ## Income
 
-| Date             | Product/Service | Quantity | Price | Total       | Customer | Payment Method |
-| ---------------- | --------------- | -------- | ----- | ----------- | -------- | -------------- |
-|                  |                 |          |       |             |          |                |
-|                  |                 |          |       |             |          |                |
-| **TOTAL INCOME** |                 |          |       | **$**\_**** |          |                |
+| Date             | Product/Service | Quantity | Price | Total           | Customer | Payment Method |
+| ---------------- | --------------- | -------- | ----- | --------------- | -------- | -------------- |
+|                  |                 |          |       |                 |          |                |
+|                  |                 |          |       |                 |          |                |
+| **TOTAL INCOME** |                 |          |       | **$**\_\*\*\*\* |          |                |
 
 ## Expenses
 
 ### Operating Costs
 
-| Date         | Category                         | Description | Amount      | Payment Method | Receipt # |
-| ------------ | -------------------------------- | ----------- | ----------- | -------------- | --------- |
-|              | Labor                            |             |             |                |           |
-|              | Inputs (fertilizer, seeds, etc.) |             |             |                |           |
-|              | Utilities (water, electric)      |             |             |                |           |
-|              | Fuel                             |             |             |                |           |
-|              | Packaging                        |             |             |                |           |
-|              | Marketing                        |             |             |                |           |
-|              | Transportation                   |             |             |                |           |
-|              | Maintenance                      |             |             |                |           |
-|              | Other                            |             |             |                |           |
-| **SUBTOTAL** |                                  |             | **$**\_**** |                |           |
+| Date         | Category                         | Description | Amount          | Payment Method | Receipt # |
+| ------------ | -------------------------------- | ----------- | --------------- | -------------- | --------- |
+|              | Labor                            |             |                 |                |           |
+|              | Inputs (fertilizer, seeds, etc.) |             |                 |                |           |
+|              | Utilities (water, electric)      |             |                 |                |           |
+|              | Fuel                             |             |                 |                |           |
+|              | Packaging                        |             |                 |                |           |
+|              | Marketing                        |             |                 |                |           |
+|              | Transportation                   |             |                 |                |           |
+|              | Maintenance                      |             |                 |                |           |
+|              | Other                            |             |                 |                |           |
+| **SUBTOTAL** |                                  |             | **$**\_\*\*\*\* |                |           |
 
 ### Capital Expenses
 
-| Date         | Item | Description | Amount      | Payment Method | Receipt # |
-| ------------ | ---- | ----------- | ----------- | -------------- | --------- |
-|              |      |             |             |                |           |
-| **SUBTOTAL** |      |             | **$**\_**** |                |           |
+| Date         | Item | Description | Amount          | Payment Method | Receipt # |
+| ------------ | ---- | ----------- | --------------- | -------------- | --------- |
+|              |      |             |                 |                |           |
+| **SUBTOTAL** |      |             | **$**\_\*\*\*\* |                |           |
 
 ## Summary
 
@@ -550,7 +550,7 @@ Month: ****\_\_\_\_**** Year: **\_\_**
 ```markdown
 # Inventory Log
 
-Date: ****\_\_\_\_**** Updated by: ******\_\_\_\_******
+Date: \***\*\_\_\_\_\*\*** Updated by: **\*\***\_\_\_\_**\*\***
 
 ## Inputs and Supplies
 
@@ -584,7 +584,7 @@ Date: ****\_\_\_\_**** Updated by: ******\_\_\_\_******
 ```markdown
 # Crop Production Calendar
 
-Crop: ******\_\_\_\_****** Variety: ******\_\_\_\_******
+Crop: **\*\***\_\_\_\_**\*\*** Variety: **\*\***\_\_\_\_**\*\***
 
 ## Annual Production Cycle
 
@@ -605,11 +605,11 @@ Crop: ******\_\_\_\_****** Variety: ******\_\_\_\_******
 
 ## Critical Dates
 
-- Planting date(s): ****\_****
-- First harvest: ****\_****
-- Peak harvest: ****\_****
-- Last harvest: ****\_****
-- Replanting (if applicable): ****\_****
+- Planting date(s): \***\*\_\*\***
+- First harvest: \***\*\_\*\***
+- Peak harvest: \***\*\_\*\***
+- Last harvest: \***\*\_\*\***
+- Replanting (if applicable): \***\*\_\*\***
 ```
 
 ### B. Local Climate Data Template
@@ -617,7 +617,7 @@ Crop: ******\_\_\_\_****** Variety: ******\_\_\_\_******
 ```markdown
 # Local Climate Reference
 
-Location: ********\_\_******** Elevation: ****\_\_****
+Location: **\*\*\*\***\_\_**\*\*\*\*** Elevation: \***\*\_\_\*\***
 
 ## Monthly Averages
 
@@ -638,8 +638,8 @@ Location: ********\_\_******** Elevation: ****\_\_****
 
 ## Frost Dates
 
-- Average last spring frost: ****\_****
-- Average first fall frost: ****\_****
+- Average last spring frost: \***\*\_\*\***
+- Average first fall frost: \***\*\_\*\***
 - Growing season length: **\_** days
 
 ## Extreme Events

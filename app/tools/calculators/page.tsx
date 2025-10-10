@@ -59,9 +59,17 @@ export default function CalculatorsPage() {
 
   const features = [
     {
+      title: 'Financial Dashboard',
+      description: 'Comprehensive overview of all your financial metrics and trends',
+      icon: '📊',
+      href: '/tools/calculators/dashboard',
+      color:
+        'border-primary-300 dark:border-primary-700 hover:border-primary-500 dark:hover:border-primary-600',
+    },
+    {
       title: 'Calculator History',
       description: 'View and compare all your saved calculations with interactive charts',
-      icon: '📊',
+      icon: '📋',
       href: '/tools/calculators/history',
       color:
         'border-teal-300 dark:border-teal-700 hover:border-teal-500 dark:hover:border-teal-600',
