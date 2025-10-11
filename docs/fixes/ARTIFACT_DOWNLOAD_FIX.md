@@ -34,15 +34,18 @@ The `deploy` job in `.github/workflows/ci-cd.yml` was attempting to:
 This approach had several critical issues:
 
 ### Issue 1: Artifact Expiration
+
 - Artifacts expire after 7 days (configured retention period)
 - Any deployment attempt after expiration would fail
 
 ### Issue 2: Build Environment Mismatch
+
 - Pre-built artifacts contain build-time environment variables and file paths
 - These may not be valid in the deployment environment
 - Environment variables like `DATABASE_URL`, `NEXTAUTH_SECRET`, etc., need to be set at build time
 
 ### Issue 3: Netlify Best Practices Violation
+
 - Netlify's `@netlify/plugin-nextjs` expects to handle the Next.js build process
 - The plugin needs to integrate with the build to enable:
   - Serverless functions for API routes
@@ -58,6 +61,7 @@ This approach had several critical issues:
 **Job**: `deploy` (Job 7)
 
 #### Before (Lines 364-368):
+
 ```yaml
 - name: Download build artifacts
   uses: actions/download-artifact@v4
@@ -67,6 +71,7 @@ This approach had several critical issues:
 ```
 
 #### After (Lines 364-370):
+
 ```yaml
 - name: Build application for deployment
   run: npm run build
@@ -112,12 +117,14 @@ Push to main branch
 ```
 
 ### Build Job (Job 6)
+
 - **Purpose**: Verify build succeeds for all branches
 - **Action**: Uploads `.next/` artifacts for debugging
 - **Retention**: 7 days
 - **Runs on**: All branches and PRs
 
 ### Deploy Job (Job 7)
+
 - **Purpose**: Deploy to production
 - **Action**: Fresh build with production environment variables
 - **Deploys to**: Netlify using CLI
@@ -126,6 +133,7 @@ Push to main branch
 ## Testing & Validation
 
 ### Pre-Deployment Validation
+
 ```bash
 # Linting
 npm run lint
@@ -145,7 +153,9 @@ python3 -c "import yaml; yaml.safe_load(open('.github/workflows/ci-cd.yml'))"
 ```
 
 ### Production Build Test
+
 Successfully built with the following configuration:
+
 - **Node Version**: 20
 - **Environment**: production
 - **Output Directory**: `.next/`
@@ -155,6 +165,7 @@ Successfully built with the following configuration:
 ## Comparison with Other Workflows
 
 ### netlify-deploy.yml Pattern
+
 The `netlify-deploy.yml` workflow already uses this pattern:
 
 ```yaml
@@ -176,11 +187,13 @@ Our fix aligns the `ci-cd.yml` workflow with this established pattern.
 ## Migration Notes
 
 ### For Developers
+
 - No code changes required
 - Workflow will automatically use the new pattern
 - Build artifacts are still available for debugging via the `build` job
 
 ### For DevOps
+
 - Ensure the following GitHub secrets are configured:
   - `NETLIFY_AUTH_TOKEN`: Netlify authentication token
   - `NETLIFY_SITE_ID`: Netlify site ID
@@ -189,6 +202,7 @@ Our fix aligns the `ci-cd.yml` workflow with this established pattern.
   - `NEXTAUTH_URL`: Production URL for NextAuth.js
 
 ### For QA
+
 - Deployment behavior remains unchanged
 - Fresh builds ensure latest code and environment variables
 - Build artifacts available for 7 days in GitHub Actions
@@ -204,6 +218,7 @@ Our fix aligns the `ci-cd.yml` workflow with this established pattern.
 ### If Deployment Fails
 
 1. **Check GitHub Secrets**: Ensure all required secrets are configured
+
    ```bash
    # Required secrets:
    - NETLIFY_AUTH_TOKEN
@@ -214,12 +229,14 @@ Our fix aligns the `ci-cd.yml` workflow with this established pattern.
    ```
 
 2. **Verify Build Succeeds Locally**:
+
    ```bash
    npm ci
    npm run build
    ```
 
 3. **Check Netlify CLI**:
+
    ```bash
    npm install -g netlify-cli
    netlify deploy --prod
@@ -238,12 +255,14 @@ Build artifacts are still uploaded in the `build` job and can be downloaded:
 ## Future Improvements
 
 ### Potential Enhancements
+
 - [ ] Add build cache to speed up deployments
 - [ ] Implement parallel deployment for staging/production
 - [ ] Add automated rollback on health check failure
 - [ ] Integrate with monitoring tools (Sentry, DataDog, etc.)
 
 ### Performance Optimization
+
 - Current deployment time: ~2-3 minutes
 - Target deployment time: ~1-2 minutes
 - Optimization opportunities:
