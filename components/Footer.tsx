@@ -170,20 +170,20 @@ export default function Footer() {
               Built With
             </h3>
             <div className="flex flex-wrap justify-center gap-3">
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-black text-white">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-black dark:bg-gray-700 text-white">
                 Next.js 14+
               </span>
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-600 text-white">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-600 dark:bg-blue-700 text-white">
                 TypeScript 5+
               </span>
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-cyan-500 text-white">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-cyan-500 dark:bg-cyan-600 text-white">
                 Tailwind CSS 3+
               </span>
               <a
                 href="https://www.netlify.com/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-teal-500 text-white hover:bg-teal-600 transition-colors cursor-pointer"
+                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-teal-500 dark:bg-teal-600 text-white hover:bg-teal-600 dark:hover:bg-teal-700 transition-colors cursor-pointer"
                 aria-label="Deployed on Netlify"
               >
                 Netlify
