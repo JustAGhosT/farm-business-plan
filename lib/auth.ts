@@ -1,9 +1,12 @@
+import { query } from '@/lib/db'
+import bcrypt from 'bcryptjs'
 import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GitHubProvider from 'next-auth/providers/github'
 import GoogleProvider from 'next-auth/providers/google'
-import { query } from '@/lib/db'
-import bcrypt from 'bcryptjs'
+
+// Helper function to check if running in build mode
+const isBuildTime = process.env.NEXT_PHASE === 'phase-production-build'
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -48,7 +51,8 @@ export const authOptions: NextAuthOptions = {
       },
     }),
     // GitHub OAuth (requires GITHUB_ID and GITHUB_SECRET env vars)
-    ...(process.env.GITHUB_ID && process.env.GITHUB_SECRET
+    // Skip during build to avoid URL construction errors with empty env vars
+    ...(!isBuildTime && process.env.GITHUB_ID && process.env.GITHUB_SECRET
       ? [
           GitHubProvider({
             clientId: process.env.GITHUB_ID,
@@ -57,7 +61,9 @@ export const authOptions: NextAuthOptions = {
         ]
       : []),
     // Google OAuth (requires GOOGLE_ID and GOOGLE_SECRET env vars)
-    ...(process.env.NEXT_PUBLIC_GOOGLE_ENABLED === 'true' &&
+    // Skip during build to avoid URL construction errors with empty env vars
+    ...(!isBuildTime &&
+    process.env.NEXT_PUBLIC_GOOGLE_ENABLED === 'true' &&
     process.env.GOOGLE_ID &&
     process.env.GOOGLE_SECRET
       ? [
@@ -135,6 +141,6 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || 'fallback-secret-for-build-only-do-not-use-in-production',
   debug: process.env.NODE_ENV === 'development', // Enable debug mode in development
 }
