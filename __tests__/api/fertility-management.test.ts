@@ -24,7 +24,7 @@ const mockQuery = query as jest.MockedFunction<typeof query>
 describe('/api/fertility-management', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    
+
     // Setup default mock data for database queries
     mockQuery.mockImplementation(async (sql: string) => {
       // Mock crop_fertility_data query
@@ -246,7 +246,7 @@ describe('/api/fertility-management', () => {
           fields: [],
         }
       }
-      
+
       // Mock nitrogen_programs query
       if (sql.includes('nitrogen_programs')) {
         return {
@@ -269,7 +269,7 @@ describe('/api/fertility-management', () => {
           fields: [],
         }
       }
-      
+
       // Mock potassium_sources query
       if (sql.includes('potassium_sources')) {
         return {
@@ -289,7 +289,7 @@ describe('/api/fertility-management', () => {
           fields: [],
         }
       }
-      
+
       // Mock cover_crops query
       if (sql.includes('cover_crops')) {
         return {
@@ -317,7 +317,7 @@ describe('/api/fertility-management', () => {
           fields: [],
         }
       }
-      
+
       // Mock crop_monitoring_protocols query
       if (sql.includes('crop_monitoring_protocols')) {
         return {
@@ -328,7 +328,7 @@ describe('/api/fertility-management', () => {
           fields: [],
         }
       }
-      
+
       // Default empty result
       return {
         rows: [],
