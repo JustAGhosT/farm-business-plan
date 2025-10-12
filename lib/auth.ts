@@ -83,7 +83,7 @@ export const authOptions: NextAuthOptions = {
       if (account?.provider && account.provider !== 'credentials') {
         try {
           console.log('OAuth sign-in:', account.provider, token.email)
-          
+
           // Check if user exists or create new user
           const result = await query('SELECT * FROM users WHERE email = $1', [token.email])
 
