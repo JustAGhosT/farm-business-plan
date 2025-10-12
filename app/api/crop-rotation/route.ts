@@ -123,6 +123,7 @@ function getCropRotationSequences() {
         plantingMonth: 'September',
         harvestMonth: 'December',
         notes: 'Fixes nitrogen, improves soil structure',
+        fertilityNotes: 'Base P/K on soil tests, provides 30-45 lb N/ac credit to next crop',
       },
       {
         name: 'Leafy Vegetables (e.g., Spinach, Lettuce)',
@@ -132,6 +133,7 @@ function getCropRotationSequences() {
         plantingMonth: 'March',
         harvestMonth: 'May',
         notes: 'Benefits from nitrogen left by legumes',
+        fertilityNotes: 'Credit N from previous legumes, focus on P/K sufficiency',
       },
       {
         name: 'Root Crops (e.g., Carrots, Beetroot)',
@@ -141,6 +143,7 @@ function getCropRotationSequences() {
         plantingMonth: 'August',
         harvestMonth: 'November',
         notes: 'Different root zone from previous crops',
+        fertilityNotes: 'Maintain pH 6.2-7.0, apply 2-3 lb B/ac for beets',
       },
       {
         name: 'Fruiting Crops (e.g., Tomatoes, Peppers)',
@@ -150,6 +153,7 @@ function getCropRotationSequences() {
         plantingMonth: 'October',
         harvestMonth: 'February',
         notes: 'Heavy feeders, add compost before planting',
+        fertilityNotes: 'Band P/K for efficiency, split N applications',
       },
     ],
     'dragon-fruit': [
@@ -161,6 +165,7 @@ function getCropRotationSequences() {
         plantingMonth: 'Year-round',
         harvestMonth: 'Year 2+',
         notes: '3-5 year productive cycle',
+        fertilityNotes: 'Soil test-based P/K, annual monitoring of pH and nutrients',
       },
     ],
     moringa: [
@@ -172,6 +177,59 @@ function getCropRotationSequences() {
         plantingMonth: 'Spring',
         harvestMonth: 'Multiple',
         notes: 'Can be intercropped',
+        fertilityNotes: 'Light feeder, benefits from organic matter, test soil annually',
+      },
+    ],
+    precision: [
+      {
+        name: 'Soybean',
+        benefits: 'Nitrogen fixation, disease break',
+        soilImprovement: 'high',
+        marketDemand: 'high',
+        plantingMonth: 'October-December',
+        harvestMonth: 'March-May',
+        notes: 'Provides 30-45 lb N/ac credit to next crop',
+        fertilityNotes: 'Focus on P/K for nodulation, 3-year break from sunflower for white mold',
+      },
+      {
+        name: 'Potato',
+        benefits: 'High value cash crop',
+        soilImprovement: 'medium',
+        marketDemand: 'high',
+        plantingMonth: 'August-September',
+        harvestMonth: 'December-January',
+        notes: 'Split N, monitor petiole nitrate during bulking',
+        fertilityNotes: 'Use K₂SO₄ (SOP), add 15-30 lb S/ac, avoid heavy preplant KCl',
+      },
+      {
+        name: 'Grain Sorghum',
+        benefits: 'Drought tolerant, uses residual N efficiently',
+        soilImprovement: 'medium',
+        marketDemand: 'medium',
+        plantingMonth: 'October-November',
+        harvestMonth: 'February-March',
+        notes: 'Sample nitrate to 24" to set rates',
+        fertilityNotes: 'Credit residual N, check 0-6" K on sands, residue returns K',
+      },
+      {
+        name: 'Beetroot',
+        benefits: 'Different nutrient profile, market diversity',
+        soilImprovement: 'medium',
+        marketDemand: 'medium',
+        plantingMonth: 'March-April',
+        harvestMonth: 'June-July',
+        notes: 'Counter N immobilization from sorghum with 20-40 lb N/ac early',
+        fertilityNotes: 'Apply 2-3 lb B/ac preplant, maintain pH 6.2-7.0, monitor for B deficiency',
+      },
+      {
+        name: 'Sunflower',
+        benefits: 'Deep rooted, breaks disease cycle',
+        soilImprovement: 'medium',
+        marketDemand: 'high',
+        plantingMonth: 'October-November',
+        harvestMonth: 'February-March',
+        notes: 'Band P/K 2x2, keep salt away from seed',
+        fertilityNotes: 'Credit nitrate to 24", residue returns K, test for B/Zn before applying',
       },
     ],
   }
@@ -194,11 +252,20 @@ function generateRotationRecommendations(plan: any[]): string[] {
   const recommendations = []
 
   recommendations.push(
+    'Base P/K rates on soil tests using sufficiency strategy (apply only when tests indicate yield response)'
+  )
+  recommendations.push(
+    'Replace fixed annual P/K with soil-test + removal-based plans to avoid waste'
+  )
+  recommendations.push(
     'Always include a nitrogen-fixing crop every 2-3 years to maintain soil fertility'
   )
   recommendations.push('Add organic compost between crop cycles to improve soil structure')
-  recommendations.push('Consider cover crops during fallow periods to prevent erosion')
-  recommendations.push('Test soil pH and nutrients before each planting season')
+  recommendations.push('Consider cover crops during fallow periods to prevent erosion and catch N')
+  recommendations.push('Test soil annually: 0-6" for pH, P, K, Zn, OM, CEC; 0-24" for nitrate-N')
+  recommendations.push(
+    'Use zone/grid sampling for variable-rate application to optimize input efficiency'
+  )
   recommendations.push('Keep detailed records of crop performance for future planning')
 
   // Check for diversity
@@ -207,6 +274,35 @@ function generateRotationRecommendations(plan: any[]): string[] {
     recommendations.push(
       'Consider increasing crop diversity for better soil health and risk management'
     )
+  }
+
+  // Check for specific crop sequences that need special attention
+  const cropNames = plan.map((p) => p.crop.toLowerCase())
+  const hasSoybean = cropNames.some((c) => c.includes('soybean'))
+  const hasSunflower = cropNames.some((c) => c.includes('sunflower'))
+  const hasPotato = cropNames.some((c) => c.includes('potato'))
+  const hasBeetroot = cropNames.some((c) => c.includes('beet'))
+
+  if (hasSoybean && hasSunflower) {
+    recommendations.push(
+      'WARNING: Maintain 3-year break between sunflower and soybean to manage white mold risk'
+    )
+    recommendations.push('Insert sorghum/cereal buffer between sunflower and soybean if possible')
+  }
+
+  if (hasPotato) {
+    recommendations.push(
+      'For potatoes: Use K₂SO₄ (SOP) instead of KCl to maintain quality (specific gravity, fry color)'
+    )
+    recommendations.push(
+      'Monitor potato petiole nitrate weekly during bulking (target 13,000-15,000 ppm)'
+    )
+    recommendations.push('Add 15-30 lb S/ac as sulfate, especially on sandy/irrigated soils')
+  }
+
+  if (hasBeetroot) {
+    recommendations.push('For beetroot: Apply 2-3 lb B/ac preplant, maintain soil pH at 6.2-7.0')
+    recommendations.push('Monitor beets for boron deficiency symptoms (heart rot, black spot)')
   }
 
   return recommendations

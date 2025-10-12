@@ -73,11 +73,16 @@ function SignInForm() {
 
   const handleOAuthSignIn = async (provider: string) => {
     setLoading(true)
+    setError(null)
     try {
+      // OAuth providers redirect the entire page, so we don't need error handling here
+      // The redirect will happen automatically
       await signIn(provider, {
         callbackUrl: searchParams.get('callbackUrl') || '/tools/dashboard',
+        redirect: true,
       })
     } catch (err) {
+      console.error('OAuth sign-in error:', err)
       setError('OAuth sign-in failed. Please try again.')
       setLoading(false)
     }

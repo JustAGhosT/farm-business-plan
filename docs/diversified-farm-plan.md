@@ -231,6 +231,32 @@ This section provides a framework for analyzing and documenting each crop in you
 - **Organic matter maintenance**: [Mulching, cover crops, compost]
 - **Soil health practices**: [Crop rotation, green manures, etc.]
 
+**Advanced Fertility Management (Precision Approach):**
+
+- **Soil Testing Strategy**:
+  - Annual testing: 0-6" depth (pH, P, K, Zn, OM, CEC)
+  - Nitrate profile: 0-24" depth for N and S
+  - Use zone/grid sampling for variable-rate application
+- **P/K Sufficiency Strategy**:
+  - Base rates on soil test results (not blanket annuals)
+  - Apply only when tests indicate yield response
+  - Band P/K where placement efficiency is higher (salt-safe)
+- **Nutrient Removal Rates**: [Calculate based on yield targets]
+  - Use crop-specific removal rates (see Fertility Management Guide)
+  - Account for residue cycling (especially K from sunflower/sorghum)
+- **Nitrogen Management**:
+  - Credit previous crop N (e.g., 30-45 lb N/ac from legumes)
+  - Sample profile nitrate (0-24") to set rates
+  - Split applications for high-demand crops
+- **Micronutrients**:
+  - Boron: [Rate if needed - e.g., 2-3 lb B/ac for beets]
+  - Sulfur: [15-30 lb S/ac for potatoes on sandy soils]
+  - Zinc: [Based on soil test results]
+- **Special Considerations**:
+  - Potassium source: [K₂SO₄ (SOP) for quality crops like potatoes]
+  - pH management: [Target range based on crop - e.g., 6.2-7.0 for beets]
+  - In-season monitoring: [Tissue testing schedule if applicable]
+
 **Ongoing Care:**
 
 - **Pruning/training**: [Requirements and timing]
