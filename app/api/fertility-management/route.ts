@@ -48,6 +48,128 @@ const NUTRIENT_REMOVAL_RATES = {
     description: 'Sunflower grain removal rates per cwt',
     notes: 'Returns K via residue cycling - account for residue return',
   },
+  // Additional crops
+  'dragon-fruit': {
+    // Per ton of fruit
+    p2o5_lb: 2.0,
+    k2o_lb: 8.0,
+    calcium_lb: 1.5,
+    unit: 'ton',
+    description: 'Dragon fruit removal rates per ton',
+    notes: 'Perennial crop, maintain soil pH 6.0-7.0, benefits from organic matter',
+  },
+  moringa: {
+    // Per ton of leaf harvest
+    p2o5_lb: 1.8,
+    k2o_lb: 6.5,
+    nitrogen_lb: 5.0,
+    unit: 'ton',
+    description: 'Moringa leaf removal rates per ton',
+    notes: 'Multiple harvests per year, light feeder, benefits from organic amendments',
+  },
+  lucerne: {
+    // Per ton of hay
+    p2o5_lb: 0.55,
+    k2o_lb: 2.0,
+    sulfur_lb: 0.25,
+    unit: 'ton',
+    description: 'Lucerne (alfalfa) hay removal rates per ton',
+    notes: 'Nitrogen-fixing legume, focus on P/K and sulfur, maintain pH 6.5-7.5',
+  },
+  tomato: {
+    // Per ton of fruit
+    p2o5_lb: 2.2,
+    k2o_lb: 10.0,
+    calcium_lb: 1.2,
+    unit: 'ton',
+    description: 'Tomato fruit removal rates per ton',
+    notes: 'Heavy feeder, requires consistent Ca for blossom end rot prevention',
+  },
+  pepper: {
+    // Per ton of fruit
+    p2o5_lb: 2.0,
+    k2o_lb: 8.5,
+    calcium_lb: 1.0,
+    unit: 'ton',
+    description: 'Pepper (bell/chili) fruit removal rates per ton',
+    notes: 'Moderate feeder, sensitive to salt, avoid excess N for better fruit set',
+  },
+  cucumber: {
+    // Per ton of fruit
+    p2o5_lb: 1.5,
+    k2o_lb: 6.0,
+    unit: 'ton',
+    description: 'Cucumber fruit removal rates per ton',
+    notes: 'Fast-growing, requires frequent light fertilization, sensitive to salt',
+  },
+  lettuce: {
+    // Per ton of heads
+    p2o5_lb: 1.0,
+    k2o_lb: 4.5,
+    nitrogen_lb: 4.0,
+    unit: 'ton',
+    description: 'Lettuce head removal rates per ton',
+    notes: 'Quick crop, nitrogen-responsive, prefers cooler temperatures',
+  },
+  spinach: {
+    // Per ton of leaves
+    p2o5_lb: 1.2,
+    k2o_lb: 5.0,
+    nitrogen_lb: 5.5,
+    unit: 'ton',
+    description: 'Spinach leaf removal rates per ton',
+    notes: 'Heavy nitrogen feeder, maintain adequate Fe and Mg, prefers pH 6.0-7.0',
+  },
+  carrot: {
+    // Per ton of roots
+    p2o5_lb: 1.8,
+    k2o_lb: 7.0,
+    unit: 'ton',
+    description: 'Carrot root removal rates per ton',
+    notes: 'Moderate feeder, avoid fresh manure, requires loose soil for straight roots',
+  },
+  onion: {
+    // Per ton of bulbs
+    p2o5_lb: 1.5,
+    k2o_lb: 5.5,
+    sulfur_lb: 1.2,
+    unit: 'ton',
+    description: 'Onion bulb removal rates per ton',
+    notes: 'Moderate feeder, sulfur important for pungency and storage quality',
+  },
+  maize: {
+    // Per bushel (grain)
+    p2o5_lb: 0.37,
+    k2o_lb: 0.27,
+    unit: 'bu',
+    description: 'Maize (corn) grain removal rates per bushel',
+    notes: 'Heavy nitrogen feeder, remove entire plant = 2-3x grain-only removal',
+  },
+  wheat: {
+    // Per bushel (grain)
+    p2o5_lb: 0.55,
+    k2o_lb: 0.32,
+    unit: 'bu',
+    description: 'Wheat grain removal rates per bushel',
+    notes: 'Moderate feeder, residue returns significant K if not baled',
+  },
+  cabbage: {
+    // Per ton of heads
+    p2o5_lb: 1.6,
+    k2o_lb: 7.5,
+    calcium_lb: 1.3,
+    unit: 'ton',
+    description: 'Cabbage head removal rates per ton',
+    notes: 'Heavy feeder, requires consistent moisture and nutrition',
+  },
+  'sweet-potato': {
+    // Per ton of roots
+    p2o5_lb: 2.2,
+    k2o_lb: 11.0,
+    unit: 'ton',
+    description: 'Sweet potato root removal rates per ton',
+    notes: 'High K requirement, avoid excess N which promotes vine over root',
+  },
 }
 
 /**
@@ -239,6 +361,106 @@ export async function GET() {
   })
 }
 
+/**
+ * PUT /api/fertility-management
+ * Generate AI-ready fertility recommendations for integration
+ */
+export async function PUT(request: Request) {
+  try {
+    const body = await request.json()
+    const { farmPlanId, crops, yieldTargets, soilType, includeAI = true } = body
+
+    if (!crops || !Array.isArray(crops) || crops.length === 0) {
+      return NextResponse.json(
+        { success: false, error: 'Crops array is required' },
+        { status: 400 }
+      )
+    }
+
+    const fertilityPlan = generateFertilityPlan(crops, null, yieldTargets, soilType)
+
+    // Generate AI-ready recommendations
+    const aiRecommendations = []
+
+    if (includeAI) {
+      // High priority: Critical amendments
+      aiRecommendations.push({
+        category: 'fertility',
+        priority: 10,
+        recommendation_text: `Critical: ${fertilityPlan.criticalAmendments.phosphorus.strategy}. Switch from blanket annual applications to soil-test based rates to reduce costs by 10-30%.`,
+      })
+
+      // Crop-specific recommendations
+      for (const rec of fertilityPlan.nutrientRecommendations) {
+        if (rec.recommendations && rec.recommendations.length > 0) {
+          const topRecommendations = rec.recommendations.slice(0, 3).join(' | ')
+          aiRecommendations.push({
+            category: 'fertility',
+            priority: 8,
+            recommendation_text: `${rec.crop.toUpperCase()}: ${topRecommendations}`,
+          })
+        }
+
+        // Nutrient removal summary
+        if (typeof rec.yieldTarget === 'number' && rec.removal.p2o5_lb) {
+          aiRecommendations.push({
+            category: 'fertility',
+            priority: 6,
+            recommendation_text: `${rec.crop}: Targeting ${rec.yieldTarget} ${rec.unit} will remove ${rec.removal.p2o5_lb} lb P₂O₅ and ${rec.removal.k2o_lb} lb K₂O per acre. Plan replacement based on soil tests.`,
+          })
+        }
+      }
+
+      // Transition guidance
+      for (const transition of fertilityPlan.transitionGuidance) {
+        if (typeof transition.guidance === 'object' && transition.guidance !== null) {
+          aiRecommendations.push({
+            category: 'crop-rotation',
+            priority: 7,
+            recommendation_text: `Transition ${transition.from} → ${transition.to}: ${JSON.stringify(transition.guidance).substring(0, 200)}...`,
+          })
+        }
+      }
+
+      // Monitoring schedule
+      aiRecommendations.push({
+        category: 'operations',
+        priority: 9,
+        recommendation_text: `Monitoring: ${fertilityPlan.monitoringSchedule.soilTesting.annual}. ${fertilityPlan.monitoringSchedule.soilTesting.nitrate}`,
+      })
+
+      // Cover crops
+      for (const coverPlan of fertilityPlan.coverCropPlan) {
+        aiRecommendations.push({
+          category: 'sustainability',
+          priority: 7,
+          recommendation_text: `After ${coverPlan.after}: Plant ${coverPlan.recommendation.primary}. Benefits: ${coverPlan.recommendation.benefits}`,
+        })
+      }
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        fertilityPlan,
+        aiRecommendations,
+        farmPlanId: farmPlanId || null,
+      },
+      message: 'Fertility plan with AI recommendations generated successfully',
+    })
+  } catch (error) {
+    console.error('Error generating AI-integrated fertility plan:', error)
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to generate AI-integrated fertility plan',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    )
+  }
+}
+
 function generateFertilityPlan(
   crops: string[],
   soilTests: any,
@@ -358,6 +580,108 @@ function generateCropRecommendations(crop: string, soilTests: any, soilType: str
     if (soilType?.toLowerCase().includes('sand')) {
       recommendations.push('Check 0-6" K on sandy soils, may need in-season K')
     }
+  }
+
+  // New crops recommendations
+  if (crop === 'dragon-fruit') {
+    recommendations.push('Perennial crop: Apply balanced nutrition year-round')
+    recommendations.push('Maintain soil pH 6.0-7.0 for optimal nutrient uptake')
+    recommendations.push('Benefits from organic matter - apply compost annually')
+    recommendations.push('Monitor Ca levels - important for fruit quality')
+    recommendations.push('Avoid waterlogging - ensure excellent drainage')
+  }
+
+  if (crop === 'moringa') {
+    recommendations.push('Light feeder - avoid excess N which promotes vegetative growth')
+    recommendations.push('Multiple harvests per year - split fertilization accordingly')
+    recommendations.push('Benefits from organic amendments - apply compost/manure')
+    recommendations.push('Drought-tolerant once established - moderate fertilizer needs')
+  }
+
+  if (crop === 'lucerne') {
+    recommendations.push('Nitrogen-fixing legume - focus on P, K, and S')
+    recommendations.push('Maintain pH 6.5-7.5 for optimal nodulation')
+    recommendations.push('Apply S at 10-20 lb/ac if soil S < 10 ppm')
+    recommendations.push('High K removal - replace based on yield and soil tests')
+    recommendations.push('Inoculate with proper Rhizobium at planting if new field')
+  }
+
+  if (crop === 'tomato') {
+    recommendations.push('Heavy feeder - requires consistent nutrition throughout season')
+    recommendations.push('Apply Ca at 100-150 lb/ac to prevent blossom end rot')
+    recommendations.push('Split N applications - excessive early N delays fruiting')
+    recommendations.push('Monitor Mg levels - deficiency common with heavy K application')
+    recommendations.push('Use drip fertigation for precise nutrient delivery')
+  }
+
+  if (crop === 'pepper') {
+    recommendations.push('Moderate feeder - avoid excess N which delays fruit set')
+    recommendations.push('Sensitive to salt - use low-salt fertilizers, avoid over-application')
+    recommendations.push('Apply Ca for fruit quality and firmness')
+    recommendations.push('Consistent moisture and nutrition prevent flower/fruit drop')
+  }
+
+  if (crop === 'cucumber') {
+    recommendations.push('Fast-growing - requires frequent light fertilization')
+    recommendations.push('Sensitive to salt - use low EC fertilizers, monitor soil salinity')
+    recommendations.push('Split N applications weekly during production')
+    recommendations.push('Adequate K improves fruit quality and disease resistance')
+  }
+
+  if (crop === 'lettuce') {
+    recommendations.push('Quick crop (45-70 days) - nitrogen-responsive')
+    recommendations.push('Apply N in small frequent doses for consistent growth')
+    recommendations.push('Prefers cooler temperatures - adjust fertility with season')
+    recommendations.push('Avoid excess N near harvest - affects shelf life')
+  }
+
+  if (crop === 'spinach') {
+    recommendations.push('Heavy nitrogen feeder - apply 100-150 lb N/ac split')
+    recommendations.push('Maintain adequate Fe and Mg - monitor for deficiency')
+    recommendations.push('Prefers pH 6.0-7.0 for optimal nutrient availability')
+    recommendations.push('Quick crop - front-load nutrition for rapid growth')
+  }
+
+  if (crop === 'carrot') {
+    recommendations.push('Moderate feeder - avoid fresh manure (causes forking)')
+    recommendations.push('Requires loose, friable soil for straight root development')
+    recommendations.push('Split N: 40% preplant, 60% sidedress at 4-6 weeks')
+    recommendations.push('Adequate K improves root quality and sweetness')
+  }
+
+  if (crop === 'onion') {
+    recommendations.push('Moderate feeder with shallow root system')
+    recommendations.push('Apply S at 20-30 lb/ac - affects pungency and storage quality')
+    recommendations.push('Split N: 50% preplant, 50% sidedress before bulbing')
+    recommendations.push('Avoid late-season N - delays maturity and affects storage')
+  }
+
+  if (crop === 'maize') {
+    recommendations.push('Heavy nitrogen feeder - typical 150-200 lb N/ac for good yield')
+    recommendations.push('Split N: 30% preplant, 70% sidedress at V6-V8 stage')
+    recommendations.push('If removing stover, increase P/K by 2-3x grain-only removal')
+    recommendations.push('Monitor for S deficiency on sandy/low OM soils')
+  }
+
+  if (crop === 'wheat') {
+    recommendations.push('Moderate feeder - typical 100-120 lb N/ac depending on yield')
+    recommendations.push('Fall-planted: Apply 30-40 lb N/ac at planting, remainder in spring')
+    recommendations.push('If not baling straw, residue returns significant K')
+    recommendations.push('Monitor for S deficiency - apply 15-20 lb/ac if needed')
+  }
+
+  if (crop === 'cabbage') {
+    recommendations.push('Heavy feeder - requires consistent high nutrition')
+    recommendations.push('Apply Ca for head quality and splitting prevention')
+    recommendations.push('Split N: 40% preplant, 60% sidedress during head formation')
+    recommendations.push('Adequate B important - apply 1-2 lb B/ac if soil test low')
+  }
+
+  if (crop === 'sweet-potato') {
+    recommendations.push('High K requirement for quality roots and storage')
+    recommendations.push('Avoid excess N - promotes vine growth over root development')
+    recommendations.push('Apply K at 150-200 lb K₂O/ac based on soil test')
+    recommendations.push('Moderate P needs - excessive P may reduce quality')
   }
 
   return recommendations

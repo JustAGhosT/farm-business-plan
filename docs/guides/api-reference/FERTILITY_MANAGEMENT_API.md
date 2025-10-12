@@ -123,12 +123,39 @@ Generate a comprehensive fertility management plan based on crop rotation and si
 | soilTests | object | No | Recent soil test results |
 | soilType | string | No | Soil classification (e.g., "sandy loam", "clay", "silt loam") |
 
-#### Supported Crops
+## Supported Crops
 
+The fertility management system now supports **18 crops** across multiple categories:
+
+### Field Crops
 - `soybean` - Nitrogen-fixing legume (bushels)
-- `potato` - High-value tuber crop (tons)
 - `grain-sorghum` - Drought-tolerant grain (bushels)
-- `beetroot` - Root vegetable (tons)
+- `maize` - Corn for grain or silage (bushels)
+- `wheat` - Small grain cereal (bushels)
+- `lucerne` - Alfalfa for hay (tons)
+
+### High-Value Crops
+- `potato` - High-value tuber crop (tons)
+- `sweet-potato` - Root crop with high K needs (tons)
+
+### Root Vegetables
+- `beetroot` - Root vegetable with B requirements (tons)
+- `carrot` - Root crop requiring loose soil (tons)
+- `onion` - Bulb crop with S requirements (tons)
+
+### Fruiting Vegetables
+- `tomato` - Heavy feeder with Ca needs (tons)
+- `pepper` - Bell/chili peppers (tons)
+- `cucumber` - Fast-growing vine crop (tons)
+
+### Leafy Vegetables
+- `lettuce` - Quick crop, nitrogen-responsive (tons)
+- `spinach` - Heavy N feeder (tons)
+- `cabbage` - Heavy feeder, head crop (tons)
+
+### Specialty Crops
+- `dragon-fruit` - Perennial cactus fruit (tons)
+- `moringa` - Multi-harvest leaf crop (tons)
 - `sunflower` - Oilseed crop (hundredweight/cwt)
 
 #### Response
@@ -243,6 +270,106 @@ Generate a comprehensive fertility management plan based on crop rotation and si
 }
 ```
 
+---
+
+### PUT /api/fertility-management
+
+Generate fertility management plan with AI-ready recommendations for integration with the AI recommendations system.
+
+#### Request Body
+
+```json
+{
+  "farmPlanId": 123,
+  "crops": ["soybean", "potato", "tomato"],
+  "yieldTargets": {
+    "soybean": 50,
+    "potato": 20,
+    "tomato": 15
+  },
+  "soilType": "sandy loam",
+  "includeAI": true
+}
+```
+
+#### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| farmPlanId | number | No | Farm plan ID for linking recommendations |
+| crops | array | Yes | Array of crop names in rotation sequence |
+| yieldTargets | object | No | Expected yield by crop |
+| soilType | string | No | Soil classification |
+| includeAI | boolean | No | Generate AI-ready recommendations (default: true) |
+
+#### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "fertilityPlan": {
+      "cropSequence": ["soybean", "potato", "tomato"],
+      "soilType": "sandy loam",
+      "nutrientRecommendations": [ /* full plan */ ],
+      "transitionGuidance": [ /* transitions */ ],
+      "monitoringSchedule": { /* schedule */ },
+      "coverCropPlan": [ /* cover crops */ ],
+      "criticalAmendments": { /* amendments */ }
+    },
+    "aiRecommendations": [
+      {
+        "category": "fertility",
+        "priority": 10,
+        "recommendation_text": "Critical: Sufficiency-based P/K strategy. Switch from blanket applications to reduce costs by 10-30%."
+      },
+      {
+        "category": "fertility",
+        "priority": 8,
+        "recommendation_text": "POTATO: Use K₂SO₄ (SOP) for quality | Split N applications | Monitor petiole nitrate weekly"
+      },
+      {
+        "category": "fertility",
+        "priority": 6,
+        "recommendation_text": "potato: Targeting 20 ton will remove 60 lb P₂O₅ and 250 lb K₂O per acre."
+      },
+      {
+        "category": "operations",
+        "priority": 9,
+        "recommendation_text": "Monitoring: Test 0-6\" annually for pH, P, K, Zn, OM, CEC"
+      },
+      {
+        "category": "sustainability",
+        "priority": 7,
+        "recommendation_text": "After potato: Plant Rye to catch leachable N and protect soil structure"
+      }
+    ],
+    "farmPlanId": 123
+  },
+  "message": "Fertility plan with AI recommendations generated successfully"
+}
+```
+
+#### AI Recommendation Categories
+
+The PUT endpoint generates AI-ready recommendations categorized for easy integration:
+
+| Category | Description | Priority Range |
+|----------|-------------|----------------|
+| **fertility** | Nutrient management, fertilizer recommendations, soil testing | 6-10 |
+| **crop-rotation** | Crop sequence and transition guidance | 7 |
+| **operations** | Monitoring schedules and procedures | 9 |
+| **sustainability** | Cover crops, soil health practices | 7 |
+
+**Priority Levels:**
+- 10: Critical amendments and strategies
+- 9: Essential monitoring and operations
+- 8: Crop-specific high-priority recommendations
+- 7: Transitions, cover crops, sustainability
+- 6: Nutrient removal calculations and planning
+
+---
+
 ## Usage Examples
 
 ### Example 1: Get Reference Data
@@ -353,9 +480,79 @@ console.log(`S removal: ${removal.sulfur_lb} lb/ac`)     // 37.5 lb
 
 The Fertility Management API works seamlessly with:
 
+- **AI Recommendations API** (`/api/ai-recommendations`) - Use PUT endpoint to generate AI-ready recommendations
 - **Crop Rotation API** (`/api/crop-rotation`) - For complete rotation planning
 - **Farm Plans API** (`/api/farm-plans`) - For site-specific planning
 - **Task Scheduling API** (`/api/task-scheduling`) - For scheduling soil tests and applications
+
+### Example: Integrating with AI Recommendations
+
+```javascript
+// Step 1: Generate fertility plan with AI recommendations
+const fertilityResponse = await fetch('/api/fertility-management', {
+  method: 'PUT',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    farmPlanId: 123,
+    crops: ['dragon-fruit', 'moringa', 'tomato'],
+    yieldTargets: { 'dragon-fruit': 10, moringa: 5, tomato: 15 },
+    soilType: 'sandy loam',
+    includeAI: true
+  })
+})
+
+const fertilityData = await fertilityResponse.json()
+
+// Step 2: Save AI recommendations to database
+for (const aiRec of fertilityData.data.aiRecommendations) {
+  await fetch('/api/ai-recommendations', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      farm_plan_id: 123,
+      recommendation_text: aiRec.recommendation_text,
+      category: aiRec.category,
+      priority: aiRec.priority
+    })
+  })
+}
+
+console.log(`Saved ${fertilityData.data.aiRecommendations.length} AI recommendations`)
+```
+
+### Example: New Crop Support
+
+```javascript
+// Dragon fruit fertility plan
+const dragonFruitPlan = await fetch('/api/fertility-management', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    crops: ['dragon-fruit'],
+    yieldTargets: { 'dragon-fruit': 12 }, // 12 tons per acre
+    soilType: 'well-drained loam'
+  })
+})
+
+const plan = await dragonFruitPlan.json()
+console.log('Dragon fruit recommendations:', plan.data.nutrientRecommendations[0])
+// Output includes: Ca requirements, organic matter benefits, pH management
+
+// Vegetable crop mix
+const veggiePlan = await fetch('/api/fertility-management', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    crops: ['tomato', 'cucumber', 'lettuce', 'spinach'],
+    yieldTargets: { tomato: 15, cucumber: 12, lettuce: 8, spinach: 6 },
+    soilType: 'sandy loam'
+  })
+})
+
+const vegData = await veggiePlan.json()
+console.log('Vegetable crops monitored:', vegData.data.nutrientRecommendations.length)
+// Output: 4 crops with specific recommendations for each
+```
 
 ## Best Practices
 

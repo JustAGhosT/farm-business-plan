@@ -3,7 +3,7 @@
  */
 
 import { NextResponse } from 'next/server'
-import { POST, GET } from '@/app/api/fertility-management/route'
+import { POST, GET, PUT } from '@/app/api/fertility-management/route'
 
 // Mock NextResponse
 jest.mock('next/server', () => ({
@@ -53,6 +53,29 @@ describe('/api/fertility-management', () => {
       expect(data.data.nutrientRemovalRates.potato).toHaveProperty('p2o5_lb', 3.0)
       expect(data.data.nutrientRemovalRates.potato).toHaveProperty('k2o_lb', 12.5)
       expect(data.data.nutrientRemovalRates.potato).toHaveProperty('sulfur_lb')
+    })
+
+    it('should include extended crop list', async () => {
+      const response = await GET()
+      const data = await response.json()
+
+      // Check new crops are included
+      expect(data.data.nutrientRemovalRates).toHaveProperty('dragon-fruit')
+      expect(data.data.nutrientRemovalRates).toHaveProperty('moringa')
+      expect(data.data.nutrientRemovalRates).toHaveProperty('lucerne')
+      expect(data.data.nutrientRemovalRates).toHaveProperty('tomato')
+      expect(data.data.nutrientRemovalRates).toHaveProperty('cucumber')
+      expect(data.data.nutrientRemovalRates).toHaveProperty('maize')
+      expect(data.data.nutrientRemovalRates).toHaveProperty('wheat')
+    })
+
+    it('should include dragon fruit removal rates', async () => {
+      const response = await GET()
+      const data = await response.json()
+
+      expect(data.data.nutrientRemovalRates['dragon-fruit']).toHaveProperty('p2o5_lb', 2.0)
+      expect(data.data.nutrientRemovalRates['dragon-fruit']).toHaveProperty('k2o_lb', 8.0)
+      expect(data.data.nutrientRemovalRates['dragon-fruit']).toHaveProperty('calcium_lb')
     })
   })
 
@@ -248,6 +271,111 @@ describe('/api/fertility-management', () => {
 
       expect(amendments.phosphorus.strategy).toContain('Sufficiency-based')
       expect(amendments.sulfur.crops).toContain('potato')
+    })
+
+    it('should work with new crops like dragon fruit', async () => {
+      const request = {
+        json: async () => ({
+          crops: ['dragon-fruit', 'moringa'],
+          yieldTargets: { 'dragon-fruit': 10, moringa: 5 },
+          soilType: 'loam',
+        }),
+      } as Request
+
+      const response = await POST(request)
+      const data = await response.json()
+
+      expect(data.success).toBe(true)
+      expect(data.data.nutrientRecommendations.length).toBe(2)
+
+      const dragonFruitRec = data.data.nutrientRecommendations.find(
+        (r: any) => r.crop === 'dragon-fruit'
+      )
+      expect(dragonFruitRec).toBeDefined()
+      expect(dragonFruitRec.removal.p2o5_lb).toBe(20) // 10 tons * 2.0 lb/ton
+      expect(dragonFruitRec.removal.k2o_lb).toBe(80) // 10 tons * 8.0 lb/ton
+    })
+
+    it('should work with vegetable crops', async () => {
+      const request = {
+        json: async () => ({
+          crops: ['tomato', 'cucumber', 'lettuce'],
+          yieldTargets: { tomato: 15, cucumber: 12, lettuce: 8 },
+          soilType: 'sandy loam',
+        }),
+      } as Request
+
+      const response = await POST(request)
+      const data = await response.json()
+
+      expect(data.success).toBe(true)
+      expect(data.data.nutrientRecommendations.length).toBe(3)
+
+      const tomatoRec = data.data.nutrientRecommendations.find((r: any) => r.crop === 'tomato')
+      expect(tomatoRec).toBeDefined()
+      expect(tomatoRec.recommendations).toContain(
+        'Heavy feeder - requires consistent nutrition throughout season'
+      )
+    })
+  })
+
+  describe('PUT /api/fertility-management (AI Integration)', () => {
+    it('should generate AI-ready recommendations', async () => {
+      const request = {
+        json: async () => ({
+          crops: ['potato', 'tomato'],
+          yieldTargets: { potato: 20, tomato: 15 },
+          soilType: 'sandy loam',
+          includeAI: true,
+        }),
+      } as Request
+
+      const response = await PUT(request)
+      const data = await response.json()
+
+      expect(data.success).toBe(true)
+      expect(data.data).toHaveProperty('fertilityPlan')
+      expect(data.data).toHaveProperty('aiRecommendations')
+      expect(Array.isArray(data.data.aiRecommendations)).toBe(true)
+      expect(data.data.aiRecommendations.length).toBeGreaterThan(0)
+    })
+
+    it('should categorize AI recommendations', async () => {
+      const request = {
+        json: async () => ({
+          crops: ['soybean', 'potato'],
+          yieldTargets: { soybean: 50, potato: 20 },
+          soilType: 'loam',
+          includeAI: true,
+        }),
+      } as Request
+
+      const response = await PUT(request)
+      const data = await response.json()
+
+      const categories = new Set(data.data.aiRecommendations.map((r: any) => r.category))
+      expect(categories.has('fertility')).toBe(true)
+
+      // Check priority levels
+      const priorities = data.data.aiRecommendations.map((r: any) => r.priority)
+      expect(Math.max(...priorities)).toBeGreaterThanOrEqual(8)
+    })
+
+    it('should skip AI recommendations when includeAI is false', async () => {
+      const request = {
+        json: async () => ({
+          crops: ['potato'],
+          yieldTargets: { potato: 20 },
+          soilType: 'sandy',
+          includeAI: false,
+        }),
+      } as Request
+
+      const response = await PUT(request)
+      const data = await response.json()
+
+      expect(data.success).toBe(true)
+      expect(data.data.aiRecommendations).toEqual([])
     })
   })
 })
