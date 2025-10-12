@@ -113,9 +113,7 @@ describe('/api/fertility-management', () => {
       const data = await response.json()
 
       expect(data.success).toBe(true)
-      const potatoRec = data.data.nutrientRecommendations.find(
-        (r: any) => r.crop === 'potato'
-      )
+      const potatoRec = data.data.nutrientRecommendations.find((r: any) => r.crop === 'potato')
 
       expect(potatoRec).toBeDefined()
       expect(potatoRec.removal.p2o5_lb).toBe(60) // 20 tons * 3 lb/ton

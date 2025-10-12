@@ -8,10 +8,8 @@ export const dynamic = 'force-dynamic'
  * Helper function to fetch nutrient removal rates from database
  */
 async function fetchNutrientRemovalRates() {
-  const result = await query(
-    'SELECT * FROM crop_fertility_data ORDER BY crop_category, crop_name'
-  )
-  
+  const result = await query('SELECT * FROM crop_fertility_data ORDER BY crop_category, crop_name')
+
   const rates: Record<string, any> = {}
   result.rows.forEach((row: any) => {
     rates[row.crop_name] = {
@@ -30,7 +28,7 @@ async function fetchNutrientRemovalRates() {
       special_requirements: row.special_requirements,
     }
   })
-  
+
   return rates
 }
 
@@ -38,10 +36,8 @@ async function fetchNutrientRemovalRates() {
  * Helper function to fetch nitrogen programs from database
  */
 async function fetchNitrogenPrograms() {
-  const result = await query(
-    'SELECT * FROM nitrogen_programs ORDER BY from_crop, to_crop'
-  )
-  
+  const result = await query('SELECT * FROM nitrogen_programs ORDER BY from_crop, to_crop')
+
   const programs: Record<string, any> = {}
   result.rows.forEach((row: any) => {
     programs[row.transition_name] = {
@@ -53,7 +49,7 @@ async function fetchNitrogenPrograms() {
       recommendations: row.recommendations,
     }
   })
-  
+
   return programs
 }
 
@@ -62,7 +58,7 @@ async function fetchNitrogenPrograms() {
  */
 async function fetchPotassiumSources() {
   const result = await query('SELECT * FROM potassium_sources')
-  
+
   const sources: Record<string, any> = {}
   result.rows.forEach((row: any) => {
     sources[row.crop_name] = {
@@ -73,7 +69,7 @@ async function fetchPotassiumSources() {
       timing: row.application_timing,
     }
   })
-  
+
   return sources
 }
 
@@ -82,7 +78,7 @@ async function fetchPotassiumSources() {
  */
 async function fetchCoverCrops() {
   const result = await query('SELECT * FROM cover_crops ORDER BY after_crop')
-  
+
   const coverCrops: Record<string, any> = {}
   result.rows.forEach((row: any) => {
     coverCrops[`after-${row.after_crop}`] = {
@@ -93,7 +89,7 @@ async function fetchCoverCrops() {
       terminationNotes: row.termination_notes,
     }
   })
-  
+
   return coverCrops
 }
 
@@ -102,7 +98,7 @@ async function fetchCoverCrops() {
  */
 async function fetchMonitoringSystem() {
   const result = await query('SELECT * FROM crop_monitoring_protocols ORDER BY crop_name')
-  
+
   const tissueChecks: Record<string, any> = {}
   result.rows.forEach((row: any) => {
     tissueChecks[row.crop_name] = {
@@ -114,7 +110,7 @@ async function fetchMonitoringSystem() {
       symptomsToWatch: row.symptoms_to_watch,
     }
   })
-  
+
   return {
     soilSampling: {
       frequency: 'Every crop year',
@@ -498,19 +494,14 @@ export async function POST(request: Request) {
  */
 export async function GET() {
   try {
-    const [
-      nutrientRemovalRates,
-      nitrogenPrograms,
-      potassiumSources,
-      coverCrops,
-      monitoringSystem,
-    ] = await Promise.all([
-      fetchNutrientRemovalRates(),
-      fetchNitrogenPrograms(),
-      fetchPotassiumSources(),
-      fetchCoverCrops(),
-      fetchMonitoringSystem(),
-    ])
+    const [nutrientRemovalRates, nitrogenPrograms, potassiumSources, coverCrops, monitoringSystem] =
+      await Promise.all([
+        fetchNutrientRemovalRates(),
+        fetchNitrogenPrograms(),
+        fetchPotassiumSources(),
+        fetchCoverCrops(),
+        fetchMonitoringSystem(),
+      ])
 
     return NextResponse.json({
       success: true,
@@ -725,7 +716,8 @@ function calculateNutrientRemoval(crop: string, yieldTarget: number | string, re
     k2o_lb: Math.round(removalData.k2o_lb * yieldTarget),
     sulfur_lb:
       'sulfur_lb' in removalData ? Math.round(removalData.sulfur_lb * yieldTarget) : undefined,
-    boron_lb: 'boron_lb' in removalData ? (removalData.boron_lb * yieldTarget).toFixed(2) : undefined,
+    boron_lb:
+      'boron_lb' in removalData ? (removalData.boron_lb * yieldTarget).toFixed(2) : undefined,
   }
 }
 

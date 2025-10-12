@@ -74,14 +74,28 @@ No parameters required.
           "sulfur": "15-30 lb S/ac as sulfate form"
         }
       },
-      "potato-to-sorghum": { /* ... */ },
-      "sorghum-to-beetroot": { /* ... */ },
-      "beetroot-to-sunflower": { /* ... */ },
-      "sunflower-to-soybean": { /* ... */ }
+      "potato-to-sorghum": {
+        /* ... */
+      },
+      "sorghum-to-beetroot": {
+        /* ... */
+      },
+      "beetroot-to-sunflower": {
+        /* ... */
+      },
+      "sunflower-to-soybean": {
+        /* ... */
+      }
     },
-    "potassiumSources": { /* ... */ },
-    "coverCrops": { /* ... */ },
-    "monitoringSystem": { /* ... */ }
+    "potassiumSources": {
+      /* ... */
+    },
+    "coverCrops": {
+      /* ... */
+    },
+    "monitoringSystem": {
+      /* ... */
+    }
   }
 }
 ```
@@ -116,18 +130,19 @@ Generate a comprehensive fertility management plan based on crop rotation and si
 
 #### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| crops | array | Yes | Array of crop names in rotation sequence |
-| yieldTargets | object | No | Expected yield by crop (in crop-specific units) |
-| soilTests | object | No | Recent soil test results |
-| soilType | string | No | Soil classification (e.g., "sandy loam", "clay", "silt loam") |
+| Parameter    | Type   | Required | Description                                                   |
+| ------------ | ------ | -------- | ------------------------------------------------------------- |
+| crops        | array  | Yes      | Array of crop names in rotation sequence                      |
+| yieldTargets | object | No       | Expected yield by crop (in crop-specific units)               |
+| soilTests    | object | No       | Recent soil test results                                      |
+| soilType     | string | No       | Soil classification (e.g., "sandy loam", "clay", "silt loam") |
 
 ## Supported Crops
 
 The fertility management system now supports **18 crops** across multiple categories:
 
 ### Field Crops
+
 - `soybean` - Nitrogen-fixing legume (bushels)
 - `grain-sorghum` - Drought-tolerant grain (bushels)
 - `maize` - Corn for grain or silage (bushels)
@@ -135,25 +150,30 @@ The fertility management system now supports **18 crops** across multiple catego
 - `lucerne` - Alfalfa for hay (tons)
 
 ### High-Value Crops
+
 - `potato` - High-value tuber crop (tons)
 - `sweet-potato` - Root crop with high K needs (tons)
 
 ### Root Vegetables
+
 - `beetroot` - Root vegetable with B requirements (tons)
 - `carrot` - Root crop requiring loose soil (tons)
 - `onion` - Bulb crop with S requirements (tons)
 
 ### Fruiting Vegetables
+
 - `tomato` - Heavy feeder with Ca needs (tons)
 - `pepper` - Bell/chili peppers (tons)
 - `cucumber` - Fast-growing vine crop (tons)
 
 ### Leafy Vegetables
+
 - `lettuce` - Quick crop, nitrogen-responsive (tons)
 - `spinach` - Heavy N feeder (tons)
 - `cabbage` - Heavy feeder, head crop (tons)
 
 ### Specialty Crops
+
 - `dragon-fruit` - Perennial cactus fruit (tons)
 - `moringa` - Multi-harvest leaf crop (tons)
 - `sunflower` - Oilseed crop (hundredweight/cwt)
@@ -294,13 +314,13 @@ Generate fertility management plan with AI-ready recommendations for integration
 
 #### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| farmPlanId | number | No | Farm plan ID for linking recommendations |
-| crops | array | Yes | Array of crop names in rotation sequence |
-| yieldTargets | object | No | Expected yield by crop |
-| soilType | string | No | Soil classification |
-| includeAI | boolean | No | Generate AI-ready recommendations (default: true) |
+| Parameter    | Type    | Required | Description                                       |
+| ------------ | ------- | -------- | ------------------------------------------------- |
+| farmPlanId   | number  | No       | Farm plan ID for linking recommendations          |
+| crops        | array   | Yes      | Array of crop names in rotation sequence          |
+| yieldTargets | object  | No       | Expected yield by crop                            |
+| soilType     | string  | No       | Soil classification                               |
+| includeAI    | boolean | No       | Generate AI-ready recommendations (default: true) |
 
 #### Response
 
@@ -311,11 +331,21 @@ Generate fertility management plan with AI-ready recommendations for integration
     "fertilityPlan": {
       "cropSequence": ["soybean", "potato", "tomato"],
       "soilType": "sandy loam",
-      "nutrientRecommendations": [ /* full plan */ ],
-      "transitionGuidance": [ /* transitions */ ],
-      "monitoringSchedule": { /* schedule */ },
-      "coverCropPlan": [ /* cover crops */ ],
-      "criticalAmendments": { /* amendments */ }
+      "nutrientRecommendations": [
+        /* full plan */
+      ],
+      "transitionGuidance": [
+        /* transitions */
+      ],
+      "monitoringSchedule": {
+        /* schedule */
+      },
+      "coverCropPlan": [
+        /* cover crops */
+      ],
+      "criticalAmendments": {
+        /* amendments */
+      }
     },
     "aiRecommendations": [
       {
@@ -354,14 +384,15 @@ Generate fertility management plan with AI-ready recommendations for integration
 
 The PUT endpoint generates AI-ready recommendations categorized for easy integration:
 
-| Category | Description | Priority Range |
-|----------|-------------|----------------|
-| **fertility** | Nutrient management, fertilizer recommendations, soil testing | 6-10 |
-| **crop-rotation** | Crop sequence and transition guidance | 7 |
-| **operations** | Monitoring schedules and procedures | 9 |
-| **sustainability** | Cover crops, soil health practices | 7 |
+| Category           | Description                                                   | Priority Range |
+| ------------------ | ------------------------------------------------------------- | -------------- |
+| **fertility**      | Nutrient management, fertilizer recommendations, soil testing | 6-10           |
+| **crop-rotation**  | Crop sequence and transition guidance                         | 7              |
+| **operations**     | Monitoring schedules and procedures                           | 9              |
+| **sustainability** | Cover crops, soil health practices                            | 7              |
 
 **Priority Levels:**
+
 - 10: Critical amendments and strategies
 - 9: Essential monitoring and operations
 - 8: Crop-specific high-priority recommendations
@@ -392,10 +423,10 @@ const plan = await fetch('/api/fertility-management', {
     crops: ['soybean', 'potato'],
     yieldTargets: {
       soybean: 50, // bu/ac
-      potato: 20   // tons/ac
+      potato: 20, // tons/ac
     },
-    soilType: 'sandy loam'
-  })
+    soilType: 'sandy loam',
+  }),
 })
 
 const result = await plan.json()
@@ -403,7 +434,7 @@ const result = await plan.json()
 if (result.success) {
   console.log('Potato P₂O₅ removal:', result.data.nutrientRecommendations[1].removal.p2o5_lb)
   // Output: 60 lb P₂O₅ (20 tons × 3 lb/ton)
-  
+
   console.log('Soybean N credit:', result.data.transitionGuidance[0].guidance.soybeanCredit)
   // Output: 37.5 lb N/ac
 }
@@ -417,13 +448,13 @@ const plan = await fetch('/api/fertility-management', {
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
     crops: ['potato', 'beetroot', 'sunflower'],
-    soilType: 'sandy'
-  })
+    soilType: 'sandy',
+  }),
 })
 
 const result = await plan.json()
 
-result.data.monitoringSchedule.tissueTesting.forEach(test => {
+result.data.monitoringSchedule.tissueTesting.forEach((test) => {
   console.log(`${test.crop}:`, test.protocol.sample)
 })
 
@@ -441,18 +472,18 @@ const plan = await fetch('/api/fertility-management', {
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
     crops: ['potato'],
-    yieldTargets: { potato: 25 },  // High yield target
-    soilType: 'loam'
-  })
+    yieldTargets: { potato: 25 }, // High yield target
+    soilType: 'loam',
+  }),
 })
 
 const result = await plan.json()
 const removal = result.data.nutrientRecommendations[0].removal
 
 console.log(`For 25 ton/ac potato yield:`)
-console.log(`P₂O₅ removal: ${removal.p2o5_lb} lb/ac`)   // 75 lb
-console.log(`K₂O removal: ${removal.k2o_lb} lb/ac`)      // 312.5 lb
-console.log(`S removal: ${removal.sulfur_lb} lb/ac`)     // 37.5 lb
+console.log(`P₂O₅ removal: ${removal.p2o5_lb} lb/ac`) // 75 lb
+console.log(`K₂O removal: ${removal.k2o_lb} lb/ac`) // 312.5 lb
+console.log(`S removal: ${removal.sulfur_lb} lb/ac`) // 37.5 lb
 ```
 
 ## Error Responses
@@ -497,8 +528,8 @@ const fertilityResponse = await fetch('/api/fertility-management', {
     crops: ['dragon-fruit', 'moringa', 'tomato'],
     yieldTargets: { 'dragon-fruit': 10, moringa: 5, tomato: 15 },
     soilType: 'sandy loam',
-    includeAI: true
-  })
+    includeAI: true,
+  }),
 })
 
 const fertilityData = await fertilityResponse.json()
@@ -512,8 +543,8 @@ for (const aiRec of fertilityData.data.aiRecommendations) {
       farm_plan_id: 123,
       recommendation_text: aiRec.recommendation_text,
       category: aiRec.category,
-      priority: aiRec.priority
-    })
+      priority: aiRec.priority,
+    }),
   })
 }
 
@@ -530,8 +561,8 @@ const dragonFruitPlan = await fetch('/api/fertility-management', {
   body: JSON.stringify({
     crops: ['dragon-fruit'],
     yieldTargets: { 'dragon-fruit': 12 }, // 12 tons per acre
-    soilType: 'well-drained loam'
-  })
+    soilType: 'well-drained loam',
+  }),
 })
 
 const plan = await dragonFruitPlan.json()
@@ -545,8 +576,8 @@ const veggiePlan = await fetch('/api/fertility-management', {
   body: JSON.stringify({
     crops: ['tomato', 'cucumber', 'lettuce', 'spinach'],
     yieldTargets: { tomato: 15, cucumber: 12, lettuce: 8, spinach: 6 },
-    soilType: 'sandy loam'
-  })
+    soilType: 'sandy loam',
+  }),
 })
 
 const vegData = await veggiePlan.json()
@@ -582,6 +613,7 @@ console.log('Vegetable crops monitored:', vegData.data.nutrientRecommendations.l
 ---
 
 For more information, see:
+
 - [Fertility Management Guide](/docs/fertility-management.md)
 - [Operations Manual - Fertility Monitoring](/docs/operations-manual.md#48-fertility-management-and-soil-monitoring)
 - [Crop Rotation API](/docs/guides/api-reference/AUTOMATION_APIS.md#crop-rotation-planning-api)

@@ -52,6 +52,7 @@ Populates all fertility management tables with data for 18 crops:
 ### 003_enhanced_crop_templates.sql
 
 Enhanced crop templates seed file that includes comprehensive information for all 18 crops:
+
 - Technical specifications (spacing, propagation, maturity)
 - Financial projections (investment, revenue, ROI, break-even)
 - Growing requirements (climate, temperature, rainfall, soil pH, fertility notes)
@@ -77,7 +78,10 @@ const { query } = require('./lib/db')
 const fs = require('fs')
 
 // Run migration
-const migrationSQL = fs.readFileSync('db/migrations/005_add_fertility_management_tables.sql', 'utf8')
+const migrationSQL = fs.readFileSync(
+  'db/migrations/005_add_fertility_management_tables.sql',
+  'utf8'
+)
 await query(migrationSQL)
 
 // Run seeds
@@ -105,6 +109,7 @@ The fertility management API (`/api/fertility-management`) now fetches data from
 ## Data Sources
 
 All fertility recommendations are based on peer-reviewed sources:
+
 - University of Minnesota Extension
 - Illinois Extension
 - NDSU Extension
@@ -129,8 +134,8 @@ Potential improvements to the fertility management database:
 
 ```sql
 -- Example: Update potato P₂O₅ removal rate
-UPDATE crop_fertility_data 
-SET p2o5_removal_rate = 3.2 
+UPDATE crop_fertility_data
+SET p2o5_removal_rate = 3.2
 WHERE crop_name = 'potato';
 
 -- Example: Add new nitrogen program
@@ -143,7 +148,7 @@ VALUES ('wheat', 'soybean', 'wheat-to-soybean', NULL, ARRAY['Standard rotation p
 ```sql
 -- Add new crop fertility data
 INSERT INTO crop_fertility_data (
-  crop_name, crop_category, p2o5_removal_rate, k2o_removal_rate, 
+  crop_name, crop_category, p2o5_removal_rate, k2o_removal_rate,
   yield_unit, description, fertility_notes
 ) VALUES (
   'broccoli', 'Vegetables', 1.8, 7.5, 'ton',

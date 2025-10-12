@@ -294,7 +294,9 @@ function generateRotationRecommendations(plan: any[]): string[] {
     recommendations.push(
       'For potatoes: Use K₂SO₄ (SOP) instead of KCl to maintain quality (specific gravity, fry color)'
     )
-    recommendations.push('Monitor potato petiole nitrate weekly during bulking (target 13,000-15,000 ppm)')
+    recommendations.push(
+      'Monitor potato petiole nitrate weekly during bulking (target 13,000-15,000 ppm)'
+    )
     recommendations.push('Add 15-30 lb S/ac as sulfate, especially on sandy/irrigated soils')
   }
 

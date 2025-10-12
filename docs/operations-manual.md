@@ -708,13 +708,14 @@ Use this checklist to complete your operations manual:
 
 **Annual Soil Testing (Every Crop Year):**
 
-| Test Type | Depth | Parameters | Timing | Action |
-|-----------|-------|------------|--------|--------|
-| Standard Profile | 0-6" | pH, P, K, Zn, OM, CEC | Before planting season | Adjust fertility plan |
-| Nitrate Profile | 0-24" | Nitrate-N, Sulfate-S | Before planting season | Set N rates |
-| Deep Sampling | 2-4 ft | Nitrate-N | Before deep-rooted crops (sunflower) | Quantify deep N reserves |
+| Test Type        | Depth  | Parameters            | Timing                               | Action                   |
+| ---------------- | ------ | --------------------- | ------------------------------------ | ------------------------ |
+| Standard Profile | 0-6"   | pH, P, K, Zn, OM, CEC | Before planting season               | Adjust fertility plan    |
+| Nitrate Profile  | 0-24"  | Nitrate-N, Sulfate-S  | Before planting season               | Set N rates              |
+| Deep Sampling    | 2-4 ft | Nitrate-N             | Before deep-rooted crops (sunflower) | Quantify deep N reserves |
 
 **Sampling Method:**
+
 - [ ] Use zone or grid sampling pattern
 - [ ] Maintain consistent sampling locations year-to-year
 - [ ] Send to certified lab within 24 hours
@@ -752,11 +753,12 @@ Use this checklist to complete your operations manual:
 
 **Required Documentation:**
 
-| Date | Field/Block | Crop | Product | Rate | Method | Cost | Operator | Conditions |
-|------|------------|------|---------|------|--------|------|----------|------------|
-| [Date] | [ID] | [Crop] | [Fertilizer type] | [lbs/ac] | [Broadcast/Band/Foliar] | [R] | [Name] | [Weather/soil] |
+| Date   | Field/Block | Crop   | Product           | Rate     | Method                  | Cost | Operator | Conditions     |
+| ------ | ----------- | ------ | ----------------- | -------- | ----------------------- | ---- | -------- | -------------- |
+| [Date] | [ID]        | [Crop] | [Fertilizer type] | [lbs/ac] | [Broadcast/Band/Foliar] | [R]  | [Name]   | [Weather/soil] |
 
 **Application Checklist:**
+
 - [ ] Soil test results reviewed and plan created
 - [ ] Products ordered and received
 - [ ] Calibrate equipment before application
@@ -792,15 +794,16 @@ Use this checklist to complete your operations manual:
 
 **Credit Previous Crop N:**
 
-| Previous Crop | N Credit (lb/ac) | Notes |
-|---------------|------------------|-------|
-| Legumes (soybean, clover) | 30-45 | Conservative estimate |
-| Potato | Variable | Sample residual nitrate 0-24" |
-| Sorghum | Minimal to negative | May immobilize N, add 20-40 lb N/ac early for following crop |
-| Cover crops (young) | 30-60 | Depends on biomass and termination timing |
-| Cover crops (mature) | -20 to 0 | May tie up N temporarily |
+| Previous Crop             | N Credit (lb/ac)    | Notes                                                        |
+| ------------------------- | ------------------- | ------------------------------------------------------------ |
+| Legumes (soybean, clover) | 30-45               | Conservative estimate                                        |
+| Potato                    | Variable            | Sample residual nitrate 0-24"                                |
+| Sorghum                   | Minimal to negative | May immobilize N, add 20-40 lb N/ac early for following crop |
+| Cover crops (young)       | 30-60               | Depends on biomass and termination timing                    |
+| Cover crops (mature)      | -20 to 0            | May tie up N temporarily                                     |
 
 **Profile Nitrate Sampling:**
+
 - [ ] Sample to 24" depth before planting
 - [ ] Credit all nitrate-N in calculation
 - [ ] Adjust applied N rate accordingly
@@ -810,14 +813,15 @@ Use this checklist to complete your operations manual:
 
 **Crop-Specific Recommendations:**
 
-| Crop | Preferred Source | Reason | Avoid |
-|------|-----------------|--------|-------|
-| Potato | K₂SO₄ (SOP) | Maintains quality (SG, fry color) + adds S | Heavy preplant KCl |
-| Beetroot | K₂SO₄ or KCl | Either acceptable, watch timing | Heavy salt near young plants |
-| Sunflower | KCl acceptable | Economical, but band 2x2 | Salt near seed |
-| General | KCl | Most economical | N/A |
+| Crop      | Preferred Source | Reason                                     | Avoid                        |
+| --------- | ---------------- | ------------------------------------------ | ---------------------------- |
+| Potato    | K₂SO₄ (SOP)      | Maintains quality (SG, fry color) + adds S | Heavy preplant KCl           |
+| Beetroot  | K₂SO₄ or KCl     | Either acceptable, watch timing            | Heavy salt near young plants |
+| Sunflower | KCl acceptable   | Economical, but band 2x2                   | Salt near seed               |
+| General   | KCl              | Most economical                            | N/A                          |
 
 **If Using KCl for Economics:**
+
 - [ ] Apply well ahead of critical growth periods
 - [ ] Keep away from sensitive root zones
 - [ ] Split applications to reduce salt concentration
@@ -826,32 +830,33 @@ Use this checklist to complete your operations manual:
 
 **Boron Applications:**
 
-| Crop | Rate (lb B/ac) | Method | Timing | Warning |
-|------|----------------|--------|--------|---------|
-| Beetroot | 2-3 | Broadcast preplant | Before planting | Narrow safety margin |
-| Beetroot (rescue) | 0.5-1 | Foliar | If symptoms appear | Follow label strictly |
-| Sunflower | Test first | Only if documented need | Based on local data | Don't assume response |
+| Crop              | Rate (lb B/ac) | Method                  | Timing              | Warning               |
+| ----------------- | -------------- | ----------------------- | ------------------- | --------------------- |
+| Beetroot          | 2-3            | Broadcast preplant      | Before planting     | Narrow safety margin  |
+| Beetroot (rescue) | 0.5-1          | Foliar                  | If symptoms appear  | Follow label strictly |
+| Sunflower         | Test first     | Only if documented need | Based on local data | Don't assume response |
 
 **Sulfur Applications:**
 
-| Crop | Rate (lb S/ac) | Source | Conditions |
-|------|----------------|--------|------------|
-| Potato | 15-30 | Sulfate form | Sandy/irrigated soils |
-| Sunflower | 15-30 | Sulfate or SOP | Sandy/irrigated soils |
-| General | 10-20 | Sulfate | When soil S < 10 ppm |
+| Crop      | Rate (lb S/ac) | Source         | Conditions            |
+| --------- | -------------- | -------------- | --------------------- |
+| Potato    | 15-30          | Sulfate form   | Sandy/irrigated soils |
+| Sunflower | 15-30          | Sulfate or SOP | Sandy/irrigated soils |
+| General   | 10-20          | Sulfate        | When soil S < 10 ppm  |
 
 ### pH Management
 
 **Target Ranges by Crop:**
 
-| Crop | Optimal pH | Critical Reason |
-|------|-----------|-----------------|
-| Beetroot | 6.2-7.0 | Maximize micronutrient availability, prevent B deficiency |
-| Potato | 5.5-6.5 | Reduce scab risk while maintaining nutrient availability |
-| Legumes | 6.0-7.0 | Optimize nodulation and N fixation |
-| General | 6.0-7.0 | Good nutrient availability |
+| Crop     | Optimal pH | Critical Reason                                           |
+| -------- | ---------- | --------------------------------------------------------- |
+| Beetroot | 6.2-7.0    | Maximize micronutrient availability, prevent B deficiency |
+| Potato   | 5.5-6.5    | Reduce scab risk while maintaining nutrient availability  |
+| Legumes  | 6.0-7.0    | Optimize nodulation and N fixation                        |
+| General  | 6.0-7.0    | Good nutrient availability                                |
 
 **pH Adjustment:**
+
 - [ ] Test pH annually in every field
 - [ ] Apply lime 3-6 months before planting if pH < target
 - [ ] Apply sulfur if pH > 7.5 (rare for most areas)
@@ -861,14 +866,15 @@ Use this checklist to complete your operations manual:
 
 **Cover Crop Selection by Rotation Window:**
 
-| After Crop | Recommended Cover | Timing | Benefits | Termination |
-|-----------|-------------------|--------|----------|-------------|
-| Potato | Rye | Immediate post-harvest | Catch leachable N, protect structure | Spring, 2-3 weeks before planting |
-| Potato | Rye + Crimson Clover | Immediate post-harvest | N fixation for spring credit | Spring, 2-3 weeks before planting |
-| Sunflower | Oat/Rye buffer | Post-harvest | Dilute allelopathy | Before soybean planting |
-| General | Sorghum-sudangrass | Summer fallow | Biomass, break compaction | Early, 30+ days before high-N crop |
+| After Crop | Recommended Cover    | Timing                 | Benefits                             | Termination                        |
+| ---------- | -------------------- | ---------------------- | ------------------------------------ | ---------------------------------- |
+| Potato     | Rye                  | Immediate post-harvest | Catch leachable N, protect structure | Spring, 2-3 weeks before planting  |
+| Potato     | Rye + Crimson Clover | Immediate post-harvest | N fixation for spring credit         | Spring, 2-3 weeks before planting  |
+| Sunflower  | Oat/Rye buffer       | Post-harvest           | Dilute allelopathy                   | Before soybean planting            |
+| General    | Sorghum-sudangrass   | Summer fallow          | Biomass, break compaction            | Early, 30+ days before high-N crop |
 
 **Cover Crop Management Checklist:**
+
 - [ ] Select appropriate species for rotation window
 - [ ] Plant at recommended rates and timing
 - [ ] Monitor establishment and growth
@@ -879,6 +885,7 @@ Use this checklist to complete your operations manual:
 ### Disease Management Through Fertility
 
 **White Mold Prevention (Sunflower/Soybean):**
+
 - [ ] Enforce 3-year break between sunflower and soybean
 - [ ] Insert cereal buffer crop if needed
 - [ ] Use resistant varieties when available
@@ -888,6 +895,7 @@ Use this checklist to complete your operations manual:
 ### Monthly Fertility Management Checklist
 
 **Pre-Season (2-3 months before planting):**
+
 - [ ] Collect and submit soil samples
 - [ ] Review previous year's tissue test results
 - [ ] Calculate nutrient removal from last crop
@@ -896,12 +904,14 @@ Use this checklist to complete your operations manual:
 - [ ] Calibrate application equipment
 
 **Planting Season:**
+
 - [ ] Apply preplant amendments as planned
 - [ ] Band starter fertilizers (if applicable)
 - [ ] Document all applications
 - [ ] Monitor crop emergence and early growth
 
 **Growing Season:**
+
 - [ ] Conduct weekly tissue testing (potato petioles)
 - [ ] Scout for nutrient deficiency symptoms
 - [ ] Adjust sidedress/fertigation as needed
@@ -909,6 +919,7 @@ Use this checklist to complete your operations manual:
 - [ ] Monitor crop development stages
 
 **Post-Harvest:**
+
 - [ ] Calculate actual crop removal (yield × removal rates)
 - [ ] Update nutrient budget for field
 - [ ] Plant cover crops where planned

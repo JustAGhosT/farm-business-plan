@@ -95,11 +95,7 @@ export default function OperatingCostsCalculator() {
     }
   }
 
-  const handleFixedChange = (
-    name: string,
-    field: 'amount' | 'month' | 'crop',
-    value: string
-  ) => {
+  const handleFixedChange = (name: string, field: 'amount' | 'month' | 'crop', value: string) => {
     setFixedCosts({
       ...fixedCosts,
       [name]: { ...fixedCosts[name], [field]: value },
@@ -328,7 +324,10 @@ export default function OperatingCostsCalculator() {
               <tbody>
                 {/* Fixed Costs Section */}
                 <tr className="bg-blue-50">
-                  <td colSpan={4} className="border border-gray-300 px-4 py-2 font-semibold text-blue-900">
+                  <td
+                    colSpan={4}
+                    className="border border-gray-300 px-4 py-2 font-semibold text-blue-900"
+                  >
                     Fixed Costs (Monthly)
                   </td>
                 </tr>
@@ -352,7 +351,10 @@ export default function OperatingCostsCalculator() {
 
                 {/* Variable Costs Section */}
                 <tr className="bg-green-50">
-                  <td colSpan={4} className="border border-gray-300 px-4 py-2 font-semibold text-green-900">
+                  <td
+                    colSpan={4}
+                    className="border border-gray-300 px-4 py-2 font-semibold text-green-900"
+                  >
                     Variable Costs (Monthly)
                   </td>
                 </tr>
@@ -381,7 +383,9 @@ export default function OperatingCostsCalculator() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div className="bg-primary-50 rounded-lg p-4 border-2 border-primary-200">
               <div className="text-sm text-gray-600 mb-1">Total Monthly Costs</div>
-              <div className="text-2xl font-bold text-primary-700">{formatCurrency(totalMonthly)}</div>
+              <div className="text-2xl font-bold text-primary-700">
+                {formatCurrency(totalMonthly)}
+              </div>
             </div>
 
             <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
@@ -393,12 +397,16 @@ export default function OperatingCostsCalculator() {
               <>
                 <div className="bg-green-50 rounded-lg p-4 border border-green-200">
                   <div className="text-sm text-gray-600 mb-1">Cost/Ha (Monthly)</div>
-                  <div className="text-2xl font-bold text-green-700">{formatCurrency(totalPerHectare)}</div>
+                  <div className="text-2xl font-bold text-green-700">
+                    {formatCurrency(totalPerHectare)}
+                  </div>
                 </div>
 
                 <div className="bg-green-50 rounded-lg p-4 border border-green-200">
                   <div className="text-sm text-gray-600 mb-1">Cost/Ha (Annual)</div>
-                  <div className="text-2xl font-bold text-green-700">{formatCurrency(annualPerHectare)}</div>
+                  <div className="text-2xl font-bold text-green-700">
+                    {formatCurrency(annualPerHectare)}
+                  </div>
                 </div>
               </>
             )}
@@ -499,9 +507,7 @@ export default function OperatingCostsCalculator() {
                       <td className="px-4 py-3 text-sm text-right font-bold text-gray-900">
                         {formatCurrency(totalAnnual)}
                       </td>
-                      <td className="px-4 py-3 text-sm text-right font-bold text-gray-900">
-                        100%
-                      </td>
+                      <td className="px-4 py-3 text-sm text-right font-bold text-gray-900">100%</td>
                     </tr>
                   </tfoot>
                 </table>
