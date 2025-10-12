@@ -1,7 +1,140 @@
 import { NextResponse } from 'next/server'
+import { query } from '@/lib/db'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
+
+/**
+ * Helper function to fetch nutrient removal rates from database
+ */
+async function fetchNutrientRemovalRates() {
+  const result = await query(
+    'SELECT * FROM crop_fertility_data ORDER BY crop_category, crop_name'
+  )
+  
+  const rates: Record<string, any> = {}
+  result.rows.forEach((row: any) => {
+    rates[row.crop_name] = {
+      p2o5_lb: parseFloat(row.p2o5_removal_rate),
+      k2o_lb: parseFloat(row.k2o_removal_rate),
+      nitrogen_lb: row.nitrogen_removal_rate ? parseFloat(row.nitrogen_removal_rate) : undefined,
+      sulfur_lb: row.sulfur_removal_rate ? parseFloat(row.sulfur_removal_rate) : undefined,
+      calcium_lb: row.calcium_removal_rate ? parseFloat(row.calcium_removal_rate) : undefined,
+      boron_lb: row.boron_removal_rate ? parseFloat(row.boron_removal_rate) : undefined,
+      unit: row.yield_unit,
+      description: row.description,
+      notes: row.fertility_notes,
+      category: row.crop_category,
+      ph_range: row.ph_range,
+      micronutrients: row.micronutrients,
+      special_requirements: row.special_requirements,
+    }
+  })
+  
+  return rates
+}
+
+/**
+ * Helper function to fetch nitrogen programs from database
+ */
+async function fetchNitrogenPrograms() {
+  const result = await query(
+    'SELECT * FROM nitrogen_programs ORDER BY from_crop, to_crop'
+  )
+  
+  const programs: Record<string, any> = {}
+  result.rows.forEach((row: any) => {
+    programs[row.transition_name] = {
+      nitrogenCredit: row.nitrogen_credit ? parseFloat(row.nitrogen_credit) : null,
+      nitrogenRequirement: row.nitrogen_requirement,
+      applicationStrategy: row.application_strategy,
+      monitoringRequirements: row.monitoring_requirements,
+      notes: row.notes,
+      recommendations: row.recommendations,
+    }
+  })
+  
+  return programs
+}
+
+/**
+ * Helper function to fetch potassium sources from database
+ */
+async function fetchPotassiumSources() {
+  const result = await query('SELECT * FROM potassium_sources')
+  
+  const sources: Record<string, any> = {}
+  result.rows.forEach((row: any) => {
+    sources[row.crop_name] = {
+      preferred: row.preferred_source,
+      reason: row.reason,
+      avoid: row.sources_to_avoid,
+      alternatives: row.alternatives,
+      timing: row.application_timing,
+    }
+  })
+  
+  return sources
+}
+
+/**
+ * Helper function to fetch cover crops from database
+ */
+async function fetchCoverCrops() {
+  const result = await query('SELECT * FROM cover_crops ORDER BY after_crop')
+  
+  const coverCrops: Record<string, any> = {}
+  result.rows.forEach((row: any) => {
+    coverCrops[`after-${row.after_crop}`] = {
+      primary: row.primary_cover_crop,
+      optional: row.optional_cover_crops ? row.optional_cover_crops.join(', ') : null,
+      benefits: row.benefits,
+      timing: row.timing,
+      terminationNotes: row.termination_notes,
+    }
+  })
+  
+  return coverCrops
+}
+
+/**
+ * Helper function to fetch monitoring protocols from database
+ */
+async function fetchMonitoringSystem() {
+  const result = await query('SELECT * FROM crop_monitoring_protocols ORDER BY crop_name')
+  
+  const tissueChecks: Record<string, any> = {}
+  result.rows.forEach((row: any) => {
+    tissueChecks[row.crop_name] = {
+      sample: `${row.sample_type} ${row.sample_frequency}`,
+      sampleTiming: row.sample_timing,
+      target: row.target_range,
+      action: row.monitoring_action,
+      visualIndicators: row.visual_indicators,
+      symptomsToWatch: row.symptoms_to_watch,
+    }
+  })
+  
+  return {
+    soilSampling: {
+      frequency: 'Every crop year',
+      depths: {
+        standard: '0-6" (pH, P, K, Zn, OM, CEC)',
+        nitrate: '0-24" nitrate-N and sulfate-S',
+        deep: '2-4 ft nitrate before first sunflower (to quantify deep N)',
+      },
+      method: 'Zone/grid sample to support variable-rate application',
+    },
+    tissueChecks,
+    diseaseManagement: {
+      whiteMold: {
+        crop: 'Sunflower and soybean',
+        requirement: '3-year non-host break when white mold present',
+        mitigation: 'Varietal tolerance + canopy management for shorter intervals',
+      },
+    },
+  }
+}
 
 /**
  * Nutrient removal rates per unit yield
@@ -324,7 +457,22 @@ export async function POST(request: Request) {
       )
     }
 
-    const fertilityPlan = generateFertilityPlan(crops, soilTests, yieldTargets, soilType)
+    // Fetch data from database
+    const [nutrientRemovalRates, nitrogenPrograms, coverCrops] = await Promise.all([
+      fetchNutrientRemovalRates(),
+      fetchNitrogenPrograms(),
+      fetchCoverCrops(),
+    ])
+
+    const fertilityPlan = generateFertilityPlan(
+      crops,
+      soilTests,
+      yieldTargets,
+      soilType,
+      nutrientRemovalRates,
+      nitrogenPrograms,
+      coverCrops
+    )
 
     return NextResponse.json({
       success: true,
@@ -346,19 +494,45 @@ export async function POST(request: Request) {
 
 /**
  * GET /api/fertility-management
- * Get fertility management reference data
+ * Get fertility management reference data from database
  */
 export async function GET() {
-  return NextResponse.json({
-    success: true,
-    data: {
-      nutrientRemovalRates: NUTRIENT_REMOVAL_RATES,
-      nitrogenPrograms: NITROGEN_PROGRAMS,
-      potassiumSources: POTASSIUM_SOURCES,
-      coverCrops: COVER_CROPS,
-      monitoringSystem: MONITORING_SYSTEM,
-    },
-  })
+  try {
+    const [
+      nutrientRemovalRates,
+      nitrogenPrograms,
+      potassiumSources,
+      coverCrops,
+      monitoringSystem,
+    ] = await Promise.all([
+      fetchNutrientRemovalRates(),
+      fetchNitrogenPrograms(),
+      fetchPotassiumSources(),
+      fetchCoverCrops(),
+      fetchMonitoringSystem(),
+    ])
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        nutrientRemovalRates,
+        nitrogenPrograms,
+        potassiumSources,
+        coverCrops,
+        monitoringSystem,
+      },
+    })
+  } catch (error) {
+    console.error('Error fetching fertility data:', error)
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to fetch fertility management data',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    )
+  }
 }
 
 /**
@@ -377,7 +551,22 @@ export async function PUT(request: Request) {
       )
     }
 
-    const fertilityPlan = generateFertilityPlan(crops, null, yieldTargets, soilType)
+    // Fetch data from database
+    const [nutrientRemovalRates, nitrogenPrograms, coverCrops] = await Promise.all([
+      fetchNutrientRemovalRates(),
+      fetchNitrogenPrograms(),
+      fetchCoverCrops(),
+    ])
+
+    const fertilityPlan = generateFertilityPlan(
+      crops,
+      null,
+      yieldTargets,
+      soilType,
+      nutrientRemovalRates,
+      nitrogenPrograms,
+      coverCrops
+    )
 
     // Generate AI-ready recommendations
     const aiRecommendations = []
@@ -465,7 +654,10 @@ function generateFertilityPlan(
   crops: string[],
   soilTests: any,
   yieldTargets: any,
-  soilType: string
+  soilType: string,
+  nutrientRemovalRates?: any,
+  nitrogenPrograms?: any,
+  coverCrops?: any
 ) {
   const plan = {
     cropSequence: crops,
@@ -473,19 +665,23 @@ function generateFertilityPlan(
     nutrientRecommendations: [] as any[],
     transitionGuidance: [] as any[],
     monitoringSchedule: generateMonitoringSchedule(crops),
-    coverCropPlan: generateCoverCropPlan(crops),
+    coverCropPlan: generateCoverCropPlan(crops, coverCrops),
     criticalAmendments: generateCriticalAmendments(crops, soilType),
   }
+
+  // Use provided data or fall back to constants
+  const removalRates = nutrientRemovalRates || NUTRIENT_REMOVAL_RATES
+  const nitrogenProgs = nitrogenPrograms || NITROGEN_PROGRAMS
 
   // Generate crop-by-crop nutrient recommendations
   for (let i = 0; i < crops.length; i++) {
     const crop = crops[i]
     const nextCrop = crops[i + 1]
-    const removalData = NUTRIENT_REMOVAL_RATES[crop as keyof typeof NUTRIENT_REMOVAL_RATES]
+    const removalData = removalRates[crop]
 
     if (removalData) {
       const yieldTarget = yieldTargets?.[crop] || 'Not specified'
-      const nutrientRemoval = calculateNutrientRemoval(crop, yieldTarget)
+      const nutrientRemoval = calculateNutrientRemoval(crop, yieldTarget, removalRates)
 
       plan.nutrientRecommendations.push({
         crop,
@@ -500,9 +696,7 @@ function generateFertilityPlan(
     // Add transition guidance
     if (nextCrop) {
       const transitionKey = `${crop}-to-${nextCrop}`
-      const guidance =
-        NITROGEN_PROGRAMS[transitionKey as keyof typeof NITROGEN_PROGRAMS] ||
-        'Standard rotation practices apply'
+      const guidance = nitrogenProgs[transitionKey] || 'Standard rotation practices apply'
 
       plan.transitionGuidance.push({
         from: crop,
@@ -515,8 +709,9 @@ function generateFertilityPlan(
   return plan
 }
 
-function calculateNutrientRemoval(crop: string, yieldTarget: number | string) {
-  const removalData = NUTRIENT_REMOVAL_RATES[crop as keyof typeof NUTRIENT_REMOVAL_RATES]
+function calculateNutrientRemoval(crop: string, yieldTarget: number | string, removalRates?: any) {
+  const rates = removalRates || NUTRIENT_REMOVAL_RATES
+  const removalData = rates[crop]
 
   if (!removalData || typeof yieldTarget !== 'number') {
     return {
@@ -710,18 +905,19 @@ function generateMonitoringSchedule(crops: string[]) {
   return schedule
 }
 
-function generateCoverCropPlan(crops: string[]) {
+function generateCoverCropPlan(crops: string[], coverCropsData?: any) {
   const coverCropPlan = [] as any[]
+  const coverCrops = coverCropsData || COVER_CROPS
 
   crops.forEach((crop, index) => {
     const nextCrop = crops[index + 1]
-    const afterKey = `after-${crop}` as keyof typeof COVER_CROPS
+    const afterKey = `after-${crop}`
 
-    if (COVER_CROPS[afterKey]) {
+    if (coverCrops[afterKey]) {
       coverCropPlan.push({
         after: crop,
         before: nextCrop || 'Next rotation',
-        recommendation: COVER_CROPS[afterKey],
+        recommendation: coverCrops[afterKey],
       })
     }
   })
