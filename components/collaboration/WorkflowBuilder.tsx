@@ -125,24 +125,24 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white border rounded-lg p-6 space-y-6">
+    <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 space-y-6">
       <div>
-        <h3 className="text-xl font-semibold mb-4">Create Approval Workflow</h3>
-        <p className="text-sm text-gray-600">
+        <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Create Approval Workflow</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           Define a multi-stage approval process for your {targetType.replace('-', ' ')}
         </p>
       </div>
 
       {/* Workflow Title */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Workflow Title <span className="text-red-500">*</span>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Workflow Title <span className="text-red-500 dark:text-red-400">*</span>
         </label>
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
           placeholder="e.g., Financial Report Q1 Approval"
           required
         />
@@ -150,8 +150,8 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
 
       {/* Workflow Type */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Workflow Type <span className="text-red-500">*</span>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Workflow Type <span className="text-red-500 dark:text-red-400">*</span>
         </label>
         <div className="flex gap-4">
           <label className="flex items-center">
@@ -163,8 +163,8 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
               className="mr-2"
             />
             <div>
-              <span className="font-medium">Sequential</span>
-              <p className="text-xs text-gray-500">Stages complete in order</p>
+              <span className="font-medium text-gray-900 dark:text-white">Sequential</span>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Stages complete in order</p>
             </div>
           </label>
           <label className="flex items-center">
@@ -176,8 +176,8 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
               className="mr-2"
             />
             <div>
-              <span className="font-medium">Parallel</span>
-              <p className="text-xs text-gray-500">All stages proceed simultaneously</p>
+              <span className="font-medium text-gray-900 dark:text-white">Parallel</span>
+              <p className="text-xs text-gray-500 dark:text-gray-400">All stages proceed simultaneously</p>
             </div>
           </label>
         </div>
@@ -186,11 +186,11 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
       {/* Stages */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <label className="block text-sm font-medium text-gray-700">Approval Stages</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Approval Stages</label>
           <button
             type="button"
             onClick={addStage}
-            className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+            className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
           >
             + Add Stage
           </button>
@@ -198,14 +198,14 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
 
         <div className="space-y-4">
           {stages.map((stage, index) => (
-            <div key={index} className="border rounded-lg p-4 bg-gray-50">
+            <div key={index} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-700">
               <div className="flex items-center justify-between mb-3">
-                <h4 className="font-medium">Stage {index + 1}</h4>
+                <h4 className="font-medium text-gray-900 dark:text-white">Stage {index + 1}</h4>
                 {stages.length > 1 && (
                   <button
                     type="button"
                     onClick={() => removeStage(index)}
-                    className="text-red-600 hover:text-red-700 text-sm"
+                    className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm"
                   >
                     Remove
                   </button>
@@ -214,27 +214,27 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
 
               <div className="space-y-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Stage Name <span className="text-red-500">*</span>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Stage Name <span className="text-red-500 dark:text-red-400">*</span>
                   </label>
                   <input
                     type="text"
                     value={stage.name}
                     onChange={(e) => updateStage(index, 'name', e.target.value)}
-                    className="w-full px-3 py-2 border rounded-md"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                     placeholder="e.g., Farm Manager Review"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Description
                   </label>
                   <textarea
                     value={stage.description}
                     onChange={(e) => updateStage(index, 'description', e.target.value)}
-                    className="w-full px-3 py-2 border rounded-md"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                     rows={2}
                     placeholder="What should be reviewed at this stage?"
                   />
@@ -242,7 +242,7 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Required Approvals
                     </label>
                     <input
@@ -252,11 +252,11 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
                       onChange={(e) =>
                         updateStage(index, 'required_approvals', parseInt(e.target.value))
                       }
-                      className="w-full px-3 py-2 border rounded-md"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Deadline (days)
                     </label>
                     <input
@@ -266,7 +266,7 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
                       onChange={(e) =>
                         updateStage(index, 'deadline_days', parseInt(e.target.value))
                       }
-                      className="w-full px-3 py-2 border rounded-md"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                     />
                   </div>
                 </div>
@@ -279,22 +279,22 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
                       onChange={(e) => updateStage(index, 'requires_signature', e.target.checked)}
                       className="mr-2 rounded"
                     />
-                    <span className="text-sm font-medium text-gray-700">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       Require Digital Signature
                     </span>
                   </label>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Approvers <span className="text-red-500">*</span>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Approvers <span className="text-red-500 dark:text-red-400">*</span>
                   </label>
                   <div className="flex gap-2 mb-2">
                     <input
                       type="text"
                       value={index === stages.indexOf(stage) ? currentApprover : ''}
                       onChange={(e) => setCurrentApprover(e.target.value)}
-                      className="flex-1 px-3 py-2 border rounded-md"
+                      className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                       placeholder="Enter user ID or email"
                     />
                     <button
@@ -312,13 +312,13 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
                     {stage.approvers.map((approverId) => (
                       <span
                         key={approverId}
-                        className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm"
+                        className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded text-sm"
                       >
                         {approverId}
                         <button
                           type="button"
                           onClick={() => removeApprover(index, approverId)}
-                          className="text-blue-600 hover:text-blue-800"
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200"
                         >
                           ×
                         </button>
@@ -333,7 +333,7 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
       </div>
 
       {/* Submit */}
-      <div className="flex gap-2 pt-4 border-t">
+      <div className="flex gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
         <button
           type="submit"
           disabled={isSubmitting}
