@@ -3,46 +3,144 @@
 import { useState } from 'react'
 import Link from 'next/link'
 
+interface CostItem {
+  amount: string
+  month: string
+  crop: string
+}
+
+interface CostCategory {
+  [key: string]: CostItem
+}
+
 export default function OperatingCostsCalculator() {
-  const [fixedCosts, setFixedCosts] = useState({
-    utilities: '',
-    labor: '',
-    maintenance: '',
-    insurance: '',
-    rent: '',
-    other: '',
+  const [hectares, setHectares] = useState<number>(1)
+  const [crops, setCrops] = useState<string[]>(['All Crops'])
+  const [newCropName, setNewCropName] = useState('')
+
+  const [fixedCosts, setFixedCosts] = useState<CostCategory>({
+    utilities: { amount: '', month: '1', crop: 'All Crops' },
+    labor: { amount: '', month: '1', crop: 'All Crops' },
+    maintenance: { amount: '', month: '1', crop: 'All Crops' },
+    insurance: { amount: '', month: '1', crop: 'All Crops' },
+    rent: { amount: '', month: '1', crop: 'All Crops' },
+    other: { amount: '', month: '1', crop: 'All Crops' },
   })
 
-  const [variableCosts, setVariableCosts] = useState({
-    seeds: '',
-    fertilizer: '',
-    pesticides: '',
-    packaging: '',
-    fuel: '',
-    other: '',
+  const [variableCosts, setVariableCosts] = useState<CostCategory>({
+    seeds: { amount: '', month: '1', crop: 'All Crops' },
+    fertilizer: { amount: '', month: '1', crop: 'All Crops' },
+    pesticides: { amount: '', month: '1', crop: 'All Crops' },
+    packaging: { amount: '', month: '1', crop: 'All Crops' },
+    fuel: { amount: '', month: '1', crop: 'All Crops' },
+    other: { amount: '', month: '1', crop: 'All Crops' },
   })
 
-  const handleFixedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ]
+
+  const addCrop = () => {
+    if (newCropName.trim() && !crops.includes(newCropName.trim())) {
+      setCrops([...crops, newCropName.trim()])
+      setNewCropName('')
+    }
+  }
+
+  const removeCrop = (cropName: string) => {
+    if (cropName !== 'All Crops') {
+      setCrops(crops.filter((c) => c !== cropName))
+      // Reset costs assigned to this crop back to 'All Crops'
+      const resetFixedCosts = { ...fixedCosts }
+      const resetVariableCosts = { ...variableCosts }
+      Object.keys(resetFixedCosts).forEach((key) => {
+        if (resetFixedCosts[key].crop === cropName) {
+          resetFixedCosts[key].crop = 'All Crops'
+        }
+      })
+      Object.keys(resetVariableCosts).forEach((key) => {
+        if (resetVariableCosts[key].crop === cropName) {
+          resetVariableCosts[key].crop = 'All Crops'
+        }
+      })
+      setFixedCosts(resetFixedCosts)
+      setVariableCosts(resetVariableCosts)
+    }
+  }
+
+  const handleFixedChange = (
+    name: string,
+    field: 'amount' | 'month' | 'crop',
+    value: string
+  ) => {
     setFixedCosts({
       ...fixedCosts,
-      [e.target.name]: e.target.value,
+      [name]: { ...fixedCosts[name], [field]: value },
     })
   }
 
-  const handleVariableChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVariableChange = (
+    name: string,
+    field: 'amount' | 'month' | 'crop',
+    value: string
+  ) => {
     setVariableCosts({
       ...variableCosts,
-      [e.target.name]: e.target.value,
+      [name]: { ...variableCosts[name], [field]: value },
     })
   }
 
-  const totalFixed = Object.values(fixedCosts).reduce((sum, val) => sum + (parseFloat(val) || 0), 0)
+  const totalFixed = Object.values(fixedCosts).reduce(
+    (sum, item) => sum + (parseFloat(item.amount) || 0),
+    0
+  )
   const totalVariable = Object.values(variableCosts).reduce(
-    (sum, val) => sum + (parseFloat(val) || 0),
+    (sum, item) => sum + (parseFloat(item.amount) || 0),
     0
   )
   const totalMonthly = totalFixed + totalVariable
   const totalAnnual = totalMonthly * 12
+  const totalPerHectare = hectares > 0 ? totalMonthly / hectares : 0
+  const annualPerHectare = hectares > 0 ? totalAnnual / hectares : 0
+
+  // Calculate costs by month
+  const costsByMonth: Record<string, number> = {}
+  months.forEach((_, index) => {
+    costsByMonth[(index + 1).toString()] = 0
+  })
+  Object.values(fixedCosts).forEach((item) => {
+    const amount = parseFloat(item.amount) || 0
+    costsByMonth[item.month] = (costsByMonth[item.month] || 0) + amount
+  })
+  Object.values(variableCosts).forEach((item) => {
+    const amount = parseFloat(item.amount) || 0
+    costsByMonth[item.month] = (costsByMonth[item.month] || 0) + amount
+  })
+
+  // Calculate costs by crop
+  const costsByCrop: Record<string, number> = {}
+  crops.forEach((crop) => {
+    costsByCrop[crop] = 0
+  })
+  Object.values(fixedCosts).forEach((item) => {
+    const amount = parseFloat(item.amount) || 0
+    costsByCrop[item.crop] = (costsByCrop[item.crop] || 0) + amount
+  })
+  Object.values(variableCosts).forEach((item) => {
+    const amount = parseFloat(item.amount) || 0
+    costsByCrop[item.crop] = (costsByCrop[item.crop] || 0) + amount
+  })
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-ZA', {
@@ -76,7 +174,72 @@ export default function OperatingCostsCalculator() {
             <span className="text-4xl mr-4">💸</span>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Operating Costs Calculator</h1>
-              <p className="text-gray-600">Calculate monthly and annual operating expenses</p>
+              <p className="text-gray-600">
+                Calculate monthly and annual operating expenses per hectare
+              </p>
+            </div>
+          </div>
+
+          {/* Hectares and Crop Management */}
+          <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <div className="grid md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label htmlFor="hectares" className="block text-sm font-medium text-gray-700 mb-1">
+                  Total Hectares
+                </label>
+                <input
+                  type="number"
+                  id="hectares"
+                  value={hectares}
+                  onChange={(e) => setHectares(parseFloat(e.target.value) || 0)}
+                  min="0.1"
+                  step="0.1"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  placeholder="e.g., 5"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Crops</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={newCropName}
+                    onChange={(e) => setNewCropName(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault()
+                        addCrop()
+                      }
+                    }}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    placeholder="Add crop name..."
+                  />
+                  <button
+                    onClick={addCrop}
+                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                  >
+                    + Add
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {crops.map((crop) => (
+                    <span
+                      key={crop}
+                      className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-primary-100 text-primary-800"
+                    >
+                      {crop}
+                      {crop !== 'All Crops' && (
+                        <button
+                          onClick={() => removeCrop(crop)}
+                          className="ml-2 text-primary-600 hover:text-primary-800"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
@@ -97,11 +260,35 @@ export default function OperatingCostsCalculator() {
                     type="number"
                     id="utilities"
                     name="utilities"
-                    value={fixedCosts.utilities}
-                    onChange={handleFixedChange}
+                    value={fixedCosts.utilities.amount}
+                    onChange={(e) => handleFixedChange('utilities', 'amount', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="e.g., 2000"
                   />
+                  <div className="flex gap-2 mt-1">
+                    <select
+                      value={fixedCosts.utilities.month}
+                      onChange={(e) => handleFixedChange('utilities', 'month', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {months.map((month, idx) => (
+                        <option key={idx} value={(idx + 1).toString()}>
+                          {month}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={fixedCosts.utilities.crop}
+                      onChange={(e) => handleFixedChange('utilities', 'crop', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {crops.map((crop) => (
+                        <option key={crop} value={crop}>
+                          {crop}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div>
@@ -112,11 +299,35 @@ export default function OperatingCostsCalculator() {
                     type="number"
                     id="labor"
                     name="labor"
-                    value={fixedCosts.labor}
-                    onChange={handleFixedChange}
+                    value={fixedCosts.labor.amount}
+                    onChange={(e) => handleFixedChange('labor', 'amount', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="e.g., 15000"
                   />
+                  <div className="flex gap-2 mt-1">
+                    <select
+                      value={fixedCosts.labor.month}
+                      onChange={(e) => handleFixedChange('labor', 'month', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {months.map((month, idx) => (
+                        <option key={idx} value={(idx + 1).toString()}>
+                          {month}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={fixedCosts.labor.crop}
+                      onChange={(e) => handleFixedChange('labor', 'crop', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {crops.map((crop) => (
+                        <option key={crop} value={crop}>
+                          {crop}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div>
@@ -130,11 +341,35 @@ export default function OperatingCostsCalculator() {
                     type="number"
                     id="maintenance"
                     name="maintenance"
-                    value={fixedCosts.maintenance}
-                    onChange={handleFixedChange}
+                    value={fixedCosts.maintenance.amount}
+                    onChange={(e) => handleFixedChange('maintenance', 'amount', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="e.g., 3000"
                   />
+                  <div className="flex gap-2 mt-1">
+                    <select
+                      value={fixedCosts.maintenance.month}
+                      onChange={(e) => handleFixedChange('maintenance', 'month', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {months.map((month, idx) => (
+                        <option key={idx} value={(idx + 1).toString()}>
+                          {month}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={fixedCosts.maintenance.crop}
+                      onChange={(e) => handleFixedChange('maintenance', 'crop', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {crops.map((crop) => (
+                        <option key={crop} value={crop}>
+                          {crop}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div>
@@ -148,11 +383,35 @@ export default function OperatingCostsCalculator() {
                     type="number"
                     id="insurance"
                     name="insurance"
-                    value={fixedCosts.insurance}
-                    onChange={handleFixedChange}
+                    value={fixedCosts.insurance.amount}
+                    onChange={(e) => handleFixedChange('insurance', 'amount', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="e.g., 1500"
                   />
+                  <div className="flex gap-2 mt-1">
+                    <select
+                      value={fixedCosts.insurance.month}
+                      onChange={(e) => handleFixedChange('insurance', 'month', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {months.map((month, idx) => (
+                        <option key={idx} value={(idx + 1).toString()}>
+                          {month}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={fixedCosts.insurance.crop}
+                      onChange={(e) => handleFixedChange('insurance', 'crop', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {crops.map((crop) => (
+                        <option key={crop} value={crop}>
+                          {crop}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div>
@@ -163,11 +422,35 @@ export default function OperatingCostsCalculator() {
                     type="number"
                     id="rent"
                     name="rent"
-                    value={fixedCosts.rent}
-                    onChange={handleFixedChange}
+                    value={fixedCosts.rent.amount}
+                    onChange={(e) => handleFixedChange('rent', 'amount', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="e.g., 5000"
                   />
+                  <div className="flex gap-2 mt-1">
+                    <select
+                      value={fixedCosts.rent.month}
+                      onChange={(e) => handleFixedChange('rent', 'month', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {months.map((month, idx) => (
+                        <option key={idx} value={(idx + 1).toString()}>
+                          {month}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={fixedCosts.rent.crop}
+                      onChange={(e) => handleFixedChange('rent', 'crop', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {crops.map((crop) => (
+                        <option key={crop} value={crop}>
+                          {crop}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div>
@@ -181,11 +464,35 @@ export default function OperatingCostsCalculator() {
                     type="number"
                     id="fixedOther"
                     name="other"
-                    value={fixedCosts.other}
-                    onChange={handleFixedChange}
+                    value={fixedCosts.other.amount}
+                    onChange={(e) => handleFixedChange('other', 'amount', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="e.g., 1000"
                   />
+                  <div className="flex gap-2 mt-1">
+                    <select
+                      value={fixedCosts.other.month}
+                      onChange={(e) => handleFixedChange('other', 'month', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {months.map((month, idx) => (
+                        <option key={idx} value={(idx + 1).toString()}>
+                          {month}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={fixedCosts.other.crop}
+                      onChange={(e) => handleFixedChange('other', 'crop', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {crops.map((crop) => (
+                        <option key={crop} value={crop}>
+                          {crop}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div className="bg-gray-100 rounded-lg p-3 border border-gray-300">
@@ -210,11 +517,35 @@ export default function OperatingCostsCalculator() {
                     type="number"
                     id="seeds"
                     name="seeds"
-                    value={variableCosts.seeds}
-                    onChange={handleVariableChange}
+                    value={variableCosts.seeds.amount}
+                    onChange={(e) => handleVariableChange('seeds', 'amount', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="e.g., 3000"
                   />
+                  <div className="flex gap-2 mt-1">
+                    <select
+                      value={variableCosts.seeds.month}
+                      onChange={(e) => handleVariableChange('seeds', 'month', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {months.map((month, idx) => (
+                        <option key={idx} value={(idx + 1).toString()}>
+                          {month}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={variableCosts.seeds.crop}
+                      onChange={(e) => handleVariableChange('seeds', 'crop', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {crops.map((crop) => (
+                        <option key={crop} value={crop}>
+                          {crop}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div>
@@ -228,11 +559,35 @@ export default function OperatingCostsCalculator() {
                     type="number"
                     id="fertilizer"
                     name="fertilizer"
-                    value={variableCosts.fertilizer}
-                    onChange={handleVariableChange}
+                    value={variableCosts.fertilizer.amount}
+                    onChange={(e) => handleVariableChange('fertilizer', 'amount', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="e.g., 4000"
                   />
+                  <div className="flex gap-2 mt-1">
+                    <select
+                      value={variableCosts.fertilizer.month}
+                      onChange={(e) => handleVariableChange('fertilizer', 'month', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {months.map((month, idx) => (
+                        <option key={idx} value={(idx + 1).toString()}>
+                          {month}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={variableCosts.fertilizer.crop}
+                      onChange={(e) => handleVariableChange('fertilizer', 'crop', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {crops.map((crop) => (
+                        <option key={crop} value={crop}>
+                          {crop}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div>
@@ -246,11 +601,35 @@ export default function OperatingCostsCalculator() {
                     type="number"
                     id="pesticides"
                     name="pesticides"
-                    value={variableCosts.pesticides}
-                    onChange={handleVariableChange}
+                    value={variableCosts.pesticides.amount}
+                    onChange={(e) => handleVariableChange('pesticides', 'amount', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="e.g., 2000"
                   />
+                  <div className="flex gap-2 mt-1">
+                    <select
+                      value={variableCosts.pesticides.month}
+                      onChange={(e) => handleVariableChange('pesticides', 'month', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {months.map((month, idx) => (
+                        <option key={idx} value={(idx + 1).toString()}>
+                          {month}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={variableCosts.pesticides.crop}
+                      onChange={(e) => handleVariableChange('pesticides', 'crop', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {crops.map((crop) => (
+                        <option key={crop} value={crop}>
+                          {crop}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div>
@@ -264,11 +643,35 @@ export default function OperatingCostsCalculator() {
                     type="number"
                     id="packaging"
                     name="packaging"
-                    value={variableCosts.packaging}
-                    onChange={handleVariableChange}
+                    value={variableCosts.packaging.amount}
+                    onChange={(e) => handleVariableChange('packaging', 'amount', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="e.g., 1500"
                   />
+                  <div className="flex gap-2 mt-1">
+                    <select
+                      value={variableCosts.packaging.month}
+                      onChange={(e) => handleVariableChange('packaging', 'month', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {months.map((month, idx) => (
+                        <option key={idx} value={(idx + 1).toString()}>
+                          {month}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={variableCosts.packaging.crop}
+                      onChange={(e) => handleVariableChange('packaging', 'crop', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {crops.map((crop) => (
+                        <option key={crop} value={crop}>
+                          {crop}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div>
@@ -279,11 +682,35 @@ export default function OperatingCostsCalculator() {
                     type="number"
                     id="fuel"
                     name="fuel"
-                    value={variableCosts.fuel}
-                    onChange={handleVariableChange}
+                    value={variableCosts.fuel.amount}
+                    onChange={(e) => handleVariableChange('fuel', 'amount', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="e.g., 2500"
                   />
+                  <div className="flex gap-2 mt-1">
+                    <select
+                      value={variableCosts.fuel.month}
+                      onChange={(e) => handleVariableChange('fuel', 'month', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {months.map((month, idx) => (
+                        <option key={idx} value={(idx + 1).toString()}>
+                          {month}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={variableCosts.fuel.crop}
+                      onChange={(e) => handleVariableChange('fuel', 'crop', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {crops.map((crop) => (
+                        <option key={crop} value={crop}>
+                          {crop}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div>
@@ -297,11 +724,35 @@ export default function OperatingCostsCalculator() {
                     type="number"
                     id="variableOther"
                     name="other"
-                    value={variableCosts.other}
-                    onChange={handleVariableChange}
+                    value={variableCosts.other.amount}
+                    onChange={(e) => handleVariableChange('other', 'amount', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="e.g., 1000"
                   />
+                  <div className="flex gap-2 mt-1">
+                    <select
+                      value={variableCosts.other.month}
+                      onChange={(e) => handleVariableChange('other', 'month', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {months.map((month, idx) => (
+                        <option key={idx} value={(idx + 1).toString()}>
+                          {month}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={variableCosts.other.crop}
+                      onChange={(e) => handleVariableChange('other', 'crop', e.target.value)}
+                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
+                    >
+                      {crops.map((crop) => (
+                        <option key={crop} value={crop}>
+                          {crop}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div className="bg-gray-100 rounded-lg p-3 border border-gray-300">
@@ -331,6 +782,24 @@ export default function OperatingCostsCalculator() {
                     {formatCurrency(totalAnnual)}
                   </div>
                 </div>
+
+                {hectares > 0 && (
+                  <>
+                    <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                      <div className="text-sm text-gray-600 mb-1">Cost per Hectare (Monthly)</div>
+                      <div className="text-2xl font-bold text-green-700">
+                        {formatCurrency(totalPerHectare)}/ha
+                      </div>
+                    </div>
+
+                    <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                      <div className="text-sm text-gray-600 mb-1">Cost per Hectare (Annual)</div>
+                      <div className="text-2xl font-bold text-green-700">
+                        {formatCurrency(annualPerHectare)}/ha
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 <div className="bg-white rounded-lg p-4 border border-gray-200">
                   <h3 className="font-semibold text-gray-900 mb-3">Cost Breakdown</h3>
@@ -391,6 +860,139 @@ export default function OperatingCostsCalculator() {
             </div>
           </div>
 
+          {/* Costs by Month */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">📅 Costs by Month</h2>
+            <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                        Month
+                      </th>
+                      <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">
+                        Total Costs
+                      </th>
+                      <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">
+                        % of Annual
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {months.map((month, idx) => {
+                      const monthKey = (idx + 1).toString()
+                      const monthTotal = costsByMonth[monthKey] || 0
+                      const percentage = totalAnnual > 0 ? (monthTotal / totalAnnual) * 100 : 0
+                      return (
+                        <tr key={idx} className="hover:bg-gray-50">
+                          <td className="px-4 py-3 text-sm text-gray-900">{month}</td>
+                          <td className="px-4 py-3 text-sm text-right font-medium text-gray-900">
+                            {formatCurrency(monthTotal)}
+                          </td>
+                          <td className="px-4 py-3 text-sm text-right text-gray-600">
+                            {percentage.toFixed(1)}%
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                  <tfoot className="bg-gray-100">
+                    <tr>
+                      <td className="px-4 py-3 text-sm font-bold text-gray-900">Total</td>
+                      <td className="px-4 py-3 text-sm text-right font-bold text-gray-900">
+                        {formatCurrency(totalAnnual)}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-right font-bold text-gray-900">
+                        100%
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          {/* Costs by Crop */}
+          {crops.length > 1 && (
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">🌾 Costs by Crop</h2>
+              <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-100">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                          Crop
+                        </th>
+                        <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">
+                          Monthly Costs
+                        </th>
+                        <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">
+                          Annual Costs
+                        </th>
+                        {hectares > 0 && (
+                          <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">
+                            Cost/Ha (Monthly)
+                          </th>
+                        )}
+                        <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">
+                          % of Total
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {crops.map((crop) => {
+                        const cropTotal = costsByCrop[crop] || 0
+                        const annualCropTotal = cropTotal * 12
+                        const percentage = totalMonthly > 0 ? (cropTotal / totalMonthly) * 100 : 0
+                        const perHectare = hectares > 0 ? cropTotal / hectares : 0
+                        return (
+                          <tr key={crop} className="hover:bg-gray-50">
+                            <td className="px-4 py-3 text-sm font-medium text-gray-900">{crop}</td>
+                            <td className="px-4 py-3 text-sm text-right text-gray-900">
+                              {formatCurrency(cropTotal)}
+                            </td>
+                            <td className="px-4 py-3 text-sm text-right text-gray-900">
+                              {formatCurrency(annualCropTotal)}
+                            </td>
+                            {hectares > 0 && (
+                              <td className="px-4 py-3 text-sm text-right text-green-700 font-medium">
+                                {formatCurrency(perHectare)}
+                              </td>
+                            )}
+                            <td className="px-4 py-3 text-sm text-right text-gray-600">
+                              {percentage.toFixed(1)}%
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                    <tfoot className="bg-gray-100">
+                      <tr>
+                        <td className="px-4 py-3 text-sm font-bold text-gray-900">Total</td>
+                        <td className="px-4 py-3 text-sm text-right font-bold text-gray-900">
+                          {formatCurrency(totalMonthly)}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-right font-bold text-gray-900">
+                          {formatCurrency(totalAnnual)}
+                        </td>
+                        {hectares > 0 && (
+                          <td className="px-4 py-3 text-sm text-right font-bold text-green-700">
+                            {formatCurrency(totalPerHectare)}
+                          </td>
+                        )}
+                        <td className="px-4 py-3 text-sm text-right font-bold text-gray-900">
+                          100%
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded">
             <h3 className="font-semibold text-green-900 mb-2">💡 Cost Management Tips</h3>
             <ul className="list-disc list-inside space-y-1 text-sm text-green-800">
@@ -399,6 +1001,8 @@ export default function OperatingCostsCalculator() {
               <li>Consider seasonal variations in costs (labor, utilities)</li>
               <li>Maintain 3-6 months of operating expenses as working capital</li>
               <li>Review and optimize costs quarterly based on actual data</li>
+              <li>Use per-hectare costs to compare efficiency across different crop areas</li>
+              <li>Plan cash flow based on monthly cost breakdown to ensure adequate liquidity</li>
             </ul>
           </div>
         </div>
