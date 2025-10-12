@@ -13,28 +13,45 @@ interface CostCategory {
   [key: string]: CostItem
 }
 
+const costCategories = {
+  fixed: [
+    { key: 'utilities', label: 'Utilities', placeholder: '2000' },
+    { key: 'labor', label: 'Labor', placeholder: '15000' },
+    { key: 'maintenance', label: 'Maintenance', placeholder: '3000' },
+    { key: 'insurance', label: 'Insurance', placeholder: '1500' },
+    { key: 'rent', label: 'Rent/Lease', placeholder: '5000' },
+    { key: 'other', label: 'Other Fixed', placeholder: '1000' },
+  ],
+  variable: [
+    { key: 'seeds', label: 'Seeds/Plants', placeholder: '3000' },
+    { key: 'fertilizer', label: 'Fertilizer', placeholder: '4000' },
+    { key: 'pesticides', label: 'Pesticides', placeholder: '2000' },
+    { key: 'packaging', label: 'Packaging', placeholder: '1500' },
+    { key: 'fuel', label: 'Fuel/Transport', placeholder: '2500' },
+    { key: 'other', label: 'Other Variable', placeholder: '1000' },
+  ],
+}
+
 export default function OperatingCostsCalculator() {
   const [hectares, setHectares] = useState<number>(1)
   const [crops, setCrops] = useState<string[]>(['All Crops'])
   const [newCropName, setNewCropName] = useState('')
 
-  const [fixedCosts, setFixedCosts] = useState<CostCategory>({
-    utilities: { amount: '', month: '1', crop: 'All Crops' },
-    labor: { amount: '', month: '1', crop: 'All Crops' },
-    maintenance: { amount: '', month: '1', crop: 'All Crops' },
-    insurance: { amount: '', month: '1', crop: 'All Crops' },
-    rent: { amount: '', month: '1', crop: 'All Crops' },
-    other: { amount: '', month: '1', crop: 'All Crops' },
-  })
+  const initCostCategory = (keys: string[]) => {
+    const category: CostCategory = {}
+    keys.forEach((key) => {
+      category[key] = { amount: '', month: '1', crop: 'All Crops' }
+    })
+    return category
+  }
 
-  const [variableCosts, setVariableCosts] = useState<CostCategory>({
-    seeds: { amount: '', month: '1', crop: 'All Crops' },
-    fertilizer: { amount: '', month: '1', crop: 'All Crops' },
-    pesticides: { amount: '', month: '1', crop: 'All Crops' },
-    packaging: { amount: '', month: '1', crop: 'All Crops' },
-    fuel: { amount: '', month: '1', crop: 'All Crops' },
-    other: { amount: '', month: '1', crop: 'All Crops' },
-  })
+  const [fixedCosts, setFixedCosts] = useState<CostCategory>(
+    initCostCategory(costCategories.fixed.map((c) => c.key))
+  )
+
+  const [variableCosts, setVariableCosts] = useState<CostCategory>(
+    initCostCategory(costCategories.variable.map((c) => c.key))
+  )
 
   const months = [
     'January',
@@ -61,7 +78,6 @@ export default function OperatingCostsCalculator() {
   const removeCrop = (cropName: string) => {
     if (cropName !== 'All Crops') {
       setCrops(crops.filter((c) => c !== cropName))
-      // Reset costs assigned to this crop back to 'All Crops'
       const resetFixedCosts = { ...fixedCosts }
       const resetVariableCosts = { ...variableCosts }
       Object.keys(resetFixedCosts).forEach((key) => {
@@ -151,9 +167,56 @@ export default function OperatingCostsCalculator() {
     }).format(value)
   }
 
+  const CostRow = ({ category, costKey, label, placeholder, isFixed }: any) => {
+    const costs = isFixed ? fixedCosts : variableCosts
+    const handleChange = isFixed ? handleFixedChange : handleVariableChange
+    const item = costs[costKey]
+
+    return (
+      <tr className="hover:bg-gray-50">
+        <td className="border border-gray-300 px-4 py-2 text-sm">{label}</td>
+        <td className="border border-gray-300 px-2 py-2">
+          <input
+            type="number"
+            value={item.amount}
+            onChange={(e) => handleChange(costKey, 'amount', e.target.value)}
+            className="w-full px-3 py-2 text-sm border-0 focus:ring-2 focus:ring-primary-500 rounded"
+            placeholder={placeholder}
+          />
+        </td>
+        <td className="border border-gray-300 px-2 py-2">
+          <select
+            value={item.month}
+            onChange={(e) => handleChange(costKey, 'month', e.target.value)}
+            className="w-full px-2 py-2 text-sm border-0 focus:ring-2 focus:ring-primary-500 rounded"
+          >
+            {months.map((month, idx) => (
+              <option key={idx} value={(idx + 1).toString()}>
+                {month.substring(0, 3)}
+              </option>
+            ))}
+          </select>
+        </td>
+        <td className="border border-gray-300 px-2 py-2">
+          <select
+            value={item.crop}
+            onChange={(e) => handleChange(costKey, 'crop', e.target.value)}
+            className="w-full px-2 py-2 text-sm border-0 focus:ring-2 focus:ring-primary-500 rounded"
+          >
+            {crops.map((crop) => (
+              <option key={crop} value={crop}>
+                {crop}
+              </option>
+            ))}
+          </select>
+        </td>
+      </tr>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
-      <div className="container mx-auto px-4 py-8 max-w-5xl">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
         <Link
           href="/tools/calculators"
           className="inline-flex items-center text-primary-600 hover:text-primary-700 mb-6 transition-colors"
@@ -182,7 +245,7 @@ export default function OperatingCostsCalculator() {
 
           {/* Hectares and Crop Management */}
           <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <div className="grid md:grid-cols-2 gap-4 mb-4">
+            <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="hectares" className="block text-sm font-medium text-gray-700 mb-1">
                   Total Hectares
@@ -216,7 +279,7 @@ export default function OperatingCostsCalculator() {
                   />
                   <button
                     onClick={addCrop}
-                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors whitespace-nowrap"
                   >
                     + Add
                   </button>
@@ -243,618 +306,151 @@ export default function OperatingCostsCalculator() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 mb-8">
-            {/* Fixed Costs */}
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Fixed Costs (Monthly)</h2>
-
-              <div className="space-y-3">
-                <div>
-                  <label
-                    htmlFor="utilities"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Utilities (ZAR)
-                  </label>
-                  <input
-                    type="number"
-                    id="utilities"
-                    name="utilities"
-                    value={fixedCosts.utilities.amount}
-                    onChange={(e) => handleFixedChange('utilities', 'amount', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., 2000"
+          {/* Cost Input Table */}
+          <div className="mb-8 overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-700 w-1/4">
+                    Category
+                  </th>
+                  <th className="border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-700 w-1/4">
+                    Amount (ZAR)
+                  </th>
+                  <th className="border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-700 w-1/4">
+                    Month
+                  </th>
+                  <th className="border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-700 w-1/4">
+                    Crop
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* Fixed Costs Section */}
+                <tr className="bg-blue-50">
+                  <td colSpan={4} className="border border-gray-300 px-4 py-2 font-semibold text-blue-900">
+                    Fixed Costs (Monthly)
+                  </td>
+                </tr>
+                {costCategories.fixed.map((cat) => (
+                  <CostRow
+                    key={cat.key}
+                    category="fixed"
+                    costKey={cat.key}
+                    label={cat.label}
+                    placeholder={cat.placeholder}
+                    isFixed={true}
                   />
-                  <div className="flex gap-2 mt-1">
-                    <select
-                      value={fixedCosts.utilities.month}
-                      onChange={(e) => handleFixedChange('utilities', 'month', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {months.map((month, idx) => (
-                        <option key={idx} value={(idx + 1).toString()}>
-                          {month}
-                        </option>
-                      ))}
-                    </select>
-                    <select
-                      value={fixedCosts.utilities.crop}
-                      onChange={(e) => handleFixedChange('utilities', 'crop', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {crops.map((crop) => (
-                        <option key={crop} value={crop}>
-                          {crop}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="labor" className="block text-sm font-medium text-gray-700 mb-1">
-                    Labor (ZAR)
-                  </label>
-                  <input
-                    type="number"
-                    id="labor"
-                    name="labor"
-                    value={fixedCosts.labor.amount}
-                    onChange={(e) => handleFixedChange('labor', 'amount', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., 15000"
-                  />
-                  <div className="flex gap-2 mt-1">
-                    <select
-                      value={fixedCosts.labor.month}
-                      onChange={(e) => handleFixedChange('labor', 'month', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {months.map((month, idx) => (
-                        <option key={idx} value={(idx + 1).toString()}>
-                          {month}
-                        </option>
-                      ))}
-                    </select>
-                    <select
-                      value={fixedCosts.labor.crop}
-                      onChange={(e) => handleFixedChange('labor', 'crop', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {crops.map((crop) => (
-                        <option key={crop} value={crop}>
-                          {crop}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="maintenance"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Maintenance (ZAR)
-                  </label>
-                  <input
-                    type="number"
-                    id="maintenance"
-                    name="maintenance"
-                    value={fixedCosts.maintenance.amount}
-                    onChange={(e) => handleFixedChange('maintenance', 'amount', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., 3000"
-                  />
-                  <div className="flex gap-2 mt-1">
-                    <select
-                      value={fixedCosts.maintenance.month}
-                      onChange={(e) => handleFixedChange('maintenance', 'month', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {months.map((month, idx) => (
-                        <option key={idx} value={(idx + 1).toString()}>
-                          {month}
-                        </option>
-                      ))}
-                    </select>
-                    <select
-                      value={fixedCosts.maintenance.crop}
-                      onChange={(e) => handleFixedChange('maintenance', 'crop', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {crops.map((crop) => (
-                        <option key={crop} value={crop}>
-                          {crop}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="insurance"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Insurance (ZAR)
-                  </label>
-                  <input
-                    type="number"
-                    id="insurance"
-                    name="insurance"
-                    value={fixedCosts.insurance.amount}
-                    onChange={(e) => handleFixedChange('insurance', 'amount', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., 1500"
-                  />
-                  <div className="flex gap-2 mt-1">
-                    <select
-                      value={fixedCosts.insurance.month}
-                      onChange={(e) => handleFixedChange('insurance', 'month', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {months.map((month, idx) => (
-                        <option key={idx} value={(idx + 1).toString()}>
-                          {month}
-                        </option>
-                      ))}
-                    </select>
-                    <select
-                      value={fixedCosts.insurance.crop}
-                      onChange={(e) => handleFixedChange('insurance', 'crop', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {crops.map((crop) => (
-                        <option key={crop} value={crop}>
-                          {crop}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="rent" className="block text-sm font-medium text-gray-700 mb-1">
-                    Rent/Lease (ZAR)
-                  </label>
-                  <input
-                    type="number"
-                    id="rent"
-                    name="rent"
-                    value={fixedCosts.rent.amount}
-                    onChange={(e) => handleFixedChange('rent', 'amount', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., 5000"
-                  />
-                  <div className="flex gap-2 mt-1">
-                    <select
-                      value={fixedCosts.rent.month}
-                      onChange={(e) => handleFixedChange('rent', 'month', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {months.map((month, idx) => (
-                        <option key={idx} value={(idx + 1).toString()}>
-                          {month}
-                        </option>
-                      ))}
-                    </select>
-                    <select
-                      value={fixedCosts.rent.crop}
-                      onChange={(e) => handleFixedChange('rent', 'crop', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {crops.map((crop) => (
-                        <option key={crop} value={crop}>
-                          {crop}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="fixedOther"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Other Fixed (ZAR)
-                  </label>
-                  <input
-                    type="number"
-                    id="fixedOther"
-                    name="other"
-                    value={fixedCosts.other.amount}
-                    onChange={(e) => handleFixedChange('other', 'amount', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., 1000"
-                  />
-                  <div className="flex gap-2 mt-1">
-                    <select
-                      value={fixedCosts.other.month}
-                      onChange={(e) => handleFixedChange('other', 'month', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {months.map((month, idx) => (
-                        <option key={idx} value={(idx + 1).toString()}>
-                          {month}
-                        </option>
-                      ))}
-                    </select>
-                    <select
-                      value={fixedCosts.other.crop}
-                      onChange={(e) => handleFixedChange('other', 'crop', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {crops.map((crop) => (
-                        <option key={crop} value={crop}>
-                          {crop}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="bg-gray-100 rounded-lg p-3 border border-gray-300">
-                  <div className="text-xs text-gray-600 mb-1">Total Fixed Costs</div>
-                  <div className="text-xl font-bold text-gray-900">
+                ))}
+                <tr className="bg-gray-100 font-semibold">
+                  <td className="border border-gray-300 px-4 py-2 text-sm">Total Fixed Costs</td>
+                  <td className="border border-gray-300 px-4 py-2 text-sm text-right">
                     {formatCurrency(totalFixed)}/mo
-                  </div>
-                </div>
-              </div>
-            </div>
+                  </td>
+                  <td colSpan={2} className="border border-gray-300"></td>
+                </tr>
 
-            {/* Variable Costs */}
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Variable Costs (Monthly)</h2>
-
-              <div className="space-y-3">
-                <div>
-                  <label htmlFor="seeds" className="block text-sm font-medium text-gray-700 mb-1">
-                    Seeds/Plants (ZAR)
-                  </label>
-                  <input
-                    type="number"
-                    id="seeds"
-                    name="seeds"
-                    value={variableCosts.seeds.amount}
-                    onChange={(e) => handleVariableChange('seeds', 'amount', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., 3000"
+                {/* Variable Costs Section */}
+                <tr className="bg-green-50">
+                  <td colSpan={4} className="border border-gray-300 px-4 py-2 font-semibold text-green-900">
+                    Variable Costs (Monthly)
+                  </td>
+                </tr>
+                {costCategories.variable.map((cat) => (
+                  <CostRow
+                    key={cat.key}
+                    category="variable"
+                    costKey={cat.key}
+                    label={cat.label}
+                    placeholder={cat.placeholder}
+                    isFixed={false}
                   />
-                  <div className="flex gap-2 mt-1">
-                    <select
-                      value={variableCosts.seeds.month}
-                      onChange={(e) => handleVariableChange('seeds', 'month', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {months.map((month, idx) => (
-                        <option key={idx} value={(idx + 1).toString()}>
-                          {month}
-                        </option>
-                      ))}
-                    </select>
-                    <select
-                      value={variableCosts.seeds.crop}
-                      onChange={(e) => handleVariableChange('seeds', 'crop', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {crops.map((crop) => (
-                        <option key={crop} value={crop}>
-                          {crop}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="fertilizer"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Fertilizer (ZAR)
-                  </label>
-                  <input
-                    type="number"
-                    id="fertilizer"
-                    name="fertilizer"
-                    value={variableCosts.fertilizer.amount}
-                    onChange={(e) => handleVariableChange('fertilizer', 'amount', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., 4000"
-                  />
-                  <div className="flex gap-2 mt-1">
-                    <select
-                      value={variableCosts.fertilizer.month}
-                      onChange={(e) => handleVariableChange('fertilizer', 'month', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {months.map((month, idx) => (
-                        <option key={idx} value={(idx + 1).toString()}>
-                          {month}
-                        </option>
-                      ))}
-                    </select>
-                    <select
-                      value={variableCosts.fertilizer.crop}
-                      onChange={(e) => handleVariableChange('fertilizer', 'crop', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {crops.map((crop) => (
-                        <option key={crop} value={crop}>
-                          {crop}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="pesticides"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Pesticides (ZAR)
-                  </label>
-                  <input
-                    type="number"
-                    id="pesticides"
-                    name="pesticides"
-                    value={variableCosts.pesticides.amount}
-                    onChange={(e) => handleVariableChange('pesticides', 'amount', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., 2000"
-                  />
-                  <div className="flex gap-2 mt-1">
-                    <select
-                      value={variableCosts.pesticides.month}
-                      onChange={(e) => handleVariableChange('pesticides', 'month', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {months.map((month, idx) => (
-                        <option key={idx} value={(idx + 1).toString()}>
-                          {month}
-                        </option>
-                      ))}
-                    </select>
-                    <select
-                      value={variableCosts.pesticides.crop}
-                      onChange={(e) => handleVariableChange('pesticides', 'crop', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {crops.map((crop) => (
-                        <option key={crop} value={crop}>
-                          {crop}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="packaging"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Packaging (ZAR)
-                  </label>
-                  <input
-                    type="number"
-                    id="packaging"
-                    name="packaging"
-                    value={variableCosts.packaging.amount}
-                    onChange={(e) => handleVariableChange('packaging', 'amount', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., 1500"
-                  />
-                  <div className="flex gap-2 mt-1">
-                    <select
-                      value={variableCosts.packaging.month}
-                      onChange={(e) => handleVariableChange('packaging', 'month', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {months.map((month, idx) => (
-                        <option key={idx} value={(idx + 1).toString()}>
-                          {month}
-                        </option>
-                      ))}
-                    </select>
-                    <select
-                      value={variableCosts.packaging.crop}
-                      onChange={(e) => handleVariableChange('packaging', 'crop', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {crops.map((crop) => (
-                        <option key={crop} value={crop}>
-                          {crop}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="fuel" className="block text-sm font-medium text-gray-700 mb-1">
-                    Fuel/Transport (ZAR)
-                  </label>
-                  <input
-                    type="number"
-                    id="fuel"
-                    name="fuel"
-                    value={variableCosts.fuel.amount}
-                    onChange={(e) => handleVariableChange('fuel', 'amount', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., 2500"
-                  />
-                  <div className="flex gap-2 mt-1">
-                    <select
-                      value={variableCosts.fuel.month}
-                      onChange={(e) => handleVariableChange('fuel', 'month', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {months.map((month, idx) => (
-                        <option key={idx} value={(idx + 1).toString()}>
-                          {month}
-                        </option>
-                      ))}
-                    </select>
-                    <select
-                      value={variableCosts.fuel.crop}
-                      onChange={(e) => handleVariableChange('fuel', 'crop', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {crops.map((crop) => (
-                        <option key={crop} value={crop}>
-                          {crop}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="variableOther"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Other Variable (ZAR)
-                  </label>
-                  <input
-                    type="number"
-                    id="variableOther"
-                    name="other"
-                    value={variableCosts.other.amount}
-                    onChange={(e) => handleVariableChange('other', 'amount', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., 1000"
-                  />
-                  <div className="flex gap-2 mt-1">
-                    <select
-                      value={variableCosts.other.month}
-                      onChange={(e) => handleVariableChange('other', 'month', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {months.map((month, idx) => (
-                        <option key={idx} value={(idx + 1).toString()}>
-                          {month}
-                        </option>
-                      ))}
-                    </select>
-                    <select
-                      value={variableCosts.other.crop}
-                      onChange={(e) => handleVariableChange('other', 'crop', e.target.value)}
-                      className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
-                    >
-                      {crops.map((crop) => (
-                        <option key={crop} value={crop}>
-                          {crop}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="bg-gray-100 rounded-lg p-3 border border-gray-300">
-                  <div className="text-xs text-gray-600 mb-1">Total Variable Costs</div>
-                  <div className="text-xl font-bold text-gray-900">
+                ))}
+                <tr className="bg-gray-100 font-semibold">
+                  <td className="border border-gray-300 px-4 py-2 text-sm">Total Variable Costs</td>
+                  <td className="border border-gray-300 px-4 py-2 text-sm text-right">
                     {formatCurrency(totalVariable)}/mo
-                  </div>
+                  </td>
+                  <td colSpan={2} className="border border-gray-300"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Cost Summary Cards */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div className="bg-primary-50 rounded-lg p-4 border-2 border-primary-200">
+              <div className="text-sm text-gray-600 mb-1">Total Monthly Costs</div>
+              <div className="text-2xl font-bold text-primary-700">{formatCurrency(totalMonthly)}</div>
+            </div>
+
+            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="text-sm text-gray-600 mb-1">Total Annual Costs</div>
+              <div className="text-2xl font-bold text-gray-900">{formatCurrency(totalAnnual)}</div>
+            </div>
+
+            {hectares > 0 && (
+              <>
+                <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                  <div className="text-sm text-gray-600 mb-1">Cost/Ha (Monthly)</div>
+                  <div className="text-2xl font-bold text-green-700">{formatCurrency(totalPerHectare)}</div>
+                </div>
+
+                <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                  <div className="text-sm text-gray-600 mb-1">Cost/Ha (Annual)</div>
+                  <div className="text-2xl font-bold text-green-700">{formatCurrency(annualPerHectare)}</div>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Cost Breakdown */}
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <div className="bg-white rounded-lg p-4 border border-gray-200">
+              <h3 className="font-semibold text-gray-900 mb-3">Cost Breakdown</h3>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span>Fixed Costs</span>
+                  <span className="font-medium">
+                    {totalMonthly > 0 ? ((totalFixed / totalMonthly) * 100).toFixed(1) : 0}%
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div
+                    className="bg-blue-500 h-2 rounded-full"
+                    style={{
+                      width: `${totalMonthly > 0 ? (totalFixed / totalMonthly) * 100 : 0}%`,
+                    }}
+                  ></div>
+                </div>
+
+                <div className="flex justify-between text-sm mt-3">
+                  <span>Variable Costs</span>
+                  <span className="font-medium">
+                    {totalMonthly > 0 ? ((totalVariable / totalMonthly) * 100).toFixed(1) : 0}%
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div
+                    className="bg-green-500 h-2 rounded-full"
+                    style={{
+                      width: `${totalMonthly > 0 ? (totalVariable / totalMonthly) * 100 : 0}%`,
+                    }}
+                  ></div>
                 </div>
               </div>
             </div>
 
-            {/* Summary */}
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Cost Summary</h2>
-
-              <div className="space-y-4">
-                <div className="bg-primary-50 rounded-lg p-4 border-2 border-primary-200">
-                  <div className="text-sm text-gray-600 mb-1">Total Monthly Costs</div>
-                  <div className="text-3xl font-bold text-primary-700">
-                    {formatCurrency(totalMonthly)}
-                  </div>
+            <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+              <h3 className="font-semibold text-yellow-900 mb-2">Working Capital Needed</h3>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-yellow-800">3 months reserve:</span>
+                  <strong className="text-yellow-900">{formatCurrency(totalMonthly * 3)}</strong>
                 </div>
-
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                  <div className="text-sm text-gray-600 mb-1">Total Annual Costs</div>
-                  <div className="text-2xl font-bold text-gray-900">
-                    {formatCurrency(totalAnnual)}
-                  </div>
-                </div>
-
-                {hectares > 0 && (
-                  <>
-                    <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-                      <div className="text-sm text-gray-600 mb-1">Cost per Hectare (Monthly)</div>
-                      <div className="text-2xl font-bold text-green-700">
-                        {formatCurrency(totalPerHectare)}/ha
-                      </div>
-                    </div>
-
-                    <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-                      <div className="text-sm text-gray-600 mb-1">Cost per Hectare (Annual)</div>
-                      <div className="text-2xl font-bold text-green-700">
-                        {formatCurrency(annualPerHectare)}/ha
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                <div className="bg-white rounded-lg p-4 border border-gray-200">
-                  <h3 className="font-semibold text-gray-900 mb-3">Cost Breakdown</h3>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Fixed Costs</span>
-                      <span className="font-medium">
-                        {totalMonthly > 0 ? ((totalFixed / totalMonthly) * 100).toFixed(1) : 0}%
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-blue-500 h-2 rounded-full"
-                        style={{
-                          width: `${totalMonthly > 0 ? (totalFixed / totalMonthly) * 100 : 0}%`,
-                        }}
-                      ></div>
-                    </div>
-
-                    <div className="flex justify-between text-sm mt-3">
-                      <span>Variable Costs</span>
-                      <span className="font-medium">
-                        {totalMonthly > 0 ? ((totalVariable / totalMonthly) * 100).toFixed(1) : 0}%
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-green-500 h-2 rounded-full"
-                        style={{
-                          width: `${totalMonthly > 0 ? (totalVariable / totalMonthly) * 100 : 0}%`,
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-                  <p className="text-sm text-blue-800">
-                    <strong>Cost Structure:</strong>{' '}
-                    {totalFixed > totalVariable
-                      ? 'Fixed costs dominate. Focus on increasing production to spread fixed costs.'
-                      : totalVariable > totalFixed * 1.5
-                        ? 'High variable costs. Look for ways to reduce per-unit costs.'
-                        : 'Balanced cost structure. Monitor both fixed and variable expenses.'}
-                  </p>
-                </div>
-
-                <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
-                  <h3 className="font-semibold text-yellow-900 mb-2">Working Capital Needed</h3>
-                  <p className="text-sm text-yellow-800 mb-2">
-                    Reserve for 3 months: <strong>{formatCurrency(totalMonthly * 3)}</strong>
-                  </p>
-                  <p className="text-sm text-yellow-800">
-                    Reserve for 6 months: <strong>{formatCurrency(totalMonthly * 6)}</strong>
-                  </p>
+                <div className="flex justify-between text-sm">
+                  <span className="text-yellow-800">6 months reserve:</span>
+                  <strong className="text-yellow-900">{formatCurrency(totalMonthly * 6)}</strong>
                 </div>
               </div>
             </div>
