@@ -169,14 +169,14 @@ export default function OperatingCostsCalculator() {
     const item = costs[costKey]
 
     return (
-      <tr className="hover:bg-gray-50">
-        <td className="border border-gray-300 px-4 py-2 text-sm">{label}</td>
-        <td className="border border-gray-300 px-2 py-2">
+      <tr className="hover:bg-gray-50 dark:hover:bg-gray-700">
+        <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm">{label}</td>
+        <td className="border border-gray-300 dark:border-gray-600 px-2 py-2">
           <input
             type="number"
             value={item.amount}
             onChange={(e) => handleChange(costKey, 'amount', e.target.value)}
-            className="w-full px-3 py-2 text-sm border-0 focus:ring-2 focus:ring-primary-500 rounded"
+            className="w-full px-3 py-2 text-sm border-0 focus:ring-2 focus:ring-primary-500 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
             placeholder={placeholder}
           />
         </td>
@@ -240,10 +240,13 @@ export default function OperatingCostsCalculator() {
           </div>
 
           {/* Hectares and Crop Management */}
-          <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="hectares" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="hectares"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
                   Total Hectares
                 </label>
                 <input
@@ -306,17 +309,17 @@ export default function OperatingCostsCalculator() {
           <div className="mb-8 overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-gray-100">
-                  <th className="border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-700 w-1/4">
+                <tr className="bg-gray-100 dark:bg-gray-700">
+                  <th className="border border-gray-300 dark:border-gray-600 px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 w-1/4">
                     Category
                   </th>
-                  <th className="border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-700 w-1/4">
+                  <th className="border border-gray-300 dark:border-gray-600 px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 w-1/4">
                     Amount (ZAR)
                   </th>
-                  <th className="border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-700 w-1/4">
+                  <th className="border border-gray-300 dark:border-gray-600 px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 w-1/4">
                     Month
                   </th>
-                  <th className="border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-700 w-1/4">
+                  <th className="border border-gray-300 dark:border-gray-600 px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 w-1/4">
                     Crop
                   </th>
                 </tr>
@@ -341,12 +344,14 @@ export default function OperatingCostsCalculator() {
                     isFixed={true}
                   />
                 ))}
-                <tr className="bg-gray-100 font-semibold">
-                  <td className="border border-gray-300 px-4 py-2 text-sm">Total Fixed Costs</td>
-                  <td className="border border-gray-300 px-4 py-2 text-sm text-right">
+                <tr className="bg-gray-100 dark:bg-gray-700 font-semibold">
+                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm">
+                    Total Fixed Costs
+                  </td>
+                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm text-right">
                     {formatCurrency(totalFixed)}/mo
                   </td>
-                  <td colSpan={2} className="border border-gray-300"></td>
+                  <td colSpan={2} className="border border-gray-300 dark:border-gray-600"></td>
                 </tr>
 
                 {/* Variable Costs Section */}
@@ -368,12 +373,14 @@ export default function OperatingCostsCalculator() {
                     isFixed={false}
                   />
                 ))}
-                <tr className="bg-gray-100 font-semibold">
-                  <td className="border border-gray-300 px-4 py-2 text-sm">Total Variable Costs</td>
-                  <td className="border border-gray-300 px-4 py-2 text-sm text-right">
+                <tr className="bg-gray-100 dark:bg-gray-700 font-semibold">
+                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm">
+                    Total Variable Costs
+                  </td>
+                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm text-right">
                     {formatCurrency(totalVariable)}/mo
                   </td>
-                  <td colSpan={2} className="border border-gray-300"></td>
+                  <td colSpan={2} className="border border-gray-300 dark:border-gray-600"></td>
                 </tr>
               </tbody>
             </table>
@@ -388,14 +395,18 @@ export default function OperatingCostsCalculator() {
               </div>
             </div>
 
-            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-              <div className="text-sm text-gray-600 mb-1">Total Annual Costs</div>
-              <div className="text-2xl font-bold text-gray-900">{formatCurrency(totalAnnual)}</div>
+            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+              <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                Total Annual Costs
+              </div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                {formatCurrency(totalAnnual)}
+              </div>
             </div>
 
             {hectares > 0 && (
               <>
-                <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
                   <div className="text-sm text-gray-600 mb-1">Cost/Ha (Monthly)</div>
                   <div className="text-2xl font-bold text-green-700">
                     {formatCurrency(totalPerHectare)}

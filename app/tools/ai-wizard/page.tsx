@@ -834,8 +834,8 @@ export default function AIWizardPage() {
                       index < currentStepIndex
                         ? 'bg-primary-600 text-white'
                         : index === currentStepIndex
-                          ? 'bg-primary-100 border-2 border-primary-600'
-                          : 'bg-gray-100'
+                          ? 'bg-primary-100 dark:bg-primary-900/30 border-2 border-primary-600 dark:border-primary-500'
+                          : 'bg-gray-100 dark:bg-gray-700'
                     }`}
                   >
                     {index < currentStepIndex ? '✓' : step.icon}
@@ -844,9 +844,9 @@ export default function AIWizardPage() {
                 </div>
               ))}
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
               <div
-                className="bg-primary-600 h-2 rounded-full transition-all duration-300"
+                className="bg-primary-600 dark:bg-primary-500 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${((currentStepIndex + 1) / steps.length) * 100}%` }}
               ></div>
             </div>
@@ -1559,12 +1559,14 @@ export default function AIWizardPage() {
                     </p>
                   </div>
 
-                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                    <h3 className="font-semibold text-gray-900 mb-3">📋 Additional Information</h3>
+                  <div className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-4">
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
+                      📋 Additional Information
+                    </h3>
 
                     <div className="space-y-3">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Soil Type (Auto-detected)
                         </label>
                         <input
@@ -1732,7 +1734,7 @@ export default function AIWizardPage() {
             <button
               onClick={handlePrevious}
               disabled={currentStepIndex === 0}
-              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Previous
             </button>

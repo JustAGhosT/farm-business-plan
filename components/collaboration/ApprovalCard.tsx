@@ -50,13 +50,13 @@ export default function ApprovalCard({ workflow, stage, onApprove }: ApprovalCar
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'approved':
-        return 'bg-green-100 text-green-800'
+        return 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300'
       case 'rejected':
-        return 'bg-red-100 text-red-800'
+        return 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
       case 'in-progress':
-        return 'bg-blue-100 text-blue-800'
+        return 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'
     }
   }
 
@@ -69,23 +69,23 @@ export default function ApprovalCard({ workflow, stage, onApprove }: ApprovalCar
     stage.deadline && new Date(stage.deadline) < new Date() && stage.status === 'pending'
 
   return (
-    <div className="border rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow">
+    <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-semibold text-lg">{workflow.name}</h3>
+            <h3 className="font-semibold text-lg text-gray-900 dark:text-white">{workflow.name}</h3>
             <span
               className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(stage.status)}`}
             >
               {stage.status.replace('-', ' ').toUpperCase()}
             </span>
           </div>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
             Stage {stage.order}: {stage.name}
           </p>
         </div>
         {isOverdue && (
-          <span className="px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">
+          <span className="px-2 py-1 rounded text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300">
             OVERDUE
           </span>
         )}
@@ -93,7 +93,7 @@ export default function ApprovalCard({ workflow, stage, onApprove }: ApprovalCar
 
       {/* Stage description not available in ApprovalStage interface */}
 
-      <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
+      <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-3">
         <div>
           <span className="font-medium">Required Approvals:</span> {stage.requiredApprovals}
         </div>
@@ -109,21 +109,21 @@ export default function ApprovalCard({ workflow, stage, onApprove }: ApprovalCar
         <>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="text-blue-600 hover:text-blue-700 text-sm font-medium mb-2"
+            className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium mb-2"
           >
             {isExpanded ? '▼ Hide Approval Form' : '▶ Review & Approve'}
           </button>
 
           {isExpanded && (
-            <div className="mt-3 p-3 bg-gray-50 rounded-lg space-y-3">
+            <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg space-y-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Comments <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Comments <span className="text-red-500 dark:text-red-400">*</span>
                 </label>
                 <textarea
                   value={comments}
                   onChange={(e) => setComments(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                   rows={3}
                   placeholder="Provide your review comments..."
                   disabled={isSubmitting}
@@ -133,21 +133,21 @@ export default function ApprovalCard({ workflow, stage, onApprove }: ApprovalCar
               {/* Optional signature field - always show */}
               {true && (
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     <input
                       type="checkbox"
                       checked={showSignature}
                       onChange={(e) => setShowSignature(e.target.checked)}
                       className="rounded"
                     />
-                    Add Digital Signature <span className="text-red-500">*</span>
+                    Add Digital Signature <span className="text-red-500 dark:text-red-400">*</span>
                   </label>
                   {showSignature && (
                     <input
                       type="text"
                       value={signature}
                       onChange={(e) => setSignature(e.target.value)}
-                      className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                       placeholder="Type your full name as digital signature"
                       disabled={isSubmitting}
                     />
@@ -177,7 +177,7 @@ export default function ApprovalCard({ workflow, stage, onApprove }: ApprovalCar
       )}
 
       {stage.status !== 'pending' && (
-        <div className="mt-2 text-sm">
+        <div className="mt-2 text-sm text-gray-700 dark:text-gray-300">
           <span className="font-medium">Decision:</span> {stage.status.toUpperCase()}
         </div>
       )}
