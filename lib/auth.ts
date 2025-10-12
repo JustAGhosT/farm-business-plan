@@ -57,7 +57,9 @@ export const authOptions: NextAuthOptions = {
         ]
       : []),
     // Google OAuth (requires GOOGLE_ID and GOOGLE_SECRET env vars)
-    ...(process.env.GOOGLE_ID && process.env.GOOGLE_SECRET
+    ...(process.env.NEXT_PUBLIC_GOOGLE_ENABLED === 'true' &&
+    process.env.GOOGLE_ID &&
+    process.env.GOOGLE_SECRET
       ? [
           GoogleProvider({
             clientId: process.env.GOOGLE_ID,
