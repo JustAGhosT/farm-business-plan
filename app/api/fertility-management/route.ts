@@ -271,7 +271,7 @@ function generateFertilityPlan(
         unit: removalData.unit,
         removal: nutrientRemoval,
         recommendations: generateCropRecommendations(crop, soilTests, soilType),
-        notes: removalData.notes || '',
+        notes: 'notes' in removalData ? removalData.notes : '',
       })
     }
 
@@ -306,12 +306,9 @@ function calculateNutrientRemoval(crop: string, yieldTarget: number | string) {
   return {
     p2o5_lb: Math.round(removalData.p2o5_lb * yieldTarget),
     k2o_lb: Math.round(removalData.k2o_lb * yieldTarget),
-    sulfur_lb: removalData.sulfur_lb
-      ? Math.round(removalData.sulfur_lb * yieldTarget)
-      : undefined,
-    boron_lb: removalData.boron_lb
-      ? (removalData.boron_lb * yieldTarget).toFixed(2)
-      : undefined,
+    sulfur_lb:
+      'sulfur_lb' in removalData ? Math.round(removalData.sulfur_lb * yieldTarget) : undefined,
+    boron_lb: 'boron_lb' in removalData ? (removalData.boron_lb * yieldTarget).toFixed(2) : undefined,
   }
 }
 
