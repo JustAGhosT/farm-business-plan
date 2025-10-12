@@ -70,7 +70,9 @@ export default function WorkflowProgress({ workflow, stages, approvals }: Workfl
   return (
     <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
       <div className="mb-4">
-        <h3 className="text-lg font-semibold mb-1 text-gray-900 dark:text-white">{workflow.name}</h3>
+        <h3 className="text-lg font-semibold mb-1 text-gray-900 dark:text-white">
+          {workflow.name}
+        </h3>
         <p className="text-sm text-gray-600 dark:text-gray-400">
           Workflow Type: <span className="font-medium">{workflow.type}</span>
         </p>
@@ -104,7 +106,9 @@ export default function WorkflowProgress({ workflow, stages, approvals }: Workfl
 
                   {/* Stage Info */}
                   <div className="text-center px-2">
-                    <p className="text-sm font-medium mb-1 text-gray-900 dark:text-white">{stage.name}</p>
+                    <p className="text-sm font-medium mb-1 text-gray-900 dark:text-white">
+                      {stage.name}
+                    </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
                       {approvedCount}/{stage.requiredApprovals} approved
                     </p>
@@ -123,7 +127,9 @@ export default function WorkflowProgress({ workflow, stages, approvals }: Workfl
       {/* Overall Status */}
       <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Overall Status:</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Overall Status:
+          </span>
           <span
             className={`px-3 py-1 rounded-full text-sm font-medium ${
               workflow.status === 'approved'

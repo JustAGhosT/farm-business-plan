@@ -353,7 +353,9 @@ export default function FinancialReportsPage() {
               {/* ROI Trend Chart */}
               {getRoiOverTime().length > 0 && (
                 <div className="mb-8 p-6 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">ROI Trend Over Time</h2>
+                  <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+                    ROI Trend Over Time
+                  </h2>
                   <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={getRoiOverTime()}>
                       <CartesianGrid strokeDasharray="3 3" />
@@ -387,7 +389,9 @@ export default function FinancialReportsPage() {
               {getCalculatorTypeDistribution().length > 0 && (
                 <div className="grid md:grid-cols-2 gap-8 mb-8">
                   <div className="p-6 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Calculator Usage Distribution</h2>
+                    <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+                      Calculator Usage Distribution
+                    </h2>
                     <ResponsiveContainer width="100%" height={300}>
                       <PieChart>
                         <Pie
@@ -410,7 +414,9 @@ export default function FinancialReportsPage() {
                   </div>
 
                   <div className="p-6 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Usage by Type</h2>
+                    <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+                      Usage by Type
+                    </h2>
                     <ResponsiveContainer width="100%" height={300}>
                       <BarChart data={getCalculatorTypeDistribution()}>
                         <CartesianGrid strokeDasharray="3 3" />

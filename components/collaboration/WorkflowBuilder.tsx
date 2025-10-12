@@ -125,9 +125,14 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 space-y-6">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 space-y-6"
+    >
       <div>
-        <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Create Approval Workflow</h3>
+        <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+          Create Approval Workflow
+        </h3>
         <p className="text-sm text-gray-600 dark:text-gray-400">
           Define a multi-stage approval process for your {targetType.replace('-', ' ')}
         </p>
@@ -177,7 +182,9 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
             />
             <div>
               <span className="font-medium text-gray-900 dark:text-white">Parallel</span>
-              <p className="text-xs text-gray-500 dark:text-gray-400">All stages proceed simultaneously</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                All stages proceed simultaneously
+              </p>
             </div>
           </label>
         </div>
@@ -186,7 +193,9 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
       {/* Stages */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Approval Stages</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Approval Stages
+          </label>
           <button
             type="button"
             onClick={addStage}
@@ -198,7 +207,10 @@ export default function WorkflowBuilder({ targetType, targetId, onSubmit }: Work
 
         <div className="space-y-4">
           {stages.map((stage, index) => (
-            <div key={index} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-700">
+            <div
+              key={index}
+              className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-700"
+            >
               <div className="flex items-center justify-between mb-3">
                 <h4 className="font-medium text-gray-900 dark:text-white">Stage {index + 1}</h4>
                 {stages.length > 1 && (

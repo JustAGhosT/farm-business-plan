@@ -1560,7 +1560,9 @@ export default function AIWizardPage() {
                   </div>
 
                   <div className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-4">
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-3">📋 Additional Information</h3>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
+                      📋 Additional Information
+                    </h3>
 
                     <div className="space-y-3">
                       <div>

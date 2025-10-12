@@ -243,7 +243,10 @@ export default function OperatingCostsCalculator() {
           <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="hectares" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label
+                  htmlFor="hectares"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
                   Total Hectares
                 </label>
                 <input
@@ -342,7 +345,9 @@ export default function OperatingCostsCalculator() {
                   />
                 ))}
                 <tr className="bg-gray-100 dark:bg-gray-700 font-semibold">
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm">Total Fixed Costs</td>
+                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm">
+                    Total Fixed Costs
+                  </td>
                   <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm text-right">
                     {formatCurrency(totalFixed)}/mo
                   </td>
@@ -369,7 +374,9 @@ export default function OperatingCostsCalculator() {
                   />
                 ))}
                 <tr className="bg-gray-100 dark:bg-gray-700 font-semibold">
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm">Total Variable Costs</td>
+                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm">
+                    Total Variable Costs
+                  </td>
                   <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm text-right">
                     {formatCurrency(totalVariable)}/mo
                   </td>
@@ -389,8 +396,12 @@ export default function OperatingCostsCalculator() {
             </div>
 
             <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-              <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">Total Annual Costs</div>
-              <div className="text-2xl font-bold text-gray-900 dark:text-white">{formatCurrency(totalAnnual)}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                Total Annual Costs
+              </div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                {formatCurrency(totalAnnual)}
+              </div>
             </div>
 
             {hectares > 0 && (
