@@ -20,6 +20,7 @@ describe('Environment Validation Script', () => {
       expect(isValidValue('example-url')).toBe(false)
       expect(isValidValue('placeholder')).toBe(false)
       expect(isValidValue('changeme')).toBe(false)
+      expect(isValidValue('replace_me_with_real_value')).toBe(false)
     })
 
     it('should return true for valid values', () => {
