@@ -59,11 +59,13 @@ The validation script adapts its strictness based on the environment:
 ### CI/CD Environments (GitHub Actions, Netlify, etc.)
 
 Detected when:
+
 - `CI` environment variable is set
 - `GITHUB_ACTIONS` is set
 - Other CI flags (GitLab CI, CircleCI, Travis, Jenkins)
 
 **Behavior:**
+
 - `NEXTAUTH_SECRET` with placeholder → ℹ INFO message (build continues)
 - `DATABASE_URL` with placeholder → ℹ INFO message (build continues)
 - Allows PR builds to succeed without real secrets configured
@@ -73,6 +75,7 @@ Detected when:
 Detected when CI flags are not set.
 
 **Behavior:**
+
 - `NEXTAUTH_SECRET` with placeholder → ❌ ERROR (build fails)
 - `DATABASE_URL` with placeholder → ⚠️ WARNING (build continues)
 - Enforces real secrets for local development
@@ -80,6 +83,7 @@ Detected when CI flags are not set.
 ### Placeholder Detection
 
 The following patterns are considered placeholders:
+
 - `your-` (e.g., "your-secret-key-here")
 - `dummy` (e.g., "dummy-value")
 - `test_` (e.g., "test_password")
@@ -175,6 +179,7 @@ Environment variables are pulled from **multiple sources** in order of precedenc
    - PR builds vs. production deployments may have different requirements
 
 **Common pattern in workflows:**
+
 ```yaml
 env:
   # If secret is not set, use a build-time fallback
@@ -183,6 +188,7 @@ env:
 ```
 
 **Why the validation now allows placeholders in CI:**
+
 - PR builds don't need real secrets to verify the code compiles
 - The validation checks if you're in CI/CD and shows INFO instead of ERROR for placeholders
 - This prevents PR build failures when secrets aren't configured

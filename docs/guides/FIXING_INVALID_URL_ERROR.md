@@ -30,6 +30,7 @@ The validation system treats `NEXTAUTH_SECRET` differently based on your environ
 - **Local Development**: Placeholder values are rejected with an ERROR message. This ensures you use real secrets when developing locally.
 
 **Example placeholder patterns that are detected:**
+
 - `your-secret-key-here`
 - `dummy-value`
 - `test_password`
@@ -38,6 +39,7 @@ The validation system treats `NEXTAUTH_SECRET` differently based on your environ
 - `changeme`
 
 **To generate a proper NEXTAUTH_SECRET:**
+
 ```bash
 openssl rand -base64 32
 ```
