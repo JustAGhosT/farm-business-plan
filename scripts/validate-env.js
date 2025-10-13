@@ -18,6 +18,18 @@
 const path = require('path')
 const fs = require('fs')
 
+// Load environment variables from .env files
+// This allows the script to validate local development configurations
+const envLocalPath = path.join(process.cwd(), '.env.local')
+const envPath = path.join(process.cwd(), '.env')
+
+if (fs.existsSync(envLocalPath)) {
+  require('dotenv').config({ path: envLocalPath })
+}
+if (fs.existsSync(envPath)) {
+  require('dotenv').config({ path: envPath })
+}
+
 // Colors for terminal output
 const colors = {
   reset: '\x1b[0m',
@@ -77,6 +89,7 @@ function isValidValue(value) {
     'placeholder',
     'changeme',
     'replace-this',
+    'replace_me',
   ]
 
   const lowerValue = value.toLowerCase()
