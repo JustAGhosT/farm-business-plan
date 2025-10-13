@@ -3,6 +3,12 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import {
+  CROP_TEMPLATES,
+  getBalancedPortfolio,
+  getLowWaterPortfolio,
+  getHighProfitPortfolio,
+} from '@/lib/cropTemplates'
 
 interface Crop {
   id: string
@@ -13,6 +19,7 @@ interface Crop {
 export default function CalculatorWizard() {
   const router = useRouter()
   const [years, setYears] = useState('5')
+  const [showTemplates, setShowTemplates] = useState(false)
   const [crops, setCrops] = useState<Crop[]>([
     {
       id: '1',
@@ -40,6 +47,39 @@ export default function CalculatorWizard() {
 
   const updateCrop = (id: string, field: keyof Crop, value: string | number) => {
     setCrops(crops.map((c) => (c.id === id ? { ...c, [field]: value } : c)))
+  }
+
+  const applyTemplate = (templateType: 'balanced' | 'lowWater' | 'highProfit' | string) => {
+    let selectedCrops
+
+    switch (templateType) {
+      case 'balanced':
+        selectedCrops = getBalancedPortfolio()
+        break
+      case 'lowWater':
+        selectedCrops = getLowWaterPortfolio()
+        break
+      case 'highProfit':
+        selectedCrops = getHighProfitPortfolio()
+        break
+      default:
+        // Individual crop template
+        const template = CROP_TEMPLATES.find((t) => t.name === templateType)
+        if (template) {
+          selectedCrops = [template]
+        }
+        break
+    }
+
+    if (selectedCrops) {
+      const newCrops = selectedCrops.map((template, index) => ({
+        id: (Date.now() + index).toString(),
+        name: template.name,
+        percentage: template.typicalPercentage,
+      }))
+      setCrops(newCrops)
+      setShowTemplates(false)
+    }
   }
 
   const totalPercentage = crops.reduce((sum, c) => sum + (parseFloat(String(c.percentage)) || 0), 0)
@@ -131,13 +171,104 @@ export default function CalculatorWizard() {
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold">Crop Allocation</h2>
-              <button
-                onClick={addCrop}
-                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm"
-              >
-                + Add Crop
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setShowTemplates(!showTemplates)}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm flex items-center gap-2"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                  Use Template
+                </button>
+                <button
+                  onClick={addCrop}
+                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm"
+                >
+                  + Add Crop
+                </button>
+              </div>
             </div>
+
+            {/* Template Selector */}
+            {showTemplates && (
+              <div className="mb-6 bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-300 rounded-lg p-6">
+                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <span className="text-2xl">🌱</span>
+                  Quick Start Templates
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Pre-configured crop combinations optimized for Bela Bela, Limpopo region
+                </p>
+
+                <div className="grid md:grid-cols-3 gap-4 mb-4">
+                  <button
+                    onClick={() => applyTemplate('balanced')}
+                    className="bg-white border-2 border-green-400 hover:border-green-600 rounded-lg p-4 text-left transition-all hover:shadow-md"
+                  >
+                    <div className="font-semibold text-green-700 mb-1">🌾 Balanced Portfolio</div>
+                    <div className="text-xs text-gray-600 mb-2">
+                      Dragon Fruit (30%), Moringa (25%), Lucerne (20%), Tomatoes (15%), Butternut (10%)
+                    </div>
+                    <div className="text-xs text-green-600">
+                      ✓ Diversified risk • Mixed profitability
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => applyTemplate('lowWater')}
+                    className="bg-white border-2 border-blue-400 hover:border-blue-600 rounded-lg p-4 text-left transition-all hover:shadow-md"
+                  >
+                    <div className="font-semibold text-blue-700 mb-1">💧 Low Water Portfolio</div>
+                    <div className="text-xs text-gray-600 mb-2">
+                      Moringa (40%), Maize (35%), Butternut (25%)
+                    </div>
+                    <div className="text-xs text-blue-600">
+                      ✓ Drought resistant • Lower water costs
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => applyTemplate('highProfit')}
+                    className="bg-white border-2 border-yellow-400 hover:border-yellow-600 rounded-lg p-4 text-left transition-all hover:shadow-md"
+                  >
+                    <div className="font-semibold text-yellow-700 mb-1">💰 High Profit Portfolio</div>
+                    <div className="text-xs text-gray-600 mb-2">
+                      Dragon Fruit (50%), Moringa (50%)
+                    </div>
+                    <div className="text-xs text-yellow-600">
+                      ✓ Maximum returns • Higher investment
+                    </div>
+                  </button>
+                </div>
+
+                <div className="border-t pt-4">
+                  <p className="text-xs text-gray-600 mb-2">Or choose individual crops:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {CROP_TEMPLATES.map((template) => (
+                      <button
+                        key={template.name}
+                        onClick={() => applyTemplate(template.name)}
+                        className="px-3 py-1 bg-white border border-gray-300 hover:border-primary-500 hover:bg-primary-50 rounded text-sm transition-colors"
+                      >
+                        {template.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
 
             <div className="space-y-4 mb-4">
               {crops.map((crop, index) => (
