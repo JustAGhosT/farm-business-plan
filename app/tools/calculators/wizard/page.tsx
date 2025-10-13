@@ -10,6 +10,7 @@ import {
   getHighProfitPortfolio,
 } from '@/lib/cropTemplates'
 import { useWizardSessions } from '@/lib/hooks/useWizardSessions'
+import CropCharts from '@/components/CropCharts'
 
 interface Crop {
   id: string
@@ -620,6 +621,34 @@ export default function CalculatorWizard() {
               </svg>
             </button>
           </div>
+
+          {/* Visual Charts Section */}
+          {crops.filter((c) => c.name.trim() !== '').length > 0 && totalPercentage === 100 && (
+            <div className="mt-8 border-t pt-8">
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mb-2">
+                  <svg
+                    className="w-7 h-7 text-primary-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                    />
+                  </svg>
+                  Visual Analysis
+                </h2>
+                <p className="text-gray-600">
+                  Compare crop performance, revenue projections, and profitability across your portfolio
+                </p>
+              </div>
+              <CropCharts crops={crops} years={parseInt(years)} totalHectares={10} />
+            </div>
+          )}
 
           {/* Help Section - Enhanced with contextual guidance */}
           <div className="mt-8 space-y-4">
