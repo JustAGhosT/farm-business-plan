@@ -8,25 +8,69 @@ interface FundingSource {
   amount: string
 }
 
+interface Crop {
+  id: string
+  name: string
+  percentage: number
+  landPrep: string
+  infrastructure: string
+  equipment: string
+  initialInputs: string
+  workingCapital: string
+}
+
+interface YearInvestment {
+  year: number
+  newInvestment: number
+  cumulativeInvestment: number
+}
+
 export default function InvestmentCalculator() {
-  const [investment, setInvestment] = useState({
-    landPrep: '',
-    infrastructure: '',
-    equipment: '',
-    initialInputs: '',
-    workingCapital: '',
-  })
+  const [years, setYears] = useState('5')
+  const [expansionRate, setExpansionRate] = useState('0')
+  
+  const [crops, setCrops] = useState<Crop[]>([
+    {
+      id: '1',
+      name: '',
+      percentage: 100,
+      landPrep: '',
+      infrastructure: '',
+      equipment: '',
+      initialInputs: '',
+      workingCapital: '',
+    },
+  ])
 
   const [fundingSources, setFundingSources] = useState<FundingSource[]>([
     { name: 'Personal Savings', amount: '' },
     { name: 'Bank Loan', amount: '' },
   ])
 
-  const handleInvestmentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInvestment({
-      ...investment,
-      [e.target.name]: e.target.value,
-    })
+  const addCrop = () => {
+    setCrops([
+      ...crops,
+      {
+        id: Date.now().toString(),
+        name: '',
+        percentage: 0,
+        landPrep: '',
+        infrastructure: '',
+        equipment: '',
+        initialInputs: '',
+        workingCapital: '',
+      },
+    ])
+  }
+
+  const removeCrop = (id: string) => {
+    if (crops.length > 1) {
+      setCrops(crops.filter((c) => c.id !== id))
+    }
+  }
+
+  const updateCrop = (id: string, field: keyof Crop, value: string | number) => {
+    setCrops(crops.map((c) => (c.id === id ? { ...c, [field]: value } : c)))
   }
 
   const handleFundingChange = (index: number, value: string) => {
@@ -39,10 +83,48 @@ export default function InvestmentCalculator() {
     setFundingSources([...fundingSources, { name: '', amount: '' }])
   }
 
-  const totalInvestment = Object.values(investment).reduce(
-    (sum, val) => sum + (parseFloat(val) || 0),
-    0
-  )
+  const calculateTotalInvestment = () => {
+    return crops.reduce((sum, crop) => {
+      const percentage = crop.percentage / 100
+      const cropTotal =
+        (parseFloat(crop.landPrep) || 0) +
+        (parseFloat(crop.infrastructure) || 0) +
+        (parseFloat(crop.equipment) || 0) +
+        (parseFloat(crop.initialInputs) || 0) +
+        (parseFloat(crop.workingCapital) || 0)
+      return sum + cropTotal * percentage
+    }, 0)
+  }
+
+  const calculateYearInvestments = (): YearInvestment[] => {
+    const numYears = parseInt(years) || 5
+    const expansion = parseFloat(expansionRate) / 100
+    const initialInvestment = calculateTotalInvestment()
+    const yearInvestments: YearInvestment[] = []
+
+    let cumulativeInvestment = initialInvestment
+    yearInvestments.push({
+      year: 1,
+      newInvestment: initialInvestment,
+      cumulativeInvestment,
+    })
+
+    for (let year = 2; year <= numYears; year++) {
+      const newInvestment = initialInvestment * expansion
+      cumulativeInvestment += newInvestment
+      yearInvestments.push({
+        year,
+        newInvestment,
+        cumulativeInvestment,
+      })
+    }
+
+    return yearInvestments
+  }
+
+  const totalInvestment = calculateTotalInvestment()
+  const yearInvestments = calculateYearInvestments()
+  const totalPercentage = crops.reduce((sum, c) => sum + (parseFloat(String(c.percentage)) || 0), 0)
 
   const totalFunding = fundingSources.reduce(
     (sum, source) => sum + (parseFloat(source.amount) || 0),
@@ -79,123 +161,273 @@ export default function InvestmentCalculator() {
         </Link>
 
         <div className="bg-white rounded-lg shadow-lg p-8">
-          <div className="flex items-center mb-6">
-            <span className="text-4xl mr-4">💰</span>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Investment Calculator</h1>
-              <p className="text-gray-600">Plan your startup investment and funding requirements</p>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center">
+              <span className="text-4xl mr-4">💰</span>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  Multi-Crop Investment Calculator
+                </h1>
+                <p className="text-gray-600">
+                  Plan startup investment and funding with multi-year timeline
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={addCrop}
+              className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+            >
+              + Add Crop
+            </button>
+          </div>
+
+          {/* Global Settings */}
+          <div className="mb-6 bg-gray-50 rounded-lg p-4">
+            <div className="grid md:grid-cols-3 gap-4">
+              <div>
+                <label htmlFor="years" className="block text-sm font-medium text-gray-700 mb-2">
+                  Investment Timeline (Years)
+                </label>
+                <input
+                  type="number"
+                  id="years"
+                  value={years}
+                  onChange={(e) => setYears(e.target.value)}
+                  min="1"
+                  max="10"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="expansionRate"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Annual Expansion Rate (%)
+                </label>
+                <input
+                  type="number"
+                  id="expansionRate"
+                  value={expansionRate}
+                  onChange={(e) => setExpansionRate(e.target.value)}
+                  step="0.1"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                />
+                <p className="text-xs text-gray-500 mt-1">Additional investment each year</p>
+              </div>
+              <div>
+                <div className="text-sm font-medium text-gray-700 mb-2">Total Allocation</div>
+                <div
+                  className={`text-2xl font-bold ${totalPercentage === 100 ? 'text-green-600' : totalPercentage > 100 ? 'text-red-600' : 'text-yellow-600'}`}
+                >
+                  {totalPercentage.toFixed(0)}%
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  {totalPercentage === 100
+                    ? '✓ Complete'
+                    : totalPercentage > 100
+                      ? '⚠ Over 100%'
+                      : '⚠ Under 100%'}
+                </p>
+              </div>
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Investment Breakdown */}
+          {/* Crop Investment Cards */}
+          <div className="space-y-6 mb-8">
+            {crops.map((crop, index) => (
+              <div key={crop.id} className="border border-gray-200 rounded-lg p-6 bg-white shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    Crop {index + 1}
+                    {crop.name ? `: ${crop.name}` : ''}
+                  </h3>
+                  {crops.length > 1 && (
+                    <button
+                      onClick={() => removeCrop(crop.id)}
+                      className="text-red-600 hover:text-red-700 transition-colors"
+                    >
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Crop Name
+                    </label>
+                    <input
+                      type="text"
+                      value={crop.name}
+                      onChange={(e) => updateCrop(crop.id, 'name', e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="e.g., Dragon Fruit"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      % of Investment
+                    </label>
+                    <input
+                      type="number"
+                      value={crop.percentage}
+                      onChange={(e) =>
+                        updateCrop(crop.id, 'percentage', parseFloat(e.target.value) || 0)
+                      }
+                      min="0"
+                      max="100"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="e.g., 50"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Allocation percentage</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Land Preparation (ZAR)
+                    </label>
+                    <input
+                      type="number"
+                      value={crop.landPrep}
+                      onChange={(e) => updateCrop(crop.id, 'landPrep', e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="e.g., 50000"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">At 100% allocation</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Infrastructure (ZAR)
+                    </label>
+                    <input
+                      type="number"
+                      value={crop.infrastructure}
+                      onChange={(e) => updateCrop(crop.id, 'infrastructure', e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="e.g., 150000"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Irrigation, fencing, structures</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Equipment & Tools (ZAR)
+                    </label>
+                    <input
+                      type="number"
+                      value={crop.equipment}
+                      onChange={(e) => updateCrop(crop.id, 'equipment', e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="e.g., 80000"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Tractors, implements, tools</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Initial Inputs (ZAR)
+                    </label>
+                    <input
+                      type="number"
+                      value={crop.initialInputs}
+                      onChange={(e) => updateCrop(crop.id, 'initialInputs', e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="e.g., 30000"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Seeds, fertilizers, pesticides</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Working Capital (ZAR)
+                    </label>
+                    <input
+                      type="number"
+                      value={crop.workingCapital}
+                      onChange={(e) => updateCrop(crop.id, 'workingCapital', e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="e.g., 40000"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">3-6 months operating expenses</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
+            {/* Investment Summary */}
             <div>
-              <h2 className="text-xl font-semibold mb-4">Investment Breakdown</h2>
-
+              <h2 className="text-xl font-semibold mb-4">Investment Summary</h2>
               <div className="space-y-4">
-                <div>
-                  <label
-                    htmlFor="landPrep"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
-                    Land Preparation (ZAR)
-                  </label>
-                  <input
-                    type="number"
-                    id="landPrep"
-                    name="landPrep"
-                    value={investment.landPrep}
-                    onChange={handleInvestmentChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., 50000"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Clearing, soil testing, amendments</p>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="infrastructure"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
-                    Infrastructure (ZAR)
-                  </label>
-                  <input
-                    type="number"
-                    id="infrastructure"
-                    name="infrastructure"
-                    value={investment.infrastructure}
-                    onChange={handleInvestmentChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., 150000"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Irrigation, fencing, structures</p>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="equipment"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
-                    Equipment & Tools (ZAR)
-                  </label>
-                  <input
-                    type="number"
-                    id="equipment"
-                    name="equipment"
-                    value={investment.equipment}
-                    onChange={handleInvestmentChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., 80000"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Tractors, implements, hand tools</p>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="initialInputs"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
-                    Initial Inputs (ZAR)
-                  </label>
-                  <input
-                    type="number"
-                    id="initialInputs"
-                    name="initialInputs"
-                    value={investment.initialInputs}
-                    onChange={handleInvestmentChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., 30000"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Seeds, fertilizers, pesticides</p>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="workingCapital"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
-                    Working Capital (ZAR)
-                  </label>
-                  <input
-                    type="number"
-                    id="workingCapital"
-                    name="workingCapital"
-                    value={investment.workingCapital}
-                    onChange={handleInvestmentChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., 40000"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Operating expenses for first 3-6 months
-                  </p>
-                </div>
-
                 <div className="bg-primary-50 rounded-lg p-4 border-2 border-primary-200">
-                  <div className="text-sm text-gray-600 mb-1">Total Investment Required</div>
+                  <div className="text-sm text-gray-600 mb-1">Total Initial Investment</div>
                   <div className="text-3xl font-bold text-primary-700">
                     {formatCurrency(totalInvestment)}
                   </div>
                 </div>
+
+                {/* Multi-Year Investment Timeline */}
+                {yearInvestments.length > 1 && (
+                  <div className="bg-white border border-gray-200 rounded-lg p-4">
+                    <h3 className="font-semibold text-gray-900 mb-3">Investment Timeline</h3>
+                    <div className="space-y-2">
+                      {yearInvestments.map((year) => (
+                        <div key={year.year} className="flex justify-between text-sm">
+                          <span className="text-gray-600">Year {year.year}:</span>
+                          <div className="text-right">
+                            <span className="font-medium">{formatCurrency(year.newInvestment)}</span>
+                            <span className="text-xs text-gray-500 ml-2">
+                              (Total: {formatCurrency(year.cumulativeInvestment)})
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Per-Crop Breakdown */}
+                {crops.length > 1 && (
+                  <div className="bg-white border border-gray-200 rounded-lg p-4">
+                    <h3 className="font-semibold text-gray-900 mb-3">Investment by Crop</h3>
+                    <div className="space-y-2">
+                      {crops.map((crop) => {
+                        const percentage = crop.percentage / 100
+                        const cropTotal =
+                          (parseFloat(crop.landPrep) || 0) +
+                          (parseFloat(crop.infrastructure) || 0) +
+                          (parseFloat(crop.equipment) || 0) +
+                          (parseFloat(crop.initialInputs) || 0) +
+                          (parseFloat(crop.workingCapital) || 0)
+                        const cropInvestment = cropTotal * percentage
+                        return (
+                          <div key={crop.id} className="flex justify-between text-sm">
+                            <span className="text-gray-600">
+                              {crop.name || 'Unnamed'} ({crop.percentage}%):
+                            </span>
+                            <span className="font-medium">{formatCurrency(cropInvestment)}</span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
