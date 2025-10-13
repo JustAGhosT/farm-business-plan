@@ -37,8 +37,13 @@ node scripts/validate-env.js
 **Required:**
 
 - `NEXTAUTH_SECRET` - NextAuth JWT secret
-- `NEXTAUTH_URL` - Application URL
-- `DATABASE_URL` - Database connection string (optional for build)
+  - **Local Development**: Must be a real value (not a placeholder)
+  - **CI/CD Builds**: Placeholder values allowed (shows INFO message)
+  - Generate with: `openssl rand -base64 32`
+- `NEXTAUTH_URL` - Application URL (always required, no placeholders allowed)
+- `DATABASE_URL` - Database connection string
+  - **Local Development**: Must be a real value
+  - **CI/CD Builds**: Placeholder values allowed (shows INFO message)
 
 **Optional OAuth:**
 
@@ -46,6 +51,46 @@ node scripts/validate-env.js
 - `GITHUB_ID` / `GITHUB_SECRET` - GitHub OAuth credentials
 - `NEXT_PUBLIC_GOOGLE_ENABLED` - Enable Google OAuth in UI
 - `NEXT_PUBLIC_GITHUB_ENABLED` - Enable GitHub OAuth in UI
+
+## Environment-Specific Behavior
+
+The validation script adapts its strictness based on the environment:
+
+### CI/CD Environments (GitHub Actions, Netlify, etc.)
+
+Detected when:
+
+- `CI` environment variable is set
+- `GITHUB_ACTIONS` is set
+- Other CI flags (GitLab CI, CircleCI, Travis, Jenkins)
+
+**Behavior:**
+
+- `NEXTAUTH_SECRET` with placeholder → ℹ INFO message (build continues)
+- `DATABASE_URL` with placeholder → ℹ INFO message (build continues)
+- Allows PR builds to succeed without real secrets configured
+
+### Local Development
+
+Detected when CI flags are not set.
+
+**Behavior:**
+
+- `NEXTAUTH_SECRET` with placeholder → ❌ ERROR (build fails)
+- `DATABASE_URL` with placeholder → ⚠️ WARNING (build continues)
+- Enforces real secrets for local development
+
+### Placeholder Detection
+
+The following patterns are considered placeholders:
+
+- `your-` (e.g., "your-secret-key-here")
+- `dummy` (e.g., "dummy-value")
+- `test_` (e.g., "test_password")
+- `example` (e.g., "example-url")
+- `placeholder`
+- `changeme`
+- `replace-this`
 
 ## Integration with Build
 
@@ -114,6 +159,47 @@ npm run build
 2. Add the same variables as above
 3. Environment variables are automatically available during build
 
+## Where Environment Variables Come From
+
+### In GitHub Actions / PR Builds
+
+Environment variables are pulled from **multiple sources** in order of precedence:
+
+1. **GitHub Secrets** (Settings → Secrets and variables → Actions)
+   - Example: `${{ secrets.NEXTAUTH_SECRET }}`
+   - Only available if explicitly configured
+
+2. **Workflow Defaults** (specified in `.github/workflows/*.yml`)
+   - Example: `NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || 'build-time-secret-only' }}`
+   - Uses the secret if available, otherwise uses fallback value
+   - Fallback values may be placeholders suitable for build-time only
+
+3. **Environment-Specific Overrides**
+   - Different workflows may use different defaults
+   - PR builds vs. production deployments may have different requirements
+
+**Common pattern in workflows:**
+
+```yaml
+env:
+  # If secret is not set, use a build-time fallback
+  NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || 'build-time-secret-only' }}
+  DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://build:build@localhost:5432/build' }}
+```
+
+**Why the validation now allows placeholders in CI:**
+
+- PR builds don't need real secrets to verify the code compiles
+- The validation checks if you're in CI/CD and shows INFO instead of ERROR for placeholders
+- This prevents PR build failures when secrets aren't configured
+- Real validation still happens for local development
+
+### In Netlify Builds
+
+1. **Netlify Environment Variables** (Site settings → Environment variables)
+2. **Netlify-provided variables** (e.g., `DATABASE_URL` for Netlify DB)
+3. **Branch-specific overrides** (can be configured per deployment context)
+
 ## Error Messages
 
 ### Missing Required Variable
@@ -124,13 +210,21 @@ npm run build
 
 **Fix:** Set the environment variable in your `.env.local` or CI/CD platform.
 
-### Placeholder Value
+### Placeholder Value (in Local Development)
 
 ```
-❌ ERROR: GOOGLE_ID contains a placeholder value
+❌ ERROR: NEXTAUTH_SECRET contains a placeholder value - NextAuth secret key for JWT signing
 ```
 
-**Fix:** Replace the placeholder with a real value or disable the feature.
+**Fix:** Generate a real secret with `openssl rand -base64 32` and set it in `.env.local`.
+
+### Placeholder Value (in CI/CD Build)
+
+```
+ℹ NEXTAUTH_SECRET appears to be a placeholder (OK for build)
+```
+
+**This is informational only** - the build will continue. The validation system allows placeholders in CI/CD builds since they're often just compilation checks.
 
 ### OAuth Configuration Mismatch
 

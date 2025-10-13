@@ -2,7 +2,7 @@
  * Tests for environment variable validation script
  */
 
-const { isValidValue, isCI } = require('../../scripts/validate-env')
+const { isValidValue, isCI, isBuildPhase } = require('../../scripts/validate-env')
 
 describe('Environment Validation Script', () => {
   describe('isValidValue', () => {
@@ -35,6 +35,13 @@ describe('Environment Validation Script', () => {
       expect(isValidValue('a')).toBe(true) // single character
       expect(isValidValue('123')).toBe(true) // numbers only
     })
+
+    it('should detect common placeholder patterns in env.example', () => {
+      // Test the actual placeholder from .env.example
+      expect(isValidValue('GENERATE_SECRET_WITH_OPENSSL_RAND_BASE64_32')).toBe(true)
+      // Test old placeholder that should be rejected
+      expect(isValidValue('your-secret-key-here')).toBe(false)
+    })
   })
 
   describe('isCI', () => {
@@ -66,6 +73,33 @@ describe('Environment Validation Script', () => {
       delete process.env.TRAVIS
       delete process.env.JENKINS_HOME
       expect(isCI()).toBe(false)
+    })
+  })
+
+  describe('isBuildPhase', () => {
+    const originalEnv = process.env
+
+    beforeEach(() => {
+      process.env = { ...originalEnv }
+    })
+
+    afterEach(() => {
+      process.env = originalEnv
+    })
+
+    it('should detect Next.js production build phase', () => {
+      process.env.NEXT_PHASE = 'phase-production-build'
+      expect(isBuildPhase()).toBe(true)
+    })
+
+    it('should return false when not in build phase', () => {
+      delete process.env.NEXT_PHASE
+      expect(isBuildPhase()).toBe(false)
+    })
+
+    it('should return false for other phases', () => {
+      process.env.NEXT_PHASE = 'phase-development-server'
+      expect(isBuildPhase()).toBe(false)
     })
   })
 })

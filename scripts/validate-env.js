@@ -123,19 +123,6 @@ function isBuildPhase() {
 function validateRequiredVars() {
   logInfo('Validating required environment variables...')
 
-  const required = [
-    {
-      name: 'NEXTAUTH_SECRET',
-      description: 'NextAuth secret key for JWT signing',
-      required: true,
-    },
-    {
-      name: 'NEXTAUTH_URL',
-      description: 'Application URL for NextAuth callbacks',
-      required: true,
-    },
-  ]
-
   // DATABASE_URL is required but can be dummy for build
   const dbUrl = process.env.DATABASE_URL
   if (!dbUrl) {
@@ -154,28 +141,28 @@ function validateRequiredVars() {
     logSuccess('DATABASE_URL is set')
   }
 
-  for (const { name, description, required: isRequired } of required) {
-    const value = process.env[name]
-
-    if (!value) {
-      if (isRequired) {
-        logError(`${name} is not set - ${description}`)
-      } else {
-        logWarning(`${name} is not set - ${description}`)
-      }
-      continue
+  // NEXTAUTH_SECRET is required but can be placeholder for build in CI
+  const nextAuthSecret = process.env.NEXTAUTH_SECRET
+  if (!nextAuthSecret) {
+    logError('NEXTAUTH_SECRET is not set - NextAuth secret key for JWT signing')
+  } else if (!isValidValue(nextAuthSecret)) {
+    if (isBuildPhase() || isCI()) {
+      logInfo('NEXTAUTH_SECRET appears to be a placeholder (OK for build)')
+    } else {
+      logError('NEXTAUTH_SECRET contains a placeholder value - NextAuth secret key for JWT signing')
     }
+  } else {
+    logSuccess('NEXTAUTH_SECRET is properly set')
+  }
 
-    if (!isValidValue(value)) {
-      if (isRequired) {
-        logError(`${name} contains a placeholder value - ${description}`)
-      } else {
-        logWarning(`${name} contains a placeholder value - ${description}`)
-      }
-      continue
-    }
-
-    logSuccess(`${name} is properly set`)
+  // NEXTAUTH_URL is always required
+  const nextAuthUrl = process.env.NEXTAUTH_URL
+  if (!nextAuthUrl) {
+    logError('NEXTAUTH_URL is not set - Application URL for NextAuth callbacks')
+  } else if (!isValidValue(nextAuthUrl)) {
+    logError('NEXTAUTH_URL contains a placeholder value - Application URL for NextAuth callbacks')
+  } else {
+    logSuccess('NEXTAUTH_URL is properly set')
   }
 }
 

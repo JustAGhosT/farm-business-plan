@@ -22,6 +22,28 @@ This error typically occurs when:
 
 We've implemented an **environment variable validation system** that catches these issues early.
 
+### Important: NEXTAUTH_SECRET in CI/CD
+
+The validation system treats `NEXTAUTH_SECRET` differently based on your environment:
+
+- **CI/CD Builds (GitHub Actions, Netlify, etc.)**: Placeholder values are allowed with an INFO message. This enables PR builds to succeed even without real secrets configured.
+- **Local Development**: Placeholder values are rejected with an ERROR message. This ensures you use real secrets when developing locally.
+
+**Example placeholder patterns that are detected:**
+
+- `your-secret-key-here`
+- `dummy-value`
+- `test_password`
+- `example-url`
+- `placeholder`
+- `changeme`
+
+**To generate a proper NEXTAUTH_SECRET:**
+
+```bash
+openssl rand -base64 32
+```
+
 ### Automatic Prevention
 
 The build process now includes validation that runs **before** the build starts:
