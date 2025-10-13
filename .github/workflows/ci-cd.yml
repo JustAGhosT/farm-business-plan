@@ -12,6 +12,8 @@ env:
 
 jobs:
   # Job 0: Environment Validation (runs first, fast fail)
+  # This job catches missing or misconfigured environment variables early
+  # to prevent build failures like "Invalid URL" errors from OAuth providers
   env-validation:
     name: Validate Environment Variables
     runs-on: ubuntu-latest

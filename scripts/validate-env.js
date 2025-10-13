@@ -2,14 +2,14 @@
 
 /**
  * Environment Variable Validation Script
- * 
+ *
  * This script validates that required environment variables are properly set
  * before building the application. It helps catch configuration issues early
  * in the CI/CD pipeline.
- * 
+ *
  * Usage:
  *   node scripts/validate-env.js
- * 
+ *
  * Exit codes:
  *   0 - All validations passed
  *   1 - Validation errors found
@@ -67,7 +67,7 @@ function logInfo(message) {
 function isValidValue(value) {
   if (!value) return false
   if (value.trim() === '') return false
-  
+
   // Check for common placeholder patterns
   const placeholders = [
     'your-',
@@ -78,9 +78,9 @@ function isValidValue(value) {
     'changeme',
     'replace-this',
   ]
-  
+
   const lowerValue = value.toLowerCase()
-  return !placeholders.some(placeholder => lowerValue.includes(placeholder))
+  return !placeholders.some((placeholder) => lowerValue.includes(placeholder))
 }
 
 /**
@@ -109,7 +109,7 @@ function isBuildPhase() {
  */
 function validateRequiredVars() {
   logInfo('Validating required environment variables...')
-  
+
   const required = [
     {
       name: 'NEXTAUTH_SECRET',
@@ -122,7 +122,7 @@ function validateRequiredVars() {
       required: true,
     },
   ]
-  
+
   // DATABASE_URL is required but can be dummy for build
   const dbUrl = process.env.DATABASE_URL
   if (!dbUrl) {
@@ -140,10 +140,10 @@ function validateRequiredVars() {
   } else {
     logSuccess('DATABASE_URL is set')
   }
-  
+
   for (const { name, description, required: isRequired } of required) {
     const value = process.env[name]
-    
+
     if (!value) {
       if (isRequired) {
         logError(`${name} is not set - ${description}`)
@@ -152,7 +152,7 @@ function validateRequiredVars() {
       }
       continue
     }
-    
+
     if (!isValidValue(value)) {
       if (isRequired) {
         logError(`${name} contains a placeholder value - ${description}`)
@@ -161,7 +161,7 @@ function validateRequiredVars() {
       }
       continue
     }
-    
+
     logSuccess(`${name} is properly set`)
   }
 }
@@ -171,7 +171,7 @@ function validateRequiredVars() {
  */
 function validateOAuthProviders() {
   logInfo('\nValidating OAuth provider configuration...')
-  
+
   const providers = [
     {
       name: 'Google',
@@ -186,23 +186,21 @@ function validateOAuthProviders() {
       secretVar: 'GITHUB_SECRET',
     },
   ]
-  
+
   for (const provider of providers) {
     const enabled = process.env[provider.enabledVar] === 'true'
     const hasId = process.env[provider.idVar]
     const hasSecret = process.env[provider.secretVar]
-    
+
     if (enabled) {
       logInfo(`${provider.name} OAuth is enabled`)
-      
+
       if (!hasId || !isValidValue(hasId)) {
-        logError(
-          `${provider.name} OAuth is enabled but ${provider.idVar} is missing or invalid`
-        )
+        logError(`${provider.name} OAuth is enabled but ${provider.idVar} is missing or invalid`)
       } else {
         logSuccess(`${provider.idVar} is set`)
       }
-      
+
       if (!hasSecret || !isValidValue(hasSecret)) {
         logError(
           `${provider.name} OAuth is enabled but ${provider.secretVar} is missing or invalid`
@@ -223,12 +221,12 @@ function validateOAuthProviders() {
  */
 function validateURLs() {
   logInfo('\nValidating URL formats...')
-  
+
   const urlVars = ['NEXTAUTH_URL', 'NEXT_PUBLIC_API_URL', 'DATABASE_URL']
-  
+
   for (const varName of urlVars) {
     const value = process.env[varName]
-    
+
     if (!value) {
       if (varName === 'NEXT_PUBLIC_API_URL') {
         // Optional
@@ -237,12 +235,12 @@ function validateURLs() {
       // Already checked in required vars
       continue
     }
-    
+
     // Skip placeholder check for DATABASE_URL in build
     if (varName === 'DATABASE_URL' && !isValidValue(value)) {
       continue
     }
-    
+
     // Basic URL validation
     try {
       new URL(value)
@@ -258,12 +256,12 @@ function validateURLs() {
  */
 function checkEnvExample() {
   logInfo('\nChecking .env.example file...')
-  
+
   const envExamplePath = path.join(process.cwd(), '.env.example')
-  
+
   if (fs.existsSync(envExamplePath)) {
     logSuccess('.env.example file exists')
-    
+
     // Read and suggest if .env.local doesn't exist
     const envLocalPath = path.join(process.cwd(), '.env.local')
     if (!fs.existsSync(envLocalPath) && !isCI()) {
@@ -281,13 +279,11 @@ function checkEnvExample() {
  */
 function printSummary() {
   console.log('\n' + '='.repeat(60))
-  
+
   if (hasErrors) {
     console.log(`${colors.red}❌ Environment validation FAILED${colors.reset}`)
-    console.log(
-      `\n${colors.red}Fix the errors above before building or deploying.${colors.reset}`
-    )
-    
+    console.log(`\n${colors.red}Fix the errors above before building or deploying.${colors.reset}`)
+
     if (isCI()) {
       console.log('\nIn CI/CD environments, set these in:')
       console.log('  • GitHub: Settings → Secrets and variables → Actions')
@@ -301,13 +297,13 @@ function printSummary() {
     }
   } else {
     console.log(`${colors.green}✅ Environment validation PASSED${colors.reset}`)
-    
+
     if (warnings.length > 0) {
       console.log(`\n${colors.yellow}${warnings.length} warning(s) found:${colors.reset}`)
       console.log('These are non-critical but should be addressed.')
     }
   }
-  
+
   console.log('='.repeat(60) + '\n')
 }
 
@@ -319,20 +315,20 @@ function main() {
   console.log(`Environment: ${isCI() ? 'CI/CD' : 'Local Development'}`)
   console.log(`Build Phase: ${isBuildPhase() ? 'Yes' : 'No'}`)
   console.log('')
-  
+
   // Run all validations
   validateRequiredVars()
   validateOAuthProviders()
   validateURLs()
   checkEnvExample()
-  
+
   // Print summary and exit
   printSummary()
-  
+
   if (hasErrors) {
     process.exit(1)
   }
-  
+
   process.exit(0)
 }
 

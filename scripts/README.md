@@ -5,6 +5,7 @@ This directory contains scripts for validating environment variables before buil
 ## Purpose
 
 The validation script helps catch configuration errors early by:
+
 - Checking that required environment variables are set
 - Validating OAuth provider configuration
 - Verifying URL formats
@@ -17,6 +18,7 @@ The validation script helps catch configuration errors early by:
 Main validation script that checks all environment variables.
 
 **Usage:**
+
 ```bash
 # Run validation
 npm run validate:env
@@ -26,17 +28,20 @@ node scripts/validate-env.js
 ```
 
 **Exit Codes:**
+
 - `0` - All validations passed
 - `1` - Validation errors found
 
 **Environment Variables Checked:**
 
 **Required:**
+
 - `NEXTAUTH_SECRET` - NextAuth JWT secret
 - `NEXTAUTH_URL` - Application URL
 - `DATABASE_URL` - Database connection string (optional for build)
 
 **Optional OAuth:**
+
 - `GOOGLE_ID` / `GOOGLE_SECRET` - Google OAuth credentials
 - `GITHUB_ID` / `GITHUB_SECRET` - GitHub OAuth credentials
 - `NEXT_PUBLIC_GOOGLE_ENABLED` - Enable Google OAuth in UI
@@ -93,6 +98,7 @@ npm run build
 ### CI/CD Setup
 
 **GitHub Actions:**
+
 1. Go to Settings → Secrets and variables → Actions
 2. Add required secrets:
    - `NEXTAUTH_SECRET`
@@ -103,6 +109,7 @@ npm run build
    - `GITHUB_ID`, `GITHUB_SECRET`
 
 **Netlify:**
+
 1. Go to Site settings → Environment variables
 2. Add the same variables as above
 3. Environment variables are automatically available during build
@@ -110,6 +117,7 @@ npm run build
 ## Error Messages
 
 ### Missing Required Variable
+
 ```
 ❌ ERROR: NEXTAUTH_SECRET is not set - NextAuth secret key for JWT signing
 ```
@@ -117,6 +125,7 @@ npm run build
 **Fix:** Set the environment variable in your `.env.local` or CI/CD platform.
 
 ### Placeholder Value
+
 ```
 ❌ ERROR: GOOGLE_ID contains a placeholder value
 ```
@@ -124,6 +133,7 @@ npm run build
 **Fix:** Replace the placeholder with a real value or disable the feature.
 
 ### OAuth Configuration Mismatch
+
 ```
 ❌ ERROR: Google OAuth is enabled but GOOGLE_SECRET is missing or invalid
 ```
@@ -131,6 +141,7 @@ npm run build
 **Fix:** Either disable OAuth (`NEXT_PUBLIC_GOOGLE_ENABLED=false`) or provide valid credentials.
 
 ### Invalid URL Format
+
 ```
 ❌ ERROR: NEXTAUTH_URL is not a valid URL: not-a-url
 ```
@@ -165,7 +176,8 @@ npm test -- __tests__/scripts/validate-env.test.js
 
 **Cause:** Environment variables are not set in CI/CD platform.
 
-**Solution:** 
+**Solution:**
+
 1. Check that secrets are added in GitHub Actions or Netlify
 2. Verify secret names match exactly (case-sensitive)
 3. Check that secrets have non-empty values
@@ -175,6 +187,7 @@ npm test -- __tests__/scripts/validate-env.test.js
 **Cause:** Validation is stricter than the build process.
 
 **Solution:**
+
 - This is intentional to catch potential runtime issues
 - Fix the validation errors rather than skipping validation
 - If you believe the validation is too strict, review the validation rules
@@ -184,6 +197,7 @@ npm test -- __tests__/scripts/validate-env.test.js
 **Cause:** Credentials not set or placeholder values used.
 
 **Solution:**
+
 1. Verify OAuth app credentials in provider dashboard (Google/GitHub)
 2. Ensure callback URLs are correct
 3. Set `NEXT_PUBLIC_<PROVIDER>_ENABLED=true` to enable
