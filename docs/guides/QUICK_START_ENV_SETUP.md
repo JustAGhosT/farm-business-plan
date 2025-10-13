@@ -25,6 +25,7 @@ openssl rand -base64 32
 ```
 
 This will output something like:
+
 ```
 K8mN9pQ2rS5tU8vW1xY4zA7bC0dE3fG6hI9jL2mN5oP8
 ```
@@ -34,11 +35,13 @@ K8mN9pQ2rS5tU8vW1xY4zA7bC0dE3fG6hI9jL2mN5oP8
 Open `.env.local` and replace the placeholder with your generated secret:
 
 **❌ WRONG:**
+
 ```env
 NEXTAUTH_SECRET="REPLACE_ME_RUN_openssl_rand_base64_32"
 ```
 
 **✅ CORRECT:**
+
 ```env
 NEXTAUTH_SECRET="K8mN9pQ2rS5tU8vW1xY4zA7bC0dE3fG6hI9jL2mN5oP8"
 ```
@@ -50,6 +53,7 @@ npm run validate:env
 ```
 
 You should see:
+
 ```
 ✅ Environment validation PASSED
 ```
@@ -57,6 +61,7 @@ You should see:
 ## Why This Matters
 
 The `NEXTAUTH_SECRET` is used to:
+
 - Sign JWT tokens
 - Encrypt session data
 - Secure authentication
