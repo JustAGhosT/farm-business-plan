@@ -128,14 +128,27 @@ function validateRequiredVars() {
   if (!dbUrl) {
     if (isBuildPhase() || isCI()) {
       logWarning('DATABASE_URL not set (using build-time fallback)')
+      console.warn(`${colors.yellow}  → Note: This is acceptable for CI/CD builds${colors.reset}`)
+      console.warn(`${colors.yellow}  → Set DATABASE_URL as environment variable for runtime deployments${colors.reset}`)
+      if (isCI()) {
+        console.warn(`${colors.yellow}  → For GitHub Actions: Add to Settings → Secrets and variables → Actions${colors.reset}`)
+        console.warn(`${colors.yellow}  → For Netlify: Add to Site settings → Environment variables or use Netlify DB${colors.reset}`)
+      }
     } else {
       logError('DATABASE_URL is required for runtime')
+      console.error(`${colors.red}  → How to fix:${colors.reset}`)
+      console.error(`${colors.red}    1. Copy .env.example to .env.local if not already done${colors.reset}`)
+      console.error(`${colors.red}    2. Set up a PostgreSQL database (local or cloud)${colors.reset}`)
+      console.error(`${colors.red}    3. Set DATABASE_URL="postgresql://user:pass@host:5432/dbname" in .env.local${colors.reset}`)
+      console.error(`${colors.red}    4. Example: "postgresql://postgres:password@localhost:5432/farm_business_plan"${colors.reset}`)
     }
   } else if (!isValidValue(dbUrl)) {
     if (isBuildPhase() || isCI()) {
       logInfo('DATABASE_URL appears to be a placeholder (OK for build)')
     } else {
       logWarning('DATABASE_URL appears to be a placeholder value')
+      console.warn(`${colors.yellow}  → Replace with actual database connection string${colors.reset}`)
+      console.warn(`${colors.yellow}  → Format: postgresql://username:password@host:port/database${colors.reset}`)
     }
   } else {
     logSuccess('DATABASE_URL is set')
@@ -145,11 +158,27 @@ function validateRequiredVars() {
   const nextAuthSecret = process.env.NEXTAUTH_SECRET
   if (!nextAuthSecret) {
     logError('NEXTAUTH_SECRET is not set - NextAuth secret key for JWT signing')
+    console.error(`${colors.red}  → How to fix:${colors.reset}`)
+    if (isCI()) {
+      console.error(`${colors.red}    • For GitHub Actions: Add to Settings → Secrets and variables → Actions → New repository secret${colors.reset}`)
+      console.error(`${colors.red}    • For Netlify: Add to Site settings → Environment variables${colors.reset}`)
+      console.error(`${colors.red}    • Generate with: openssl rand -base64 32${colors.reset}`)
+      console.error(`${colors.red}    • Variable name: NEXTAUTH_SECRET${colors.reset}`)
+    } else {
+      console.error(`${colors.red}    1. Generate a secret: openssl rand -base64 32${colors.reset}`)
+      console.error(`${colors.red}    2. Copy .env.example to .env.local${colors.reset}`)
+      console.error(`${colors.red}    3. Replace the NEXTAUTH_SECRET placeholder with your generated secret${colors.reset}`)
+      console.error(`${colors.red}    4. See docs/guides/QUICK_START_ENV_SETUP.md for details${colors.reset}`)
+    }
   } else if (!isValidValue(nextAuthSecret)) {
     if (isBuildPhase() || isCI()) {
       logInfo('NEXTAUTH_SECRET appears to be a placeholder (OK for build)')
     } else {
       logError('NEXTAUTH_SECRET contains a placeholder value - NextAuth secret key for JWT signing')
+      console.error(`${colors.red}  → How to fix:${colors.reset}`)
+      console.error(`${colors.red}    1. Generate a real secret: openssl rand -base64 32${colors.reset}`)
+      console.error(`${colors.red}    2. Replace the placeholder in .env.local with the generated value${colors.reset}`)
+      console.error(`${colors.red}    3. See docs/guides/QUICK_START_ENV_SETUP.md for details${colors.reset}`)
     }
   } else {
     logSuccess('NEXTAUTH_SECRET is properly set')
@@ -159,8 +188,24 @@ function validateRequiredVars() {
   const nextAuthUrl = process.env.NEXTAUTH_URL
   if (!nextAuthUrl) {
     logError('NEXTAUTH_URL is not set - Application URL for NextAuth callbacks')
+    console.error(`${colors.red}  → How to fix:${colors.reset}`)
+    if (isCI()) {
+      console.error(`${colors.red}    • For GitHub Actions: Add to Settings → Secrets and variables → Actions → New repository secret${colors.reset}`)
+      console.error(`${colors.red}    • For Netlify: Add to Site settings → Environment variables${colors.reset}`)
+      console.error(`${colors.red}    • Variable name: NEXTAUTH_URL${colors.reset}`)
+      console.error(`${colors.red}    • Example for production: https://your-domain.netlify.app${colors.reset}`)
+      console.error(`${colors.red}    • Example for preview: https://preview-branch--your-site.netlify.app${colors.reset}`)
+    } else {
+      console.error(`${colors.red}    1. Copy .env.example to .env.local if not already done${colors.reset}`)
+      console.error(`${colors.red}    2. Set NEXTAUTH_URL="http://localhost:3000" in .env.local${colors.reset}`)
+      console.error(`${colors.red}    3. For production, use your actual domain URL${colors.reset}`)
+    }
   } else if (!isValidValue(nextAuthUrl)) {
     logError('NEXTAUTH_URL contains a placeholder value - Application URL for NextAuth callbacks')
+    console.error(`${colors.red}  → How to fix:${colors.reset}`)
+    console.error(`${colors.red}    • Replace placeholder with actual URL${colors.reset}`)
+    console.error(`${colors.red}    • Local dev: http://localhost:3000${colors.reset}`)
+    console.error(`${colors.red}    • Production: https://your-domain.netlify.app${colors.reset}`)
   } else {
     logSuccess('NEXTAUTH_URL is properly set')
   }
@@ -197,6 +242,20 @@ function validateOAuthProviders() {
 
       if (!hasId || !isValidValue(hasId)) {
         logError(`${provider.name} OAuth is enabled but ${provider.idVar} is missing or invalid`)
+        console.error(`${colors.red}  → How to fix:${colors.reset}`)
+        if (provider.name === 'Google') {
+          console.error(`${colors.red}    1. Go to https://console.cloud.google.com/${colors.reset}`)
+          console.error(`${colors.red}    2. Create or select a project${colors.reset}`)
+          console.error(`${colors.red}    3. Enable Google+ API${colors.reset}`)
+          console.error(`${colors.red}    4. Create OAuth 2.0 credentials${colors.reset}`)
+          console.error(`${colors.red}    5. Set ${provider.idVar} with your Client ID${colors.reset}`)
+        } else if (provider.name === 'GitHub') {
+          console.error(`${colors.red}    1. Go to https://github.com/settings/developers${colors.reset}`)
+          console.error(`${colors.red}    2. Click "New OAuth App"${colors.reset}`)
+          console.error(`${colors.red}    3. Fill in app details${colors.reset}`)
+          console.error(`${colors.red}    4. Set ${provider.idVar} with your Client ID${colors.reset}`)
+        }
+        console.error(`${colors.red}    → Or disable OAuth: Set ${provider.enabledVar}="false"${colors.reset}`)
       } else {
         logSuccess(`${provider.idVar} is set`)
       }
@@ -205,6 +264,10 @@ function validateOAuthProviders() {
         logError(
           `${provider.name} OAuth is enabled but ${provider.secretVar} is missing or invalid`
         )
+        console.error(`${colors.red}  → How to fix:${colors.reset}`)
+        console.error(`${colors.red}    • Get the Client Secret from the same ${provider.name} OAuth app${colors.reset}`)
+        console.error(`${colors.red}    • Set ${provider.secretVar} with your Client Secret${colors.reset}`)
+        console.error(`${colors.red}    → Or disable OAuth: Set ${provider.enabledVar}="false"${colors.reset}`)
       } else {
         logSuccess(`${provider.secretVar} is set`)
       }
@@ -212,6 +275,7 @@ function validateOAuthProviders() {
       logWarning(
         `${provider.name} OAuth credentials are set but ${provider.enabledVar} is not 'true'`
       )
+      console.warn(`${colors.yellow}  → To enable: Set ${provider.enabledVar}="true" in your environment variables${colors.reset}`)
     }
   }
 }
@@ -285,15 +349,37 @@ function printSummary() {
     console.log(`\n${colors.red}Fix the errors above before building or deploying.${colors.reset}`)
 
     if (isCI()) {
-      console.log('\nIn CI/CD environments, set these in:')
-      console.log('  • GitHub: Settings → Secrets and variables → Actions')
-      console.log('  • Netlify: Site settings → Environment variables')
-      console.log('  • Local: Copy .env.example to .env.local and configure')
+      console.log('\n' + colors.blue + 'For CI/CD environments:' + colors.reset)
+      console.log('  • GitHub Actions: Add secrets/variables via:')
+      console.log('    Repository → Settings → Secrets and variables → Actions')
+      console.log('    - Click "New repository secret" for each variable')
+      console.log('    - Name: Variable name (e.g., NEXTAUTH_SECRET)')
+      console.log('    - Value: Your generated value')
+      console.log('')
+      console.log('  • Netlify: Add environment variables via:')
+      console.log('    Site settings → Environment variables → Add a variable')
+      console.log('    - Or use Netlify DB for automatic DATABASE_URL')
+      console.log('')
+      console.log('  ' + colors.blue + 'Quick reference:' + colors.reset)
+      console.log('    - Generate NEXTAUTH_SECRET: openssl rand -base64 32')
+      console.log('    - See docs/guides/QUICK_START_ENV_SETUP.md for details')
     } else {
-      console.log('\nFor local development:')
-      console.log('  1. Copy .env.example to .env.local')
-      console.log('  2. Configure all required variables')
-      console.log('  3. Run this validation again')
+      console.log('\n' + colors.blue + 'Quick Start for Local Development:' + colors.reset)
+      console.log('  1. Copy the example file:')
+      console.log('     ' + colors.green + 'cp .env.example .env.local' + colors.reset)
+      console.log('')
+      console.log('  2. Generate NEXTAUTH_SECRET:')
+      console.log('     ' + colors.green + 'openssl rand -base64 32' + colors.reset)
+      console.log('')
+      console.log('  3. Edit .env.local and set:')
+      console.log('     - NEXTAUTH_SECRET: Paste the generated secret')
+      console.log('     - NEXTAUTH_URL: http://localhost:3000')
+      console.log('     - DATABASE_URL: Your PostgreSQL connection string')
+      console.log('')
+      console.log('  4. Verify configuration:')
+      console.log('     ' + colors.green + 'npm run validate:env' + colors.reset)
+      console.log('')
+      console.log('  ' + colors.blue + 'See docs/guides/QUICK_START_ENV_SETUP.md for detailed setup' + colors.reset)
     }
   } else {
     console.log(`${colors.green}✅ Environment validation PASSED${colors.reset}`)
