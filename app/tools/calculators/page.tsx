@@ -129,10 +129,34 @@ export default function CalculatorsPage() {
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
             Financial Calculators
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+          <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
             Use these tools to create accurate financial projections for your agricultural business
             plan.
           </p>
+          
+          {/* Wizard CTA */}
+          <div className="mt-6 p-6 bg-gradient-to-r from-primary-50 to-green-50 dark:from-primary-900/20 dark:to-green-900/20 border-2 border-primary-300 dark:border-primary-700 rounded-xl">
+            <div className="flex items-start gap-4">
+              <div className="text-4xl">🧭</div>
+              <div className="flex-1">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  New: Guided Calculator Wizard
+                </h3>
+                <p className="text-gray-700 dark:text-gray-300 mb-4">
+                  Set up your crops and timeline once, then navigate through all calculators with Next/Back buttons. Your data carries forward automatically!
+                </p>
+                <Link
+                  href="/tools/calculators/wizard"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-all transform hover:scale-105 font-medium shadow-lg"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  Start Wizard
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
