@@ -29,11 +29,11 @@ export function useWizardSessions() {
       setLoading(true)
       setError(null)
       const response = await fetch('/api/wizard-sessions')
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch sessions')
       }
-      
+
       const data = await response.json()
       setSessions(data.sessions || [])
     } catch (err) {
@@ -77,7 +77,7 @@ export function useWizardSessions() {
   // Update an existing session
   const updateSession = async (
     id: number,
-    updates: Partial<Omit<WizardSession, 'id' | 'created_at' | 'updated_at'>>,
+    updates: Partial<Omit<WizardSession, 'id' | 'created_at' | 'updated_at'>>
   ) => {
     try {
       const response = await fetch('/api/wizard-sessions', {

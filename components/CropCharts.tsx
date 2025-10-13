@@ -126,10 +126,7 @@ export default function CropCharts({ crops, years = 5, totalHectares = 10 }: Cro
             <Tooltip content={<CustomTooltip />} />
             <Bar dataKey="profit" fill="#8b5cf6" name="Profit">
               {chartData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={entry.profit > 0 ? '#10b981' : '#ef4444'}
-                />
+                <Cell key={`cell-${index}`} fill={entry.profit > 0 ? '#10b981' : '#ef4444'} />
               ))}
             </Bar>
           </BarChart>
@@ -138,9 +135,7 @@ export default function CropCharts({ crops, years = 5, totalHectares = 10 }: Cro
 
       {/* ROI Comparison */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          📊 Return on Investment (ROI)
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">📊 Return on Investment (ROI)</h3>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />

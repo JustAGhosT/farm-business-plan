@@ -14,7 +14,7 @@ export interface CropChartData {
 export function prepareCropComparisonData(
   crops: Array<{ name: string; percentage: number }>,
   years: number = 5,
-  totalHectares: number = 10,
+  totalHectares: number = 10
 ): CropChartData[] {
   return crops
     .filter((crop) => crop.name.trim() !== '')
@@ -42,7 +42,8 @@ export function prepareCropComparisonData(
       let totalCosts = 0
 
       for (let year = 1; year <= years; year++) {
-        const production = template.baseProduction * Math.pow(1 + template.growthRate / 100, year - 1)
+        const production =
+          template.baseProduction * Math.pow(1 + template.growthRate / 100, year - 1)
         const price = template.basePrice * Math.pow(1 + template.priceInflation / 100, year - 1)
         const yearRevenue = production * price * hectares
         const yearCosts =
@@ -54,7 +55,8 @@ export function prepareCropComparisonData(
 
       const totalProfit = totalRevenue - totalCosts
       const initialInvestment = template.initialInvestmentPerHa * hectares
-      const roi = initialInvestment > 0 ? ((totalProfit - initialInvestment) / initialInvestment) * 100 : 0
+      const roi =
+        initialInvestment > 0 ? ((totalProfit - initialInvestment) / initialInvestment) * 100 : 0
 
       return {
         name: crop.name,

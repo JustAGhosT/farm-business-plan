@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
       FROM calculator_wizard_sessions 
       WHERE user_id = $1 
       ORDER BY updated_at DESC`,
-      [session.user.id],
+      [session.user.id]
     )
 
     return NextResponse.json({ sessions: result.rows })
@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
         total_percentage || 0,
         current_step || 1,
         JSON.stringify(step_data || {}),
-      ],
+      ]
     )
 
     return NextResponse.json({ session: result.rows[0] }, { status: 201 })
@@ -159,7 +159,7 @@ export async function PUT(request: NextRequest) {
       SET ${updates.join(', ')}
       WHERE id = $${paramCount++} AND user_id = $${paramCount}
       RETURNING *`,
-      values,
+      values
     )
 
     if (result.rows.length === 0) {
@@ -193,7 +193,7 @@ export async function DELETE(request: NextRequest) {
       `DELETE FROM calculator_wizard_sessions 
       WHERE id = $1 AND user_id = $2
       RETURNING id`,
-      [id, session.user.id],
+      [id, session.user.id]
     )
 
     if (result.rows.length === 0) {
