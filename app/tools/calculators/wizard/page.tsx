@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
@@ -9,6 +9,7 @@ import {
   getLowWaterPortfolio,
   getHighProfitPortfolio,
 } from '@/lib/cropTemplates'
+import { useWizardSessions } from '@/lib/hooks/useWizardSessions'
 
 interface Crop {
   id: string
@@ -20,6 +21,9 @@ export default function CalculatorWizard() {
   const router = useRouter()
   const [years, setYears] = useState('5')
   const [showTemplates, setShowTemplates] = useState(false)
+  const [showSavedSessions, setShowSavedSessions] = useState(false)
+  const [sessionName, setSessionName] = useState('')
+  const [saveMessage, setSaveMessage] = useState('')
   const [crops, setCrops] = useState<Crop[]>([
     {
       id: '1',
@@ -27,6 +31,8 @@ export default function CalculatorWizard() {
       percentage: 100,
     },
   ])
+
+  const { sessions, loading, createSession, deleteSession } = useWizardSessions()
 
   const addCrop = () => {
     setCrops([
@@ -83,6 +89,61 @@ export default function CalculatorWizard() {
   }
 
   const totalPercentage = crops.reduce((sum, c) => sum + (parseFloat(String(c.percentage)) || 0), 0)
+
+  const handleSaveSession = async () => {
+    if (!sessionName.trim()) {
+      alert('Please enter a session name')
+      return
+    }
+
+    if (totalPercentage !== 100) {
+      alert(`⚠️ Total percentage must equal 100% before saving. Currently at ${totalPercentage.toFixed(0)}%`)
+      return
+    }
+
+    const validCrops = crops.filter((c) => c.name.trim() !== '')
+    if (validCrops.length === 0) {
+      alert('⚠️ Please add at least one crop before saving')
+      return
+    }
+
+    try {
+      await createSession({
+        session_name: sessionName,
+        years: parseInt(years),
+        crops: validCrops,
+        total_percentage: totalPercentage,
+        current_step: 1,
+        step_data: {},
+      })
+      setSaveMessage('✅ Session saved successfully!')
+      setSessionName('')
+      setTimeout(() => setSaveMessage(''), 3000)
+    } catch (error) {
+      alert('Failed to save session. Please try again.')
+      console.error('Save error:', error)
+    }
+  }
+
+  const handleLoadSession = (session: any) => {
+    setYears(session.years.toString())
+    setCrops(session.crops)
+    setShowSavedSessions(false)
+    setSaveMessage(`✅ Loaded session: ${session.session_name}`)
+    setTimeout(() => setSaveMessage(''), 3000)
+  }
+
+  const handleDeleteSession = async (id: number, name: string) => {
+    if (confirm(`Delete session "${name}"?`)) {
+      try {
+        await deleteSession(id)
+        setSaveMessage('✅ Session deleted successfully')
+        setTimeout(() => setSaveMessage(''), 3000)
+      } catch (error) {
+        alert('Failed to delete session')
+      }
+    }
+  }
 
   const handleStartCalculators = () => {
     // Validation warnings
@@ -176,6 +237,117 @@ export default function CalculatorWizard() {
             <div className="mt-2 text-xs text-blue-700">
               Next: Investment → Revenue → Break-Even → ROI → Loan Analysis
             </div>
+          </div>
+
+          {/* Save/Load Section */}
+          <div className="mb-6 bg-purple-50 border-l-4 border-purple-500 p-4 rounded">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-semibold text-purple-900 flex items-center gap-2">
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
+                  />
+                </svg>
+                Save & Load Sessions
+              </h3>
+              <button
+                onClick={() => setShowSavedSessions(!showSavedSessions)}
+                className="text-sm text-purple-700 hover:text-purple-900 underline"
+              >
+                {showSavedSessions ? 'Hide' : 'View Saved Sessions'}
+              </button>
+            </div>
+
+            {saveMessage && (
+              <div className="mb-3 p-2 bg-green-100 text-green-800 rounded text-sm">
+                {saveMessage}
+              </div>
+            )}
+
+            <div className="flex gap-2 items-end">
+              <div className="flex-1">
+                <label className="block text-xs text-purple-700 mb-1">Session Name</label>
+                <input
+                  type="text"
+                  value={sessionName}
+                  onChange={(e) => setSessionName(e.target.value)}
+                  placeholder="e.g., My 2025 Farm Plan"
+                  className="w-full px-3 py-2 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm"
+                />
+              </div>
+              <button
+                onClick={handleSaveSession}
+                disabled={!sessionName.trim()}
+                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors text-sm flex items-center gap-2"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
+                  />
+                </svg>
+                Save Current Setup
+              </button>
+            </div>
+
+            {showSavedSessions && (
+              <div className="mt-4 border-t border-purple-200 pt-4">
+                <h4 className="text-sm font-semibold text-purple-900 mb-2">Saved Sessions</h4>
+                {loading ? (
+                  <p className="text-sm text-gray-600">Loading sessions...</p>
+                ) : sessions.length === 0 ? (
+                  <p className="text-sm text-gray-600">No saved sessions yet</p>
+                ) : (
+                  <div className="space-y-2 max-h-60 overflow-y-auto">
+                    {sessions.map((session) => (
+                      <div
+                        key={session.id}
+                        className="flex items-center justify-between bg-white p-3 rounded border border-purple-200 hover:border-purple-400 transition-colors"
+                      >
+                        <div className="flex-1">
+                          <div className="font-medium text-sm text-gray-900">
+                            {session.session_name}
+                          </div>
+                          <div className="text-xs text-gray-600">
+                            {session.crops.length} crops • {session.years} years •{' '}
+                            {new Date(session.updated_at).toLocaleDateString()}
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleLoadSession(session)}
+                            className="px-3 py-1 bg-purple-600 text-white rounded text-xs hover:bg-purple-700 transition-colors"
+                          >
+                            Load
+                          </button>
+                          <button
+                            onClick={() => handleDeleteSession(session.id, session.session_name)}
+                            className="px-3 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700 transition-colors"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Global Settings */}
