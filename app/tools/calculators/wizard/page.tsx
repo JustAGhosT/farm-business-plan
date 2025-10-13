@@ -51,19 +51,19 @@ export default function CalculatorWizard() {
       crops: crops.filter((c) => c.name.trim() !== ''),
       totalPercentage,
     }
-    
+
     if (setupData.crops.length === 0) {
       alert('Please add at least one crop with a name')
       return
     }
-    
+
     if (totalPercentage !== 100) {
       alert('Total percentage must equal 100%')
       return
     }
 
     sessionStorage.setItem('calculatorWizardData', JSON.stringify(setupData))
-    
+
     // Navigate to the first calculator in the sequence
     router.push('/tools/calculators/wizard/investment')
   }
@@ -123,9 +123,7 @@ export default function CalculatorWizard() {
                 max="20"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
-              <p className="text-xs text-gray-500 mt-1">
-                This will be used across all calculators
-              </p>
+              <p className="text-xs text-gray-500 mt-1">This will be used across all calculators</p>
             </div>
           </div>
 

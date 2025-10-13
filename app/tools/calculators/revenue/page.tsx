@@ -196,7 +196,10 @@ export default function RevenueCalculator() {
           {/* Crop Input Cards */}
           <div className="space-y-6 mb-8">
             {crops.map((crop, index) => (
-              <div key={crop.id} className="border border-gray-200 rounded-lg p-6 bg-white shadow-sm">
+              <div
+                key={crop.id}
+                className="border border-gray-200 rounded-lg p-6 bg-white shadow-sm"
+              >
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-gray-900">
                     Crop {index + 1}
@@ -245,7 +248,9 @@ export default function RevenueCalculator() {
                     <input
                       type="number"
                       value={crop.percentage}
-                      onChange={(e) => updateCrop(crop.id, 'percentage', parseFloat(e.target.value) || 0)}
+                      onChange={(e) =>
+                        updateCrop(crop.id, 'percentage', parseFloat(e.target.value) || 0)
+                      }
                       min="0"
                       max="100"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -378,8 +383,12 @@ export default function RevenueCalculator() {
                   <tbody>
                     {crops.map((crop) => {
                       const cropProjections = calculateCropProjections(crop)
-                      const cropTotalRevenue = cropProjections.reduce((sum, p) => sum + p.revenue, 0)
-                      const percentage = totalRevenue > 0 ? (cropTotalRevenue / totalRevenue) * 100 : 0
+                      const cropTotalRevenue = cropProjections.reduce(
+                        (sum, p) => sum + p.revenue,
+                        0
+                      )
+                      const percentage =
+                        totalRevenue > 0 ? (cropTotalRevenue / totalRevenue) * 100 : 0
                       return (
                         <tr key={crop.id} className="hover:bg-gray-50">
                           <td className="border border-gray-300 px-4 py-2 font-medium">
@@ -452,9 +461,7 @@ export default function RevenueCalculator() {
                       )
                     })}
                     <tr className="bg-gray-100 font-bold">
-                      <td className="border border-gray-300 px-4 py-2">
-                        Total
-                      </td>
+                      <td className="border border-gray-300 px-4 py-2">Total</td>
                       <td className="border border-gray-300 px-4 py-2 text-right">
                         {formatCurrency(totalRevenue)}
                       </td>

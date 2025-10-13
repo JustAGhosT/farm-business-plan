@@ -333,7 +333,10 @@ export default function LoanCalculator() {
                           const endMonth = Math.min(year * 12, results.schedule.length)
                           const yearSchedule = results.schedule.slice(startMonth, endMonth)
                           const totalPayments = yearSchedule.reduce((sum, m) => sum + m.payment, 0)
-                          const principalPaid = yearSchedule.reduce((sum, m) => sum + m.principal, 0)
+                          const principalPaid = yearSchedule.reduce(
+                            (sum, m) => sum + m.principal,
+                            0
+                          )
                           const interestPaid = yearSchedule.reduce((sum, m) => sum + m.interest, 0)
                           const balance = yearSchedule[yearSchedule.length - 1].balance
 

@@ -28,7 +28,7 @@ interface YearInvestment {
 export default function InvestmentCalculator() {
   const [years, setYears] = useState('5')
   const [expansionRate, setExpansionRate] = useState('0')
-  
+
   const [crops, setCrops] = useState<Crop[]>([
     {
       id: '1',
@@ -236,7 +236,10 @@ export default function InvestmentCalculator() {
           {/* Crop Investment Cards */}
           <div className="space-y-6 mb-8">
             {crops.map((crop, index) => (
-              <div key={crop.id} className="border border-gray-200 rounded-lg p-6 bg-white shadow-sm">
+              <div
+                key={crop.id}
+                className="border border-gray-200 rounded-lg p-6 bg-white shadow-sm"
+              >
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-gray-900">
                     Crop {index + 1}
@@ -391,7 +394,9 @@ export default function InvestmentCalculator() {
                         <div key={year.year} className="flex justify-between text-sm">
                           <span className="text-gray-600">Year {year.year}:</span>
                           <div className="text-right">
-                            <span className="font-medium">{formatCurrency(year.newInvestment)}</span>
+                            <span className="font-medium">
+                              {formatCurrency(year.newInvestment)}
+                            </span>
                             <span className="text-xs text-gray-500 ml-2">
                               (Total: {formatCurrency(year.cumulativeInvestment)})
                             </span>

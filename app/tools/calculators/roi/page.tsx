@@ -101,7 +101,8 @@ export default function ROICalculator() {
     const totalCosts = yearResults.reduce((sum, yr) => sum + yr.costs, 0)
     const totalNetProfit = totalRevenue - totalCosts
     const annualNetProfit = totalNetProfit / numYears
-    const roi = totalInvestment > 0 ? ((totalNetProfit - totalInvestment) / totalInvestment) * 100 : 0
+    const roi =
+      totalInvestment > 0 ? ((totalNetProfit - totalInvestment) / totalInvestment) * 100 : 0
     const paybackPeriod = annualNetProfit > 0 ? totalInvestment / annualNetProfit : 0
 
     return {
@@ -237,7 +238,10 @@ export default function ROICalculator() {
           {/* Crop Input Cards */}
           <div className="space-y-6 mb-8">
             {crops.map((crop, index) => (
-              <div key={crop.id} className="border border-gray-200 rounded-lg p-6 bg-white shadow-sm">
+              <div
+                key={crop.id}
+                className="border border-gray-200 rounded-lg p-6 bg-white shadow-sm"
+              >
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-gray-900">
                     Crop {index + 1}
@@ -377,7 +381,9 @@ export default function ROICalculator() {
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                   <div className="text-sm text-gray-600 mb-1">Payback Period</div>
                   <div className="text-2xl font-bold text-gray-900">
-                    {results.paybackPeriod > 0 ? `${results.paybackPeriod.toFixed(1)} years` : 'N/A'}
+                    {results.paybackPeriod > 0
+                      ? `${results.paybackPeriod.toFixed(1)} years`
+                      : 'N/A'}
                   </div>
                 </div>
               </div>
@@ -443,7 +449,9 @@ export default function ROICalculator() {
                         </td>
                         <td className="border border-gray-300 px-4 py-2 text-right font-semibold">
                           <span
-                            className={year.cumulativeProfit > 0 ? 'text-green-600' : 'text-red-600'}
+                            className={
+                              year.cumulativeProfit > 0 ? 'text-green-600' : 'text-red-600'
+                            }
                           >
                             {formatCurrency(year.cumulativeProfit)}
                           </span>
@@ -487,12 +495,15 @@ export default function ROICalculator() {
                   </thead>
                   <tbody>
                     {crops.map((crop) => {
-                      const investment = (parseFloat(crop.initialInvestment) || 0) * (crop.percentage / 100)
-                      const revenue = (parseFloat(crop.annualRevenue) || 0) * (crop.percentage / 100)
+                      const investment =
+                        (parseFloat(crop.initialInvestment) || 0) * (crop.percentage / 100)
+                      const revenue =
+                        (parseFloat(crop.annualRevenue) || 0) * (crop.percentage / 100)
                       const costs = (parseFloat(crop.annualCosts) || 0) * (crop.percentage / 100)
                       const profit = revenue - costs
                       const totalProfit = profit * parseInt(years)
-                      const cropROI = investment > 0 ? ((totalProfit - investment) / investment) * 100 : 0
+                      const cropROI =
+                        investment > 0 ? ((totalProfit - investment) / investment) * 100 : 0
                       return (
                         <tr key={crop.id} className="hover:bg-gray-50">
                           <td className="border border-gray-300 px-4 py-2 font-medium">
@@ -570,7 +581,9 @@ export default function ROICalculator() {
               💡 Tips for Accurate ROI Calculation
             </h3>
             <ul className="list-disc list-inside space-y-1 text-sm text-yellow-800">
-              <li>Include all startup costs: land prep, infrastructure, equipment, initial inputs</li>
+              <li>
+                Include all startup costs: land prep, infrastructure, equipment, initial inputs
+              </li>
               <li>Be conservative with revenue estimates - factor in yield variability</li>
               <li>Account for all operating costs including labor, utilities, maintenance</li>
               <li>Consider seasonal variations and market price fluctuations</li>

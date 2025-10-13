@@ -228,7 +228,10 @@ export default function BreakEvenCalculator() {
           {/* Crop Input Cards */}
           <div className="space-y-6 mb-8">
             {crops.map((crop, index) => (
-              <div key={crop.id} className="border border-gray-200 rounded-lg p-6 bg-white shadow-sm">
+              <div
+                key={crop.id}
+                className="border border-gray-200 rounded-lg p-6 bg-white shadow-sm"
+              >
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-gray-900">
                     Crop {index + 1}
@@ -386,60 +389,65 @@ export default function BreakEvenCalculator() {
           )}
 
           {/* Multi-Year Projections */}
-          {results.breakEvenUnits > 0 && results.yearBreakEvens && results.yearBreakEvens.length > 0 && (
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold mb-4">Multi-Year Projections</h2>
-              <div className="overflow-x-auto">
-                <table className="min-w-full border-collapse border border-gray-300">
-                  <thead className="bg-primary-100">
-                    <tr>
-                      <th className="border border-gray-300 px-4 py-2 text-left font-semibold">
-                        Year
-                      </th>
-                      <th className="border border-gray-300 px-4 py-2 text-right font-semibold">
-                        Break-Even Units
-                      </th>
-                      <th className="border border-gray-300 px-4 py-2 text-right font-semibold">
-                        Projected Units
-                      </th>
-                      <th className="border border-gray-300 px-4 py-2 text-right font-semibold">
-                        Projected Revenue
-                      </th>
-                      <th className="border border-gray-300 px-4 py-2 text-right font-semibold">
-                        Profit/Loss
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {results.yearBreakEvens.map((year) => (
-                      <tr key={year.year} className="hover:bg-gray-50">
-                        <td className="border border-gray-300 px-4 py-2 font-medium">
-                          Year {year.year}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2 text-right">
-                          {year.breakEvenUnits.toFixed(0)}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2 text-right">
-                          {year.projectedUnits.toFixed(0)}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2 text-right">
-                          {formatCurrency(year.projectedRevenue)}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2 text-right font-semibold">
-                          <span className={year.profitLoss > 0 ? 'text-green-600' : 'text-red-600'}>
-                            {formatCurrency(year.profitLoss)}
-                          </span>
-                        </td>
+          {results.breakEvenUnits > 0 &&
+            results.yearBreakEvens &&
+            results.yearBreakEvens.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-xl font-semibold mb-4">Multi-Year Projections</h2>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full border-collapse border border-gray-300">
+                    <thead className="bg-primary-100">
+                      <tr>
+                        <th className="border border-gray-300 px-4 py-2 text-left font-semibold">
+                          Year
+                        </th>
+                        <th className="border border-gray-300 px-4 py-2 text-right font-semibold">
+                          Break-Even Units
+                        </th>
+                        <th className="border border-gray-300 px-4 py-2 text-right font-semibold">
+                          Projected Units
+                        </th>
+                        <th className="border border-gray-300 px-4 py-2 text-right font-semibold">
+                          Projected Revenue
+                        </th>
+                        <th className="border border-gray-300 px-4 py-2 text-right font-semibold">
+                          Profit/Loss
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {results.yearBreakEvens.map((year) => (
+                        <tr key={year.year} className="hover:bg-gray-50">
+                          <td className="border border-gray-300 px-4 py-2 font-medium">
+                            Year {year.year}
+                          </td>
+                          <td className="border border-gray-300 px-4 py-2 text-right">
+                            {year.breakEvenUnits.toFixed(0)}
+                          </td>
+                          <td className="border border-gray-300 px-4 py-2 text-right">
+                            {year.projectedUnits.toFixed(0)}
+                          </td>
+                          <td className="border border-gray-300 px-4 py-2 text-right">
+                            {formatCurrency(year.projectedRevenue)}
+                          </td>
+                          <td className="border border-gray-300 px-4 py-2 text-right font-semibold">
+                            <span
+                              className={year.profitLoss > 0 ? 'text-green-600' : 'text-red-600'}
+                            >
+                              {formatCurrency(year.profitLoss)}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <p className="text-sm text-gray-600 mt-2">
+                  <strong>Note:</strong> Projected units assume {projectedGrowth}% annual growth
+                  rate.
+                </p>
               </div>
-              <p className="text-sm text-gray-600 mt-2">
-                <strong>Note:</strong> Projected units assume {projectedGrowth}% annual growth rate.
-              </p>
-            </div>
-          )}
+            )}
 
           {/* Per-Crop Break-Even Analysis */}
           {results.breakEvenUnits > 0 && crops.length > 1 && (
