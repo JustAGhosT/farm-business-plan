@@ -58,6 +58,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Validate environment variables before build
+      - name: Validate environment variables
+        run: npm run validate:env
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://build:build@localhost:5432/build' }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || 'build-time-secret-only' }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL || 'http://localhost:3000' }}
+          GITHUB_ID: ${{ secrets.GITHUB_ID }}
+          GITHUB_SECRET: ${{ secrets.GITHUB_SECRET }}
+          NEXT_PUBLIC_GITHUB_ENABLED: ${{ secrets.GITHUB_ID != '' && 'true' || 'false' }}
+          GOOGLE_ID: ${{ secrets.GOOGLE_ID }}
+          GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
+          NEXT_PUBLIC_GOOGLE_ENABLED: ${{ secrets.GOOGLE_ID != '' && 'true' || 'false' }}
+
       # Run tests before deployment (if available)
       # - name: Run tests
       #   run: npm test
@@ -66,10 +80,20 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Build
-        run: npm run build
+        run: npm run build:skip-validation
         env:
           # Add any build-time environment variables here
           NODE_ENV: production
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          # OAuth - only include if secrets exist
+          GITHUB_ID: ${{ secrets.GITHUB_ID }}
+          GITHUB_SECRET: ${{ secrets.GITHUB_SECRET }}
+          NEXT_PUBLIC_GITHUB_ENABLED: ${{ secrets.GITHUB_ID != '' && 'true' || 'false' }}
+          GOOGLE_ID: ${{ secrets.GOOGLE_ID }}
+          GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
+          NEXT_PUBLIC_GOOGLE_ENABLED: ${{ secrets.GOOGLE_ID != '' && 'true' || 'false' }}
 
       - name: Check Netlify secrets
         id: check_secrets
@@ -125,6 +149,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Validate environment variables before build
+      - name: Validate environment variables
+        run: npm run validate:env
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://build:build@localhost:5432/build' }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || 'build-time-secret-only' }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL || 'http://localhost:3000' }}
+          GITHUB_ID: ${{ secrets.GITHUB_ID }}
+          GITHUB_SECRET: ${{ secrets.GITHUB_SECRET }}
+          NEXT_PUBLIC_GITHUB_ENABLED: ${{ secrets.GITHUB_ID != '' && 'true' || 'false' }}
+          GOOGLE_ID: ${{ secrets.GOOGLE_ID }}
+          GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
+          NEXT_PUBLIC_GOOGLE_ENABLED: ${{ secrets.GOOGLE_ID != '' && 'true' || 'false' }}
+
       # Run tests before deployment (if available)
       # - name: Run tests
       #   run: npm test
@@ -133,9 +171,19 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Build
-        run: npm run build
+        run: npm run build:skip-validation
         env:
           NODE_ENV: production
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          # OAuth - only include if secrets exist
+          GITHUB_ID: ${{ secrets.GITHUB_ID }}
+          GITHUB_SECRET: ${{ secrets.GITHUB_SECRET }}
+          NEXT_PUBLIC_GITHUB_ENABLED: ${{ secrets.GITHUB_ID != '' && 'true' || 'false' }}
+          GOOGLE_ID: ${{ secrets.GOOGLE_ID }}
+          GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
+          NEXT_PUBLIC_GOOGLE_ENABLED: ${{ secrets.GOOGLE_ID != '' && 'true' || 'false' }}
 
       - name: Check Netlify secrets (Preview)
         id: check_secrets_preview
