@@ -85,7 +85,8 @@ export default function CalculatorWizard() {
   const totalPercentage = crops.reduce((sum, c) => sum + (parseFloat(String(c.percentage)) || 0), 0)
 
   const handleStartCalculators = () => {
-    // Store the setup data in sessionStorage
+    // Validation warnings
+    const warnings = []
     const setupData = {
       years,
       crops: crops.filter((c) => c.name.trim() !== ''),
@@ -93,13 +94,43 @@ export default function CalculatorWizard() {
     }
 
     if (setupData.crops.length === 0) {
-      alert('Please add at least one crop with a name')
+      alert('⚠️ Please add at least one crop with a name')
       return
     }
 
     if (totalPercentage !== 100) {
-      alert('Total percentage must equal 100%')
+      alert(`⚠️ Total percentage must equal 100%. Currently at ${totalPercentage.toFixed(0)}%`)
       return
+    }
+
+    // Check for validation warnings
+    const yearsNum = parseInt(years)
+    if (yearsNum > 10) {
+      warnings.push('Planning period over 10 years may have significant uncertainty')
+    }
+
+    if (yearsNum < 3) {
+      warnings.push('Short planning periods may not show full crop maturity benefits')
+    }
+
+    // Check for crops with very low or high allocations
+    setupData.crops.forEach((crop) => {
+      if (crop.percentage < 5) {
+        warnings.push(`${crop.name}: Very low allocation (${crop.percentage}%) may not be economically viable`)
+      }
+      if (crop.percentage > 70) {
+        warnings.push(
+          `${crop.name}: High allocation (${crop.percentage}%) increases risk - consider diversification`,
+        )
+      }
+    })
+
+    // Show warnings if any
+    if (warnings.length > 0) {
+      const proceed = confirm(
+        `⚠️ Validation Warnings:\n\n${warnings.map((w) => `• ${w}`).join('\n')}\n\nProceed anyway?`,
+      )
+      if (!proceed) return
     }
 
     sessionStorage.setItem('calculatorWizardData', JSON.stringify(setupData))
@@ -153,6 +184,9 @@ export default function CalculatorWizard() {
             <div>
               <label htmlFor="years" className="block text-sm font-medium text-gray-700 mb-2">
                 Planning Period (Years)
+                <span className="ml-2 text-xs text-gray-500">
+                  ℹ️ Recommended: 3-5 years for most crops
+                </span>
               </label>
               <input
                 type="number"
@@ -161,9 +195,12 @@ export default function CalculatorWizard() {
                 onChange={(e) => setYears(e.target.value)}
                 min="1"
                 max="20"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation"
               />
-              <p className="text-xs text-gray-500 mt-1">This will be used across all calculators</p>
+              <p className="text-xs text-gray-500 mt-1">
+                This timeline will be used across all calculators. Short-term crops: 1-3 years,
+                Perennial crops: 5-10 years
+              </p>
             </div>
           </div>
 
@@ -304,19 +341,27 @@ export default function CalculatorWizard() {
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Crop Name *
+                        <span className="ml-2 text-xs text-gray-500">ℹ️ Select from templates above</span>
                       </label>
                       <input
                         type="text"
                         value={crop.name}
                         onChange={(e) => updateCrop(crop.id, 'name', e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className="w-full px-4 py-2 md:py-2 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation text-base"
                         placeholder="e.g., Dragon Fruit, Moringa, Lucerne"
+                        list={`crop-suggestions-${crop.id}`}
                       />
+                      <datalist id={`crop-suggestions-${crop.id}`}>
+                        {CROP_TEMPLATES.map((template) => (
+                          <option key={template.name} value={template.name} />
+                        ))}
+                      </datalist>
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         % of Land/Resources *
+                        <span className="ml-2 text-xs text-gray-500">ℹ️ Must total 100%</span>
                       </label>
                       <input
                         type="number"
@@ -326,9 +371,13 @@ export default function CalculatorWizard() {
                         }
                         min="0"
                         max="100"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        step="1"
+                        className="w-full px-4 py-2 md:py-2 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation text-base"
                         placeholder="e.g., 50"
                       />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Tip: Start with 20-30% for new crops
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -376,17 +425,17 @@ export default function CalculatorWizard() {
           </div>
 
           {/* Navigation */}
-          <div className="flex items-center justify-between border-t pt-6">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t pt-6">
             <Link
               href="/tools/calculators"
-              className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium text-gray-700"
+              className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium text-gray-700 text-center touch-manipulation"
             >
               Cancel
             </Link>
             <button
               onClick={handleStartCalculators}
               disabled={totalPercentage !== 100 || crops.filter((c) => c.name.trim()).length === 0}
-              className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-medium flex items-center gap-2"
+              className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2 touch-manipulation"
             >
               Start Calculators
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -400,16 +449,110 @@ export default function CalculatorWizard() {
             </button>
           </div>
 
-          {/* Help Section */}
-          <div className="mt-8 bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
-            <h3 className="font-semibold text-yellow-900 mb-2">💡 How It Works</h3>
-            <ul className="list-disc list-inside space-y-1 text-sm text-yellow-800">
-              <li>Enter your crops and allocate percentages (must total 100%)</li>
-              <li>Set your planning timeline (years)</li>
-              <li>Navigate through calculators using Next/Back buttons</li>
-              <li>Your setup data will be pre-filled in each calculator</li>
-              <li>You can modify data in individual calculators as needed</li>
-            </ul>
+          {/* Help Section - Enhanced with contextual guidance */}
+          <div className="mt-8 space-y-4">
+            <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
+              <h3 className="font-semibold text-yellow-900 mb-2">💡 How It Works</h3>
+              <ul className="list-disc list-inside space-y-1 text-sm text-yellow-800">
+                <li>
+                  <strong>Use Templates:</strong> Click "Use Template" for pre-configured crop
+                  portfolios optimized for South African conditions
+                </li>
+                <li>
+                  <strong>Enter Crops:</strong> Add your crops and allocate percentages (must total
+                  100%)
+                </li>
+                <li>
+                  <strong>Set Timeline:</strong> Choose your planning period (3-5 years recommended
+                  for most crops)
+                </li>
+                <li>
+                  <strong>Navigate Calculators:</strong> Use Next/Back buttons to move through
+                  financial analysis steps
+                </li>
+                <li>
+                  <strong>Modify As Needed:</strong> Your setup data is pre-filled but can be
+                  adjusted in each calculator
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+              <h3 className="font-semibold text-blue-900 mb-2">📋 Planning Tips</h3>
+              <ul className="list-disc list-inside space-y-1 text-sm text-blue-800">
+                <li>
+                  <strong>Diversification:</strong> Allocate to 3-5 different crops to reduce risk
+                </li>
+                <li>
+                  <strong>Water Management:</strong> Consider water availability - mix high and low
+                  water-need crops
+                </li>
+                <li>
+                  <strong>Maturity Timelines:</strong> Include crops with different maturity periods
+                  for steady cash flow
+                </li>
+                <li>
+                  <strong>Market Demand:</strong> Research local and export market demand before
+                  finalizing allocations
+                </li>
+                <li>
+                  <strong>Start Small:</strong> For new crops, consider starting with 10-20%
+                  allocation initially
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded">
+              <h3 className="font-semibold text-green-900 mb-2">🌱 Crop Selection Guide</h3>
+              <div className="grid md:grid-cols-3 gap-4 text-sm text-green-800">
+                <div>
+                  <div className="font-semibold mb-1">High Profit Crops:</div>
+                  <ul className="list-disc list-inside text-xs">
+                    <li>Dragon Fruit (R65/kg)</li>
+                    <li>Moringa (R45/kg)</li>
+                  </ul>
+                </div>
+                <div>
+                  <div className="font-semibold mb-1">Low Water Needs:</div>
+                  <ul className="list-disc list-inside text-xs">
+                    <li>Moringa</li>
+                    <li>Maize</li>
+                    <li>Butternut</li>
+                  </ul>
+                </div>
+                <div>
+                  <div className="font-semibold mb-1">Quick Returns:</div>
+                  <ul className="list-disc list-inside text-xs">
+                    <li>Moringa (1 year)</li>
+                    <li>Lucerne (1 year)</li>
+                    <li>Tomatoes (1 year)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+              <h3 className="font-semibold text-red-900 mb-2">⚠️ Common Mistakes to Avoid</h3>
+              <ul className="list-disc list-inside space-y-1 text-sm text-red-800">
+                <li>
+                  <strong>Over-allocation:</strong> Don't allocate more than 70% to any single crop
+                </li>
+                <li>
+                  <strong>Insufficient Water:</strong> Ensure your water supply supports all crops'
+                  needs
+                </li>
+                <li>
+                  <strong>Unrealistic Timeline:</strong> Very long projections (&gt;10 years) have
+                  high uncertainty
+                </li>
+                <li>
+                  <strong>Market Research:</strong> Verify local demand and prices before committing
+                </li>
+                <li>
+                  <strong>Ignoring Costs:</strong> High-revenue crops often have high operating costs
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
