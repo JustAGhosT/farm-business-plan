@@ -51,9 +51,12 @@ export default function ScenarioComparison({ cropTemplates, onClose }: ScenarioC
       const template = cropTemplates.get(crop.name)
       if (template) {
         const hectares = (crop.percentage / 100) * scenario.totalHectares
-        totalInvestment += template.investment.total * hectares
-        annualRevenue += template.revenuePerHectare * hectares
-        annualCosts += template.costsPerHectare * hectares
+        totalInvestment += template.initialInvestmentPerHa * hectares
+        const cropRevenue = template.baseProduction * template.basePrice
+        const cropCosts =
+          template.fixedCostsPerHa + template.variableCostPerUnit * template.baseProduction
+        annualRevenue += cropRevenue * hectares
+        annualCosts += cropCosts * hectares
       }
     })
 

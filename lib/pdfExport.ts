@@ -141,9 +141,12 @@ export async function generateWizardPDF(
     const template = cropTemplates.get(crop.name)
     if (template) {
       const hectares = (crop.percentage / 100) * totalHectares
-      const investment = template.investment.total * hectares
-      const annualRevenue = template.revenuePerHectare * hectares
-      const annualCosts = template.costsPerHectare * hectares
+      const investment = template.initialInvestmentPerHa * hectares
+      const cropRevenue = template.baseProduction * template.basePrice
+      const cropCosts =
+        template.fixedCostsPerHa + template.variableCostPerUnit * template.baseProduction
+      const annualRevenue = cropRevenue * hectares
+      const annualCosts = cropCosts * hectares
       const annualProfit = annualRevenue - annualCosts
       const roi = investment > 0 ? (annualProfit / investment) * 100 : 0
       const paybackYears = annualProfit > 0 ? investment / annualProfit : 999
