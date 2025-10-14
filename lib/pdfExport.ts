@@ -1,3 +1,4 @@
+// cSpell:ignore autotable financials halign exceljs
 import { CropPlan, CropTemplate, ExportOptions, FarmPlan, Scenario } from '@/types'
 import { jsPDF } from 'jspdf'
 import autoTable from 'jspdf-autotable'

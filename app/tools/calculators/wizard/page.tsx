@@ -1,5 +1,7 @@
 'use client'
 
+import WizardCropCharts from '@/components/WizardCropCharts'
+import WizardScenarioComparison from '@/components/WizardScenarioComparison'
 import {
   CROP_TEMPLATES,
   CropTemplate,
@@ -9,8 +11,6 @@ import {
 } from '@/lib/cropTemplates'
 import { useWizardSessions } from '@/lib/hooks/useWizardSessions'
 import { generateWizardPDF } from '@/lib/wizardPdfExport'
-import WizardCropCharts from '@/components/WizardCropCharts'
-import WizardScenarioComparison from '@/components/WizardScenarioComparison'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -565,6 +565,8 @@ export default function CalculatorWizard() {
                       <button
                         onClick={() => removeCrop(crop.id)}
                         className="text-red-600 hover:text-red-700 transition-colors"
+                        aria-label="Remove crop"
+                        title="Remove crop"
                       >
                         <svg
                           className="w-5 h-5"

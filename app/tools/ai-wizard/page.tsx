@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 type Step = 'location' | 'climate' | 'crops' | 'financials' | 'timeline' | 'recommendations'
 
@@ -961,10 +961,11 @@ export default function AIWizardPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="province-select" className="block text-sm font-medium text-gray-700 mb-2">
                       Province *
                     </label>
                     <select
+                      id="province-select"
                       value={data.province}
                       onChange={(e) => setData({ ...data, province: e.target.value })}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -1616,10 +1617,11 @@ export default function AIWizardPage() {
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="timeline-select" className="block text-sm font-medium text-gray-700 mb-2">
                       When do you want to start?
                     </label>
                     <select
+                      id="timeline-select"
                       value={data.timeline}
                       onChange={(e) => setData({ ...data, timeline: e.target.value })}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
