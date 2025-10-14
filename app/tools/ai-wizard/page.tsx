@@ -961,7 +961,10 @@ export default function AIWizardPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="province-select" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label
+                      htmlFor="province-select"
+                      className="block text-sm font-medium text-gray-700 mb-2"
+                    >
                       Province *
                     </label>
                     <select
@@ -1617,7 +1620,10 @@ export default function AIWizardPage() {
 
                 <div className="space-y-4">
                   <div>
-                    <label htmlFor="timeline-select" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label
+                      htmlFor="timeline-select"
+                      className="block text-sm font-medium text-gray-700 mb-2"
+                    >
                       When do you want to start?
                     </label>
                     <select

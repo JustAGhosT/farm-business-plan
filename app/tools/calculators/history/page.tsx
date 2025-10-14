@@ -4,16 +4,16 @@ import { exportSingleCalculatorToPDF, exportToCSV, exportToPDF } from '@/lib/exp
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import {
-    Bar,
-    BarChart,
-    CartesianGrid,
-    Legend,
-    Line,
-    LineChart,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from 'recharts'
 
 interface CalculatorResult {
@@ -190,7 +190,10 @@ export default function CalculatorHistoryPage() {
 
           {/* Filter */}
           <div className="mb-6">
-            <label htmlFor="calculator-type-filter" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="calculator-type-filter"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Filter by Calculator Type
             </label>
             <select

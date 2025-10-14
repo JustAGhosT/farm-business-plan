@@ -246,7 +246,12 @@ export default function WizardScenarioComparison({
                   {/* Configuration */}
                   <div className="grid grid-cols-2 gap-2 mb-3">
                     <div>
-                      <label htmlFor={`years-${scenario.id}`} className="text-xs text-gray-600 dark:text-gray-400">Years</label>
+                      <label
+                        htmlFor={`years-${scenario.id}`}
+                        className="text-xs text-gray-600 dark:text-gray-400"
+                      >
+                        Years
+                      </label>
                       <input
                         id={`years-${scenario.id}`}
                         type="number"
@@ -260,7 +265,12 @@ export default function WizardScenarioComparison({
                       />
                     </div>
                     <div>
-                      <label htmlFor={`hectares-${scenario.id}`} className="text-xs text-gray-600 dark:text-gray-400">Hectares</label>
+                      <label
+                        htmlFor={`hectares-${scenario.id}`}
+                        className="text-xs text-gray-600 dark:text-gray-400"
+                      >
+                        Hectares
+                      </label>
                       <input
                         id={`hectares-${scenario.id}`}
                         type="number"
