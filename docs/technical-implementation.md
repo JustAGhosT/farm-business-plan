@@ -90,7 +90,163 @@ Create a diagram showing:
 
 ---
 
-## 2.3 Support Systems and Structures
+## 2.3 Seed Germination and Propagation Media
+
+### Understanding Germination Requirements
+
+**Ideal seed germination requires:**
+
+- Consistent moisture (like a wrung-out sponge)
+- Adequate oxygen for respiration
+- Correct temperature range (typically 15–30°C for most seeds)
+- Light or darkness (species-dependent)
+- Sterile, well-aerated growing medium
+
+**Key Success Factors:**
+
+- Use light, sterile substrates to prevent compaction and root rot
+- Maintain constant moisture without waterlogging
+- Ensure good airflow to reduce damping off disease
+- Avoid dense garden soil which can suffocate germinating seeds
+
+### Common Seed Germination Substrates
+
+**Overview of popular substrates and their properties:**
+
+| Substrate      | Typical Cost (per litre) | Reusability | Sustainability | Comments                                      |
+| -------------- | ------------------------ | ----------- | -------------- | --------------------------------------------- |
+| Coconut Coir   | Low–Medium               | High        | Excellent      | Renewable, affordable, compostable            |
+| Perlite        | Medium                   | High        | Good           | Can be rinsed and reused                      |
+| Vermiculite    | Medium–High              | Limited     | Moderate       | Good for moisture but needs replacement       |
+| Peat Moss      | Medium                   | Limited     | Poor           | Non-renewable, often imported                 |
+| Rockwool       | Medium–High              | Low         | Poor           | Not biodegradable, single-use                 |
+| Biochar        | Medium                   | High        | Excellent      | Locally sourced possible, improves soil       |
+
+#### Substrate Characteristics
+
+**Coconut Coir:**
+- Excellent water retention and airflow
+- Naturally sterile, prevents compaction
+- Reduces risk of root rot
+- Requires fertilization after initial sprouting
+- Best balance for cost, performance, and sustainability
+
+**Perlite:**
+- Increases drainage and aeration
+- Reduces risk of damping off and root rot
+- Often mixed with coir, peat, or compost
+- Higher initial cost but reusable, reducing long-term expenses
+
+**Vermiculite:**
+- Retains water while maintaining aeration
+- Excellent for seeds needing high humidity
+- Good moisture retention for sensitive seeds
+
+**Peat Moss:**
+- Traditional standard in soilless mixes
+- Good moisture retention and uniform environment
+- Less sustainable than coconut coir
+- Higher long-term costs due to single-use limitations
+
+**Rockwool:**
+- Sterile, inert, holds water well
+- Provides consistent conditions
+- Widely used for hydroponic germination
+- Environmental concerns: not biodegradable
+
+**Biochar:**
+- High sustainability
+- Potential for local sourcing or on-farm production
+- Long-term soil benefits when transplanted
+- May require initial investment
+
+### Common Substrate Mixes for Seed Germination
+
+**Mixing substrates balances moisture retention, drainage, aeration, and cost:**
+
+#### Popular Mix Formulas
+
+**1. Coconut Coir + Perlite:**
+- Very popular for seed starting
+- Coir holds moisture and provides structure
+- Perlite adds drainage and improves aeration
+- Ratio: 50% coir, 50% perlite (general purpose)
+- Ratio: 60% coir, 40% perlite (faster drainage for succulents, herbs)
+
+**2. Peat Moss (or Coco Coir) + Vermiculite/Perlite:**
+- Classic seed-starting mix
+- Vermiculite retains more water (good for humidity-loving seeds)
+- Perlite chosen for more air and less damping off risk
+- Ratio: 50% peat/coir, 25% perlite, 25% vermiculite (most seeds)
+
+**3. Coco Coir + Perlite + Vermiculite:**
+- Balanced blend for sensitive seeds
+- Coir for structure and water retention
+- Perlite for drainage
+- Vermiculite for extra moisture
+- Used for sensitive or slow-germinating seeds
+
+**4. Biochar Additions:**
+- Add 5–10% biochar to enrich mix
+- Provides long-term benefits after transplanting
+
+### Mixing Ratios by Crop Type
+
+**Adjust substrate mix based on crop water needs:**
+
+#### Standard Mix (Most Seeds)
+- 50% coconut coir or peat moss
+- 25% perlite
+- 25% vermiculite
+
+#### Fast Drainage Mix (Succulents, Herbs)
+- 60% coir/peat
+- 40% perlite
+
+#### High Moisture Mix (Seeds Needing Extra Humidity)
+- 50% vermiculite
+- 40% coir/peat
+- 10% perlite
+
+### Financial Considerations
+
+**Budget-conscious substrate selection:**
+
+- **Coconut coir** offers the best balance: affordable, renewable, and effective
+- **Perlite** has higher upfront cost but reusability reduces long-term expenses
+- **Mix expensive materials** with cheaper renewable options to stretch budget
+- **Biochar** requires initial investment but offers sustainability benefits
+- **Avoid peat moss and rockwool** for long-term operations due to single-use costs
+
+### Best Practices for Seed Germination
+
+**Essential guidelines for success:**
+
+1. **Use sterile media** to prevent disease
+2. **Maintain consistent moisture** without waterlogging
+3. **Ensure adequate drainage** to prevent root rot
+4. **Provide proper temperature** for your specific seeds (15–30°C typical)
+5. **Monitor daily** and adjust moisture as needed
+6. **Start fertilization** once seedlings emerge (substrates are often nutrient-free)
+7. **Transplant carefully** to avoid root disturbance
+8. **Label everything** to track varieties and germination success
+
+### Crop-Specific Germination Notes
+
+**Temperature and substrate preferences by crop category:**
+
+| Crop Category        | Optimal Temp Range | Preferred Substrate Mix                  | Special Notes                      |
+| -------------------- | ------------------ | ---------------------------------------- | ---------------------------------- |
+| Tomatoes, Peppers    | 21–29°C            | 50% coir, 25% perlite, 25% vermiculite   | Need consistent warmth             |
+| Lettuce, Brassicas   | 15–20°C            | 50% coir, 50% perlite                    | Prefer cooler conditions           |
+| Cucumbers, Squash    | 21–29°C            | 50% coir, 30% perlite, 20% vermiculite   | High moisture needs                |
+| Herbs (Basil, etc.)  | 18–24°C            | 60% coir, 40% perlite                    | Good drainage prevents rot         |
+| Root Vegetables      | 16–21°C            | 50% coir, 25% perlite, 25% vermiculite   | Direct seed often preferred        |
+| Legumes              | 18–27°C            | 50% coir, 50% perlite                    | Pre-soak seeds for faster germination |
+
+---
+
+## 2.4 Support Systems and Structures
 
 ### Support Structure Requirements (if applicable)
 
@@ -149,7 +305,7 @@ graph TB
 
 ---
 
-## 2.4 Irrigation System Design
+## 2.5 Irrigation System Design
 
 ### Water Requirements Analysis
 
@@ -256,7 +412,7 @@ graph LR
 
 ---
 
-## 2.5 Infrastructure Development
+## 2.6 Infrastructure Development
 
 ### Essential Facilities
 
@@ -293,7 +449,7 @@ graph LR
 
 ---
 
-## 2.6 Equipment and Tools
+## 2.7 Equipment and Tools
 
 ### Essential Equipment List
 
@@ -321,7 +477,7 @@ graph LR
 
 ---
 
-## 2.7 Safety and Compliance
+## 2.8 Safety and Compliance
 
 ### Safety Considerations
 
@@ -353,7 +509,7 @@ graph LR
 
 ---
 
-## 2.8 Implementation Checklist
+## 2.9 Implementation Checklist
 
 Use this checklist to track technical implementation:
 
