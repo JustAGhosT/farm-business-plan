@@ -108,7 +108,10 @@ export function OAuthButtons({
                 redirect URIs match in the provider console.
               </li>
               <li>
-                See docs: <a className="underline" href="/docs/guides/GOOGLE_LOGIN_SETUP.md">Google Login Setup Guide</a>
+                See docs:{' '}
+                <a className="underline" href="/docs/guides/GOOGLE_LOGIN_SETUP.md">
+                  Google Login Setup Guide
+                </a>
               </li>
             </ul>
           </>
@@ -125,13 +128,17 @@ export function OAuthButtons({
         <div className="font-medium">Google sign-in unavailable</div>
         <ul className="list-disc pl-5">
           <li>
-            Not enabled. Set <code>NEXT_PUBLIC_GOOGLE_ENABLED=&quot;true&quot;</code> to show the Google button.
+            Not enabled. Set <code>NEXT_PUBLIC_GOOGLE_ENABLED=&quot;true&quot;</code> to show the
+            Google button.
           </li>
           <li>
             Also ensure your OAuth app and redirect URI are configured in Google Cloud Console.
           </li>
           <li>
-            Docs: <a className="underline" href="/docs/guides/GOOGLE_LOGIN_SETUP.md">Google Login Setup Guide</a>
+            Docs:{' '}
+            <a className="underline" href="/docs/guides/GOOGLE_LOGIN_SETUP.md">
+              Google Login Setup Guide
+            </a>
           </li>
         </ul>
       </div>
@@ -143,7 +150,8 @@ export function OAuthButtons({
         <div className="font-medium">GitHub sign-in unavailable</div>
         <ul className="list-disc pl-5">
           <li>
-            Not enabled. Set <code>NEXT_PUBLIC_GITHUB_ENABLED=&quot;true&quot;</code> to show the GitHub button.
+            Not enabled. Set <code>NEXT_PUBLIC_GITHUB_ENABLED=&quot;true&quot;</code> to show the
+            GitHub button.
           </li>
           <li>Configure your OAuth app and callback URL in GitHub Developer Settings.</li>
         </ul>

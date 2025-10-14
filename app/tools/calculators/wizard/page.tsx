@@ -1,11 +1,11 @@
 'use client'
 
 import {
-    CROP_TEMPLATES,
-    CropTemplate,
-    getBalancedPortfolio,
-    getHighProfitPortfolio,
-    getLowWaterPortfolio,
+  CROP_TEMPLATES,
+  CropTemplate,
+  getBalancedPortfolio,
+  getHighProfitPortfolio,
+  getLowWaterPortfolio,
 } from '@/lib/cropTemplates'
 import { useWizardSessions } from '@/lib/hooks/useWizardSessions'
 import { generateWizardPDF } from '@/lib/wizardPdfExport'

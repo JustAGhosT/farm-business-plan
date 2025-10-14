@@ -1,19 +1,19 @@
 'use client'
 
-import { CROP_COLORS, prepareCropComparisonData } from '@/lib/chartUtils';
+import { CROP_COLORS, prepareCropComparisonData } from '@/lib/chartUtils'
 import {
-    Bar,
-    BarChart,
-    CartesianGrid,
-    Cell,
-    Legend,
-    Pie,
-    PieChart,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis
-} from 'recharts';
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts'
 
 interface WizardCropChartsProps {
   crops: Array<{ name: string; percentage: number }>
@@ -21,7 +21,11 @@ interface WizardCropChartsProps {
   totalHectares?: number
 }
 
-export default function WizardCropCharts({ crops, years = 5, totalHectares = 10 }: WizardCropChartsProps) {
+export default function WizardCropCharts({
+  crops,
+  years = 5,
+  totalHectares = 10,
+}: WizardCropChartsProps) {
   const chartData = prepareCropComparisonData(crops, years, totalHectares)
 
   // Prepare allocation data for pie chart
@@ -254,4 +258,3 @@ export default function WizardCropCharts({ crops, years = 5, totalHectares = 10 
     </div>
   )
 }
-

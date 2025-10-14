@@ -30,7 +30,10 @@ interface ScenarioMetrics {
   totalNetProfit: number
 }
 
-export default function WizardScenarioComparison({ cropTemplates, onClose }: WizardScenarioComparisonProps) {
+export default function WizardScenarioComparison({
+  cropTemplates,
+  onClose,
+}: WizardScenarioComparisonProps) {
   const [scenarios, setScenarios] = useState<Scenario[]>([
     {
       id: '1',
