@@ -1,19 +1,19 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import {
-  CROP_TEMPLATES,
-  getBalancedPortfolio,
-  getLowWaterPortfolio,
-  getHighProfitPortfolio,
-  CropTemplate,
+    CROP_TEMPLATES,
+    CropTemplate,
+    getBalancedPortfolio,
+    getHighProfitPortfolio,
+    getLowWaterPortfolio,
 } from '@/lib/cropTemplates'
 import { useWizardSessions } from '@/lib/hooks/useWizardSessions'
-import CropCharts from '@/components/CropCharts'
-import ScenarioComparison from '@/components/ScenarioComparison'
-import { generateWizardPDF } from '@/lib/pdfExport'
+import { generateWizardPDF } from '@/lib/wizardPdfExport'
+import WizardCropCharts from '@/components/WizardCropCharts'
+import WizardScenarioComparison from '@/components/WizardScenarioComparison'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 interface Crop {
   id: string
@@ -769,7 +769,7 @@ export default function CalculatorWizard() {
                   portfolio
                 </p>
               </div>
-              <CropCharts crops={crops} years={parseInt(years)} totalHectares={10} />
+              <WizardCropCharts crops={crops} years={parseInt(years)} totalHectares={10} />
             </div>
           )}
 
@@ -885,7 +885,7 @@ export default function CalculatorWizard() {
 
       {/* Scenario Comparison Modal */}
       {showScenarioComparison && (
-        <ScenarioComparison
+        <WizardScenarioComparison
           cropTemplates={cropTemplateMap}
           onClose={() => setShowScenarioComparison(false)}
         />
