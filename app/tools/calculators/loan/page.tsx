@@ -40,12 +40,11 @@ export default function LoanCalculator() {
     const totalPayment = monthlyPayment * n
     const totalInterest = totalPayment - P
 
-    // Generate amortization schedule (first year only for display)
+    // Generate full amortization schedule
     const schedule = []
     let balance = P
-    const monthsToShow = Math.min(12, n)
 
-    for (let month = 1; month <= monthsToShow; month++) {
+    for (let month = 1; month <= n; month++) {
       const interestPayment = balance * monthlyRate
       const principalPayment = monthlyPayment - interestPayment
       balance -= principalPayment
@@ -66,6 +65,8 @@ export default function LoanCalculator() {
       schedule,
     })
   }
+
+  const [showFullSchedule, setShowFullSchedule] = useState(false)
 
   useEffect(() => {
     if (values.principal && values.interestRate && values.termYears) {
@@ -290,54 +291,130 @@ export default function LoanCalculator() {
           {/* Amortization Schedule */}
           {results && results.schedule.length > 0 && (
             <div>
-              <h2 className="text-xl font-semibold mb-4">First Year Payment Schedule</h2>
-              <div className="overflow-x-auto">
-                <table className="min-w-full border-collapse border border-gray-300">
-                  <thead className="bg-primary-100">
-                    <tr>
-                      <th className="border border-gray-300 px-4 py-2 text-left font-semibold">
-                        Month
-                      </th>
-                      <th className="border border-gray-300 px-4 py-2 text-right font-semibold">
-                        Payment
-                      </th>
-                      <th className="border border-gray-300 px-4 py-2 text-right font-semibold">
-                        Principal
-                      </th>
-                      <th className="border border-gray-300 px-4 py-2 text-right font-semibold">
-                        Interest
-                      </th>
-                      <th className="border border-gray-300 px-4 py-2 text-right font-semibold">
-                        Balance
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {results.schedule.map((row) => (
-                      <tr key={row.month} className="hover:bg-gray-50">
-                        <td className="border border-gray-300 px-4 py-2 font-medium">
-                          {row.month}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2 text-right">
-                          {formatCurrency(row.payment)}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2 text-right text-green-600">
-                          {formatCurrency(row.principal)}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2 text-right text-red-600">
-                          {formatCurrency(row.interest)}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2 text-right font-semibold">
-                          {formatCurrency(row.balance)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold">Payment Schedule</h2>
+                <button
+                  onClick={() => setShowFullSchedule(!showFullSchedule)}
+                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm"
+                >
+                  {showFullSchedule ? 'Show Year Summary' : 'Show Full Schedule'}
+                </button>
               </div>
+
+              {!showFullSchedule ? (
+                /* Year Summary View */
+                <div className="overflow-x-auto">
+                  <table className="min-w-full border-collapse border border-gray-300">
+                    <thead className="bg-primary-100">
+                      <tr>
+                        <th className="border border-gray-300 px-4 py-2 text-left font-semibold">
+                          Year
+                        </th>
+                        <th className="border border-gray-300 px-4 py-2 text-right font-semibold">
+                          Total Payments
+                        </th>
+                        <th className="border border-gray-300 px-4 py-2 text-right font-semibold">
+                          Principal Paid
+                        </th>
+                        <th className="border border-gray-300 px-4 py-2 text-right font-semibold">
+                          Interest Paid
+                        </th>
+                        <th className="border border-gray-300 px-4 py-2 text-right font-semibold">
+                          Balance
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(() => {
+                        const years = Math.ceil(results.schedule.length / 12)
+                        const yearSummaries = []
+                        for (let year = 1; year <= years; year++) {
+                          const startMonth = (year - 1) * 12
+                          const endMonth = Math.min(year * 12, results.schedule.length)
+                          const yearSchedule = results.schedule.slice(startMonth, endMonth)
+                          const totalPayments = yearSchedule.reduce((sum, m) => sum + m.payment, 0)
+                          const principalPaid = yearSchedule.reduce(
+                            (sum, m) => sum + m.principal,
+                            0
+                          )
+                          const interestPaid = yearSchedule.reduce((sum, m) => sum + m.interest, 0)
+                          const balance = yearSchedule[yearSchedule.length - 1].balance
+
+                          yearSummaries.push(
+                            <tr key={year} className="hover:bg-gray-50">
+                              <td className="border border-gray-300 px-4 py-2 font-medium">
+                                Year {year}
+                              </td>
+                              <td className="border border-gray-300 px-4 py-2 text-right">
+                                {formatCurrency(totalPayments)}
+                              </td>
+                              <td className="border border-gray-300 px-4 py-2 text-right text-green-600">
+                                {formatCurrency(principalPaid)}
+                              </td>
+                              <td className="border border-gray-300 px-4 py-2 text-right text-red-600">
+                                {formatCurrency(interestPaid)}
+                              </td>
+                              <td className="border border-gray-300 px-4 py-2 text-right font-semibold">
+                                {formatCurrency(balance)}
+                              </td>
+                            </tr>
+                          )
+                        }
+                        return yearSummaries
+                      })()}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                /* Full Monthly Schedule */
+                <div className="overflow-x-auto max-h-96">
+                  <table className="min-w-full border-collapse border border-gray-300">
+                    <thead className="bg-primary-100 sticky top-0">
+                      <tr>
+                        <th className="border border-gray-300 px-4 py-2 text-left font-semibold">
+                          Month
+                        </th>
+                        <th className="border border-gray-300 px-4 py-2 text-right font-semibold">
+                          Payment
+                        </th>
+                        <th className="border border-gray-300 px-4 py-2 text-right font-semibold">
+                          Principal
+                        </th>
+                        <th className="border border-gray-300 px-4 py-2 text-right font-semibold">
+                          Interest
+                        </th>
+                        <th className="border border-gray-300 px-4 py-2 text-right font-semibold">
+                          Balance
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {results.schedule.map((row) => (
+                        <tr key={row.month} className="hover:bg-gray-50">
+                          <td className="border border-gray-300 px-4 py-2 font-medium">
+                            {row.month}
+                          </td>
+                          <td className="border border-gray-300 px-4 py-2 text-right">
+                            {formatCurrency(row.payment)}
+                          </td>
+                          <td className="border border-gray-300 px-4 py-2 text-right text-green-600">
+                            {formatCurrency(row.principal)}
+                          </td>
+                          <td className="border border-gray-300 px-4 py-2 text-right text-red-600">
+                            {formatCurrency(row.interest)}
+                          </td>
+                          <td className="border border-gray-300 px-4 py-2 text-right font-semibold">
+                            {formatCurrency(row.balance)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
               <p className="text-sm text-gray-600 mt-2">
-                <strong>Note:</strong> Showing first 12 months only. Early payments are mostly
-                interest, later payments are mostly principal.
+                <strong>Note:</strong> Early payments are mostly interest, later payments are mostly
+                principal. {!showFullSchedule && 'Click "Show Full Schedule" to see all months.'}
               </p>
             </div>
           )}
