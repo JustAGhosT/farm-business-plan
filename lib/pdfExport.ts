@@ -1,368 +1,302 @@
-import jsPDF from 'jspdf'
+import {
+    CropPlan,
+    CropTemplate,
+    ExportOptions,
+    FarmPlan,
+    Scenario,
+} from '@/types'
+import { jsPDF } from 'jspdf'
 import autoTable from 'jspdf-autotable'
-import { CropTemplate } from './cropTemplates'
 
-interface WizardData {
-  years: number
-  crops: Array<{
-    name: string
-    percentage: number
-  }>
-  totalPercentage: number
-}
-
-interface CropAnalysis {
-  name: string
-  percentage: number
-  hectares: number
-  investment: number
-  annualRevenue: number
-  annualCosts: number
-  annualProfit: number
-  roi: number
-  paybackYears: number
-  waterNeeds: string
-  profitability: string
+interface PDFExportData {
+  farmPlan?: FarmPlan
+  scenarios?: Scenario[]
+  cropTemplates?: CropTemplate[]
 }
 
 /**
- * Generate comprehensive PDF report for wizard analysis
+ * Export farm plan data to PDF
  */
-export async function generateWizardPDF(
-  wizardData: WizardData,
-  totalHectares: number,
-  cropTemplates: Map<string, CropTemplate>,
-  sessionName?: string
-) {
+export async function exportToPDF(
+  data: PDFExportData,
+  options: ExportOptions
+): Promise<Blob> {
   const doc = new jsPDF()
-  const pageWidth = doc.internal.pageSize.width
-  const pageHeight = doc.internal.pageSize.height
-  let yPos = 20
+  let yPosition = 20
 
-  // Helper function to check if we need a new page
-  const checkPageBreak = (requiredSpace: number) => {
-    if (yPos + requiredSpace > pageHeight - 20) {
-      doc.addPage()
-      yPos = 20
-      return true
-    }
-    return false
+  // Add title
+  doc.setFontSize(20)
+  doc.text('Farm Plan Report', 20, yPosition)
+  yPosition += 15
+
+  // Add farm plan details if available
+  if (data.farmPlan && options.sections.includes('basic-info')) {
+    yPosition = addFarmPlanSection(doc, data.farmPlan, yPosition)
   }
 
-  // ===== COVER PAGE =====
-  doc.setFillColor(34, 139, 34) // Green header
-  doc.rect(0, 0, pageWidth, 40, 'F')
-
-  doc.setTextColor(255, 255, 255)
-  doc.setFontSize(24)
-  doc.setFont('helvetica', 'bold')
-  doc.text('Farm Business Plan', pageWidth / 2, 25, { align: 'center' })
-
-  doc.setFontSize(14)
-  doc.setFont('helvetica', 'normal')
-  doc.text('Multi-Crop Financial Analysis Report', pageWidth / 2, 33, { align: 'center' })
-
-  yPos = 60
-  doc.setTextColor(0, 0, 0)
-
-  // Session Info
-  if (sessionName) {
-    doc.setFontSize(16)
-    doc.setFont('helvetica', 'bold')
-    doc.text(`Project: ${sessionName}`, 20, yPos)
-    yPos += 10
+  // Add crop details if available
+  if (
+    data.farmPlan?.crops &&
+    data.farmPlan.crops.length > 0 &&
+    options.sections.includes('crops')
+  ) {
+    yPosition = addCropsSection(doc, data.farmPlan.crops, yPosition)
   }
+
+  // Add scenarios if available
+  if (
+    data.scenarios &&
+    data.scenarios.length > 0 &&
+    options.sections.includes('scenarios')
+  ) {
+    yPosition = addScenariosSection(
+      doc,
+      data.scenarios,
+      data.cropTemplates || [],
+      yPosition
+    )
+  }
+
+  // Add financial summary if requested
+  if (
+    options.includeFinancials &&
+    data.farmPlan?.crops &&
+    options.sections.includes('financials')
+  ) {
+    yPosition = addFinancialSection(doc, data.farmPlan.crops, yPosition)
+  }
+
+  return doc.output('blob')
+}
+
+/**
+ * Add farm plan basic information section
+ */
+function addFarmPlanSection(doc: jsPDF, plan: FarmPlan, yPos: number): number {
+  doc.setFontSize(16)
+  doc.text('Farm Information', 20, yPos)
+  yPos += 10
 
   doc.setFontSize(12)
-  doc.setFont('helvetica', 'normal')
-  doc.text(`Report Date: ${new Date().toLocaleDateString('en-ZA')}`, 20, yPos)
-  yPos += 8
-  doc.text(`Planning Period: ${wizardData.years} years`, 20, yPos)
-  yPos += 8
-  doc.text(`Total Land: ${totalHectares} hectares`, 20, yPos)
-  yPos += 8
-  doc.text(`Number of Crops: ${wizardData.crops.length}`, 20, yPos)
-  yPos += 15
+  const info = [
+    `Name: ${plan.name}`,
+    `Location: ${plan.location}`,
+    `Size: ${plan.farmSize} hectares`,
+    `Created: ${new Date(plan.createdAt).toLocaleDateString()}`,
+  ]
 
-  // ===== EXECUTIVE SUMMARY =====
-  checkPageBreak(30)
+  info.forEach((line) => {
+    doc.text(line, 20, yPos)
+    yPos += 7
+  })
+
+  return yPos + 10
+}
+
+/**
+ * Add crops section with table
+ */
+function addCropsSection(doc: jsPDF, crops: CropPlan[], yPos: number): number {
   doc.setFontSize(16)
-  doc.setFont('helvetica', 'bold')
-  doc.text('Executive Summary', 20, yPos)
+  doc.text('Crop Plans', 20, yPos)
   yPos += 10
 
-  doc.setFontSize(10)
-  doc.setFont('helvetica', 'normal')
-  const summaryText =
-    'This report provides a comprehensive financial analysis of a diversified ' +
-    `farming operation over a ${wizardData.years}-year period. The analysis includes ` +
-    'investment requirements, revenue projections, profitability metrics, and return on investment ' +
-    'calculations for each crop in the portfolio.'
-  const splitSummary = doc.splitTextToSize(summaryText, pageWidth - 40)
-  doc.text(splitSummary, 20, yPos)
-  yPos += splitSummary.length * 5 + 10
-
-  // ===== CROP ALLOCATION =====
-  checkPageBreak(50)
-  doc.setFontSize(14)
-  doc.setFont('helvetica', 'bold')
-  doc.text('Crop Allocation', 20, yPos)
-  yPos += 10
-
-  const allocationData = wizardData.crops.map((crop) => {
-    const hectares = (crop.percentage / 100) * totalHectares
-    return [crop.name, `${crop.percentage}%`, hectares.toFixed(2)]
-  })
-
-  autoTable(doc, {
-    startY: yPos,
-    head: [['Crop', 'Allocation %', 'Hectares']],
-    body: allocationData,
-    theme: 'striped',
-    headStyles: { fillColor: [34, 139, 34] },
-    margin: { left: 20, right: 20 },
-  })
-
-  yPos = (doc as any).lastAutoTable.finalY + 15
-
-  // ===== FINANCIAL ANALYSIS =====
-  checkPageBreak(50)
-  doc.setFontSize(14)
-  doc.setFont('helvetica', 'bold')
-  doc.text('Financial Analysis by Crop', 20, yPos)
-  yPos += 10
-
-  const analyses: CropAnalysis[] = []
-  let totalInvestment = 0
-  let totalAnnualRevenue = 0
-  let totalAnnualCosts = 0
-
-  wizardData.crops.forEach((crop) => {
-    const template = cropTemplates.get(crop.name)
-    if (template) {
-      const hectares = (crop.percentage / 100) * totalHectares
-      const investment = template.initialInvestmentPerHa * hectares
-      const cropRevenue = template.baseProduction * template.basePrice
-      const cropCosts =
-        template.fixedCostsPerHa + template.variableCostPerUnit * template.baseProduction
-      const annualRevenue = cropRevenue * hectares
-      const annualCosts = cropCosts * hectares
-      const annualProfit = annualRevenue - annualCosts
-      const roi = investment > 0 ? (annualProfit / investment) * 100 : 0
-      const paybackYears = annualProfit > 0 ? investment / annualProfit : 999
-
-      totalInvestment += investment
-      totalAnnualRevenue += annualRevenue
-      totalAnnualCosts += annualCosts
-
-      analyses.push({
-        name: crop.name,
-        percentage: crop.percentage,
-        hectares,
-        investment,
-        annualRevenue,
-        annualCosts,
-        annualProfit,
-        roi,
-        paybackYears,
-        waterNeeds: template.waterNeeds || 'Medium',
-        profitability: template.profitability || 'Medium',
-      })
-    }
-  })
-
-  const financialData = analyses.map((a) => [
-    a.name,
-    `R ${a.investment.toLocaleString('en-ZA', { maximumFractionDigits: 0 })}`,
-    `R ${a.annualRevenue.toLocaleString('en-ZA', { maximumFractionDigits: 0 })}`,
-    `R ${a.annualCosts.toLocaleString('en-ZA', { maximumFractionDigits: 0 })}`,
-    `R ${a.annualProfit.toLocaleString('en-ZA', { maximumFractionDigits: 0 })}`,
-    `${a.roi.toFixed(1)}%`,
+  const tableData = crops.map((crop) => [
+    crop.cropName,
+    crop.variety || '-',
+    `${crop.plantingArea} ha`,
+    `${crop.expectedYield} ${crop.yieldUnit}`,
+    crop.status,
   ])
 
   autoTable(doc, {
     startY: yPos,
-    head: [['Crop', 'Investment', 'Annual Revenue', 'Annual Costs', 'Annual Profit', 'ROI']],
-    body: financialData,
-    theme: 'striped',
-    headStyles: { fillColor: [34, 139, 34] },
-    margin: { left: 20, right: 20 },
-    styles: { fontSize: 9 },
+    head: [['Crop', 'Variety', 'Area', 'Expected Yield', 'Status']],
+    body: tableData,
+    theme: 'grid',
+    headStyles: { fillColor: [66, 139, 202] },
   })
 
-  yPos = (doc as any).lastAutoTable.finalY + 15
+  return (doc as any).lastAutoTable.finalY + 15
+}
 
-  // ===== PORTFOLIO SUMMARY =====
-  checkPageBreak(60)
-  doc.setFontSize(14)
-  doc.setFont('helvetica', 'bold')
-  doc.text('Portfolio Summary', 20, yPos)
+/**
+ * Add scenarios comparison section
+ */
+function addScenariosSection(
+  doc: jsPDF,
+  scenarios: Scenario[],
+  cropTemplates: CropTemplate[],
+  yPos: number
+): number {
+  doc.setFontSize(16)
+  doc.text('Scenarios Analysis', 20, yPos)
   yPos += 10
 
-  const totalAnnualProfit = totalAnnualRevenue - totalAnnualCosts
-  const portfolioROI = totalInvestment > 0 ? (totalAnnualProfit / totalInvestment) * 100 : 0
-  const portfolioPayback = totalAnnualProfit > 0 ? totalInvestment / totalAnnualProfit : 0
+  scenarios.forEach((scenario, index) => {
+    if (index > 0) yPos += 10
 
-  const summaryData = [
-    [
-      'Total Initial Investment',
-      `R ${totalInvestment.toLocaleString('en-ZA', { maximumFractionDigits: 0 })}`,
-    ],
-    [
-      'Total Annual Revenue',
-      `R ${totalAnnualRevenue.toLocaleString('en-ZA', { maximumFractionDigits: 0 })}`,
-    ],
-    [
-      'Total Annual Costs',
-      `R ${totalAnnualCosts.toLocaleString('en-ZA', { maximumFractionDigits: 0 })}`,
-    ],
-    [
-      'Total Annual Profit',
-      `R ${totalAnnualProfit.toLocaleString('en-ZA', { maximumFractionDigits: 0 })}`,
-    ],
-    ['Portfolio ROI', `${portfolioROI.toFixed(1)}%`],
-    ['Payback Period', `${portfolioPayback.toFixed(1)} years`],
-    [
-      `${wizardData.years}-Year Net Profit`,
-      `R ${(totalAnnualProfit * wizardData.years).toLocaleString('en-ZA', { maximumFractionDigits: 0 })}`,
-    ],
-  ]
-
-  autoTable(doc, {
-    startY: yPos,
-    body: summaryData,
-    theme: 'plain',
-    styles: {
-      fontSize: 11,
-      cellPadding: 3,
-    },
-    columnStyles: {
-      0: { fontStyle: 'bold', cellWidth: 80 },
-      1: { halign: 'right', fontStyle: 'bold' },
-    },
-    margin: { left: 20, right: 20 },
-  })
-
-  yPos = (doc as any).lastAutoTable.finalY + 15
-
-  // ===== MULTI-YEAR PROJECTIONS =====
-  doc.addPage()
-  yPos = 20
-
-  doc.setFontSize(14)
-  doc.setFont('helvetica', 'bold')
-  doc.text(`${wizardData.years}-Year Financial Projections`, 20, yPos)
-  yPos += 10
-
-  const yearlyData: any[] = []
-  for (let year = 1; year <= wizardData.years; year++) {
-    const yearRevenue = totalAnnualRevenue * Math.pow(1.05, year - 1) // 5% growth
-    const yearCosts = totalAnnualCosts * Math.pow(1.03, year - 1) // 3% inflation
-    const yearProfit = yearRevenue - yearCosts
-    const cumulativeProfit =
-      yearlyData.reduce((sum, row) => sum + parseFloat(row[3].replace(/[^0-9.-]/g, '')), 0) +
-      yearProfit
-
-    yearlyData.push([
-      `Year ${year}`,
-      `R ${yearRevenue.toLocaleString('en-ZA', { maximumFractionDigits: 0 })}`,
-      `R ${yearCosts.toLocaleString('en-ZA', { maximumFractionDigits: 0 })}`,
-      `R ${yearProfit.toLocaleString('en-ZA', { maximumFractionDigits: 0 })}`,
-      `R ${cumulativeProfit.toLocaleString('en-ZA', { maximumFractionDigits: 0 })}`,
-    ])
-  }
-
-  autoTable(doc, {
-    startY: yPos,
-    head: [['Year', 'Revenue', 'Costs', 'Profit', 'Cumulative Profit']],
-    body: yearlyData,
-    theme: 'striped',
-    headStyles: { fillColor: [34, 139, 34] },
-    margin: { left: 20, right: 20 },
-  })
-
-  yPos = (doc as any).lastAutoTable.finalY + 15
-
-  // ===== CROP DETAILS =====
-  checkPageBreak(60)
-  doc.setFontSize(14)
-  doc.setFont('helvetica', 'bold')
-  doc.text('Detailed Crop Information', 20, yPos)
-  yPos += 10
-
-  analyses.forEach((crop) => {
-    checkPageBreak(50)
-
-    doc.setFontSize(12)
-    doc.setFont('helvetica', 'bold')
-    doc.text(crop.name, 20, yPos)
-    yPos += 8
+    doc.setFontSize(14)
+    doc.text(`${scenario.name}`, 20, yPos)
+    yPos += 7
 
     doc.setFontSize(10)
-    doc.setFont('helvetica', 'normal')
+    doc.text(scenario.description, 20, yPos)
+    yPos += 7
 
-    const cropDetails = [
-      ['Allocation', `${crop.percentage}% (${crop.hectares.toFixed(2)} ha)`],
-      ['Water Needs', crop.waterNeeds],
-      ['Profitability Rating', crop.profitability],
-      [
-        'Initial Investment',
-        `R ${crop.investment.toLocaleString('en-ZA', { maximumFractionDigits: 0 })}`,
-      ],
-      [
-        'Annual Revenue',
-        `R ${crop.annualRevenue.toLocaleString('en-ZA', { maximumFractionDigits: 0 })}`,
-      ],
-      [
-        'Annual Costs',
-        `R ${crop.annualCosts.toLocaleString('en-ZA', { maximumFractionDigits: 0 })}`,
-      ],
-      [
-        'Annual Profit',
-        `R ${crop.annualProfit.toLocaleString('en-ZA', { maximumFractionDigits: 0 })}`,
-      ],
-      ['ROI', `${crop.roi.toFixed(1)}%`],
-      [
-        'Payback Period',
-        crop.paybackYears < 50 ? `${crop.paybackYears.toFixed(1)} years` : 'Not viable',
-      ],
+    // Calculate scenario metrics
+    const metrics = calculateScenarioMetrics(scenario, cropTemplates)
+
+    const metricsData = [
+      ['Investment', formatCurrency(metrics.totalInvestment)],
+      ['Revenue', formatCurrency(metrics.totalRevenue)],
+      ['Costs', formatCurrency(metrics.totalCosts)],
+      ['Net Profit', formatCurrency(metrics.netProfit)],
+      ['ROI', `${metrics.roi.toFixed(1)}%`],
     ]
 
     autoTable(doc, {
       startY: yPos,
-      body: cropDetails,
+      body: metricsData,
       theme: 'plain',
-      styles: { fontSize: 9, cellPadding: 2 },
+      styles: { fontSize: 10 },
       columnStyles: {
-        0: { fontStyle: 'bold', cellWidth: 60 },
-        1: { halign: 'left' },
+        0: { fontStyle: 'bold', cellWidth: 50 },
+        1: { halign: 'right', cellWidth: 50 },
       },
-      margin: { left: 30, right: 20 },
     })
 
-    yPos = (doc as any).lastAutoTable.finalY + 10
+    yPos = (doc as any).lastAutoTable.finalY + 5
   })
 
-  // ===== FOOTER ON EACH PAGE =====
-  const pageCount = doc.getNumberOfPages()
-  for (let i = 1; i <= pageCount; i++) {
-    doc.setPage(i)
-    doc.setFontSize(8)
-    doc.setTextColor(128, 128, 128)
-    doc.text(
-      `Generated by Farm Business Plan Calculator | ${new Date().toLocaleDateString('en-ZA')} | Page ${i} of ${pageCount}`,
-      pageWidth / 2,
-      pageHeight - 10,
-      { align: 'center' }
-    )
+  return yPos + 10
+}
+
+/**
+ * Calculate metrics for a scenario
+ */
+function calculateScenarioMetrics(
+  scenario: Scenario,
+  cropTemplates: CropTemplate[]
+) {
+  let totalInvestment = 0
+  let totalRevenue = 0
+  let totalCosts = 0
+
+  scenario.crops.forEach((crop) => {
+    const template = cropTemplates.find((t) => t.id === crop.id)
+    if (template) {
+      const area = crop.plantingArea || 1
+      totalInvestment += (template.investment || 0) * area
+      totalRevenue += (template.revenuePerHectare || 0) * area
+      totalCosts += (template.costsPerHectare || 0) * area
+    }
+  })
+
+  const netProfit = totalRevenue - totalCosts - totalInvestment
+  const roi = totalInvestment > 0 ? (netProfit / totalInvestment) * 100 : 0
+
+  return {
+    totalInvestment,
+    totalRevenue,
+    totalCosts,
+    netProfit,
+    roi,
+  }
+}
+
+/**
+ * Add financial summary section
+ */
+function addFinancialSection(
+  doc: jsPDF,
+  crops: CropPlan[],
+  yPos: number
+): number {
+  doc.setFontSize(16)
+  doc.text('Financial Summary', 20, yPos)
+  yPos += 10
+
+  let totalInvestment = 0
+  let totalRevenue = 0
+
+  const financialData = crops.map((crop) => {
+    const investment = crop.financials.initialInvestment
+    const revenue =
+      crop.financials.projectedRevenue.length > 0
+        ? crop.financials.projectedRevenue[0].totalRevenue
+        : 0
+
+    totalInvestment += investment
+    totalRevenue += revenue
+
+    return [
+      crop.cropName,
+      formatCurrency(investment),
+      formatCurrency(revenue),
+      formatCurrency(revenue - investment),
+    ]
+  })
+
+  // Add totals row
+  financialData.push([
+    'TOTAL',
+    formatCurrency(totalInvestment),
+    formatCurrency(totalRevenue),
+    formatCurrency(totalRevenue - totalInvestment),
+  ])
+
+  autoTable(doc, {
+    startY: yPos,
+    head: [['Crop', 'Investment', 'Revenue', 'Net Profit']],
+    body: financialData,
+    theme: 'grid',
+    headStyles: { fillColor: [66, 139, 202] },
+    footStyles: { fontStyle: 'bold' },
+  })
+
+  return (doc as any).lastAutoTable.finalY + 15
+}
+
+/**
+ * Format currency values
+ */
+function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount)
+}
+
+/**
+ * Export data to Excel format
+ */
+export async function exportToExcel(
+  data: PDFExportData,
+  options: ExportOptions
+): Promise<Blob> {
+  // Placeholder for Excel export functionality
+  // Would require a library like xlsx or exceljs
+  throw new Error('Excel export not yet implemented')
+}
+
+/**
+ * Export data to CSV format
+ */
+export async function exportToCSV(
+  data: PDFExportData,
+  options: ExportOptions
+): Promise<Blob> {
+  let csvContent = ''
+
+  if (data.farmPlan && options.sections.includes('crops')) {
+    csvContent += 'Crop,Variety,Area (ha),Expected Yield,Status\n'
+    data.farmPlan.crops.forEach((crop) => {
+      csvContent += `${crop.cropName},${crop.variety || '-'},${crop.plantingArea},${crop.expectedYield} ${crop.yieldUnit},${crop.status}\n`
+    })
   }
 
-  // Save the PDF
-  const fileName = sessionName
-    ? `${sessionName.replace(/[^a-z0-9]/gi, '_')}_analysis.pdf`
-    : `farm_analysis_${new Date().toISOString().split('T')[0]}.pdf`
-
-  doc.save(fileName)
-
-  return fileName
+  return new Blob([csvContent], { type: 'text/csv' })
 }
