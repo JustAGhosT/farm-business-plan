@@ -72,11 +72,11 @@ export function ScenarioComparison({
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold">Scenario Comparison</h2>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {scenarios.map((scenario) => {
           const metrics = calculateScenarioMetrics(scenario)
-          
+
           return (
             <Card key={scenario.id} className="p-6">
               <div className="space-y-4">
@@ -92,8 +92,8 @@ export function ScenarioComparison({
                       scenario.status === 'approved'
                         ? 'success'
                         : scenario.status === 'rejected'
-                        ? 'error'
-                        : 'default'
+                          ? 'error'
+                          : 'default'
                     }
                   >
                     {scenario.status}

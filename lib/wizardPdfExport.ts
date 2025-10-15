@@ -366,4 +366,3 @@ export async function generateWizardPDF(
 
   return fileName
 }
-

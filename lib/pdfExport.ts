@@ -1,10 +1,5 @@
-import {
-    CropPlan,
-    CropTemplate,
-    ExportOptions,
-    FarmPlan,
-    Scenario,
-} from '@/types'
+// cSpell:ignore autotable financials halign exceljs
+import { CropPlan, CropTemplate, ExportOptions, FarmPlan, Scenario } from '@/types'
 import { jsPDF } from 'jspdf'
 import autoTable from 'jspdf-autotable'
 
@@ -17,10 +12,7 @@ interface PDFExportData {
 /**
  * Export farm plan data to PDF
  */
-export async function exportToPDF(
-  data: PDFExportData,
-  options: ExportOptions
-): Promise<Blob> {
+export async function exportToPDF(data: PDFExportData, options: ExportOptions): Promise<Blob> {
   const doc = new jsPDF()
   let yPosition = 20
 
@@ -44,17 +36,8 @@ export async function exportToPDF(
   }
 
   // Add scenarios if available
-  if (
-    data.scenarios &&
-    data.scenarios.length > 0 &&
-    options.sections.includes('scenarios')
-  ) {
-    yPosition = addScenariosSection(
-      doc,
-      data.scenarios,
-      data.cropTemplates || [],
-      yPosition
-    )
+  if (data.scenarios && data.scenarios.length > 0 && options.sections.includes('scenarios')) {
+    yPosition = addScenariosSection(doc, data.scenarios, data.cropTemplates || [], yPosition)
   }
 
   // Add financial summary if requested
@@ -175,10 +158,7 @@ function addScenariosSection(
 /**
  * Calculate metrics for a scenario
  */
-function calculateScenarioMetrics(
-  scenario: Scenario,
-  cropTemplates: CropTemplate[]
-) {
+function calculateScenarioMetrics(scenario: Scenario, cropTemplates: CropTemplate[]) {
   let totalInvestment = 0
   let totalRevenue = 0
   let totalCosts = 0
@@ -208,11 +188,7 @@ function calculateScenarioMetrics(
 /**
  * Add financial summary section
  */
-function addFinancialSection(
-  doc: jsPDF,
-  crops: CropPlan[],
-  yPos: number
-): number {
+function addFinancialSection(doc: jsPDF, crops: CropPlan[], yPos: number): number {
   doc.setFontSize(16)
   doc.text('Financial Summary', 20, yPos)
   yPos += 10
@@ -273,10 +249,7 @@ function formatCurrency(amount: number): string {
 /**
  * Export data to Excel format
  */
-export async function exportToExcel(
-  data: PDFExportData,
-  options: ExportOptions
-): Promise<Blob> {
+export async function exportToExcel(data: PDFExportData, options: ExportOptions): Promise<Blob> {
   // Placeholder for Excel export functionality
   // Would require a library like xlsx or exceljs
   throw new Error('Excel export not yet implemented')
@@ -285,10 +258,7 @@ export async function exportToExcel(
 /**
  * Export data to CSV format
  */
-export async function exportToCSV(
-  data: PDFExportData,
-  options: ExportOptions
-): Promise<Blob> {
+export async function exportToCSV(data: PDFExportData, options: ExportOptions): Promise<Blob> {
   let csvContent = ''
 
   if (data.farmPlan && options.sections.includes('crops')) {

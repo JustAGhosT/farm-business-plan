@@ -30,7 +30,10 @@ interface ScenarioMetrics {
   totalNetProfit: number
 }
 
-export default function WizardScenarioComparison({ cropTemplates, onClose }: WizardScenarioComparisonProps) {
+export default function WizardScenarioComparison({
+  cropTemplates,
+  onClose,
+}: WizardScenarioComparisonProps) {
   const [scenarios, setScenarios] = useState<Scenario[]>([
     {
       id: '1',
@@ -222,6 +225,7 @@ export default function WizardScenarioComparison({ cropTemplates, onClose }: Wiz
                         value={scenario.name}
                         onChange={(e) => updateScenario(scenario.id, { name: e.target.value })}
                         className="text-lg font-bold bg-transparent border-b border-gray-300 dark:border-gray-600 focus:border-primary-500 outline-none w-full"
+                        aria-label="Scenario name"
                       />
                       {isBest && (
                         <span className="inline-block mt-1 px-2 py-1 bg-green-500 text-white text-xs rounded-full">
@@ -242,8 +246,14 @@ export default function WizardScenarioComparison({ cropTemplates, onClose }: Wiz
                   {/* Configuration */}
                   <div className="grid grid-cols-2 gap-2 mb-3">
                     <div>
-                      <label className="text-xs text-gray-600 dark:text-gray-400">Years</label>
+                      <label
+                        htmlFor={`years-${scenario.id}`}
+                        className="text-xs text-gray-600 dark:text-gray-400"
+                      >
+                        Years
+                      </label>
                       <input
+                        id={`years-${scenario.id}`}
                         type="number"
                         value={scenario.years}
                         onChange={(e) =>
@@ -255,8 +265,14 @@ export default function WizardScenarioComparison({ cropTemplates, onClose }: Wiz
                       />
                     </div>
                     <div>
-                      <label className="text-xs text-gray-600 dark:text-gray-400">Hectares</label>
+                      <label
+                        htmlFor={`hectares-${scenario.id}`}
+                        className="text-xs text-gray-600 dark:text-gray-400"
+                      >
+                        Hectares
+                      </label>
                       <input
+                        id={`hectares-${scenario.id}`}
                         type="number"
                         value={scenario.totalHectares}
                         onChange={(e) =>

@@ -1,19 +1,19 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
+import { useState } from 'react'
 import {
-  PieChart,
-  Pie,
-  Cell,
-  BarChart,
   Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
 } from 'recharts'
 
 interface CropAllocation {
@@ -284,6 +284,7 @@ export default function PortfolioPlanner() {
                     value={portfolio.name}
                     onChange={(e) => updatePortfolio(portfolio.id, 'name', e.target.value)}
                     className="text-2xl font-bold bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-primary-500 rounded px-2 py-1 dark:text-white"
+                    aria-label="Portfolio name"
                   />
                   <div className="flex items-center gap-4">
                     {!isValidAllocation && (
@@ -323,10 +324,14 @@ export default function PortfolioPlanner() {
                 {/* Portfolio Settings */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label
+                      htmlFor={`land-${portfolio.id}`}
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >
                       Total Land (Hectares)
                     </label>
                     <input
+                      id={`land-${portfolio.id}`}
                       type="number"
                       value={portfolio.totalLandHectares}
                       onChange={(e) =>
@@ -340,10 +345,14 @@ export default function PortfolioPlanner() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label
+                      htmlFor={`years-${portfolio.id}`}
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >
                       Time Horizon (Years)
                     </label>
                     <input
+                      id={`years-${portfolio.id}`}
                       type="number"
                       value={portfolio.years}
                       onChange={(e) =>
@@ -382,13 +391,23 @@ export default function PortfolioPlanner() {
                       <div
                         key={crop.id}
                         className="grid grid-cols-1 md:grid-cols-6 gap-3 p-4 border rounded-lg dark:border-gray-600"
-                        style={{ borderLeftWidth: '4px', borderLeftColor: crop.color }}
+                        style={
+                          {
+                            ['--crop-color' as string]: crop.color,
+                            borderLeftWidth: '4px',
+                            borderLeftColor: 'var(--crop-color)',
+                          } as React.CSSProperties
+                        }
                       >
                         <div>
-                          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                          <label
+                            htmlFor={`crop-name-${portfolio.id}-${crop.id}`}
+                            className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                          >
                             Crop Name
                           </label>
                           <input
+                            id={`crop-name-${portfolio.id}-${crop.id}`}
                             type="text"
                             value={crop.cropName}
                             onChange={(e) =>
@@ -399,10 +418,14 @@ export default function PortfolioPlanner() {
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                          <label
+                            htmlFor={`percentage-${portfolio.id}-${crop.id}`}
+                            className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                          >
                             % of Land
                           </label>
                           <input
+                            id={`percentage-${portfolio.id}-${crop.id}`}
                             type="number"
                             value={crop.percentage}
                             onChange={(e) =>
@@ -419,10 +442,14 @@ export default function PortfolioPlanner() {
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                          <label
+                            htmlFor={`investment-${portfolio.id}-${crop.id}`}
+                            className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                          >
                             Investment/Ha
                           </label>
                           <input
+                            id={`investment-${portfolio.id}-${crop.id}`}
                             type="number"
                             value={crop.investmentPerHectare}
                             onChange={(e) =>
@@ -437,10 +464,14 @@ export default function PortfolioPlanner() {
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                          <label
+                            htmlFor={`revenue-${portfolio.id}-${crop.id}`}
+                            className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                          >
                             Revenue/Ha
                           </label>
                           <input
+                            id={`revenue-${portfolio.id}-${crop.id}`}
                             type="number"
                             value={crop.revenuePerHectare}
                             onChange={(e) =>
@@ -455,10 +486,14 @@ export default function PortfolioPlanner() {
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                          <label
+                            htmlFor={`costs-${portfolio.id}-${crop.id}`}
+                            className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                          >
                             Costs/Ha
                           </label>
                           <input
+                            id={`costs-${portfolio.id}-${crop.id}`}
                             type="number"
                             value={crop.costsPerHectare}
                             onChange={(e) =>
@@ -630,7 +665,12 @@ export default function PortfolioPlanner() {
                                 <tr key={crop.id}>
                                   <td
                                     className="border border-gray-300 dark:border-gray-600 px-4 py-2 font-medium"
-                                    style={{ color: crop.color }}
+                                    style={
+                                      {
+                                        ['--crop-color' as string]: crop.color,
+                                        color: 'var(--crop-color)',
+                                      } as React.CSSProperties
+                                    }
                                   >
                                     {crop.cropName || 'Unnamed'}
                                   </td>

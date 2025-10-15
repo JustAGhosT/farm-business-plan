@@ -1,20 +1,20 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { exportSingleCalculatorToPDF, exportToCSV, exportToPDF } from '@/lib/export-utils'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import {
-  LineChart,
-  Line,
-  BarChart,
   Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
 } from 'recharts'
-import { exportToPDF, exportToCSV, exportSingleCalculatorToPDF } from '@/lib/export-utils'
 
 interface CalculatorResult {
   id: string
@@ -190,10 +190,14 @@ export default function CalculatorHistoryPage() {
 
           {/* Filter */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="calculator-type-filter"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Filter by Calculator Type
             </label>
             <select
+              id="calculator-type-filter"
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
               className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -295,6 +299,7 @@ export default function CalculatorHistoryPage() {
                           checked={selectedResults.includes(result.id)}
                           onChange={() => toggleSelection(result.id)}
                           className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
+                          aria-label={`Select result from ${new Date(result.created_at).toLocaleString()}`}
                         />
                         <span className="inline-block px-3 py-1 text-xs font-semibold text-white bg-primary-600 rounded-full">
                           {result.calculator_type.toUpperCase()}

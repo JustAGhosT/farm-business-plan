@@ -1,23 +1,21 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
+import { useState } from 'react'
 import {
-  BarChart,
   Bar,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
+  BarChart,
   CartesianGrid,
-  Tooltip,
   Legend,
-  ResponsiveContainer,
-  RadarChart,
-  PolarGrid,
   PolarAngleAxis,
+  PolarGrid,
   PolarRadiusAxis,
   Radar,
+  RadarChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from 'recharts'
 
 interface Scenario {
@@ -215,7 +213,12 @@ export default function ScenarioComparison() {
               <div
                 key={scenario.id}
                 className="border-2 rounded-lg p-6 dark:bg-gray-700"
-                style={{ borderColor: scenario.color }}
+                style={
+                  {
+                    borderColor: scenario.color,
+                    ['--scenario-color' as string]: scenario.color,
+                  } as React.CSSProperties
+                }
               >
                 <div className="flex items-center justify-between mb-4">
                   <input
@@ -223,6 +226,7 @@ export default function ScenarioComparison() {
                     value={scenario.name}
                     onChange={(e) => updateScenario(scenario.id, 'name', e.target.value)}
                     className="text-lg font-bold bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-primary-500 rounded px-2 py-1 dark:text-white"
+                    aria-label="Scenario name"
                   />
                   {scenarios.length > 1 && (
                     <button
@@ -249,10 +253,14 @@ export default function ScenarioComparison() {
 
                 <div className="space-y-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label
+                      htmlFor={`crop-type-${scenario.id}`}
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >
                       Crop Type
                     </label>
                     <input
+                      id={`crop-type-${scenario.id}`}
                       type="text"
                       value={scenario.cropType}
                       onChange={(e) => updateScenario(scenario.id, 'cropType', e.target.value)}
@@ -262,10 +270,14 @@ export default function ScenarioComparison() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label
+                      htmlFor={`investment-${scenario.id}`}
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >
                       Initial Investment (ZAR)
                     </label>
                     <input
+                      id={`investment-${scenario.id}`}
                       type="number"
                       value={scenario.initialInvestment}
                       onChange={(e) =>
@@ -276,10 +288,14 @@ export default function ScenarioComparison() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label
+                      htmlFor={`revenue-${scenario.id}`}
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >
                       Annual Revenue (ZAR)
                     </label>
                     <input
+                      id={`revenue-${scenario.id}`}
                       type="number"
                       value={scenario.annualRevenue}
                       onChange={(e) =>
@@ -290,10 +306,14 @@ export default function ScenarioComparison() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label
+                      htmlFor={`costs-${scenario.id}`}
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >
                       Annual Costs (ZAR)
                     </label>
                     <input
+                      id={`costs-${scenario.id}`}
                       type="number"
                       value={scenario.annualCosts}
                       onChange={(e) =>
@@ -304,10 +324,14 @@ export default function ScenarioComparison() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label
+                      htmlFor={`years-${scenario.id}`}
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >
                       Time Horizon (Years)
                     </label>
                     <input
+                      id={`years-${scenario.id}`}
                       type="number"
                       value={scenario.years}
                       onChange={(e) =>
@@ -418,7 +442,12 @@ export default function ScenarioComparison() {
                     <th
                       key={scenario.id}
                       className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center"
-                      style={{ color: scenario.color }}
+                      style={
+                        {
+                          ['--scenario-color' as string]: scenario.color,
+                          color: 'var(--scenario-color)',
+                        } as React.CSSProperties
+                      }
                     >
                       {scenario.name}
                     </th>
@@ -555,20 +584,44 @@ export default function ScenarioComparison() {
                   return (
                     <>
                       <p className="text-gray-700 dark:text-gray-300">
-                        <span className="font-bold" style={{ color: bestROI.color }}>
+                        <span
+                          className="font-bold"
+                          style={
+                            {
+                              ['--scenario-color' as string]: bestROI.color,
+                              color: 'var(--scenario-color)',
+                            } as React.CSSProperties
+                          }
+                        >
                           {bestROI.name}
                         </span>{' '}
                         has the highest ROI at {bestROI.results.roi.toFixed(1)}%
                       </p>
                       <p className="text-gray-700 dark:text-gray-300">
-                        <span className="font-bold" style={{ color: bestPayback.color }}>
+                        <span
+                          className="font-bold"
+                          style={
+                            {
+                              ['--scenario-color' as string]: bestPayback.color,
+                              color: 'var(--scenario-color)',
+                            } as React.CSSProperties
+                          }
+                        >
                           {bestPayback.name}
                         </span>{' '}
                         has the fastest payback period at{' '}
                         {bestPayback.results.paybackPeriod.toFixed(1)} years
                       </p>
                       <p className="text-gray-700 dark:text-gray-300">
-                        <span className="font-bold" style={{ color: bestProfit.color }}>
+                        <span
+                          className="font-bold"
+                          style={
+                            {
+                              ['--scenario-color' as string]: bestProfit.color,
+                              color: 'var(--scenario-color)',
+                            } as React.CSSProperties
+                          }
+                        >
                           {bestProfit.name}
                         </span>{' '}
                         generates the highest net profit at{' '}

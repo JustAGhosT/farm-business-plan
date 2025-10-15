@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useState } from 'react'
 
 interface Crop {
   id: string
@@ -251,6 +251,8 @@ export default function ROICalculator() {
                     <button
                       onClick={() => removeCrop(crop.id)}
                       className="text-red-600 hover:text-red-700 transition-colors"
+                      aria-label="Remove crop"
+                      title="Remove crop"
                     >
                       <svg
                         className="w-5 h-5"
