@@ -94,6 +94,13 @@ class QueryCache {
 
     return removed
   }
+
+  /**
+   * Get all cache keys (for iteration)
+   */
+  keys(): IterableIterator<string> {
+    return this.cache.keys()
+  }
 }
 
 // Export singleton instance
@@ -127,7 +134,7 @@ export function invalidateCachePattern(pattern: string): number {
   let removed = 0
   const regex = new RegExp(pattern)
 
-  for (const key of queryCache['cache'].keys()) {
+  for (const key of queryCache.keys()) {
     if (regex.test(key)) {
       queryCache.delete(key)
       removed++

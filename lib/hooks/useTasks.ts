@@ -7,7 +7,7 @@ export interface Task {
   title: string
   description?: string
   status: 'pending' | 'in-progress' | 'completed' | 'cancelled'
-  priority: 'low' | 'medium' | 'high' | 'urgent'
+  priority: 'low' | 'medium' | 'high' | 'critical'
   category?: string
   due_date?: string
   completed_at?: string
@@ -126,10 +126,8 @@ export function useTasks(filters?: TaskFilters): UseTasksResult {
   const deleteTask = useCallback(
     async (id: string) => {
       try {
-        const response = await fetch('/api/tasks', {
+        const response = await fetch(`/api/tasks?id=${id}`, {
           method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id }),
         })
 
         const result = await response.json()

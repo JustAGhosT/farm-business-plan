@@ -89,21 +89,27 @@ export function getPool(): Pool {
     return pool
   }
 
-  // If pool is being initialized, throw error to indicate caller should retry
-  // This is safer than blocking or using a promise in a sync function
+  // If pool is being initialized, wait for it by using the async version
+  // This prevents race conditions while maintaining backward compatibility
   if (poolInitializing) {
-    throw new Error('Database pool is being initialized. Please retry.')
+    throw new Error('Database pool is being initialized. Please use getPoolAsync() or retry.')
   }
 
   // Set flag to prevent concurrent initialization
   poolInitializing = true
-
-  try {
-    pool = initializePool()
-  } finally {
-    poolInitializing = false
-    poolInitPromise = null
-  }
+  
+  // Create promise for async callers
+  poolInitPromise = new Promise<Pool>((resolve, reject) => {
+    try {
+      pool = initializePool()
+      poolInitializing = false
+      resolve(pool)
+    } catch (error) {
+      poolInitializing = false
+      poolInitPromise = null
+      reject(error)
+    }
+  })
 
   return pool!
 }
