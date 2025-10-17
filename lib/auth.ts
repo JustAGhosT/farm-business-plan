@@ -8,6 +8,41 @@ import GoogleProvider from 'next-auth/providers/google'
 // Helper function to check if running in build mode
 const isBuildTime = process.env.NEXT_PHASE === 'phase-production-build'
 
+/**
+ * Helper function to conditionally include GitHub provider
+ */
+function getGitHubProvider() {
+  if (isBuildTime || !process.env.GITHUB_ID || !process.env.GITHUB_SECRET) {
+    return []
+  }
+  return [
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID,
+      clientSecret: process.env.GITHUB_SECRET,
+    }),
+  ]
+}
+
+/**
+ * Helper function to conditionally include Google provider
+ */
+function getGoogleProvider() {
+  if (
+    isBuildTime ||
+    process.env.NEXT_PUBLIC_GOOGLE_ENABLED !== 'true' ||
+    !process.env.GOOGLE_ID ||
+    !process.env.GOOGLE_SECRET
+  ) {
+    return []
+  }
+  return [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_ID,
+      clientSecret: process.env.GOOGLE_SECRET,
+    }),
+  ]
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -50,29 +85,9 @@ export const authOptions: NextAuthOptions = {
         }
       },
     }),
-    // GitHub OAuth (requires GITHUB_ID and GITHUB_SECRET env vars)
-    // Skip during build to avoid URL construction errors with empty env vars
-    ...(!isBuildTime && process.env.GITHUB_ID && process.env.GITHUB_SECRET
-      ? [
-          GitHubProvider({
-            clientId: process.env.GITHUB_ID,
-            clientSecret: process.env.GITHUB_SECRET,
-          }),
-        ]
-      : []),
-    // Google OAuth (requires GOOGLE_ID and GOOGLE_SECRET env vars)
-    // Skip during build to avoid URL construction errors with empty env vars
-    ...(!isBuildTime &&
-    process.env.NEXT_PUBLIC_GOOGLE_ENABLED === 'true' &&
-    process.env.GOOGLE_ID &&
-    process.env.GOOGLE_SECRET
-      ? [
-          GoogleProvider({
-            clientId: process.env.GOOGLE_ID,
-            clientSecret: process.env.GOOGLE_SECRET,
-          }),
-        ]
-      : []),
+    // OAuth providers - conditionally included based on configuration
+    ...getGitHubProvider(),
+    ...getGoogleProvider(),
   ],
   pages: {
     signIn: '/auth/signin',

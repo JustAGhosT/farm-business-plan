@@ -11,6 +11,31 @@ export interface CropChartData {
   profitability: string
 }
 
+// Chart color constants with semantic names
+export const CHART_COLORS = {
+  profitability: {
+    high: '#10b981', // green-500
+    medium: '#f59e0b', // amber-500
+    low: '#ef4444', // red-500
+    unknown: '#6b7280', // gray-500
+  },
+  waterNeeds: {
+    low: '#fbbf24', // amber-400 (good - low water)
+    medium: '#3b82f6', // blue-500
+    high: '#1e3a8a', // blue-900 (needs more water)
+    unknown: '#6b7280', // gray-500
+  },
+  cropAllocation: [
+    '#10b981', // green-500
+    '#3b82f6', // blue-500
+    '#f59e0b', // amber-500
+    '#8b5cf6', // violet-500
+    '#ec4899', // pink-500
+    '#14b8a6', // teal-500
+    '#f97316', // orange-500
+  ],
+}
+
 export function prepareCropComparisonData(
   crops: Array<{ name: string; percentage: number }>,
   years: number = 5,
@@ -72,38 +97,12 @@ export function prepareCropComparisonData(
 }
 
 export function getColorByProfitability(profitability: string): string {
-  switch (profitability) {
-    case 'high':
-      return '#10b981' // green-500
-    case 'medium':
-      return '#f59e0b' // amber-500
-    case 'low':
-      return '#ef4444' // red-500
-    default:
-      return '#6b7280' // gray-500
-  }
+  return CHART_COLORS.profitability[profitability as keyof typeof CHART_COLORS.profitability] || CHART_COLORS.profitability.unknown
 }
 
 export function getColorByWaterNeeds(waterNeeds: string): string {
-  switch (waterNeeds) {
-    case 'low':
-      return '#fbbf24' // amber-400 (good - low water)
-    case 'medium':
-      return '#3b82f6' // blue-500
-    case 'high':
-      return '#1e3a8a' // blue-900 (needs more water)
-    default:
-      return '#6b7280' // gray-500
-  }
+  return CHART_COLORS.waterNeeds[waterNeeds as keyof typeof CHART_COLORS.waterNeeds] || CHART_COLORS.waterNeeds.unknown
 }
 
-// Colors for crop allocation pie chart
-export const CROP_COLORS = [
-  '#10b981', // green-500
-  '#3b82f6', // blue-500
-  '#f59e0b', // amber-500
-  '#8b5cf6', // violet-500
-  '#ec4899', // pink-500
-  '#14b8a6', // teal-500
-  '#f97316', // orange-500
-]
+// Colors for crop allocation pie chart - exported from constants
+export const CROP_COLORS = CHART_COLORS.cropAllocation
