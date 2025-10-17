@@ -122,7 +122,9 @@ export function prepareCropComparisonData(
   if (cropComparisonCache.size >= CACHE_MAX_SIZE) {
     // Remove oldest entry (first in Map)
     const firstKey = cropComparisonCache.keys().next().value
-    cropComparisonCache.delete(firstKey)
+    if (firstKey !== undefined) {
+      cropComparisonCache.delete(firstKey)
+    }
   }
   cropComparisonCache.set(cacheKey, result)
 
