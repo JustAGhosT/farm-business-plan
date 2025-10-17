@@ -27,78 +27,87 @@ export function useFormValidation(rules: ValidationRules) {
   const [errors, setErrors] = useState<ValidationErrors>({})
   const [touched, setTouched] = useState<Set<string>>(new Set())
 
-  const validateField = useCallback((name: string, value: string): string | null => {
-    const rule = rules[name]
-    if (!rule) return null
+  const validateField = useCallback(
+    (name: string, value: string): string | null => {
+      const rule = rules[name]
+      if (!rule) return null
 
-    // Required validation
-    if (rule.required && !value.trim()) {
-      return rule.message || 'This field is required'
-    }
-
-    // Min length validation
-    if (rule.minLength && value.length < rule.minLength) {
-      return rule.message || `Minimum ${rule.minLength} characters required`
-    }
-
-    // Max length validation
-    if (rule.maxLength && value.length > rule.maxLength) {
-      return rule.message || `Maximum ${rule.maxLength} characters allowed`
-    }
-
-    // Numeric min validation
-    if (rule.min !== undefined) {
-      const numValue = parseFloat(value)
-      if (isNaN(numValue) || numValue < rule.min) {
-        return rule.message || `Minimum value is ${rule.min}`
+      // Required validation
+      if (rule.required && !value.trim()) {
+        return rule.message || 'This field is required'
       }
-    }
 
-    // Numeric max validation
-    if (rule.max !== undefined) {
-      const numValue = parseFloat(value)
-      if (isNaN(numValue) || numValue > rule.max) {
-        return rule.message || `Maximum value is ${rule.max}`
+      // Min length validation
+      if (rule.minLength && value.length < rule.minLength) {
+        return rule.message || `Minimum ${rule.minLength} characters required`
       }
-    }
 
-    // Pattern validation
-    if (rule.pattern && !rule.pattern.test(value)) {
-      return rule.message || 'Invalid format'
-    }
-
-    // Custom validation
-    if (rule.custom && !rule.custom(value)) {
-      return rule.message || 'Invalid value'
-    }
-
-    return null
-  }, [rules])
-
-  const validateForm = useCallback((formData: { [key: string]: string }): boolean => {
-    const newErrors: ValidationErrors = {}
-    let isValid = true
-
-    Object.keys(rules).forEach((name) => {
-      const error = validateField(name, formData[name] || '')
-      if (error) {
-        newErrors[name] = error
-        isValid = false
+      // Max length validation
+      if (rule.maxLength && value.length > rule.maxLength) {
+        return rule.message || `Maximum ${rule.maxLength} characters allowed`
       }
-    })
 
-    setErrors(newErrors)
-    return isValid
-  }, [rules, validateField])
+      // Numeric min validation
+      if (rule.min !== undefined) {
+        const numValue = parseFloat(value)
+        if (isNaN(numValue) || numValue < rule.min) {
+          return rule.message || `Minimum value is ${rule.min}`
+        }
+      }
 
-  const handleBlur = useCallback((name: string, value: string) => {
-    setTouched((prev) => new Set(prev).add(name))
-    const error = validateField(name, value)
-    setErrors((prev) => ({
-      ...prev,
-      [name]: error || '',
-    }))
-  }, [validateField])
+      // Numeric max validation
+      if (rule.max !== undefined) {
+        const numValue = parseFloat(value)
+        if (isNaN(numValue) || numValue > rule.max) {
+          return rule.message || `Maximum value is ${rule.max}`
+        }
+      }
+
+      // Pattern validation
+      if (rule.pattern && !rule.pattern.test(value)) {
+        return rule.message || 'Invalid format'
+      }
+
+      // Custom validation
+      if (rule.custom && !rule.custom(value)) {
+        return rule.message || 'Invalid value'
+      }
+
+      return null
+    },
+    [rules]
+  )
+
+  const validateForm = useCallback(
+    (formData: { [key: string]: string }): boolean => {
+      const newErrors: ValidationErrors = {}
+      let isValid = true
+
+      Object.keys(rules).forEach((name) => {
+        const error = validateField(name, formData[name] || '')
+        if (error) {
+          newErrors[name] = error
+          isValid = false
+        }
+      })
+
+      setErrors(newErrors)
+      return isValid
+    },
+    [rules, validateField]
+  )
+
+  const handleBlur = useCallback(
+    (name: string, value: string) => {
+      setTouched((prev) => new Set(prev).add(name))
+      const error = validateField(name, value)
+      setErrors((prev) => ({
+        ...prev,
+        [name]: error || '',
+      }))
+    },
+    [validateField]
+  )
 
   const clearError = useCallback((name: string) => {
     setErrors((prev) => {

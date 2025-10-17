@@ -15,7 +15,12 @@ interface Toast {
 interface ToastContextType {
   toasts: Toast[]
   toastHistory: Toast[]
-  showToast: (type: ToastType, message: string, duration?: number, undoCallback?: () => void) => void
+  showToast: (
+    type: ToastType,
+    message: string,
+    duration?: number,
+    undoCallback?: () => void
+  ) => void
   removeToast: (id: string) => void
   clearHistory: () => void
 }

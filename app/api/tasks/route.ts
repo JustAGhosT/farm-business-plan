@@ -218,7 +218,10 @@ export async function PATCH(request: Request) {
     }
 
     if (fields.length === 0) {
-      return NextResponse.json({ success: false, error: 'No valid fields to update' }, { status: 400 })
+      return NextResponse.json(
+        { success: false, error: 'No valid fields to update' },
+        { status: 400 }
+      )
     }
 
     fields.push(`updated_at = $${paramIndex++}`)

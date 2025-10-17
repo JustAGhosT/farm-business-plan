@@ -39,23 +39,20 @@ export function withErrorHandler<T = any>(
 ) {
   return async (request: Request): Promise<NextResponse<ApiSuccess<T> | ApiError>> => {
     const requestId = generateRequestId()
-    
+
     try {
       const response = await handler(request)
-      
+
       // Add requestId to successful responses
       if (response.headers.get('content-type')?.includes('application/json')) {
         const body = await response.json()
-        return NextResponse.json(
-          { ...body, requestId },
-          { status: response.status }
-        )
+        return NextResponse.json({ ...body, requestId }, { status: response.status })
       }
-      
+
       return response
     } catch (error) {
       console.error(`API route error [${requestId}]:`, error)
-      
+
       // Handle specific error types
       if (error instanceof Error) {
         return NextResponse.json(

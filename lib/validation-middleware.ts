@@ -14,10 +14,10 @@ export function withValidation<T>(
   return async (request: Request): Promise<NextResponse> => {
     try {
       const body = await request.json()
-      
+
       // Validate the data
       const validation = validateData(schema, body)
-      
+
       if (!validation.success) {
         return createErrorResponse(
           'Validation failed',
@@ -50,16 +50,16 @@ export function validateQueryParams<T>(
     searchParams.forEach((value, key) => {
       params[key] = value
     })
-    
+
     const validation = validateData(schema, params)
-    
+
     if (!validation.success) {
       return {
         success: false,
         error: 'Invalid query parameters',
       }
     }
-    
+
     return {
       success: true,
       data: validation.data,

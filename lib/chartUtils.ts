@@ -130,11 +130,17 @@ export function prepareCropComparisonData(
 }
 
 export function getColorByProfitability(profitability: string): string {
-  return CHART_COLORS.profitability[profitability as keyof typeof CHART_COLORS.profitability] || CHART_COLORS.profitability.unknown
+  return (
+    CHART_COLORS.profitability[profitability as keyof typeof CHART_COLORS.profitability] ||
+    CHART_COLORS.profitability.unknown
+  )
 }
 
 export function getColorByWaterNeeds(waterNeeds: string): string {
-  return CHART_COLORS.waterNeeds[waterNeeds as keyof typeof CHART_COLORS.waterNeeds] || CHART_COLORS.waterNeeds.unknown
+  return (
+    CHART_COLORS.waterNeeds[waterNeeds as keyof typeof CHART_COLORS.waterNeeds] ||
+    CHART_COLORS.waterNeeds.unknown
+  )
 }
 
 // Colors for crop allocation pie chart - exported from constants

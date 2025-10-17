@@ -123,10 +123,10 @@ export async function query<T extends QueryResultRow = any>(
     })
 
     // Race the query against the timeout
-    const result = await Promise.race([
+    const result = (await Promise.race([
       pool.query<T>(text, params),
-      timeoutPromise
-    ]) as QueryResult<T>
+      timeoutPromise,
+    ])) as QueryResult<T>
 
     const duration = Date.now() - start
 
