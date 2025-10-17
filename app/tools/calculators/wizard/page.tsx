@@ -3,11 +3,11 @@
 import WizardCropCharts from '@/components/WizardCropCharts'
 import WizardScenarioComparison from '@/components/WizardScenarioComparison'
 import {
-  CROP_TEMPLATES,
-  CropTemplate,
-  getBalancedPortfolio,
-  getHighProfitPortfolio,
-  getLowWaterPortfolio,
+    CROP_TEMPLATES,
+    CropTemplate,
+    getBalancedPortfolio,
+    getHighProfitPortfolio,
+    getLowWaterPortfolio,
 } from '@/lib/cropTemplates'
 import { useWizardSessions } from '@/lib/hooks/useWizardSessions'
 import { generateWizardPDF } from '@/lib/wizardPdfExport'
@@ -142,7 +142,7 @@ export default function CalculatorWizard() {
     setTimeout(() => setSaveMessage(''), 3000)
   }
 
-  const handleDeleteSession = async (id: number, name: string) => {
+  const handleDeleteSession = async (id: string, name: string) => {
     if (confirm(`Delete session "${name}"?`)) {
       try {
         await deleteSession(id)
