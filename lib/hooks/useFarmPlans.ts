@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { useCrudApi } from './useCrudApi'
 
 export interface FarmPlan {
   id: string
@@ -30,122 +31,58 @@ interface UseFarmPlansResult {
 /**
  * Custom hook for managing farm plans
  * Provides CRUD operations and automatic data fetching
+ *
+ * Refactored to use generic useCrudApi hook for consistent behavior and timeout handling
  */
 export function useFarmPlans(ownerId?: string): UseFarmPlansResult {
-  const [farmPlans, setFarmPlans] = useState<FarmPlan[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const filters = ownerId ? { owner_id: ownerId } : undefined
 
-  const fetchFarmPlans = useCallback(async () => {
-    try {
-      setLoading(true)
-      setError(null)
+  const { items, loading, error, refetch, create, remove } = useCrudApi<FarmPlan>({
+    endpoint: '/api/farm-plans',
+    filters,
+    timeout: 30000,
+    updateMethod: 'PUT', // Farm plans use PUT with /api/farm-plans/[id]
+  })
 
-      const url = ownerId ? `/api/farm-plans?owner_id=${ownerId}` : '/api/farm-plans'
-
-      const response = await fetch(url)
-      const result = await response.json()
-
-      if (result.success) {
-        setFarmPlans(result.data)
-      } else {
-        setError(result.error || 'Failed to fetch farm plans')
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-    } finally {
-      setLoading(false)
-    }
-  }, [ownerId])
-
-  useEffect(() => {
-    fetchFarmPlans()
-  }, [fetchFarmPlans])
-
-  const createFarmPlan = useCallback(
-    async (data: Partial<FarmPlan>) => {
-      try {
-        const response = await fetch('/api/farm-plans', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
-        })
-
-        const result = await response.json()
-
-        if (result.success) {
-          await fetchFarmPlans() // Refresh the list
-          return result.data
-        } else {
-          setError(result.error || 'Failed to create farm plan')
-          return null
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred')
-        return null
-      }
-    },
-    [fetchFarmPlans]
-  )
-
+  // Custom update function that uses the /api/farm-plans/[id] endpoint
   const updateFarmPlan = useCallback(
     async (id: string, data: Partial<FarmPlan>) => {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 30000)
+
       try {
         const response = await fetch(`/api/farm-plans/${id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
+          signal: controller.signal,
         })
 
         const result = await response.json()
 
         if (result.success) {
-          await fetchFarmPlans() // Refresh the list
+          await refetch() // Refresh the list
           return result.data
         } else {
-          setError(result.error || 'Failed to update farm plan')
           return null
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred')
         return null
+      } finally {
+        clearTimeout(timeoutId)
       }
     },
-    [fetchFarmPlans]
-  )
-
-  const deleteFarmPlan = useCallback(
-    async (id: string) => {
-      try {
-        const response = await fetch(`/api/farm-plans/${id}`, {
-          method: 'DELETE',
-        })
-
-        const result = await response.json()
-
-        if (result.success) {
-          await fetchFarmPlans() // Refresh the list
-          return true
-        } else {
-          setError(result.error || 'Failed to delete farm plan')
-          return false
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred')
-        return false
-      }
-    },
-    [fetchFarmPlans]
+    [refetch]
   )
 
   return {
-    farmPlans,
+    farmPlans: items,
     loading,
     error,
-    refetch: fetchFarmPlans,
-    createFarmPlan,
+    refetch,
+    createFarmPlan: create,
     updateFarmPlan,
-    deleteFarmPlan,
+    deleteFarmPlan: remove,
   }
 }
 
@@ -158,6 +95,7 @@ interface UseFarmPlanResult {
 
 /**
  * Custom hook for fetching a single farm plan
+ * This hook maintains the original implementation for fetching a single resource
  */
 export function useFarmPlan(id: string | null): UseFarmPlanResult {
   const [farmPlan, setFarmPlan] = useState<FarmPlan | null>(null)
@@ -170,11 +108,14 @@ export function useFarmPlan(id: string | null): UseFarmPlanResult {
       return
     }
 
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 30000)
+
     try {
       setLoading(true)
       setError(null)
 
-      const response = await fetch(`/api/farm-plans/${id}`)
+      const response = await fetch(`/api/farm-plans/${id}`, { signal: controller.signal })
       const result = await response.json()
 
       if (result.success) {
@@ -183,8 +124,13 @@ export function useFarmPlan(id: string | null): UseFarmPlanResult {
         setError(result.error || 'Failed to fetch farm plan')
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
+      if (err instanceof Error && err.name === 'AbortError') {
+        setError('Request timed out. Please try again.')
+      } else {
+        setError(err instanceof Error ? err.message : 'An error occurred')
+      }
     } finally {
+      clearTimeout(timeoutId)
       setLoading(false)
     }
   }, [id])

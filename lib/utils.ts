@@ -26,9 +26,19 @@ export function formatCurrency(amount: number, options: CurrencyFormatOptions = 
  * Parse currency string to number (removes currency symbols and formatting)
  */
 export function parseCurrency(value: string): number {
-  // Remove currency symbols, spaces, and parse
-  const cleaned = value.replace(/[R\s,]/g, '')
-  return parseFloat(cleaned) || 0
+  if (!value || typeof value !== 'string') return 0
+
+  // Remove currency symbols and formatting
+  // Order matters: remove text codes first, then symbols
+  const cleaned = value
+    .trim()
+    .replace(/ZAR/gi, '') // Remove ZAR text first
+    .replace(/[R$€£¥]/g, '') // Then remove currency symbols
+    .replace(/\s/g, '') // Remove all whitespace
+    .replace(/,/g, '') // Remove thousands separators
+
+  const parsed = parseFloat(cleaned)
+  return isNaN(parsed) ? 0 : parsed
 }
 
 /**
@@ -44,6 +54,11 @@ export function formatPercentage(value: number, decimals: number = 1): string {
 export function formatDate(date: Date | string): string {
   const d = typeof date === 'string' ? new Date(date) : date
 
+  // Check if date is invalid
+  if (isNaN(d.getTime())) {
+    return 'Invalid Date'
+  }
+
   const day = d.getDate()
   const month = d.toLocaleString('en-ZA', { month: 'short' })
   const year = d.getFullYear()
@@ -57,6 +72,11 @@ export function formatDate(date: Date | string): string {
 export function daysBetween(date1: Date | string, date2: Date | string): number {
   const d1 = typeof date1 === 'string' ? new Date(date1) : date1
   const d2 = typeof date2 === 'string' ? new Date(date2) : date2
+
+  // Check if either date is invalid
+  if (isNaN(d1.getTime()) || isNaN(d2.getTime())) {
+    return 0
+  }
 
   const diffTime = Math.abs(d2.getTime() - d1.getTime())
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
@@ -87,9 +107,15 @@ export function deepClone<T>(obj: T): T {
  * Check if value is empty (null, undefined, empty string, empty array, empty object)
  */
 export function isEmpty(value: any): boolean {
-  if (value === null || value === undefined) return true
+  // Handle null and undefined
+  if (value == null) return true
+
+  // Handle strings
   if (typeof value === 'string') return value.trim() === ''
+
+  // Handle arrays and objects with length/keys
   if (Array.isArray(value)) return value.length === 0
   if (typeof value === 'object') return Object.keys(value).length === 0
+
   return false
 }

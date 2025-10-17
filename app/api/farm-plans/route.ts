@@ -1,6 +1,7 @@
-import { NextResponse } from 'next/server'
+import { createErrorResponse } from '@/lib/api-utils'
 import { query } from '@/lib/db'
 import { FarmPlanSchema, validateData } from '@/lib/validation'
+import { NextResponse } from 'next/server'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -42,10 +43,7 @@ export async function GET(request: Request) {
     })
   } catch (error) {
     console.error('Error fetching farm plans:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch farm plans' },
-      { status: 500 }
-    )
+    return createErrorResponse('Failed to fetch farm plans', 500)
   }
 }
 
@@ -60,13 +58,11 @@ export async function POST(request: Request) {
     // Validate input
     const validation = validateData(FarmPlanSchema, body)
     if (!validation.success) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Validation failed',
-          details: validation.errors?.issues,
-        },
-        { status: 400 }
+      return createErrorResponse(
+        'Validation failed',
+        400,
+        validation.errors?.issues,
+        'VALIDATION_ERROR'
       )
     }
 
@@ -105,9 +101,6 @@ export async function POST(request: Request) {
     )
   } catch (error) {
     console.error('Error creating farm plan:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to create farm plan' },
-      { status: 500 }
-    )
+    return createErrorResponse('Failed to create farm plan', 500)
   }
 }

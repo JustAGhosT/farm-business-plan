@@ -1,5 +1,6 @@
-import { NextResponse } from 'next/server'
+import { createErrorResponse } from '@/lib/api-utils'
 import { query } from '@/lib/db'
+import { NextResponse } from 'next/server'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -61,10 +62,7 @@ export async function GET(request: Request) {
     })
   } catch (error) {
     console.error('Error fetching inventory:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch inventory' },
-      { status: 500 }
-    )
+    return createErrorResponse('Failed to fetch inventory', 500)
   }
 }
 
@@ -88,10 +86,7 @@ export async function POST(request: Request) {
     } = body
 
     if (!farm_plan_id || !item_name || !category || quantity === undefined) {
-      return NextResponse.json(
-        { success: false, error: 'Required fields missing' },
-        { status: 400 }
-      )
+      return createErrorResponse('Required fields missing', 400, undefined, 'MISSING_FIELDS')
     }
 
     const queryText = `
@@ -127,10 +122,7 @@ export async function POST(request: Request) {
     )
   } catch (error) {
     console.error('Error adding inventory:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to add inventory item' },
-      { status: 500 }
-    )
+    return createErrorResponse('Failed to add inventory item', 500)
   }
 }
 
@@ -144,10 +136,7 @@ export async function PATCH(request: Request) {
     const { id, action, quantity: updateQuantity, ...updates } = body
 
     if (!id) {
-      return NextResponse.json(
-        { success: false, error: 'Inventory ID is required' },
-        { status: 400 }
-      )
+      return createErrorResponse('Inventory ID is required', 400, undefined, 'MISSING_ID')
     }
 
     let queryText = ''
@@ -189,7 +178,7 @@ export async function PATCH(request: Request) {
       })
 
       if (fields.length === 0) {
-        return NextResponse.json({ success: false, error: 'No fields to update' }, { status: 400 })
+        return createErrorResponse('No fields to update', 400, undefined, 'NO_FIELDS')
       }
 
       fields.push('updated_at = CURRENT_TIMESTAMP')
@@ -207,10 +196,7 @@ export async function PATCH(request: Request) {
     const result = await query(queryText, params)
 
     if (result.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Inventory item not found' },
-        { status: 404 }
-      )
+      return createErrorResponse('Inventory item not found', 404, undefined, 'NOT_FOUND')
     }
 
     const item = result.rows[0]
@@ -227,10 +213,7 @@ export async function PATCH(request: Request) {
     })
   } catch (error) {
     console.error('Error updating inventory:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to update inventory' },
-      { status: 500 }
-    )
+    return createErrorResponse('Failed to update inventory', 500)
   }
 }
 
@@ -244,19 +227,13 @@ export async function DELETE(request: Request) {
     const id = searchParams.get('id')
 
     if (!id) {
-      return NextResponse.json(
-        { success: false, error: 'Inventory ID is required' },
-        { status: 400 }
-      )
+      return createErrorResponse('Inventory ID is required', 400, undefined, 'MISSING_ID')
     }
 
     const result = await query('DELETE FROM inventory WHERE id = $1 RETURNING id', [id])
 
     if (result.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Inventory item not found' },
-        { status: 404 }
-      )
+      return createErrorResponse('Inventory item not found', 404, undefined, 'NOT_FOUND')
     }
 
     return NextResponse.json({
@@ -265,10 +242,7 @@ export async function DELETE(request: Request) {
     })
   } catch (error) {
     console.error('Error deleting inventory:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to delete inventory item' },
-      { status: 500 }
-    )
+    return createErrorResponse('Failed to delete inventory item', 500)
   }
 }
 

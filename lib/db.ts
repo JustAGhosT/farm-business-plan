@@ -89,21 +89,27 @@ export function getPool(): Pool {
     return pool
   }
 
-  // If pool is being initialized, throw error to indicate caller should retry
-  // This is safer than blocking or using a promise in a sync function
+  // If pool is being initialized, wait for it by using the async version
+  // This prevents race conditions while maintaining backward compatibility
   if (poolInitializing) {
-    throw new Error('Database pool is being initialized. Please retry.')
+    throw new Error('Database pool is being initialized. Please use getPoolAsync() or retry.')
   }
 
   // Set flag to prevent concurrent initialization
   poolInitializing = true
 
-  try {
-    pool = initializePool()
-  } finally {
-    poolInitializing = false
-    poolInitPromise = null
-  }
+  // Create promise for async callers
+  poolInitPromise = new Promise<Pool>((resolve, reject) => {
+    try {
+      pool = initializePool()
+      poolInitializing = false
+      resolve(pool)
+    } catch (error) {
+      poolInitializing = false
+      poolInitPromise = null
+      reject(error)
+    }
+  })
 
   return pool!
 }
@@ -149,45 +155,92 @@ export async function getPoolAsync(): Promise<Pool> {
 }
 
 /**
- * Query the database with optional timeout
+ * Check if error is transient and should be retried
+ */
+function isTransientError(error: any): boolean {
+  if (!error) return false
+
+  const message = error.message || ''
+  const code = error.code || ''
+
+  // Connection errors
+  if (code === 'ECONNREFUSED' || code === 'ECONNRESET' || code === 'ETIMEDOUT') {
+    return true
+  }
+
+  // PostgreSQL transient errors
+  const transientCodes = [
+    '40001', // serialization_failure
+    '40P01', // deadlock_detected
+    '08003', // connection_does_not_exist
+    '08006', // connection_failure
+    '08001', // sqlclient_unable_to_establish_sqlconnection
+    '57P03', // cannot_connect_now
+  ]
+
+  return transientCodes.includes(code) || message.includes('Connection terminated')
+}
+
+/**
+ * Query the database with optional timeout and retry logic
  */
 export async function query<T extends QueryResultRow = any>(
   text: string,
   params?: any[],
-  timeoutMs: number = 30000 // Default 30 second timeout
+  timeoutMs: number = 30000, // Default 30 second timeout
+  maxRetries: number = 3
 ): Promise<QueryResult<T>> {
   const pool = getPool()
-  const start = Date.now()
+  let lastError: any
 
-  try {
-    // Create a timeout promise
-    const timeoutPromise = new Promise<never>((_, reject) => {
-      setTimeout(() => {
-        reject(new Error(`Query timeout after ${timeoutMs}ms`))
-      }, timeoutMs)
-    })
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    const start = Date.now()
 
-    // Race the query against the timeout
-    const result = (await Promise.race([
-      pool.query<T>(text, params),
-      timeoutPromise,
-    ])) as QueryResult<T>
+    try {
+      // Create a timeout promise
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => {
+          reject(new Error(`Query timeout after ${timeoutMs}ms`))
+        }, timeoutMs)
+      })
 
-    const duration = Date.now() - start
+      // Race the query against the timeout
+      const result = (await Promise.race([
+        pool.query<T>(text, params),
+        timeoutPromise,
+      ])) as QueryResult<T>
 
-    // Update metrics
-    poolMetrics.queriesExecuted++
-    poolMetrics.lastQueryTime = Date.now()
+      const duration = Date.now() - start
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Executed query', { text, duration, rows: result.rowCount })
+      // Update metrics
+      poolMetrics.queriesExecuted++
+      poolMetrics.lastQueryTime = Date.now()
+
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Executed query', { text, duration, rows: result.rowCount, attempt })
+      }
+
+      return result
+    } catch (error) {
+      lastError = error
+
+      // Only retry on transient errors and if we have retries left
+      if (attempt < maxRetries && isTransientError(error)) {
+        const delay = Math.min(100 * Math.pow(2, attempt - 1), 1000) // Exponential backoff, max 1s
+        console.warn(
+          `Query failed (attempt ${attempt}/${maxRetries}), retrying in ${delay}ms:`,
+          error
+        )
+        await new Promise((resolve) => setTimeout(resolve, delay))
+        continue
+      }
+
+      console.error('Database query error:', error)
+      throw error
     }
-
-    return result
-  } catch (error) {
-    console.error('Database query error:', error)
-    throw error
   }
+
+  throw lastError
 }
 
 /**
