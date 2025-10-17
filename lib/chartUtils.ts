@@ -27,20 +27,15 @@ function getCacheKey(
   return JSON.stringify({ crops, years, totalHectares })
 }
 
-export function prepareCropComparisonData(
+/**
+ * Calculate crop comparison data (extracted for caching)
+ */
+function calculateCropComparisonData(
   crops: Array<{ name: string; percentage: number }>,
-  years: number = 5,
-  totalHectares: number = 10
+  years: number,
+  totalHectares: number
 ): CropChartData[] {
-  // Check cache first
-  const cacheKey = getCacheKey(crops, years, totalHectares)
-  const cached = cropComparisonCache.get(cacheKey)
-  if (cached) {
-    return cached
-  }
-
-  // Calculate if not in cache
-  const result = crops
+  return crops
     .filter((crop) => crop.name.trim() !== '')
     .map((crop) => {
       const template = CROP_TEMPLATES.find((t) => t.name === crop.name)
@@ -93,6 +88,22 @@ export function prepareCropComparisonData(
         profitability: template.profitability,
       }
     })
+}
+
+export function prepareCropComparisonData(
+  crops: Array<{ name: string; percentage: number }>,
+  years: number = 5,
+  totalHectares: number = 10
+): CropChartData[] {
+  // Check cache first
+  const cacheKey = getCacheKey(crops, years, totalHectares)
+  const cached = cropComparisonCache.get(cacheKey)
+  if (cached) {
+    return cached
+  }
+
+  // Calculate if not in cache
+  const result = calculateCropComparisonData(crops, years, totalHectares)
 
   // Store in cache with size limit
   if (cropComparisonCache.size >= CACHE_MAX_SIZE) {
