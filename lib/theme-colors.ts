@@ -74,8 +74,7 @@ export function getColorByWaterNeeds(waterNeeds: string): string {
  */
 export function getColorByStatus(status: string): string {
   return (
-    CHART_COLORS.status[status as keyof typeof CHART_COLORS.status] ||
-    CHART_COLORS.status.draft
+    CHART_COLORS.status[status as keyof typeof CHART_COLORS.status] || CHART_COLORS.status.draft
   )
 }
 

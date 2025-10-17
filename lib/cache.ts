@@ -23,18 +23,18 @@ class QueryCache {
    */
   get<T>(key: string): T | null {
     const entry = this.cache.get(key)
-    
+
     if (!entry) {
       return null
     }
-    
+
     // Check if entry has expired
     const now = Date.now()
     if (now - entry.timestamp > entry.ttl) {
       this.cache.delete(key)
       return null
     }
-    
+
     return entry.data as T
   }
 
@@ -49,7 +49,7 @@ class QueryCache {
         this.cache.delete(firstKey)
       }
     }
-    
+
     this.cache.set(key, {
       data,
       timestamp: Date.now(),
@@ -84,14 +84,14 @@ class QueryCache {
   cleanup(): number {
     const now = Date.now()
     let removed = 0
-    
+
     for (const [key, entry] of this.cache.entries()) {
       if (now - entry.timestamp > entry.ttl) {
         this.cache.delete(key)
         removed++
       }
     }
-    
+
     return removed
   }
 }
@@ -112,11 +112,11 @@ export async function withCache<T>(
   if (cached !== null) {
     return cached
   }
-  
+
   // If not in cache, fetch and store
   const data = await fetcher()
   queryCache.set(key, data, ttl)
-  
+
   return data
 }
 
@@ -126,23 +126,26 @@ export async function withCache<T>(
 export function invalidateCachePattern(pattern: string): number {
   let removed = 0
   const regex = new RegExp(pattern)
-  
+
   for (const key of queryCache['cache'].keys()) {
     if (regex.test(key)) {
       queryCache.delete(key)
       removed++
     }
   }
-  
+
   return removed
 }
 
 // Run cleanup periodically (every 5 minutes)
 if (typeof setInterval !== 'undefined') {
-  setInterval(() => {
-    const removed = queryCache.cleanup()
-    if (removed > 0) {
-      console.log(`Cache cleanup: removed ${removed} expired entries`)
-    }
-  }, 5 * 60 * 1000)
+  setInterval(
+    () => {
+      const removed = queryCache.cleanup()
+      if (removed > 0) {
+        console.log(`Cache cleanup: removed ${removed} expired entries`)
+      }
+    },
+    5 * 60 * 1000
+  )
 }

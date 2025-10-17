@@ -1,9 +1,5 @@
 import { CropTemplate, CROP_TEMPLATES } from './cropTemplates'
-import {
-  CHART_COLORS,
-  getColorByProfitability,
-  getColorByWaterNeeds,
-} from './theme-colors'
+import { CHART_COLORS, getColorByProfitability, getColorByWaterNeeds } from './theme-colors'
 
 export interface CropChartData {
   name: string

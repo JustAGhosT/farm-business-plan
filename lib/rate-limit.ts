@@ -14,7 +14,7 @@ class RateLimiter {
 
   constructor() {
     this.requests = new Map()
-    
+
     // Cleanup expired entries every minute
     if (typeof setInterval !== 'undefined') {
       this.cleanupInterval = setInterval(() => {

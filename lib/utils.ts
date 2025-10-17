@@ -11,15 +11,8 @@ export interface CurrencyFormatOptions {
 /**
  * Format currency values in South African Rand (ZAR)
  */
-export function formatCurrency(
-  amount: number,
-  options: CurrencyFormatOptions = {}
-): string {
-  const {
-    minimumFractionDigits = 0,
-    maximumFractionDigits = 0,
-    locale = 'en-ZA',
-  } = options
+export function formatCurrency(amount: number, options: CurrencyFormatOptions = {}): string {
+  const { minimumFractionDigits = 0, maximumFractionDigits = 0, locale = 'en-ZA' } = options
 
   return new Intl.NumberFormat(locale, {
     style: 'currency',
@@ -50,11 +43,11 @@ export function formatPercentage(value: number, decimals: number = 1): string {
  */
 export function formatDate(date: Date | string): string {
   const d = typeof date === 'string' ? new Date(date) : date
-  
+
   const day = d.getDate()
   const month = d.toLocaleString('en-ZA', { month: 'short' })
   const year = d.getFullYear()
-  
+
   return `${day} ${month} ${year}`
 }
 
@@ -64,7 +57,7 @@ export function formatDate(date: Date | string): string {
 export function daysBetween(date1: Date | string, date2: Date | string): number {
   const d1 = typeof date1 === 'string' ? new Date(date1) : date1
   const d2 = typeof date2 === 'string' ? new Date(date2) : date2
-  
+
   const diffTime = Math.abs(d2.getTime() - d1.getTime())
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 }

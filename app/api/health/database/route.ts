@@ -11,35 +11,36 @@ export const dynamic = 'force-dynamic'
 export async function GET() {
   try {
     const startTime = Date.now()
-    
+
     // Test database connection
     const isConnected = await testConnection()
     const responseTime = Date.now() - startTime
-    
+
     // Get pool metrics
     const metrics = getPoolMetrics()
-    
+
     // Determine overall health status
     const status = isConnected ? 'healthy' : 'unhealthy'
-    const poolUtilization = metrics.totalConnections > 0 
-      ? (metrics.totalConnections - metrics.idleConnections) / metrics.totalConnections 
-      : 0
-    
+    const poolUtilization =
+      metrics.totalConnections > 0
+        ? (metrics.totalConnections - metrics.idleConnections) / metrics.totalConnections
+        : 0
+
     // Warnings based on metrics
     const warnings: string[] = []
-    
+
     if (poolUtilization > 0.8) {
       warnings.push('High pool utilization (>80%)')
     }
-    
+
     if (metrics.waitingRequests > 5) {
       warnings.push(`${metrics.waitingRequests} requests waiting for connection`)
     }
-    
+
     if (responseTime > 1000) {
       warnings.push(`Slow database response time: ${responseTime}ms`)
     }
-    
+
     return NextResponse.json({
       success: true,
       data: {
@@ -58,8 +59,8 @@ export async function GET() {
         },
         queries: {
           totalExecuted: metrics.queriesExecuted,
-          lastQueryTime: metrics.lastQueryTime 
-            ? new Date(metrics.lastQueryTime).toISOString() 
+          lastQueryTime: metrics.lastQueryTime
+            ? new Date(metrics.lastQueryTime).toISOString()
             : null,
         },
         warnings: warnings.length > 0 ? warnings : undefined,

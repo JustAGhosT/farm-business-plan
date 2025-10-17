@@ -202,11 +202,9 @@ export async function getClient(): Promise<PoolClient> {
  * Execute a function within a database transaction
  * Automatically handles commit/rollback
  */
-export async function withTransaction<T>(
-  callback: (client: PoolClient) => Promise<T>
-): Promise<T> {
+export async function withTransaction<T>(callback: (client: PoolClient) => Promise<T>): Promise<T> {
   const client = await getClient()
-  
+
   try {
     await client.query('BEGIN')
     const result = await callback(client)
