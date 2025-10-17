@@ -9,29 +9,39 @@ interface Toast {
   type: ToastType
   message: string
   duration?: number
+  undoCallback?: () => void
 }
 
 interface ToastContextType {
   toasts: Toast[]
-  showToast: (type: ToastType, message: string, duration?: number) => void
+  toastHistory: Toast[]
+  showToast: (
+    type: ToastType,
+    message: string,
+    duration?: number,
+    undoCallback?: () => void
+  ) => void
   removeToast: (id: string) => void
+  clearHistory: () => void
 }
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined)
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([])
+  const [toastHistory, setToastHistory] = useState<Toast[]>([])
 
   const removeToast = useCallback((id: string) => {
     setToasts((prev) => prev.filter((toast) => toast.id !== id))
   }, [])
 
   const showToast = useCallback(
-    (type: ToastType, message: string, duration: number = 5000) => {
-      const id = Math.random().toString(36).substr(2, 9)
-      const newToast: Toast = { id, type, message, duration }
+    (type: ToastType, message: string, duration: number = 5000, undoCallback?: () => void) => {
+      const id = crypto.randomUUID()
+      const newToast: Toast = { id, type, message, duration, undoCallback }
 
       setToasts((prev) => [...prev, newToast])
+      setToastHistory((prev) => [...prev.slice(-9), newToast]) // Keep last 10 toasts
 
       if (duration > 0) {
         setTimeout(() => {
@@ -42,8 +52,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     [removeToast]
   )
 
+  const clearHistory = useCallback(() => {
+    setToastHistory([])
+  }, [])
+
   return (
-    <ToastContext.Provider value={{ toasts, showToast, removeToast }}>
+    <ToastContext.Provider value={{ toasts, toastHistory, showToast, removeToast, clearHistory }}>
       {children}
       <ToastContainer toasts={toasts} removeToast={removeToast} />
     </ToastContext.Provider>
@@ -77,6 +91,13 @@ function ToastContainer({
 }
 
 function ToastMessage({ toast, onClose }: { toast: Toast; onClose: () => void }) {
+  const handleUndo = () => {
+    if (toast.undoCallback) {
+      toast.undoCallback()
+      onClose()
+    }
+  }
+
   const getStyles = () => {
     switch (toast.type) {
       case 'success':
@@ -145,6 +166,14 @@ function ToastMessage({ toast, onClose }: { toast: Toast; onClose: () => void })
       <div className="flex-shrink-0">{getIcon()}</div>
       <div className="ml-3 flex-1">
         <p className="text-sm font-medium">{toast.message}</p>
+        {toast.undoCallback && (
+          <button
+            onClick={handleUndo}
+            className="mt-2 text-xs font-semibold underline hover:no-underline"
+          >
+            Undo
+          </button>
+        )}
       </div>
       <button
         onClick={onClose}
