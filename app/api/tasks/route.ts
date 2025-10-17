@@ -1,8 +1,9 @@
-import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { createErrorResponse } from '@/lib/api-utils'
 import { authOptions } from '@/lib/auth'
 import { query } from '@/lib/db'
 import { TaskSchema, validateData } from '@/lib/validation'
+import { getServerSession } from 'next-auth'
+import { NextResponse } from 'next/server'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -61,7 +62,7 @@ export async function GET(request: Request) {
     })
   } catch (error) {
     console.error('Error fetching tasks:', error)
-    return NextResponse.json({ success: false, error: 'Failed to fetch tasks' }, { status: 500 })
+    return createErrorResponse('Failed to fetch tasks', 500)
   }
 }
 
@@ -77,14 +78,7 @@ export async function POST(request: Request) {
     // Validate input
     const validation = validateData(TaskSchema, body)
     if (!validation.success) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Validation failed',
-          details: validation.errors?.issues,
-        },
-        { status: 400 }
-      )
+      return createErrorResponse('Validation failed', 400, validation.errors?.issues, 'VALIDATION_ERROR')
     }
 
     const data = validation.data!
@@ -167,7 +161,7 @@ export async function POST(request: Request) {
     )
   } catch (error) {
     console.error('Error creating task:', error)
-    return NextResponse.json({ success: false, error: 'Failed to create task' }, { status: 500 })
+    return createErrorResponse('Failed to create task', 500)
   }
 }
 
@@ -195,7 +189,7 @@ export async function PATCH(request: Request) {
     const { id, ...updates } = body
 
     if (!id) {
-      return NextResponse.json({ success: false, error: 'Task ID is required' }, { status: 400 })
+      return createErrorResponse('Task ID is required', 400, undefined, 'MISSING_ID')
     }
 
     // Build dynamic UPDATE query with validated field names
@@ -218,10 +212,7 @@ export async function PATCH(request: Request) {
     }
 
     if (fields.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'No valid fields to update' },
-        { status: 400 }
-      )
+      return createErrorResponse('No valid fields to update', 400, undefined, 'NO_FIELDS')
     }
 
     fields.push(`updated_at = $${paramIndex++}`)
@@ -238,7 +229,7 @@ export async function PATCH(request: Request) {
     const result = await query(queryText, values)
 
     if (result.rows.length === 0) {
-      return NextResponse.json({ success: false, error: 'Task not found' }, { status: 404 })
+      return createErrorResponse('Task not found', 404, undefined, 'NOT_FOUND')
     }
 
     const updatedTask = result.rows[0]
@@ -290,7 +281,7 @@ export async function PATCH(request: Request) {
     })
   } catch (error) {
     console.error('Error updating task:', error)
-    return NextResponse.json({ success: false, error: 'Failed to update task' }, { status: 500 })
+    return createErrorResponse('Failed to update task', 500)
   }
 }
 
@@ -304,14 +295,14 @@ export async function DELETE(request: Request) {
     const id = searchParams.get('id')
 
     if (!id) {
-      return NextResponse.json({ success: false, error: 'Task ID is required' }, { status: 400 })
+      return createErrorResponse('Task ID is required', 400, undefined, 'MISSING_ID')
     }
 
     const queryText = 'DELETE FROM tasks WHERE id = $1 RETURNING id'
     const result = await query(queryText, [id])
 
     if (result.rows.length === 0) {
-      return NextResponse.json({ success: false, error: 'Task not found' }, { status: 404 })
+      return createErrorResponse('Task not found', 404, undefined, 'NOT_FOUND')
     }
 
     return NextResponse.json({
@@ -320,6 +311,6 @@ export async function DELETE(request: Request) {
     })
   } catch (error) {
     console.error('Error deleting task:', error)
-    return NextResponse.json({ success: false, error: 'Failed to delete task' }, { status: 500 })
+    return createErrorResponse('Failed to delete task', 500)
   }
 }

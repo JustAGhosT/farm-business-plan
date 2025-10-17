@@ -1,7 +1,8 @@
-import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { createErrorResponse } from '@/lib/api-utils'
 import { authOptions } from '@/lib/auth'
 import { query } from '@/lib/db'
+import { getServerSession } from 'next-auth'
+import { NextResponse } from 'next/server'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -14,7 +15,7 @@ export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
-      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
+      return createErrorResponse('Unauthorized', 401, undefined, 'UNAUTHORIZED')
     }
 
     const { searchParams } = new URL(request.url)
@@ -67,10 +68,7 @@ export async function GET(request: Request) {
     })
   } catch (error) {
     console.error('Error fetching change log:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch change log' },
-      { status: 500 }
-    )
+    return createErrorResponse('Failed to fetch change log', 500)
   }
 }
 
@@ -82,7 +80,7 @@ export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
-      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
+      return createErrorResponse('Unauthorized', 401, undefined, 'UNAUTHORIZED')
     }
 
     const body = await request.json()
@@ -150,9 +148,6 @@ export async function POST(request: Request) {
     )
   } catch (error) {
     console.error('Error creating change log entry:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to create change log entry' },
-      { status: 500 }
-    )
+    return createErrorResponse('Failed to create change log entry', 500)
   }
 }

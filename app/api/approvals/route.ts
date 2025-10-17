@@ -1,7 +1,8 @@
-import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { createErrorResponse } from '@/lib/api-utils'
 import { authOptions } from '@/lib/auth'
 import { query } from '@/lib/db'
+import { getServerSession } from 'next-auth'
+import { NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
 
@@ -9,24 +10,18 @@ export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
-      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
+      return createErrorResponse('Unauthorized', 401, undefined, 'UNAUTHORIZED')
     }
 
     const body = await request.json()
     const { stage_id, status, comments, signature } = body
 
     if (!stage_id || !status) {
-      return NextResponse.json(
-        { success: false, error: 'stage_id and status required' },
-        { status: 400 }
-      )
+      return createErrorResponse('stage_id and status required', 400, undefined, 'MISSING_FIELDS')
     }
 
     if (!['approved', 'rejected'].includes(status)) {
-      return NextResponse.json(
-        { success: false, error: 'Status must be approved or rejected' },
-        { status: 400 }
-      )
+      return createErrorResponse('Status must be approved or rejected', 400, undefined, 'INVALID_STATUS')
     }
 
     // Update approval
@@ -39,10 +34,7 @@ export async function POST(request: Request) {
     )
 
     if (result.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Approval not found or not authorized' },
-        { status: 404 }
-      )
+      return createErrorResponse('Approval not found or not authorized', 404, undefined, 'NOT_FOUND')
     }
 
     // Check stage approval status
@@ -65,9 +57,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, data: result.rows[0] })
   } catch (error) {
     console.error('Error processing approval:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to process approval' },
-      { status: 500 }
-    )
+    return createErrorResponse('Failed to process approval', 500)
   }
 }
