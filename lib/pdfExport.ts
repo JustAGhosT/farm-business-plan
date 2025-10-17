@@ -2,6 +2,7 @@
 import { CropPlan, CropTemplate, ExportOptions, FarmPlan, Scenario } from '@/types'
 import { jsPDF } from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import { formatCurrency } from './utils'
 
 interface PDFExportData {
   farmPlan?: FarmPlan
@@ -232,18 +233,6 @@ function addFinancialSection(doc: jsPDF, crops: CropPlan[], yPos: number): numbe
   })
 
   return (doc as any).lastAutoTable.finalY + 15
-}
-
-/**
- * Format currency values
- */
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('en-ZA', {
-    style: 'currency',
-    currency: 'ZAR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount)
 }
 
 /**

@@ -16,6 +16,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { COLORS } from '@/lib/theme-colors'
 
 interface CropDistributionData {
   name: string
@@ -28,15 +29,18 @@ interface CropChartsProps {
   cropDistribution?: CropDistributionData[]
   revenueData?: any[]
   costsData?: any[]
+  maxDataPoints?: number // Limit data points for performance
 }
-
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D']
 
 export function CropCharts({
   cropDistribution = [],
   revenueData = [],
   costsData = [],
+  maxDataPoints = 100, // Default limit
 }: CropChartsProps) {
+  // Apply data point limit for performance
+  const limitedRevenueData = revenueData.slice(0, maxDataPoints)
+  const limitedCostsData = costsData.slice(0, maxDataPoints)
   // Custom label renderer for pie chart
   const renderCustomizedLabel = (props: PieLabelRenderProps) => {
     const { cx, cy, midAngle, innerRadius, outerRadius, percent, name } = props
@@ -101,11 +105,18 @@ export function CropCharts({
       )}
 
       {/* Revenue Bar Chart */}
-      {revenueData.length > 0 && (
+      {limitedRevenueData.length > 0 && (
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-4">Revenue by Crop</h3>
+          <h3 className="text-lg font-semibold mb-4">
+            Revenue by Crop
+            {revenueData.length > maxDataPoints && (
+              <span className="text-sm text-gray-500 ml-2">
+                (Showing {maxDataPoints} of {revenueData.length} items)
+              </span>
+            )}
+          </h3>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={revenueData}>
+            <BarChart data={limitedRevenueData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
@@ -118,11 +129,18 @@ export function CropCharts({
       )}
 
       {/* Costs Line Chart */}
-      {costsData.length > 0 && (
+      {limitedCostsData.length > 0 && (
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-4">Costs Over Time</h3>
+          <h3 className="text-lg font-semibold mb-4">
+            Costs Over Time
+            {costsData.length > maxDataPoints && (
+              <span className="text-sm text-gray-500 ml-2">
+                (Showing {maxDataPoints} of {costsData.length} items)
+              </span>
+            )}
+          </h3>
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={costsData}>
+            <LineChart data={limitedCostsData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
               <YAxis />
