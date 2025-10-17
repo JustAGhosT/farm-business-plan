@@ -2,12 +2,32 @@ import { Pool, PoolClient, QueryResult, QueryResultRow } from 'pg'
 
 // Database connection pool
 let pool: Pool | null = null
+let poolInitializing = false
 
 /**
  * Get or create database connection pool
  */
 export function getPool(): Pool {
-  if (!pool) {
+  // If pool exists, return it immediately
+  if (pool) {
+    return pool
+  }
+
+  // If pool is being initialized, wait for it
+  if (poolInitializing) {
+    // Simple spinlock - in production, consider using a promise-based approach
+    while (poolInitializing) {
+      // Wait for initialization to complete
+    }
+    if (pool) {
+      return pool
+    }
+  }
+
+  // Set flag to prevent concurrent initialization
+  poolInitializing = true
+
+  try {
     const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL
 
     if (!connectionString) {
@@ -30,9 +50,11 @@ export function getPool(): Pool {
     })
 
     console.log('Database pool created')
+  } finally {
+    poolInitializing = false
   }
 
-  return pool
+  return pool!
 }
 
 /**

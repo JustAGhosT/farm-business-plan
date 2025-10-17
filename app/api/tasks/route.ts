@@ -184,60 +184,41 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ success: false, error: 'Task ID is required' }, { status: 400 })
     }
 
-    // Build dynamic UPDATE query
+    // Whitelist of allowed fields to prevent SQL injection
+    const allowedFields = [
+      'title',
+      'description',
+      'status',
+      'priority',
+      'category',
+      'due_date',
+      'assigned_to',
+      'estimated_duration',
+      'actual_duration',
+      'notes',
+    ]
+
+    // Build dynamic UPDATE query with validated field names
     const fields: string[] = []
     const values: any[] = []
     let paramIndex = 1
 
-    if (updates.title !== undefined) {
-      fields.push(`title = $${paramIndex++}`)
-      values.push(updates.title)
-    }
-    if (updates.description !== undefined) {
-      fields.push(`description = $${paramIndex++}`)
-      values.push(updates.description)
-    }
-    if (updates.status !== undefined) {
-      fields.push(`status = $${paramIndex++}`)
-      values.push(updates.status)
+    // Validate and process only allowed fields
+    for (const [key, value] of Object.entries(updates)) {
+      if (allowedFields.includes(key)) {
+        fields.push(`${key} = $${paramIndex++}`)
+        values.push(value)
 
-      // If marking as completed, set completed_at
-      if (updates.status === 'completed' && !updates.completed_at) {
-        fields.push(`completed_at = $${paramIndex++}`)
-        values.push(new Date().toISOString())
+        // If marking as completed, set completed_at
+        if (key === 'status' && value === 'completed' && !updates.completed_at) {
+          fields.push(`completed_at = $${paramIndex++}`)
+          values.push(new Date().toISOString())
+        }
       }
-    }
-    if (updates.priority !== undefined) {
-      fields.push(`priority = $${paramIndex++}`)
-      values.push(updates.priority)
-    }
-    if (updates.category !== undefined) {
-      fields.push(`category = $${paramIndex++}`)
-      values.push(updates.category)
-    }
-    if (updates.due_date !== undefined) {
-      fields.push(`due_date = $${paramIndex++}`)
-      values.push(updates.due_date)
-    }
-    if (updates.assigned_to !== undefined) {
-      fields.push(`assigned_to = $${paramIndex++}`)
-      values.push(updates.assigned_to)
-    }
-    if (updates.estimated_duration !== undefined) {
-      fields.push(`estimated_duration = $${paramIndex++}`)
-      values.push(updates.estimated_duration)
-    }
-    if (updates.actual_duration !== undefined) {
-      fields.push(`actual_duration = $${paramIndex++}`)
-      values.push(updates.actual_duration)
-    }
-    if (updates.notes !== undefined) {
-      fields.push(`notes = $${paramIndex++}`)
-      values.push(updates.notes)
     }
 
     if (fields.length === 0) {
-      return NextResponse.json({ success: false, error: 'No fields to update' }, { status: 400 })
+      return NextResponse.json({ success: false, error: 'No valid fields to update' }, { status: 400 })
     }
 
     fields.push(`updated_at = $${paramIndex++}`)
