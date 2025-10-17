@@ -36,12 +36,35 @@ export const CHART_COLORS = {
   ],
 }
 
+// Memoization cache for expensive calculations
+const cropComparisonCache = new Map<string, CropChartData[]>()
+const CACHE_MAX_SIZE = 100 // Prevent unbounded growth
+
+/**
+ * Generate a cache key from function parameters
+ */
+function getCacheKey(
+  crops: Array<{ name: string; percentage: number }>,
+  years: number,
+  totalHectares: number
+): string {
+  return JSON.stringify({ crops, years, totalHectares })
+}
+
 export function prepareCropComparisonData(
   crops: Array<{ name: string; percentage: number }>,
   years: number = 5,
   totalHectares: number = 10
 ): CropChartData[] {
-  return crops
+  // Check cache first
+  const cacheKey = getCacheKey(crops, years, totalHectares)
+  const cached = cropComparisonCache.get(cacheKey)
+  if (cached) {
+    return cached
+  }
+
+  // Calculate if not in cache
+  const result = crops
     .filter((crop) => crop.name.trim() !== '')
     .map((crop) => {
       const template = CROP_TEMPLATES.find((t) => t.name === crop.name)
@@ -94,6 +117,16 @@ export function prepareCropComparisonData(
         profitability: template.profitability,
       }
     })
+
+  // Store in cache with size limit
+  if (cropComparisonCache.size >= CACHE_MAX_SIZE) {
+    // Remove oldest entry (first in Map)
+    const firstKey = cropComparisonCache.keys().next().value
+    cropComparisonCache.delete(firstKey)
+  }
+  cropComparisonCache.set(cacheKey, result)
+
+  return result
 }
 
 export function getColorByProfitability(profitability: string): string {

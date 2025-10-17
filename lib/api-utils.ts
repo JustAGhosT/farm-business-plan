@@ -1,6 +1,13 @@
 import { NextResponse } from 'next/server'
 
 /**
+ * Generate unique request ID for tracking
+ */
+function generateRequestId(): string {
+  return `req_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`
+}
+
+/**
  * Standardized API error response
  */
 export interface ApiError {
@@ -8,6 +15,8 @@ export interface ApiError {
   error: string
   details?: any
   code?: string
+  requestId?: string
+  timestamp?: string
 }
 
 /**
@@ -18,6 +27,7 @@ export interface ApiSuccess<T = any> {
   data?: T
   message?: string
   count?: number
+  requestId?: string
 }
 
 /**
@@ -28,10 +38,23 @@ export function withErrorHandler<T = any>(
   handler: (request: Request) => Promise<NextResponse<ApiSuccess<T> | ApiError>>
 ) {
   return async (request: Request): Promise<NextResponse<ApiSuccess<T> | ApiError>> => {
+    const requestId = generateRequestId()
+    
     try {
-      return await handler(request)
+      const response = await handler(request)
+      
+      // Add requestId to successful responses
+      if (response.headers.get('content-type')?.includes('application/json')) {
+        const body = await response.json()
+        return NextResponse.json(
+          { ...body, requestId },
+          { status: response.status }
+        )
+      }
+      
+      return response
     } catch (error) {
-      console.error('API route error:', error)
+      console.error(`API route error [${requestId}]:`, error)
       
       // Handle specific error types
       if (error instanceof Error) {
@@ -39,6 +62,9 @@ export function withErrorHandler<T = any>(
           {
             success: false,
             error: error.message || 'Internal server error',
+            code: 'INTERNAL_ERROR',
+            requestId,
+            timestamp: new Date().toISOString(),
           },
           { status: 500 }
         )
@@ -49,6 +75,9 @@ export function withErrorHandler<T = any>(
         {
           success: false,
           error: 'An unexpected error occurred',
+          code: 'UNKNOWN_ERROR',
+          requestId,
+          timestamp: new Date().toISOString(),
         },
         { status: 500 }
       )
@@ -57,7 +86,7 @@ export function withErrorHandler<T = any>(
 }
 
 /**
- * Create a standardized error response
+ * Create a standardized error response with enhanced context
  */
 export function createErrorResponse(
   error: string,
@@ -71,6 +100,8 @@ export function createErrorResponse(
       error,
       ...(details && { details }),
       ...(code && { code }),
+      requestId: generateRequestId(),
+      timestamp: new Date().toISOString(),
     },
     { status }
   )
@@ -89,6 +120,7 @@ export function createSuccessResponse<T = any>(
       success: true,
       ...(data !== undefined && { data }),
       ...(message && { message }),
+      requestId: generateRequestId(),
     },
     { status }
   )
