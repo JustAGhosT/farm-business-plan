@@ -22,7 +22,7 @@ describe('Cache Functions', () => {
     it('should handle expired entries', async () => {
       queryCache.set('key1', 'value1', 100) // 100ms TTL
       expect(queryCache.get('key1')).toBe('value1')
-      
+
       // Wait for expiration
       await new Promise((resolve) => setTimeout(resolve, 150))
       expect(queryCache.get('key1')).toBeNull()
@@ -31,7 +31,7 @@ describe('Cache Functions', () => {
     it('should delete specific keys', () => {
       queryCache.set('key1', 'value1', 10000)
       queryCache.set('key2', 'value2', 10000)
-      
+
       expect(queryCache.delete('key1')).toBe(true)
       expect(queryCache.get('key1')).toBeNull()
       expect(queryCache.get('key2')).toBe('value2')
@@ -40,7 +40,7 @@ describe('Cache Functions', () => {
     it('should clear all entries', () => {
       queryCache.set('key1', 'value1', 10000)
       queryCache.set('key2', 'value2', 10000)
-      
+
       queryCache.clear()
       expect(queryCache.get('key1')).toBeNull()
       expect(queryCache.get('key2')).toBeNull()
@@ -55,10 +55,10 @@ describe('Cache Functions', () => {
     it('should cleanup expired entries', async () => {
       queryCache.set('key1', 'value1', 100) // Will expire
       queryCache.set('key2', 'value2', 10000) // Won't expire
-      
+
       // Wait for expiration
       await new Promise((resolve) => setTimeout(resolve, 150))
-      
+
       const removed = queryCache.cleanup()
       expect(removed).toBe(1)
       expect(queryCache.get('key1')).toBeNull()
@@ -68,22 +68,22 @@ describe('Cache Functions', () => {
     it('should handle max size limit with LRU eviction', async () => {
       // Create a small cache
       const smallCache = new (queryCache.constructor as any)(3)
-      
+
       smallCache.set('key1', 'value1', 10000)
       await new Promise((resolve) => setTimeout(resolve, 10)) // Small delay
       smallCache.set('key2', 'value2', 10000)
       await new Promise((resolve) => setTimeout(resolve, 10))
       smallCache.set('key3', 'value3', 10000)
-      
+
       // Access key1 and key3 to make them more recently used
       await new Promise((resolve) => setTimeout(resolve, 10))
       smallCache.get('key1')
       smallCache.get('key3')
-      
+
       // Add key4, which should evict key2 (least recently used)
       await new Promise((resolve) => setTimeout(resolve, 10))
       smallCache.set('key4', 'value4', 10000)
-      
+
       expect(smallCache.size()).toBe(3)
       expect(smallCache.get('key2')).toBeNull() // Should be evicted (least recently used)
       expect(smallCache.get('key1')).toBe('value1') // Should still exist (recently accessed)
@@ -94,25 +94,25 @@ describe('Cache Functions', () => {
     it('should update lastAccessed on get', async () => {
       queryCache.set('key1', 'value1', 10000)
       queryCache.set('key2', 'value2', 10000)
-      
+
       // Wait a bit then access key1 multiple times
       await new Promise((resolve) => setTimeout(resolve, 10))
       queryCache.get('key1')
       await new Promise((resolve) => setTimeout(resolve, 5))
       queryCache.get('key1')
-      
+
       // key1 should be more recently used than key2
       const cache = (queryCache as any).cache
       const entry1 = cache.get('key1')
       const entry2 = cache.get('key2')
-      
+
       expect(entry1.lastAccessed).toBeGreaterThan(entry2.lastAccessed)
     })
 
     it('should provide keys iterator', () => {
       queryCache.set('key1', 'value1', 10000)
       queryCache.set('key2', 'value2', 10000)
-      
+
       const keys = Array.from(queryCache.keys())
       expect(keys).toContain('key1')
       expect(keys).toContain('key2')
@@ -144,10 +144,10 @@ describe('Cache Functions', () => {
       }
 
       await withCache('test-key', fetcher, 100)
-      
+
       // Wait for expiration
       await new Promise((resolve) => setTimeout(resolve, 150))
-      
+
       await withCache('test-key', fetcher, 100)
 
       expect(callCount).toBe(2) // Fetcher should be called twice
@@ -172,7 +172,7 @@ describe('Cache Functions', () => {
       queryCache.set('post:1', 'data3', 10000)
 
       const removed = invalidateCachePattern('user:')
-      
+
       expect(removed).toBe(2)
       expect(queryCache.get('user:1')).toBeNull()
       expect(queryCache.get('user:2')).toBeNull()
@@ -185,7 +185,7 @@ describe('Cache Functions', () => {
       queryCache.set('admin-1', 'data3', 10000)
 
       const removed = invalidateCachePattern('^user-')
-      
+
       expect(removed).toBe(2)
       expect(queryCache.get('user-1')).toBeNull()
       expect(queryCache.get('user-2')).toBeNull()
@@ -194,7 +194,7 @@ describe('Cache Functions', () => {
 
     it('should return 0 when no matches', () => {
       queryCache.set('key1', 'data1', 10000)
-      
+
       const removed = invalidateCachePattern('nonexistent')
       expect(removed).toBe(0)
     })

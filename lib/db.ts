@@ -97,7 +97,7 @@ export function getPool(): Pool {
 
   // Set flag to prevent concurrent initialization
   poolInitializing = true
-  
+
   // Create promise for async callers
   poolInitPromise = new Promise<Pool>((resolve, reject) => {
     try {
@@ -159,15 +159,15 @@ export async function getPoolAsync(): Promise<Pool> {
  */
 function isTransientError(error: any): boolean {
   if (!error) return false
-  
+
   const message = error.message || ''
   const code = error.code || ''
-  
+
   // Connection errors
   if (code === 'ECONNREFUSED' || code === 'ECONNRESET' || code === 'ETIMEDOUT') {
     return true
   }
-  
+
   // PostgreSQL transient errors
   const transientCodes = [
     '40001', // serialization_failure
@@ -177,7 +177,7 @@ function isTransientError(error: any): boolean {
     '08001', // sqlclient_unable_to_establish_sqlconnection
     '57P03', // cannot_connect_now
   ]
-  
+
   return transientCodes.includes(code) || message.includes('Connection terminated')
 }
 
@@ -192,7 +192,7 @@ export async function query<T extends QueryResultRow = any>(
 ): Promise<QueryResult<T>> {
   const pool = getPool()
   let lastError: any
-  
+
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     const start = Date.now()
 
@@ -223,20 +223,23 @@ export async function query<T extends QueryResultRow = any>(
       return result
     } catch (error) {
       lastError = error
-      
+
       // Only retry on transient errors and if we have retries left
       if (attempt < maxRetries && isTransientError(error)) {
         const delay = Math.min(100 * Math.pow(2, attempt - 1), 1000) // Exponential backoff, max 1s
-        console.warn(`Query failed (attempt ${attempt}/${maxRetries}), retrying in ${delay}ms:`, error)
+        console.warn(
+          `Query failed (attempt ${attempt}/${maxRetries}), retrying in ${delay}ms:`,
+          error
+        )
         await new Promise((resolve) => setTimeout(resolve, delay))
         continue
       }
-      
+
       console.error('Database query error:', error)
       throw error
     }
   }
-  
+
   throw lastError
 }
 

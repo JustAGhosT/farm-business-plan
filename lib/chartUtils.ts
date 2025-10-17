@@ -44,12 +44,12 @@ function getCacheKey(
     .sort()
     .join('|')
   const baseKey = `${cropKey}_y${years}_h${totalHectares}`
-  
+
   // For very long keys, use hash to keep cache keys manageable
   if (baseKey.length > 100) {
     return `crops_${hashString(baseKey)}`
   }
-  
+
   return `crops_${baseKey}`
 }
 

@@ -42,7 +42,7 @@ describe('Utility Functions', () => {
     })
 
     it('should handle comma separators', () => {
-      expect(parseCurrency('R 1,000.50')).toBe(1000.50)
+      expect(parseCurrency('R 1,000.50')).toBe(1000.5)
     })
 
     it('should handle multiple currency symbols', () => {

@@ -27,16 +27,16 @@ export function formatCurrency(amount: number, options: CurrencyFormatOptions = 
  */
 export function parseCurrency(value: string): number {
   if (!value || typeof value !== 'string') return 0
-  
+
   // Remove currency symbols and formatting
   // Order matters: remove text codes first, then symbols
   const cleaned = value
     .trim()
-    .replace(/ZAR/gi, '')      // Remove ZAR text first
-    .replace(/[R$€£¥]/g, '')  // Then remove currency symbols
-    .replace(/\s/g, '')        // Remove all whitespace
-    .replace(/,/g, '')         // Remove thousands separators
-  
+    .replace(/ZAR/gi, '') // Remove ZAR text first
+    .replace(/[R$€£¥]/g, '') // Then remove currency symbols
+    .replace(/\s/g, '') // Remove all whitespace
+    .replace(/,/g, '') // Remove thousands separators
+
   const parsed = parseFloat(cleaned)
   return isNaN(parsed) ? 0 : parsed
 }
@@ -109,13 +109,13 @@ export function deepClone<T>(obj: T): T {
 export function isEmpty(value: any): boolean {
   // Handle null and undefined
   if (value == null) return true
-  
+
   // Handle strings
   if (typeof value === 'string') return value.trim() === ''
-  
+
   // Handle arrays and objects with length/keys
   if (Array.isArray(value)) return value.length === 0
   if (typeof value === 'object') return Object.keys(value).length === 0
-  
+
   return false
 }

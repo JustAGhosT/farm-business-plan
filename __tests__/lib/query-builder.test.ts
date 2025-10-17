@@ -70,15 +70,15 @@ describe('Query Builder Functions', () => {
     })
 
     it('should throw error when table name is missing', () => {
-      expect(() =>
-        buildUpdateQuery('', { title: 'Test' }, ['title'], 'id', '123')
-      ).toThrow('Table name is required')
+      expect(() => buildUpdateQuery('', { title: 'Test' }, ['title'], 'id', '123')).toThrow(
+        'Table name is required'
+      )
     })
 
     it('should throw error when ID value is missing', () => {
-      expect(() =>
-        buildUpdateQuery('tasks', { title: 'Test' }, ['title'], 'id', null)
-      ).toThrow('ID value is required')
+      expect(() => buildUpdateQuery('tasks', { title: 'Test' }, ['title'], 'id', null)).toThrow(
+        'ID value is required'
+      )
     })
 
     it('should throw error when no valid fields to update', () => {
@@ -137,9 +137,9 @@ describe('Query Builder Functions', () => {
     })
 
     it('should throw error when no valid fields to insert', () => {
-      expect(() =>
-        buildInsertQuery('tasks', { forbidden: 'value' }, ['title'])
-      ).toThrow('No valid fields to insert')
+      expect(() => buildInsertQuery('tasks', { forbidden: 'value' }, ['title'])).toThrow(
+        'No valid fields to insert'
+      )
     })
 
     it('should handle all fields when allowedFields not provided', () => {
@@ -158,10 +158,11 @@ describe('Query Builder Functions', () => {
 
   describe('buildWhereClause', () => {
     it('should build basic WHERE clause', () => {
-      const result = buildWhereClause(
-        { status: 'active', priority: 'high' },
-        ['status', 'priority', 'category']
-      )
+      const result = buildWhereClause({ status: 'active', priority: 'high' }, [
+        'status',
+        'priority',
+        'category',
+      ])
 
       expect(result.clause).toContain('WHERE')
       expect(result.clause).toContain('status = $1')
@@ -172,20 +173,21 @@ describe('Query Builder Functions', () => {
     })
 
     it('should filter out disallowed fields', () => {
-      const result = buildWhereClause(
-        { status: 'active', forbidden: 'hack', priority: 'high' },
-        ['status', 'priority']
-      )
+      const result = buildWhereClause({ status: 'active', forbidden: 'hack', priority: 'high' }, [
+        'status',
+        'priority',
+      ])
 
       expect(result.clause).not.toContain('forbidden')
       expect(result.values).toEqual(['active', 'high'])
     })
 
     it('should ignore null and undefined values', () => {
-      const result = buildWhereClause(
-        { status: 'active', priority: null, category: undefined },
-        ['status', 'priority', 'category']
-      )
+      const result = buildWhereClause({ status: 'active', priority: null, category: undefined }, [
+        'status',
+        'priority',
+        'category',
+      ])
 
       expect(result.clause).toBe('WHERE status = $1')
       expect(result.values).toEqual(['active'])

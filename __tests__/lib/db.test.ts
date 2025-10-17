@@ -19,7 +19,7 @@ jest.mock('pg', () => {
     idleCount: 0,
     waitingCount: 0,
   }
-  
+
   return {
     Pool: jest.fn(() => mockPool),
   }
@@ -72,16 +72,12 @@ describe('Database Functions', () => {
     it('should handle concurrent initialization', async () => {
       // Reset to force new initialization
       await closePool()
-      
+
       // Make multiple concurrent calls
-      const promises = [
-        getPoolAsync(),
-        getPoolAsync(),
-        getPoolAsync(),
-      ]
-      
+      const promises = [getPoolAsync(), getPoolAsync(), getPoolAsync()]
+
       const pools = await Promise.all(promises)
-      
+
       // All should return the same pool instance
       expect(pools[0]).toBe(pools[1])
       expect(pools[1]).toBe(pools[2])
@@ -92,7 +88,7 @@ describe('Database Functions', () => {
     it('should return pool metrics', () => {
       getPool() // Initialize pool
       const metrics = getPoolMetrics()
-      
+
       expect(metrics).toHaveProperty('totalConnections')
       expect(metrics).toHaveProperty('idleConnections')
       expect(metrics).toHaveProperty('waitingRequests')
@@ -111,7 +107,7 @@ describe('Database Functions', () => {
     it('should reset metrics to initial state', () => {
       resetPoolMetrics()
       const metrics = getPoolMetrics()
-      
+
       expect(metrics.queriesExecuted).toBe(0)
       expect(metrics.lastQueryTime).toBe(0)
     })
@@ -121,7 +117,7 @@ describe('Database Functions', () => {
     it('should close the pool', async () => {
       getPool() // Initialize pool
       await closePool()
-      
+
       // Getting pool again should create a new one
       const newPool = getPool()
       expect(newPool).toBeDefined()
@@ -134,7 +130,7 @@ describe('Database Functions', () => {
     it('should reset metrics on close', async () => {
       getPool()
       await closePool()
-      
+
       const metrics = getPoolMetrics()
       expect(metrics.queriesExecuted).toBe(0)
     })

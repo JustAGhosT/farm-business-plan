@@ -10,7 +10,7 @@ export interface UpdateQueryResult {
 /**
  * Build a dynamic UPDATE query with field validation
  * Prevents SQL injection by validating field names against allowed list
- * 
+ *
  * @param tableName - Name of the table to update
  * @param updates - Object containing field names and values to update
  * @param allowedFields - Array of field names that are allowed to be updated
@@ -18,7 +18,7 @@ export interface UpdateQueryResult {
  * @param idValue - Value of the ID to identify the row to update
  * @param additionalSets - Additional SET clauses to add (e.g., 'updated_at = NOW()')
  * @returns Object containing the query string and values array for parameterized query
- * 
+ *
  * @example
  * const result = buildUpdateQuery(
  *   'tasks',
@@ -75,8 +75,10 @@ export function buildUpdateQuery(
   }
 
   // Always update the updated_at timestamp if not already included
-  if (!additionalSets?.some(clause => clause.includes('updated_at')) && 
-      !setClauses.some(clause => clause.startsWith('updated_at'))) {
+  if (
+    !additionalSets?.some((clause) => clause.includes('updated_at')) &&
+    !setClauses.some((clause) => clause.startsWith('updated_at'))
+  ) {
     setClauses.push(`updated_at = $${paramIndex++}`)
     values.push(new Date().toISOString())
   }
@@ -96,7 +98,7 @@ export function buildUpdateQuery(
 
 /**
  * Build a dynamic INSERT query
- * 
+ *
  * @param tableName - Name of the table to insert into
  * @param data - Object containing field names and values to insert
  * @param allowedFields - Optional array of field names that are allowed (all if not provided)
@@ -140,11 +142,11 @@ export function buildInsertQuery(
 
 /**
  * Build a dynamic WHERE clause for SELECT queries
- * 
+ *
  * @param filters - Object containing field names and values for filtering
  * @param allowedFields - Array of field names that are allowed for filtering
  * @returns Object containing WHERE clause and values array
- * 
+ *
  * @example
  * const result = buildWhereClause(
  *   { status: 'active', priority: 'high' },
