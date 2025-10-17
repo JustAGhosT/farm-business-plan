@@ -597,7 +597,7 @@ export default function CalculatorWizard() {
                         type="text"
                         value={crop.name}
                         onChange={(e) => updateCrop(crop.id, 'name', e.target.value)}
-                        className="w-full px-4 py-2 md:py-2 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation text-base"
+                        className="w-full px-4 py-3 md:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation text-base"
                         placeholder="e.g., Dragon Fruit, Moringa, Lucerne"
                         list={`crop-suggestions-${crop.id}`}
                       />
@@ -622,7 +622,7 @@ export default function CalculatorWizard() {
                         min="0"
                         max="100"
                         step="1"
-                        className="w-full px-4 py-2 md:py-2 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation text-base"
+                        className="w-full px-4 py-3 md:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation text-base"
                         placeholder="e.g., 50"
                       />
                       <p className="text-xs text-gray-500 mt-1">
