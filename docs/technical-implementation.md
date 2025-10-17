@@ -113,18 +113,19 @@ Create a diagram showing:
 
 **Overview of popular substrates and their properties:**
 
-| Substrate      | Typical Cost (per litre) | Reusability | Sustainability | Comments                                      |
-| -------------- | ------------------------ | ----------- | -------------- | --------------------------------------------- |
-| Coconut Coir   | Low–Medium               | High        | Excellent      | Renewable, affordable, compostable            |
-| Perlite        | Medium                   | High        | Good           | Can be rinsed and reused                      |
-| Vermiculite    | Medium–High              | Limited     | Moderate       | Good for moisture but needs replacement       |
-| Peat Moss      | Medium                   | Limited     | Poor           | Non-renewable, often imported                 |
-| Rockwool       | Medium–High              | Low         | Poor           | Not biodegradable, single-use                 |
-| Biochar        | Medium                   | High        | Excellent      | Locally sourced possible, improves soil       |
+| Substrate    | Typical Cost (per litre) | Reusability | Sustainability | Comments                                |
+| ------------ | ------------------------ | ----------- | -------------- | --------------------------------------- |
+| Coconut Coir | Low–Medium               | High        | Excellent      | Renewable, affordable, compostable      |
+| Perlite      | Medium                   | High        | Good           | Can be rinsed and reused                |
+| Vermiculite  | Medium–High              | Limited     | Moderate       | Good for moisture but needs replacement |
+| Peat Moss    | Medium                   | Limited     | Poor           | Non-renewable, often imported           |
+| Rockwool     | Medium–High              | Low         | Poor           | Not biodegradable, single-use           |
+| Biochar      | Medium                   | High        | Excellent      | Locally sourced possible, improves soil |
 
 #### Substrate Characteristics
 
 **Coconut Coir:**
+
 - Excellent water retention and airflow
 - Naturally sterile, prevents compaction
 - Reduces risk of root rot
@@ -132,29 +133,34 @@ Create a diagram showing:
 - Best balance for cost, performance, and sustainability
 
 **Perlite:**
+
 - Increases drainage and aeration
 - Reduces risk of damping off and root rot
 - Often mixed with coir, peat, or compost
 - Higher initial cost but reusable, reducing long-term expenses
 
 **Vermiculite:**
+
 - Retains water while maintaining aeration
 - Excellent for seeds needing high humidity
 - Good moisture retention for sensitive seeds
 
 **Peat Moss:**
+
 - Traditional standard in soilless mixes
 - Good moisture retention and uniform environment
 - Less sustainable than coconut coir
 - Higher long-term costs due to single-use limitations
 
 **Rockwool:**
+
 - Sterile, inert, holds water well
 - Provides consistent conditions
 - Widely used for hydroponic germination
 - Environmental concerns: not biodegradable
 
 **Biochar:**
+
 - High sustainability
 - Potential for local sourcing or on-farm production
 - Long-term soil benefits when transplanted
@@ -167,6 +173,7 @@ Create a diagram showing:
 #### Popular Mix Formulas
 
 **1. Coconut Coir + Perlite:**
+
 - Very popular for seed starting
 - Coir holds moisture and provides structure
 - Perlite adds drainage and improves aeration
@@ -174,12 +181,14 @@ Create a diagram showing:
 - Ratio: 60% coir, 40% perlite (faster drainage for succulents, herbs)
 
 **2. Peat Moss (or Coco Coir) + Vermiculite/Perlite:**
+
 - Classic seed-starting mix
 - Vermiculite retains more water (good for humidity-loving seeds)
 - Perlite chosen for more air and less damping off risk
 - Ratio: 50% peat/coir, 25% perlite, 25% vermiculite (most seeds)
 
 **3. Coco Coir + Perlite + Vermiculite:**
+
 - Balanced blend for sensitive seeds
 - Coir for structure and water retention
 - Perlite for drainage
@@ -187,6 +196,7 @@ Create a diagram showing:
 - Used for sensitive or slow-germinating seeds
 
 **4. Biochar Additions:**
+
 - Add 5–10% biochar to enrich mix
 - Provides long-term benefits after transplanting
 
@@ -195,15 +205,18 @@ Create a diagram showing:
 **Adjust substrate mix based on crop water needs:**
 
 #### Standard Mix (Most Seeds)
+
 - 50% coconut coir or peat moss
 - 25% perlite
 - 25% vermiculite
 
 #### Fast Drainage Mix (Succulents, Herbs)
+
 - 60% coir/peat
 - 40% perlite
 
 #### High Moisture Mix (Seeds Needing Extra Humidity)
+
 - 50% vermiculite
 - 40% coir/peat
 - 10% perlite
@@ -235,14 +248,14 @@ Create a diagram showing:
 
 **Temperature and substrate preferences by crop category:**
 
-| Crop Category        | Optimal Temp Range | Preferred Substrate Mix                  | Special Notes                      |
-| -------------------- | ------------------ | ---------------------------------------- | ---------------------------------- |
-| Tomatoes, Peppers    | 21–29°C            | 50% coir, 25% perlite, 25% vermiculite   | Need consistent warmth             |
-| Lettuce, Brassicas   | 15–20°C            | 50% coir, 50% perlite                    | Prefer cooler conditions           |
-| Cucumbers, Squash    | 21–29°C            | 50% coir, 30% perlite, 20% vermiculite   | High moisture needs                |
-| Herbs (Basil, etc.)  | 18–24°C            | 60% coir, 40% perlite                    | Good drainage prevents rot         |
-| Root Vegetables      | 16–21°C            | 50% coir, 25% perlite, 25% vermiculite   | Direct seed often preferred        |
-| Legumes              | 18–27°C            | 50% coir, 50% perlite                    | Pre-soak seeds for faster germination |
+| Crop Category       | Optimal Temp Range | Preferred Substrate Mix                | Special Notes                         |
+| ------------------- | ------------------ | -------------------------------------- | ------------------------------------- |
+| Tomatoes, Peppers   | 21–29°C            | 50% coir, 25% perlite, 25% vermiculite | Need consistent warmth                |
+| Lettuce, Brassicas  | 15–20°C            | 50% coir, 50% perlite                  | Prefer cooler conditions              |
+| Cucumbers, Squash   | 21–29°C            | 50% coir, 30% perlite, 20% vermiculite | High moisture needs                   |
+| Herbs (Basil, etc.) | 18–24°C            | 60% coir, 40% perlite                  | Good drainage prevents rot            |
+| Root Vegetables     | 16–21°C            | 50% coir, 25% perlite, 25% vermiculite | Direct seed often preferred           |
+| Legumes             | 18–27°C            | 50% coir, 50% perlite                  | Pre-soak seeds for faster germination |
 
 ---
 
