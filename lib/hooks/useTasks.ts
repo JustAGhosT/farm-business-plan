@@ -34,7 +34,7 @@ interface TaskFilters {
 /**
  * Custom hook for managing tasks
  * Provides CRUD operations and automatic data fetching with filtering
- * 
+ *
  * Refactored to use generic useCrudApi hook for consistent behavior and timeout handling
  */
 export function useTasks(filters?: TaskFilters): UseTasksResult {

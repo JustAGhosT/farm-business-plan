@@ -28,7 +28,7 @@ interface UseWizardSessionsResult {
 /**
  * Custom hook for managing wizard sessions
  * Provides CRUD operations and automatic data fetching
- * 
+ *
  * Refactored to use generic useCrudApi hook for consistent behavior and timeout handling
  */
 export function useWizardSessions(): UseWizardSessionsResult {

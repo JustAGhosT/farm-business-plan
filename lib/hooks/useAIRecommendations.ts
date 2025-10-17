@@ -17,7 +17,10 @@ interface UseAIRecommendationsResult {
   error: string | null
   refetch: () => Promise<void>
   createRecommendation: (data: Partial<AIRecommendation>) => Promise<AIRecommendation | null>
-  updateRecommendation: (id: string, data: Partial<AIRecommendation>) => Promise<AIRecommendation | null>
+  updateRecommendation: (
+    id: string,
+    data: Partial<AIRecommendation>
+  ) => Promise<AIRecommendation | null>
   deleteRecommendation: (id: string) => Promise<boolean>
 }
 
@@ -29,10 +32,12 @@ interface AIRecommendationFilters {
 /**
  * Custom hook for managing AI recommendations
  * Provides CRUD operations and automatic data fetching with filtering
- * 
+ *
  * Refactored to use generic useCrudApi hook for consistent behavior
  */
-export function useAIRecommendations(filters?: AIRecommendationFilters): UseAIRecommendationsResult {
+export function useAIRecommendations(
+  filters?: AIRecommendationFilters
+): UseAIRecommendationsResult {
   const { items, loading, error, refetch, create, update, remove } = useCrudApi<AIRecommendation>({
     endpoint: '/api/ai-recommendations',
     filters,

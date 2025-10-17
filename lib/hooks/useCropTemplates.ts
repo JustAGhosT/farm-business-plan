@@ -33,7 +33,7 @@ interface CropTemplateFilters {
 /**
  * Custom hook for managing crop templates
  * Provides CRUD operations and automatic data fetching with filtering
- * 
+ *
  * Refactored to use generic useCrudApi hook for consistent behavior
  */
 export function useCropTemplates(filters?: CropTemplateFilters): UseCropTemplatesResult {

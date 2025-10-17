@@ -23,18 +23,16 @@ const update = useCallback(
   async (id: string, data: Partial<T>) => {
     if (config.optimistic) {
       // Optimistically update UI immediately
-      const optimisticItem = items.find(item => item.id === id)
+      const optimisticItem = items.find((item) => item.id === id)
       if (optimisticItem) {
-        setItems(items.map(item => 
-          item.id === id ? { ...item, ...data } : item
-        ))
+        setItems(items.map((item) => (item.id === id ? { ...item, ...data } : item)))
       }
     }
 
     try {
       // Make actual API call
       const result = await fetch(/* ... */)
-      
+
       if (!result.success && config.optimistic) {
         // Rollback on error
         await fetchItems()
@@ -51,6 +49,7 @@ const update = useCallback(
 ```
 
 **Benefits:**
+
 - Instant UI feedback
 - Better user experience
 - Perceived performance improvement
@@ -90,6 +89,7 @@ useEffect(() => {
 ```
 
 **Benefits:**
+
 - Reduced API calls (up to 90% reduction for search)
 - Lower server load
 - Better performance
@@ -116,8 +116,8 @@ interface CacheEntry<T> {
 const cache = new Map<string, CacheEntry<any>>()
 
 export function useCachedCrudApi<T>(config: CrudApiConfig<T> & { cacheTTL?: number }) {
-  const cacheKey = useMemo(() => 
-    `${config.endpoint}:${JSON.stringify(config.filters)}`, 
+  const cacheKey = useMemo(
+    () => `${config.endpoint}:${JSON.stringify(config.filters)}`,
     [config.endpoint, config.filters]
   )
 
@@ -132,18 +132,19 @@ export function useCachedCrudApi<T>(config: CrudApiConfig<T> & { cacheTTL?: numb
 
     // Fetch from API
     const result = await fetch(/* ... */)
-    
+
     // Update cache
     cache.set(cacheKey, {
       data: result.data,
       timestamp: Date.now(),
-      ttl: config.cacheTTL || 60000 // 1 minute default
+      ttl: config.cacheTTL || 60000, // 1 minute default
     })
   }, [cacheKey, config.cacheTTL])
 }
 ```
 
 **Benefits:**
+
 - Faster page loads
 - Reduced bandwidth
 - Offline-first capabilities
@@ -194,6 +195,7 @@ const fetchItems = useCallback(async () => {
 ```
 
 **Benefits:**
+
 - Faster initial loads
 - Better performance with large datasets
 - Improved UX
@@ -216,10 +218,10 @@ const requestIdRef = useRef(0)
 
 const fetchItems = useCallback(async () => {
   const currentRequestId = ++requestIdRef.current
-  
+
   try {
     const result = await fetch(/* ... */)
-    
+
     // Only update if this is still the latest request
     if (currentRequestId === requestIdRef.current) {
       setItems(result.data)
@@ -233,6 +235,7 @@ const fetchItems = useCallback(async () => {
 ```
 
 **Benefits:**
+
 - Prevents race conditions
 - More reliable UI state
 
@@ -259,28 +262,29 @@ export interface CrudApiConfig<T> {
 
 async function fetchWithRetry(url: string, options: RequestInit, retryConfig: RetryConfig) {
   let lastError: Error
-  
+
   for (let attempt = 0; attempt < retryConfig.maxAttempts; attempt++) {
     try {
       return await fetch(url, options)
     } catch (err) {
       lastError = err
-      
+
       if (attempt < retryConfig.maxAttempts - 1) {
         const delay = Math.min(
           retryConfig.initialDelay * Math.pow(2, attempt),
           retryConfig.maxDelay
         )
-        await new Promise(resolve => setTimeout(resolve, delay))
+        await new Promise((resolve) => setTimeout(resolve, delay))
       }
     }
   }
-  
+
   throw lastError
 }
 ```
 
 **Benefits:**
+
 - More resilient to network issues
 - Better user experience
 
@@ -308,21 +312,19 @@ useEffect(() => {
   if (!config.realtime?.enabled) return
 
   const ws = new WebSocket(config.realtime.wsEndpoint)
-  
+
   ws.onmessage = (event) => {
     const update = JSON.parse(event.data)
-    
+
     switch (update.type) {
       case 'created':
-        setItems(prev => [...prev, update.data])
+        setItems((prev) => [...prev, update.data])
         break
       case 'updated':
-        setItems(prev => prev.map(item => 
-          item.id === update.data.id ? update.data : item
-        ))
+        setItems((prev) => prev.map((item) => (item.id === update.data.id ? update.data : item)))
         break
       case 'deleted':
-        setItems(prev => prev.filter(item => item.id !== update.id))
+        setItems((prev) => prev.filter((item) => item.id !== update.id))
         break
     }
   }
@@ -332,6 +334,7 @@ useEffect(() => {
 ```
 
 **Benefits:**
+
 - Real-time collaboration
 - No manual refresh needed
 - Live data updates
@@ -400,6 +403,7 @@ if (response.status === 401 && config.errorRecovery?.onAuthError) {
 ```
 
 **Benefits:**
+
 - Seamless auth token refresh
 - Better error UX
 
@@ -476,23 +480,23 @@ const metrics: PerformanceMetrics[] = []
 
 const fetchWithMetrics = async () => {
   const startTime = performance.now()
-  
+
   try {
     const result = await fetch(/* ... */)
     const duration = performance.now() - startTime
-    
+
     metrics.push({
       endpoint: config.endpoint,
       duration,
       success: true,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     })
-    
+
     // Send to analytics
     if (duration > 3000) {
       console.warn(`Slow API call: ${config.endpoint} took ${duration}ms`)
     }
-    
+
     return result
   } catch (error) {
     const duration = performance.now() - startTime
@@ -500,7 +504,7 @@ const fetchWithMetrics = async () => {
       endpoint: config.endpoint,
       duration,
       success: false,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     })
     throw error
   }
@@ -508,6 +512,7 @@ const fetchWithMetrics = async () => {
 ```
 
 **Benefits:**
+
 - Identify slow endpoints
 - Track error rates
 - Performance optimization insights
@@ -520,21 +525,25 @@ const fetchWithMetrics = async () => {
 ## 🎯 Implementation Roadmap
 
 ### Phase 1 (Next 2-4 weeks)
+
 1. ✅ Request Debouncing
 2. ✅ Request Cancellation improvements
 3. ✅ Error Recovery Strategies
 
 ### Phase 2 (1-2 months)
+
 1. Optimistic Updates
 2. Client-Side Caching
 3. Pagination Support
 
 ### Phase 3 (2-4 months)
+
 1. Retry Logic
 2. Performance Monitoring
 3. Circuit Breaker
 
 ### Phase 4 (Future)
+
 1. WebSocket Support
 2. Infinite Scroll
 3. Offline Support
@@ -544,6 +553,7 @@ const fetchWithMetrics = async () => {
 ## 🧪 Testing Considerations
 
 All enhancements should include:
+
 - Unit tests for core logic
 - Integration tests for API interactions
 - Performance benchmarks
@@ -555,6 +565,7 @@ All enhancements should include:
 ## 📝 Documentation Updates
 
 When implementing enhancements:
+
 1. Update API documentation
 2. Add usage examples
 3. Update TypeScript types
@@ -566,6 +577,7 @@ When implementing enhancements:
 ## 🤝 Contributing
 
 When proposing new enhancements:
+
 1. Create an issue describing the problem
 2. Discuss implementation approach
 3. Estimate effort and risk
@@ -582,4 +594,3 @@ When proposing new enhancements:
 - [SWR](https://swr.vercel.app/) - Stale-while-revalidate pattern
 - [Apollo Client](https://www.apollographql.com/docs/react/) - GraphQL client best practices
 - [RTK Query](https://redux-toolkit.js.org/rtk-query/overview) - Redux toolkit query patterns
-

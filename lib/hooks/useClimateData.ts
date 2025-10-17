@@ -31,7 +31,7 @@ interface ClimateDataFilters {
 /**
  * Custom hook for managing climate data
  * Provides CRUD operations and automatic data fetching with filtering
- * 
+ *
  * Refactored to use generic useCrudApi hook for consistent behavior
  */
 export function useClimateData(filters?: ClimateDataFilters): UseClimateDataResult {

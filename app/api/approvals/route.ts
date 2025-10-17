@@ -21,7 +21,12 @@ export async function POST(request: Request) {
     }
 
     if (!['approved', 'rejected'].includes(status)) {
-      return createErrorResponse('Status must be approved or rejected', 400, undefined, 'INVALID_STATUS')
+      return createErrorResponse(
+        'Status must be approved or rejected',
+        400,
+        undefined,
+        'INVALID_STATUS'
+      )
     }
 
     // Update approval
@@ -34,7 +39,12 @@ export async function POST(request: Request) {
     )
 
     if (result.rows.length === 0) {
-      return createErrorResponse('Approval not found or not authorized', 404, undefined, 'NOT_FOUND')
+      return createErrorResponse(
+        'Approval not found or not authorized',
+        404,
+        undefined,
+        'NOT_FOUND'
+      )
     }
 
     // Check stage approval status

@@ -31,12 +31,12 @@ interface UseFarmPlansResult {
 /**
  * Custom hook for managing farm plans
  * Provides CRUD operations and automatic data fetching
- * 
+ *
  * Refactored to use generic useCrudApi hook for consistent behavior and timeout handling
  */
 export function useFarmPlans(ownerId?: string): UseFarmPlansResult {
   const filters = ownerId ? { owner_id: ownerId } : undefined
-  
+
   const { items, loading, error, refetch, create, remove } = useCrudApi<FarmPlan>({
     endpoint: '/api/farm-plans',
     filters,

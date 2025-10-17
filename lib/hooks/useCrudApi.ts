@@ -29,7 +29,7 @@ export interface UseCrudApiResult<T> {
 /**
  * Generic CRUD API hook
  * Provides standardized CRUD operations with consistent timeout handling and error management
- * 
+ *
  * @example
  * ```typescript
  * const { items, loading, error, create, update, remove } = useCrudApi<Task>({
@@ -42,7 +42,13 @@ export interface UseCrudApiResult<T> {
 export function useCrudApi<T extends { id?: string }>(
   config: CrudApiConfig<T>
 ): UseCrudApiResult<T> {
-  const { endpoint, filters, timeout = 30000, updateMethod = 'PATCH', deleteMethod = 'DELETE' } = config
+  const {
+    endpoint,
+    filters,
+    timeout = 30000,
+    updateMethod = 'PATCH',
+    deleteMethod = 'DELETE',
+  } = config
 
   const [items, setItems] = useState<T[]>([])
   const [loading, setLoading] = useState(true)
@@ -220,4 +226,3 @@ export function useCrudApi<T extends { id?: string }>(
     clearError,
   }
 }
-

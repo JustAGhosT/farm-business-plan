@@ -62,7 +62,12 @@ export async function POST(request: Request) {
     // Validate input
     const validation = validateData(CropTemplateSchema, body)
     if (!validation.success) {
-      return createErrorResponse('Validation failed', 400, validation.errors?.issues, 'VALIDATION_ERROR')
+      return createErrorResponse(
+        'Validation failed',
+        400,
+        validation.errors?.issues,
+        'VALIDATION_ERROR'
+      )
     }
 
     const data = validation.data!
