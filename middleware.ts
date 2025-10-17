@@ -4,11 +4,6 @@ import { applyRateLimit, RATE_LIMITS } from './lib/rate-limit'
 
 export default withAuth(
   function middleware(req) {
-    // Skip authentication and rate limiting for public health checks
-    if (req.nextUrl.pathname.startsWith('/api/health')) {
-      return NextResponse.next()
-    }
-
     // Apply rate limiting to API routes
     if (req.nextUrl.pathname.startsWith('/api/')) {
       // Apply stricter rate limiting for auth endpoints
@@ -72,13 +67,14 @@ export default withAuth(
   }
 )
 
-// Protect specific routes - only protect /tools/* except calculators and templates
+// Protect specific routes - only protect /tools/* and API routes (except health checks)
 export const config = {
   matcher: [
     '/tools/dashboard/:path*',
     '/tools/ai-wizard/:path*',
     '/tools/plan-generator/:path*',
     '/tools/reports/:path*',
-    '/api/:path*', // Apply rate limiting to all API routes
+    // Apply to API routes but exclude health checks
+    '/api/((?!health).*)',
   ],
 }
