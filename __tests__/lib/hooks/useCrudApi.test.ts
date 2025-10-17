@@ -176,7 +176,7 @@ describe('useCrudApi', () => {
 
       let createdItem: any
       await act(async () => {
-        createdItem = await result.current.create({ name: 'New Item' })
+        createdItem = await result.current.create({ name: 'New Item' } as any)
       })
 
       expect(createdItem).toEqual(mockData)
@@ -200,7 +200,7 @@ describe('useCrudApi', () => {
         })
 
       const { result } = renderHook(() =>
-        useCrudApi({
+        useCrudApi<{ id?: string; name: string }>({
           endpoint: '/api/test',
         })
       )
@@ -247,7 +247,7 @@ describe('useCrudApi', () => {
 
       let updated: any
       await act(async () => {
-        updated = await result.current.update('1', { name: 'Updated Item' })
+        updated = await result.current.update('1', { name: 'Updated Item' } as any)
       })
 
       expect(updated).toEqual(updatedItem)
@@ -275,7 +275,7 @@ describe('useCrudApi', () => {
         })
 
       const { result } = renderHook(() =>
-        useCrudApi({
+        useCrudApi<{ id?: string; name: string }>({
           endpoint: '/api/test',
           updateMethod: 'PUT',
         })
