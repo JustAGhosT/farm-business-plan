@@ -1,4 +1,9 @@
 import { CropTemplate, CROP_TEMPLATES } from './cropTemplates'
+import {
+  CHART_COLORS,
+  getColorByProfitability,
+  getColorByWaterNeeds,
+} from './theme-colors'
 
 export interface CropChartData {
   name: string
@@ -9,31 +14,6 @@ export interface CropChartData {
   roi: number
   waterNeeds: string
   profitability: string
-}
-
-// Chart color constants with semantic names
-export const CHART_COLORS = {
-  profitability: {
-    high: '#10b981', // green-500
-    medium: '#f59e0b', // amber-500
-    low: '#ef4444', // red-500
-    unknown: '#6b7280', // gray-500
-  },
-  waterNeeds: {
-    low: '#fbbf24', // amber-400 (good - low water)
-    medium: '#3b82f6', // blue-500
-    high: '#1e3a8a', // blue-900 (needs more water)
-    unknown: '#6b7280', // gray-500
-  },
-  cropAllocation: [
-    '#10b981', // green-500
-    '#3b82f6', // blue-500
-    '#f59e0b', // amber-500
-    '#8b5cf6', // violet-500
-    '#ec4899', // pink-500
-    '#14b8a6', // teal-500
-    '#f97316', // orange-500
-  ],
 }
 
 // Memoization cache for expensive calculations
@@ -131,19 +111,8 @@ export function prepareCropComparisonData(
   return result
 }
 
-export function getColorByProfitability(profitability: string): string {
-  return (
-    CHART_COLORS.profitability[profitability as keyof typeof CHART_COLORS.profitability] ||
-    CHART_COLORS.profitability.unknown
-  )
-}
-
-export function getColorByWaterNeeds(waterNeeds: string): string {
-  return (
-    CHART_COLORS.waterNeeds[waterNeeds as keyof typeof CHART_COLORS.waterNeeds] ||
-    CHART_COLORS.waterNeeds.unknown
-  )
-}
-
-// Colors for crop allocation pie chart - exported from constants
+// Colors for crop allocation pie chart - exported from theme-colors
 export const CROP_COLORS = CHART_COLORS.cropAllocation
+
+// Re-export helper functions from theme-colors for backward compatibility
+export { getColorByProfitability, getColorByWaterNeeds }

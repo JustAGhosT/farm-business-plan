@@ -3,6 +3,7 @@ import { Pool, PoolClient, QueryResult, QueryResultRow } from 'pg'
 // Database connection pool
 let pool: Pool | null = null
 let poolInitializing = false
+let poolInitPromise: Promise<Pool> | null = null
 
 // Pool metrics for monitoring
 interface PoolMetrics {
@@ -51,6 +52,35 @@ export function logPoolMetrics(): void {
 }
 
 /**
+ * Initialize database connection pool
+ */
+function initializePool(): Pool {
+  const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL
+
+  if (!connectionString) {
+    throw new Error(
+      'Database connection string not configured. Set DATABASE_URL or POSTGRES_URL environment variable.'
+    )
+  }
+
+  const newPool = new Pool({
+    connectionString,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+    max: 20,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 10000,
+  })
+
+  // Handle pool errors
+  newPool.on('error', (err) => {
+    console.error('Unexpected error on idle database client', err)
+  })
+
+  console.log('Database pool created')
+  return newPool
+}
+
+/**
  * Get or create database connection pool
  */
 export function getPool(): Pool {
@@ -59,48 +89,63 @@ export function getPool(): Pool {
     return pool
   }
 
-  // If pool is being initialized, wait for it
+  // If pool is being initialized, throw error to indicate caller should retry
+  // This is safer than blocking or using a promise in a sync function
   if (poolInitializing) {
-    // Simple spinlock - in production, consider using a promise-based approach
-    while (poolInitializing) {
-      // Wait for initialization to complete
-    }
-    if (pool) {
-      return pool
-    }
+    throw new Error('Database pool is being initialized. Please retry.')
   }
 
   // Set flag to prevent concurrent initialization
   poolInitializing = true
 
   try {
-    const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL
-
-    if (!connectionString) {
-      throw new Error(
-        'Database connection string not configured. Set DATABASE_URL or POSTGRES_URL environment variable.'
-      )
-    }
-
-    pool = new Pool({
-      connectionString,
-      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-      max: 20,
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 10000,
-    })
-
-    // Handle pool errors
-    pool.on('error', (err) => {
-      console.error('Unexpected error on idle database client', err)
-    })
-
-    console.log('Database pool created')
+    pool = initializePool()
   } finally {
     poolInitializing = false
+    poolInitPromise = null
   }
 
   return pool!
+}
+
+/**
+ * Get or create database connection pool (async version)
+ * This is the preferred method for async contexts
+ */
+export async function getPoolAsync(): Promise<Pool> {
+  // If pool exists, return it immediately
+  if (pool) {
+    return pool
+  }
+
+  // If pool is being initialized, wait for it
+  if (poolInitializing && poolInitPromise) {
+    return await poolInitPromise
+  }
+
+  // If pool is being initialized but promise doesn't exist, create it
+  if (poolInitializing) {
+    poolInitPromise = Promise.resolve(getPool())
+    return await poolInitPromise
+  }
+
+  // Set flag to prevent concurrent initialization
+  poolInitializing = true
+
+  // Create promise for concurrent requests
+  poolInitPromise = new Promise<Pool>((resolve, reject) => {
+    try {
+      pool = initializePool()
+      resolve(pool)
+    } catch (error) {
+      reject(error)
+    } finally {
+      poolInitializing = false
+      poolInitPromise = null
+    }
+  })
+
+  return await poolInitPromise
 }
 
 /**
@@ -154,12 +199,50 @@ export async function getClient(): Promise<PoolClient> {
 }
 
 /**
+ * Execute a function within a database transaction
+ * Automatically handles commit/rollback
+ */
+export async function withTransaction<T>(
+  callback: (client: PoolClient) => Promise<T>
+): Promise<T> {
+  const client = await getClient()
+  
+  try {
+    await client.query('BEGIN')
+    const result = await callback(client)
+    await client.query('COMMIT')
+    return result
+  } catch (error) {
+    await client.query('ROLLBACK')
+    throw error
+  } finally {
+    client.release()
+  }
+}
+
+/**
+ * Reset pool metrics (useful for testing or when pool is recreated)
+ */
+export function resetPoolMetrics(): void {
+  poolMetrics = {
+    totalConnections: 0,
+    idleConnections: 0,
+    waitingRequests: 0,
+    queriesExecuted: 0,
+    lastQueryTime: 0,
+  }
+}
+
+/**
  * Close the database pool (for cleanup)
  */
 export async function closePool(): Promise<void> {
   if (pool) {
     await pool.end()
     pool = null
+    poolInitializing = false
+    poolInitPromise = null
+    resetPoolMetrics()
     console.log('Database pool closed')
   }
 }

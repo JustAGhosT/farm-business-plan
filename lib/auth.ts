@@ -9,38 +9,37 @@ import GoogleProvider from 'next-auth/providers/google'
 const isBuildTime = process.env.NEXT_PHASE === 'phase-production-build'
 
 /**
- * Helper function to conditionally include GitHub provider
+ * Get all configured OAuth providers
  */
-function getGitHubProvider() {
-  if (isBuildTime || !process.env.GITHUB_ID || !process.env.GITHUB_SECRET) {
-    return []
-  }
-  return [
-    GitHubProvider({
-      clientId: process.env.GITHUB_ID,
-      clientSecret: process.env.GITHUB_SECRET,
-    }),
-  ]
-}
+function getOAuthProviders() {
+  const providers = []
 
-/**
- * Helper function to conditionally include Google provider
- */
-function getGoogleProvider() {
-  if (
-    isBuildTime ||
-    process.env.NEXT_PUBLIC_GOOGLE_ENABLED !== 'true' ||
-    !process.env.GOOGLE_ID ||
-    !process.env.GOOGLE_SECRET
-  ) {
-    return []
+  // Add GitHub provider if configured
+  if (!isBuildTime && process.env.GITHUB_ID && process.env.GITHUB_SECRET) {
+    providers.push(
+      GitHubProvider({
+        clientId: process.env.GITHUB_ID,
+        clientSecret: process.env.GITHUB_SECRET,
+      })
+    )
   }
-  return [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_ID,
-      clientSecret: process.env.GOOGLE_SECRET,
-    }),
-  ]
+
+  // Add Google provider if configured
+  if (
+    !isBuildTime &&
+    process.env.NEXT_PUBLIC_GOOGLE_ENABLED === 'true' &&
+    process.env.GOOGLE_ID &&
+    process.env.GOOGLE_SECRET
+  ) {
+    providers.push(
+      GoogleProvider({
+        clientId: process.env.GOOGLE_ID,
+        clientSecret: process.env.GOOGLE_SECRET,
+      })
+    )
+  }
+
+  return providers
 }
 
 export const authOptions: NextAuthOptions = {
@@ -85,9 +84,8 @@ export const authOptions: NextAuthOptions = {
         }
       },
     }),
-    // OAuth providers - conditionally included based on configuration
-    ...getGitHubProvider(),
-    ...getGoogleProvider(),
+    // OAuth providers - dynamically configured
+    ...getOAuthProviders(),
   ],
   pages: {
     signIn: '/auth/signin',

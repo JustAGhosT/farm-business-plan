@@ -43,10 +43,18 @@ export function withErrorHandler<T = any>(
     try {
       const response = await handler(request)
 
-      // Add requestId to successful responses
+      // Add requestId to successful responses if JSON
       if (response.headers.get('content-type')?.includes('application/json')) {
-        const body = await response.json()
-        return NextResponse.json({ ...body, requestId }, { status: response.status })
+        try {
+          // Clone response to avoid consuming body
+          const clonedResponse = response.clone()
+          const body = await clonedResponse.json()
+          return NextResponse.json({ ...body, requestId }, { status: response.status })
+        } catch (parseError) {
+          // If JSON parsing fails, return response as-is
+          console.warn('Failed to parse response JSON:', parseError)
+          return response
+        }
       }
 
       return response

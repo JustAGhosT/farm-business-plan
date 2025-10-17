@@ -124,6 +124,18 @@ export async function POST(request: Request) {
   }
 }
 
+// Whitelist of allowed fields to prevent SQL injection - frozen for security
+const ALLOWED_UPDATE_FIELDS = Object.freeze([
+  'crop_name',
+  'crop_variety',
+  'planting_area',
+  'planting_date',
+  'harvest_date',
+  'expected_yield',
+  'yield_unit',
+  'status',
+]) as readonly string[]
+
 /**
  * PATCH /api/crop-plans
  * Update a crop plan
@@ -144,25 +156,14 @@ export async function PATCH(request: Request) {
     const params: any[] = []
     let paramIndex = 1
 
-    // Build dynamic update query
-    const allowedFields = [
-      'crop_name',
-      'crop_variety',
-      'planting_area',
-      'planting_date',
-      'harvest_date',
-      'expected_yield',
-      'yield_unit',
-      'status',
-    ]
-
-    allowedFields.forEach((field) => {
+    // Build dynamic update query with validated field names
+    for (const field of ALLOWED_UPDATE_FIELDS) {
       if (updates[field] !== undefined) {
         setClauses.push(`${field} = $${paramIndex}`)
         params.push(updates[field])
         paramIndex++
       }
-    })
+    }
 
     if (setClauses.length === 0) {
       return NextResponse.json(

@@ -171,6 +171,20 @@ export async function POST(request: Request) {
   }
 }
 
+// Whitelist of allowed fields to prevent SQL injection - frozen for security
+const ALLOWED_UPDATE_FIELDS = Object.freeze([
+  'title',
+  'description',
+  'status',
+  'priority',
+  'category',
+  'due_date',
+  'assigned_to',
+  'estimated_duration',
+  'actual_duration',
+  'notes',
+]) as readonly string[]
+
 /**
  * PATCH /api/tasks
  * Update a task (typically to change status, priority, or mark as completed)
@@ -184,20 +198,6 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ success: false, error: 'Task ID is required' }, { status: 400 })
     }
 
-    // Whitelist of allowed fields to prevent SQL injection
-    const allowedFields = [
-      'title',
-      'description',
-      'status',
-      'priority',
-      'category',
-      'due_date',
-      'assigned_to',
-      'estimated_duration',
-      'actual_duration',
-      'notes',
-    ]
-
     // Build dynamic UPDATE query with validated field names
     const fields: string[] = []
     const values: any[] = []
@@ -205,7 +205,7 @@ export async function PATCH(request: Request) {
 
     // Validate and process only allowed fields
     for (const [key, value] of Object.entries(updates)) {
-      if (allowedFields.includes(key)) {
+      if (ALLOWED_UPDATE_FIELDS.includes(key)) {
         fields.push(`${key} = $${paramIndex++}`)
         values.push(value)
 

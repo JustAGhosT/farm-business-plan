@@ -16,6 +16,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { COLORS } from '@/lib/theme-colors'
 
 interface CropDistributionData {
   name: string
@@ -29,8 +30,6 @@ interface CropChartsProps {
   revenueData?: any[]
   costsData?: any[]
 }
-
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D']
 
 export function CropCharts({
   cropDistribution = [],
