@@ -41,6 +41,9 @@ export function useTasks(filters?: TaskFilters): UseTasksResult {
   const [error, setError] = useState<string | null>(null)
 
   const fetchTasks = useCallback(async () => {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 second timeout
+
     try {
       setLoading(true)
       setError(null)
@@ -52,7 +55,7 @@ export function useTasks(filters?: TaskFilters): UseTasksResult {
       if (filters?.priority) params.append('priority', filters.priority)
 
       const url = `/api/tasks${params.toString() ? `?${params.toString()}` : ''}`
-      const response = await fetch(url)
+      const response = await fetch(url, { signal: controller.signal })
       const result = await response.json()
 
       if (result.success) {
@@ -61,8 +64,13 @@ export function useTasks(filters?: TaskFilters): UseTasksResult {
         setError(result.error || 'Failed to fetch tasks')
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
+      if (err instanceof Error && err.name === 'AbortError') {
+        setError('Request timed out. Please try again.')
+      } else {
+        setError(err instanceof Error ? err.message : 'An error occurred')
+      }
     } finally {
+      clearTimeout(timeoutId)
       setLoading(false)
     }
   }, [filters?.farm_plan_id, filters?.status, filters?.priority])
@@ -73,11 +81,15 @@ export function useTasks(filters?: TaskFilters): UseTasksResult {
 
   const createTask = useCallback(
     async (data: Partial<Task>) => {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 30000)
+
       try {
         const response = await fetch('/api/tasks', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
+          signal: controller.signal,
         })
 
         const result = await response.json()
@@ -90,8 +102,14 @@ export function useTasks(filters?: TaskFilters): UseTasksResult {
           return null
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred')
+        if (err instanceof Error && err.name === 'AbortError') {
+          setError('Request timed out. Please try again.')
+        } else {
+          setError(err instanceof Error ? err.message : 'An error occurred')
+        }
         return null
+      } finally {
+        clearTimeout(timeoutId)
       }
     },
     [fetchTasks]
@@ -99,11 +117,15 @@ export function useTasks(filters?: TaskFilters): UseTasksResult {
 
   const updateTask = useCallback(
     async (id: string, data: Partial<Task>) => {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 30000)
+
       try {
         const response = await fetch('/api/tasks', {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id, ...data }),
+          signal: controller.signal,
         })
 
         const result = await response.json()
@@ -116,8 +138,14 @@ export function useTasks(filters?: TaskFilters): UseTasksResult {
           return null
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred')
+        if (err instanceof Error && err.name === 'AbortError') {
+          setError('Request timed out. Please try again.')
+        } else {
+          setError(err instanceof Error ? err.message : 'An error occurred')
+        }
         return null
+      } finally {
+        clearTimeout(timeoutId)
       }
     },
     [fetchTasks]
@@ -125,9 +153,13 @@ export function useTasks(filters?: TaskFilters): UseTasksResult {
 
   const deleteTask = useCallback(
     async (id: string) => {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 30000)
+
       try {
         const response = await fetch(`/api/tasks?id=${id}`, {
           method: 'DELETE',
+          signal: controller.signal,
         })
 
         const result = await response.json()
@@ -140,8 +172,14 @@ export function useTasks(filters?: TaskFilters): UseTasksResult {
           return false
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred')
+        if (err instanceof Error && err.name === 'AbortError') {
+          setError('Request timed out. Please try again.')
+        } else {
+          setError(err instanceof Error ? err.message : 'An error occurred')
+        }
         return false
+      } finally {
+        clearTimeout(timeoutId)
       }
     },
     [fetchTasks]

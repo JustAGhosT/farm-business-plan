@@ -65,16 +65,48 @@ describe('Cache Functions', () => {
       expect(queryCache.get('key2')).toBe('value2')
     })
 
-    it('should handle max size limit', () => {
+    it('should handle max size limit with LRU eviction', async () => {
       // Create a small cache
       const smallCache = new (queryCache.constructor as any)(3)
       
       smallCache.set('key1', 'value1', 10000)
+      await new Promise((resolve) => setTimeout(resolve, 10)) // Small delay
       smallCache.set('key2', 'value2', 10000)
+      await new Promise((resolve) => setTimeout(resolve, 10))
       smallCache.set('key3', 'value3', 10000)
-      smallCache.set('key4', 'value4', 10000) // Should remove oldest
       
-      expect(smallCache.size()).toBeLessThanOrEqual(3)
+      // Access key1 and key3 to make them more recently used
+      await new Promise((resolve) => setTimeout(resolve, 10))
+      smallCache.get('key1')
+      smallCache.get('key3')
+      
+      // Add key4, which should evict key2 (least recently used)
+      await new Promise((resolve) => setTimeout(resolve, 10))
+      smallCache.set('key4', 'value4', 10000)
+      
+      expect(smallCache.size()).toBe(3)
+      expect(smallCache.get('key2')).toBeNull() // Should be evicted (least recently used)
+      expect(smallCache.get('key1')).toBe('value1') // Should still exist (recently accessed)
+      expect(smallCache.get('key3')).toBe('value3') // Should still exist
+      expect(smallCache.get('key4')).toBe('value4') // Newly added
+    })
+
+    it('should update lastAccessed on get', async () => {
+      queryCache.set('key1', 'value1', 10000)
+      queryCache.set('key2', 'value2', 10000)
+      
+      // Wait a bit then access key1 multiple times
+      await new Promise((resolve) => setTimeout(resolve, 10))
+      queryCache.get('key1')
+      await new Promise((resolve) => setTimeout(resolve, 5))
+      queryCache.get('key1')
+      
+      // key1 should be more recently used than key2
+      const cache = (queryCache as any).cache
+      const entry1 = cache.get('key1')
+      const entry2 = cache.get('key2')
+      
+      expect(entry1.lastAccessed).toBeGreaterThan(entry2.lastAccessed)
     })
 
     it('should provide keys iterator', () => {

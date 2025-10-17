@@ -37,13 +37,16 @@ export function useFarmPlans(ownerId?: string): UseFarmPlansResult {
   const [error, setError] = useState<string | null>(null)
 
   const fetchFarmPlans = useCallback(async () => {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 30000)
+
     try {
       setLoading(true)
       setError(null)
 
       const url = ownerId ? `/api/farm-plans?owner_id=${ownerId}` : '/api/farm-plans'
 
-      const response = await fetch(url)
+      const response = await fetch(url, { signal: controller.signal })
       const result = await response.json()
 
       if (result.success) {
@@ -52,8 +55,13 @@ export function useFarmPlans(ownerId?: string): UseFarmPlansResult {
         setError(result.error || 'Failed to fetch farm plans')
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
+      if (err instanceof Error && err.name === 'AbortError') {
+        setError('Request timed out. Please try again.')
+      } else {
+        setError(err instanceof Error ? err.message : 'An error occurred')
+      }
     } finally {
+      clearTimeout(timeoutId)
       setLoading(false)
     }
   }, [ownerId])

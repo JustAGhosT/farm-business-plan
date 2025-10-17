@@ -7,6 +7,7 @@ interface CacheEntry<T> {
   data: T
   timestamp: number
   ttl: number
+  lastAccessed: number
 }
 
 class QueryCache {
@@ -20,6 +21,7 @@ class QueryCache {
 
   /**
    * Get cached value if it exists and hasn't expired
+   * Updates lastAccessed timestamp for LRU tracking
    */
   get<T>(key: string): T | null {
     const entry = this.cache.get(key)
@@ -35,26 +37,50 @@ class QueryCache {
       return null
     }
 
+    // Update last accessed time for LRU
+    entry.lastAccessed = now
+    this.cache.set(key, entry)
+
     return entry.data as T
   }
 
   /**
    * Set a value in the cache with TTL (time to live in milliseconds)
+   * Uses LRU (Least Recently Used) eviction when cache is full
    */
   set<T>(key: string, data: T, ttl: number = 60000): void {
-    // If cache is full, remove oldest entry
-    if (this.cache.size >= this.maxSize) {
-      const firstKey = this.cache.keys().next().value
-      if (firstKey !== undefined) {
-        this.cache.delete(firstKey)
-      }
+    const now = Date.now()
+
+    // If cache is full, remove LRU entry
+    if (this.cache.size >= this.maxSize && !this.cache.has(key)) {
+      this.evictLRU()
     }
 
     this.cache.set(key, {
       data,
-      timestamp: Date.now(),
+      timestamp: now,
       ttl,
+      lastAccessed: now,
     })
+  }
+
+  /**
+   * Evict the least recently used entry
+   */
+  private evictLRU(): void {
+    let lruKey: string | null = null
+    let lruTime = Infinity
+
+    for (const [key, entry] of this.cache.entries()) {
+      if (entry.lastAccessed < lruTime) {
+        lruTime = entry.lastAccessed
+        lruKey = key
+      }
+    }
+
+    if (lruKey !== null) {
+      this.cache.delete(lruKey)
+    }
   }
 
   /**
