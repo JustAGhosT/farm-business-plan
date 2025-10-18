@@ -12,7 +12,7 @@ VALUES (
     '{"spacing": "2m between plants", "support": "Wall or trellis system", "propagation": "Cuttings", "maturity": "18-24 months"}'::jsonb,
     '{"initial_investment_per_ha": 150000, "annual_revenue_per_ha": 100000, "roi_percentage": 40, "break_even_months": 24}'::jsonb,
     '{"climate": "Hot, subtropical", "temperature_range": "20-30°C", "rainfall": "400-600mm", "frost_tolerance": "None", "water_needs": "Moderate", "soil_ph": "6.0-7.0"}'::jsonb,
-    '{"demand": "High", "price_range_per_kg": "50-100 ZAR", "markets": ["Export", "Local retail", "Restaurants"], "season": "Year-round with peak Nov-Apr"}'::jsonb,
+    '{"demand": "High", "price_range": "50-100 ZAR", "price_unit": "kg", "markets": ["Export", "Local retail", "Restaurants"], "season": "Year-round with peak Nov-Apr"}'::jsonb,
     true
 );
 
@@ -25,7 +25,7 @@ VALUES (
     '{"spacing": "1m x 1m for intensive leaf production", "propagation": "Seeds or cuttings", "maturity": "6-8 months", "harvest_frequency": "Multiple times per year", "germination": {"temperature": "25-30°C", "days": "5-14", "substrate": "50% coir, 30% perlite, 20% vermiculite", "notes": "Seeds germinate well; cuttings root easily"}}'::jsonb,
     '{"initial_investment_per_ha": 70000, "annual_revenue_per_ha": 60000, "roi_percentage": 35, "break_even_months": 18}'::jsonb,
     '{"climate": "Tropical to subtropical", "temperature_range": "25-35°C", "rainfall": "250-1500mm", "frost_tolerance": "None", "water_needs": "Low to moderate", "soil_ph": "6.3-7.0"}'::jsonb,
-    '{"demand": "Growing", "price_range_per_kg": "40-80 ZAR (dried leaves)", "markets": ["Health food stores", "Export", "Powder production"], "season": "Year-round"}'::jsonb,
+    '{"demand": "Growing", "price_range": "40-80 ZAR (dried leaves)", "price_unit": "kg", "markets": ["Health food stores", "Export", "Powder production"], "season": "Year-round"}'::jsonb,
     true
 );
 
@@ -38,7 +38,7 @@ VALUES (
     '{"spacing": "Broadcast seeding 20-30 kg/ha", "propagation": "Seed", "maturity": "First cut 90-120 days", "harvest_frequency": "6-8 cuts per year", "germination": {"temperature": "15-30°C", "days": "7-14", "substrate": "Direct seeding preferred; if starting in trays: 50% coir, 25% perlite, 25% vermiculite", "notes": "Inoculate with Rhizobium for nitrogen fixation"}}'::jsonb,
     '{"initial_investment_per_ha": 50000, "annual_revenue_per_ha": 45000, "roi_percentage": 30, "break_even_months": 15}'::jsonb,
     '{"climate": "Temperate to subtropical", "temperature_range": "15-30°C", "rainfall": "500-800mm", "frost_tolerance": "Moderate", "water_needs": "High", "soil_ph": "6.5-7.5"}'::jsonb,
-    '{"demand": "Stable", "price_range_per_bale": "80-120 ZAR", "markets": ["Dairy farms", "Horse owners", "Livestock farmers"], "season": "Year-round production"}'::jsonb,
+    '{"demand": "Stable", "price_range": "80-120 ZAR", "price_unit": "bale", "markets": ["Dairy farms", "Horse owners", "Livestock farmers"], "season": "Year-round production"}'::jsonb,
     true
 );
 
@@ -64,7 +64,7 @@ VALUES (
     '{"spacing": "20-30cm between plants", "propagation": "Seeds or cuttings", "maturity": "1-2 months", "harvest_frequency": "Weekly when established", "germination": {"temperature": "18-24°C", "days": "7-21 (varies by herb)", "substrate": "60% coir, 40% perlite for good drainage", "notes": "Basil needs warmth (21-24°C); parsley slower (14-21 days)"}}'::jsonb,
     '{"initial_investment_per_ha": 60000, "annual_revenue_per_ha": 90000, "roi_percentage": 60, "break_even_months": 6}'::jsonb,
     '{"climate": "Temperate to subtropical", "temperature_range": "18-28°C", "rainfall": "400-600mm", "frost_tolerance": "Low", "water_needs": "Moderate", "soil_ph": "6.0-7.0"}'::jsonb,
-    '{"demand": "High", "price_range_per_kg": "100-200 ZAR (fresh)", "markets": ["Restaurants", "Retail", "Farmers markets"], "season": "Year-round with protection"}'::jsonb,
+    '{"demand": "High", "price_range": "100-200 ZAR (fresh)", "price_unit": "kg", "markets": ["Restaurants", "Retail", "Farmers markets"], "season": "Year-round with protection"}'::jsonb,
     true
 );
 
