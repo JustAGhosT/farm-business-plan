@@ -59,9 +59,6 @@ export function useCrudApi<T extends { id?: string }>(
 
   const debouncedFilters = useDebounce(filters, debounce)
 
-  // Memoize the filters to avoid unnecessary refetches
-  const filterString = useMemo(() => JSON.stringify(debouncedFilters || {}), [debouncedFilters])
-
   const fetchItems = useCallback(async () => {
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), timeout)
@@ -70,10 +67,10 @@ export function useCrudApi<T extends { id?: string }>(
       setLoading(true)
       setError(null)
 
-      // Build query string from filters
+      // Build query string from debounced filters
       const params = new URLSearchParams()
-      if (filters) {
-        Object.entries(filters).forEach(([key, value]) => {
+      if (debouncedFilters) {
+        Object.entries(debouncedFilters).forEach(([key, value]) => {
           if (value !== undefined && value !== null) {
             params.append(key, String(value))
           }
@@ -99,7 +96,7 @@ export function useCrudApi<T extends { id?: string }>(
       clearTimeout(timeoutId)
       setLoading(false)
     }
-  }, [endpoint, filterString, timeout])
+  }, [endpoint, timeout, debouncedFilters])
 
   useEffect(() => {
     fetchItems()

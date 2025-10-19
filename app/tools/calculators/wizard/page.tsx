@@ -350,7 +350,9 @@ export default function CalculatorWizard() {
           <div className="flex items-center mb-6">
             <span className="text-4xl mr-4">🧭</span>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Calculator Wizard</h1>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                Calculator Wizard
+              </h1>
               <p className="text-gray-600 dark:text-gray-300">
                 Set up your crops and timeline once, then navigate through all calculators
               </p>
@@ -397,7 +399,9 @@ export default function CalculatorWizard() {
 
             <div className="flex gap-2 items-end">
               <div className="flex-1">
-                <label className="block text-xs text-purple-700 dark:text-purple-300 mb-1">Session Name</label>
+                <label className="block text-xs text-purple-700 dark:text-purple-300 mb-1">
+                  Session Name
+                </label>
                 <input
                   type="text"
                   value={sessionName}
@@ -425,7 +429,9 @@ export default function CalculatorWizard() {
 
             {showSavedSessions && (
               <div className="mt-4 border-t border-purple-200 dark:border-purple-700 pt-4">
-                <h4 className="text-sm font-semibold text-purple-900 dark:text-purple-200 mb-2">Saved Sessions</h4>
+                <h4 className="text-sm font-semibold text-purple-900 dark:text-purple-200 mb-2">
+                  Saved Sessions
+                </h4>
                 {loading ? (
                   <p className="text-sm text-gray-600 dark:text-gray-400">Loading sessions...</p>
                 ) : sessions.length === 0 ? (
@@ -473,7 +479,10 @@ export default function CalculatorWizard() {
             <h2 className="text-lg font-semibold mb-4 dark:text-white">Farm Configuration</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="years" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  htmlFor="years"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Planning Period (Years)
                   <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
                     ℹ️ Recommended: 3-5 years for most crops
@@ -494,7 +503,10 @@ export default function CalculatorWizard() {
                 </p>
               </div>
               <div>
-                <label htmlFor="hectares" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  htmlFor="hectares"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Total Land (Hectares)
                   <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
                     ℹ️ Total farm size for analysis
@@ -560,7 +572,9 @@ export default function CalculatorWizard() {
                     onClick={() => applyTemplate('balanced')}
                     className="bg-white dark:bg-gray-800 border-2 border-green-400 dark:border-green-600 hover:border-green-600 dark:hover:border-green-500 rounded-lg p-4 text-left transition-all hover:shadow-md"
                   >
-                    <div className="font-semibold text-green-700 dark:text-green-400 mb-1">🌾 Balanced Portfolio</div>
+                    <div className="font-semibold text-green-700 dark:text-green-400 mb-1">
+                      🌾 Balanced Portfolio
+                    </div>
                     <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
                       Dragon Fruit (30%), Moringa (25%), Lucerne (20%), Tomatoes (15%), Butternut
                       (10%)
@@ -574,7 +588,9 @@ export default function CalculatorWizard() {
                     onClick={() => applyTemplate('lowWater')}
                     className="bg-white dark:bg-gray-800 border-2 border-blue-400 dark:border-blue-600 hover:border-blue-600 dark:hover:border-blue-500 rounded-lg p-4 text-left transition-all hover:shadow-md"
                   >
-                    <div className="font-semibold text-blue-700 dark:text-blue-400 mb-1">💧 Low Water Portfolio</div>
+                    <div className="font-semibold text-blue-700 dark:text-blue-400 mb-1">
+                      💧 Low Water Portfolio
+                    </div>
                     <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
                       Moringa (40%), Maize (35%), Butternut (25%)
                     </div>
@@ -600,7 +616,9 @@ export default function CalculatorWizard() {
                 </div>
 
                 <div className="border-t dark:border-gray-600 pt-4">
-                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">Or choose individual crops:</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
+                    Or choose individual crops:
+                  </p>
                   <div className="flex flex-wrap gap-2">
                     {CROP_TEMPLATES.map((template) => (
                       <button
@@ -618,7 +636,10 @@ export default function CalculatorWizard() {
 
             <div className="space-y-4 mb-4">
               {crops.map((crop, index) => (
-                <div key={crop.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-800">
+                <div
+                  key={crop.id}
+                  className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-800"
+                >
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="font-medium text-gray-900 dark:text-white">
                       Crop {index + 1}
@@ -674,7 +695,9 @@ export default function CalculatorWizard() {
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         % of Land/Resources *
-                        <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">ℹ️ Must total 100%</span>
+                        <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
+                          ℹ️ Must total 100%
+                        </span>
                       </label>
                       <input
                         type="number"
@@ -700,7 +723,9 @@ export default function CalculatorWizard() {
             {/* Allocation Status */}
             <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Total Allocation:</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Total Allocation:
+                </span>
                 <div className="flex items-center gap-2">
                   <span
                     className={`text-2xl font-bold ${
@@ -842,7 +867,9 @@ export default function CalculatorWizard() {
           {/* Help Section - Enhanced with contextual guidance */}
           <div className="mt-8 space-y-4">
             <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 p-4 rounded">
-              <h3 className="font-semibold text-yellow-900 dark:text-yellow-200 mb-2">💡 How It Works</h3>
+              <h3 className="font-semibold text-yellow-900 dark:text-yellow-200 mb-2">
+                💡 How It Works
+              </h3>
               <ul className="list-disc list-inside space-y-1 text-sm text-yellow-800 dark:text-yellow-300">
                 <li>
                   <strong>Use Templates:</strong> Click &quot;Use Template&quot; for pre-configured
@@ -868,7 +895,9 @@ export default function CalculatorWizard() {
             </div>
 
             <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
-              <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">📋 Planning Tips</h3>
+              <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">
+                📋 Planning Tips
+              </h3>
               <ul className="list-disc list-inside space-y-1 text-sm text-blue-800 dark:text-blue-300">
                 <li>
                   <strong>Diversification:</strong> Allocate to 3-5 different crops to reduce risk
@@ -893,7 +922,9 @@ export default function CalculatorWizard() {
             </div>
 
             <div className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 p-4 rounded">
-              <h3 className="font-semibold text-green-900 dark:text-green-200 mb-2">🌱 Crop Selection Guide</h3>
+              <h3 className="font-semibold text-green-900 dark:text-green-200 mb-2">
+                🌱 Crop Selection Guide
+              </h3>
               <div className="grid md:grid-cols-3 gap-4 text-sm text-green-800 dark:text-green-300">
                 <div>
                   <div className="font-semibold mb-1">High Profit Crops:</div>
@@ -922,7 +953,9 @@ export default function CalculatorWizard() {
             </div>
 
             <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 rounded">
-              <h3 className="font-semibold text-red-900 dark:text-red-200 mb-2">⚠️ Common Mistakes to Avoid</h3>
+              <h3 className="font-semibold text-red-900 dark:text-red-200 mb-2">
+                ⚠️ Common Mistakes to Avoid
+              </h3>
               <ul className="list-disc list-inside space-y-1 text-sm text-red-800 dark:text-red-300">
                 <li>
                   <strong>Over-allocation:</strong> Don&apos;t allocate more than 70% to any single

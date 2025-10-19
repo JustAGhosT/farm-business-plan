@@ -815,7 +815,9 @@ export default function AIWizardPage() {
 
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">🤖 AI Farm Planning Wizard</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              🤖 AI Farm Planning Wizard
+            </h1>
             <p className="text-gray-600 dark:text-gray-300">
               Get personalized recommendations based on your location, climate, and goals
             </p>
@@ -957,7 +959,9 @@ export default function AIWizardPage() {
                         <option key={loc} value={loc} />
                       ))}
                     </datalist>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Start typing to see suggestions</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Start typing to see suggestions
+                    </p>
                   </div>
 
                   <div>
@@ -1345,7 +1349,9 @@ export default function AIWizardPage() {
 
             {currentStep === 'crops' && (
               <div>
-                <h2 className="text-2xl font-bold mb-4 dark:text-white">🌱 Crop Selection & Allocation</h2>
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">
+                  🌱 Crop Selection & Allocation
+                </h2>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
                   Select crops you&apos;re interested in growing and allocate land
                 </p>
@@ -1385,7 +1391,9 @@ export default function AIWizardPage() {
                         <div>
                           <h3 className="font-semibold dark:text-white">{crop.name}</h3>
                           {data.crops.includes(crop.id) && (
-                            <span className="text-xs text-primary-600 dark:text-primary-400">✓ Selected</span>
+                            <span className="text-xs text-primary-600 dark:text-primary-400">
+                              ✓ Selected
+                            </span>
                           )}
                         </div>
                       </div>
@@ -1395,7 +1403,9 @@ export default function AIWizardPage() {
 
                 {data.crops.length > 0 && data.farmSize && (
                   <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4 mb-4">
-                    <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-3">📊 Land Allocation</h3>
+                    <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-3">
+                      📊 Land Allocation
+                    </h3>
                     <p className="text-sm text-blue-800 dark:text-blue-300 mb-4">
                       Total farm size:{' '}
                       <strong>{parseFloat(data.farmSize).toFixed(2)} hectares</strong>
@@ -1524,12 +1534,16 @@ export default function AIWizardPage() {
 
             {currentStep === 'financials' && (
               <div>
-                <h2 className="text-2xl font-bold mb-4 dark:text-white">💰 Budget & Financial Goals</h2>
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">
+                  💰 Budget & Financial Goals
+                </h2>
 
                 <div className="space-y-4">
                   {data.farmSize && data.crops.length > 0 && !data.budget && (
                     <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 rounded-lg p-4">
-                      <h3 className="font-semibold text-primary-900 dark:text-primary-200 mb-2">🤖 Recommended Budget</h3>
+                      <h3 className="font-semibold text-primary-900 dark:text-primary-200 mb-2">
+                        🤖 Recommended Budget
+                      </h3>
                       <p className="text-sm text-primary-800 dark:text-primary-300 mb-3">
                         Based on your farm size ({parseFloat(data.farmSize).toFixed(2)} ha) and
                         selected crops
@@ -1603,7 +1617,9 @@ export default function AIWizardPage() {
                   </div>
 
                   <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
-                    <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">Budget Guidelines</h3>
+                    <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">
+                      Budget Guidelines
+                    </h3>
                     <ul className="text-sm text-blue-800 dark:text-blue-300 space-y-1">
                       <li>• Small scale (&lt;R100k): Vegetables, herbs, small plot Moringa</li>
                       <li>• Medium scale (R100k-R300k): Dragon Fruit 1-2ha, mixed vegetables</li>
@@ -1616,7 +1632,9 @@ export default function AIWizardPage() {
 
             {currentStep === 'timeline' && (
               <div>
-                <h2 className="text-2xl font-bold mb-4 dark:text-white">📅 Implementation Timeline</h2>
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">
+                  📅 Implementation Timeline
+                </h2>
 
                 <div className="space-y-4">
                   <div>
@@ -1663,14 +1681,18 @@ export default function AIWizardPage() {
                       key={index}
                       className="flex items-start p-4 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 rounded"
                     >
-                      <span className="text-green-600 dark:text-green-400 mr-3 flex-shrink-0">✓</span>
+                      <span className="text-green-600 dark:text-green-400 mr-3 flex-shrink-0">
+                        ✓
+                      </span>
                       <p className="text-sm text-gray-800 dark:text-gray-300">{rec}</p>
                     </div>
                   ))}
                 </div>
 
                 <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6 mb-6">
-                  <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-3">📋 Your Farm Profile</h3>
+                  <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-3">
+                    📋 Your Farm Profile
+                  </h3>
                   <div className="grid md:grid-cols-2 gap-3 text-sm dark:text-gray-300">
                     <div>
                       <strong>Location:</strong> {data.location}, {data.province}
@@ -1710,7 +1732,9 @@ export default function AIWizardPage() {
                         key={index}
                         className="flex items-start p-3 bg-white dark:bg-gray-700 rounded-lg border border-purple-100 dark:border-purple-800"
                       >
-                        <span className="text-purple-500 dark:text-purple-400 mr-2 flex-shrink-0 text-sm">•</span>
+                        <span className="text-purple-500 dark:text-purple-400 mr-2 flex-shrink-0 text-sm">
+                          •
+                        </span>
                         <p className="text-sm text-gray-700 dark:text-gray-300">{suggestion}</p>
                       </div>
                     ))}
@@ -1725,7 +1749,9 @@ export default function AIWizardPage() {
                 </div>
 
                 <div className="bg-primary-50 dark:bg-primary-900/20 border-l-4 border-primary-500 p-4 rounded">
-                  <h3 className="font-semibold text-primary-900 dark:text-primary-200 mb-2">🎯 Next Steps</h3>
+                  <h3 className="font-semibold text-primary-900 dark:text-primary-200 mb-2">
+                    🎯 Next Steps
+                  </h3>
                   <ol className="list-decimal list-inside space-y-1 text-sm text-primary-800 dark:text-primary-300">
                     <li>Use Financial Calculators to validate your projections</li>
                     <li>Review crop templates for detailed growing requirements</li>
