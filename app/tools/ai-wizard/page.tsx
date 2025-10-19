@@ -796,11 +796,11 @@ export default function AIWizardPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <Link
           href="/"
-          className="inline-flex items-center text-primary-600 hover:text-primary-700 mb-6 transition-colors"
+          className="inline-flex items-center text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 mb-6 transition-colors"
         >
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -813,10 +813,12 @@ export default function AIWizardPage() {
           Back to Home
         </Link>
 
-        <div className="bg-white rounded-lg shadow-lg p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">🤖 AI Farm Planning Wizard</h1>
-            <p className="text-gray-600">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              🤖 AI Farm Planning Wizard
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300">
               Get personalized recommendations based on your location, climate, and goals
             </p>
           </div>
@@ -827,7 +829,7 @@ export default function AIWizardPage() {
               {steps.map((step, index) => (
                 <div
                   key={step.id}
-                  className={`flex flex-col items-center ${index <= currentStepIndex ? 'text-primary-600' : 'text-gray-400'}`}
+                  className={`flex flex-col items-center ${index <= currentStepIndex ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400 dark:text-gray-500'}`}
                 >
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center text-xl mb-2 ${
@@ -856,14 +858,14 @@ export default function AIWizardPage() {
           <div className="min-h-[400px]">
             {currentStep === 'location' && (
               <div>
-                <h2 className="text-2xl font-bold mb-4">📍 Location & Farm Size</h2>
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">📍 Location & Farm Size</h2>
                 <div className="space-y-4">
                   {/* Auto-detect location button */}
-                  <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
-                    <h3 className="font-semibold text-primary-900 mb-2">
+                  <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 rounded-lg p-4">
+                    <h3 className="font-semibold text-primary-900 dark:text-primary-200 mb-2">
                       📍 Auto-Detect Your Location
                     </h3>
-                    <p className="text-sm text-primary-800 mb-3">
+                    <p className="text-sm text-primary-800 dark:text-primary-300 mb-3">
                       Use your device&apos;s GPS to automatically detect your current location and
                       coordinates
                     </p>
@@ -935,13 +937,13 @@ export default function AIWizardPage() {
                         )}
                       </button>
                     </div>
-                    <p className="text-xs text-gray-600 mt-2">
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
                       GPS is more accurate. IP location is used as fallback if GPS fails.
                     </p>
                   </div>
 
                   <div className="relative">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Location / Town *
                     </label>
                     <input
@@ -949,7 +951,7 @@ export default function AIWizardPage() {
                       list="locations"
                       value={data.location}
                       onChange={(e) => setData({ ...data, location: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       placeholder="e.g., Bela Bela, Polokwane"
                     />
                     <datalist id="locations">
@@ -957,13 +959,15 @@ export default function AIWizardPage() {
                         <option key={loc} value={loc} />
                       ))}
                     </datalist>
-                    <p className="text-xs text-gray-500 mt-1">Start typing to see suggestions</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Start typing to see suggestions
+                    </p>
                   </div>
 
                   <div>
                     <label
                       htmlFor="province-select"
-                      className="block text-sm font-medium text-gray-700 mb-2"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                     >
                       Province *
                     </label>
@@ -971,7 +975,7 @@ export default function AIWizardPage() {
                       id="province-select"
                       value={data.province}
                       onChange={(e) => setData({ ...data, province: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     >
                       <option value="">Select Province</option>
                       <option value="Limpopo">Limpopo</option>
@@ -986,16 +990,16 @@ export default function AIWizardPage() {
                     </select>
                   </div>
 
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <h3 className="font-semibold text-blue-900 mb-2">
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
+                    <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">
                       📍 Optional: Farm Coordinates
                     </h3>
-                    <p className="text-sm text-blue-800 mb-3">
+                    <p className="text-sm text-blue-800 dark:text-blue-300 mb-3">
                       Provide exact coordinates for more accurate climate data
                     </p>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                           Latitude
                         </label>
                         <input
@@ -1008,12 +1012,12 @@ export default function AIWizardPage() {
                               coordinates: { ...data.coordinates, lat: e.target.value },
                             })
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                           placeholder="e.g., -24.2819"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                           Longitude
                         </label>
                         <input
@@ -1026,7 +1030,7 @@ export default function AIWizardPage() {
                               coordinates: { ...data.coordinates, lng: e.target.value },
                             })
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                           placeholder="e.g., 28.4167"
                         />
                       </div>
@@ -1034,11 +1038,11 @@ export default function AIWizardPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Farm Size Method *
                     </label>
                     <div className="flex gap-4 mb-3">
-                      <label className="flex items-center">
+                      <label className="flex items-center dark:text-gray-300">
                         <input
                           type="radio"
                           name="farmSizeSource"
@@ -1054,7 +1058,7 @@ export default function AIWizardPage() {
                         />
                         Manual Entry
                       </label>
-                      <label className="flex items-center">
+                      <label className="flex items-center dark:text-gray-300">
                         <input
                           type="radio"
                           name="farmSizeSource"
@@ -1074,7 +1078,7 @@ export default function AIWizardPage() {
 
                     {data.farmSizeSource === 'manual' ? (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Farm Size (hectares) *
                         </label>
                         <input
@@ -1082,16 +1086,16 @@ export default function AIWizardPage() {
                           value={data.farmSize}
                           onChange={(e) => setData({ ...data, farmSize: e.target.value })}
                           step="0.1"
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                           placeholder="e.g., 2.5"
                         />
                       </div>
                     ) : (
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                        <h3 className="font-semibold text-green-900 mb-2">
+                      <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg p-4">
+                        <h3 className="font-semibold text-green-900 dark:text-green-200 mb-2">
                           🗺️ Define Farm Boundary
                         </h3>
-                        <p className="text-sm text-green-800 mb-3">
+                        <p className="text-sm text-green-800 dark:text-green-300 mb-3">
                           Enter at least 3 corner points (lat, lng) to calculate area
                         </p>
 
@@ -1106,7 +1110,7 @@ export default function AIWizardPage() {
                                 newPoints[index].lat = parseFloat(e.target.value) || 0
                                 setData({ ...data, boundaryPoints: newPoints })
                               }}
-                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
+                              className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg"
                               placeholder="Latitude"
                             />
                             <input
@@ -1118,7 +1122,7 @@ export default function AIWizardPage() {
                                 newPoints[index].lng = parseFloat(e.target.value) || 0
                                 setData({ ...data, boundaryPoints: newPoints })
                               }}
-                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
+                              className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg"
                               placeholder="Longitude"
                             />
                             <button
@@ -1140,7 +1144,7 @@ export default function AIWizardPage() {
                               boundaryPoints: [...data.boundaryPoints, { lat: 0, lng: 0 }],
                             })
                           }}
-                          className="w-full px-4 py-2 border-2 border-dashed border-green-300 rounded-lg text-green-700 hover:bg-green-100 transition-colors mt-2"
+                          className="w-full px-4 py-2 border-2 border-dashed border-green-300 dark:border-green-600 rounded-lg text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors mt-2"
                         >
                           + Add Boundary Point
                         </button>
@@ -1164,8 +1168,8 @@ export default function AIWizardPage() {
                             </button>
 
                             {data.farmSizeSource === 'calculated' && data.farmSize && (
-                              <div className="mt-2 p-3 bg-white border border-green-300 rounded-lg">
-                                <p className="text-sm text-gray-700">
+                              <div className="mt-2 p-3 bg-white dark:bg-gray-700 border border-green-300 dark:border-green-600 rounded-lg">
+                                <p className="text-sm text-gray-700 dark:text-gray-300">
                                   <strong>Calculated Area:</strong>{' '}
                                   {parseFloat(data.farmSize).toFixed(2)} hectares
                                 </p>
@@ -1177,8 +1181,8 @@ export default function AIWizardPage() {
                     )}
                   </div>
 
-                  <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-                    <p className="text-sm text-blue-800">
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
+                    <p className="text-sm text-blue-800 dark:text-blue-300">
                       <strong>💡 Tip:</strong> The AI will use your location to provide
                       climate-specific recommendations and suitable crop suggestions.
                       {data.coordinates.lat &&
@@ -1192,18 +1196,18 @@ export default function AIWizardPage() {
 
             {currentStep === 'climate' && (
               <div>
-                <h2 className="text-2xl font-bold mb-4">🌡️ Climate Information</h2>
-                <p className="text-gray-600 mb-6">
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">🌡️ Climate Information</h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
                   Help us understand your local climate conditions
                 </p>
 
                 <div className="space-y-4">
                   {!data.climate.autoPopulated && (data.location || data.coordinates.lat) && (
-                    <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
-                      <h3 className="font-semibold text-primary-900 mb-2">
+                    <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 rounded-lg p-4">
+                      <h3 className="font-semibold text-primary-900 dark:text-primary-200 mb-2">
                         🤖 Auto-Populate Climate Data
                       </h3>
-                      <p className="text-sm text-primary-800 mb-3">
+                      <p className="text-sm text-primary-800 dark:text-primary-300 mb-3">
                         We can automatically fetch climate data based on your location
                       </p>
                       <button
@@ -1217,8 +1221,8 @@ export default function AIWizardPage() {
                   )}
 
                   {data.climate.autoPopulated && (
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                      <p className="text-sm text-green-800">
+                    <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg p-4">
+                      <p className="text-sm text-green-800 dark:text-green-300">
                         ✓ Climate data auto-populated based on your location. You can adjust values
                         if needed.
                       </p>
@@ -1227,7 +1231,7 @@ export default function AIWizardPage() {
 
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Average Summer Temperature (°C)
                       </label>
                       <input
@@ -1243,13 +1247,13 @@ export default function AIWizardPage() {
                             },
                           })
                         }
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                         placeholder="e.g., 28"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Average Winter Temperature (°C)
                       </label>
                       <input
@@ -1265,14 +1269,14 @@ export default function AIWizardPage() {
                             },
                           })
                         }
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                         placeholder="e.g., 16"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Annual Rainfall (mm)
                     </label>
                     <input
@@ -1288,16 +1292,16 @@ export default function AIWizardPage() {
                           },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       placeholder="e.g., 600"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Frost Risk
                     </label>
-                    <div className="flex gap-4">
+                    <div className="flex gap-4 dark:text-gray-300">
                       <label className="flex items-center">
                         <input
                           type="radio"
@@ -1333,8 +1337,8 @@ export default function AIWizardPage() {
                     </div>
                   </div>
 
-                  <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
-                    <p className="text-sm text-yellow-800">
+                  <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 p-4 rounded">
+                    <p className="text-sm text-yellow-800 dark:text-yellow-300">
                       <strong>💡 Tip:</strong> You can find this information from your local weather
                       station or agricultural extension office.
                     </p>
@@ -1345,8 +1349,10 @@ export default function AIWizardPage() {
 
             {currentStep === 'crops' && (
               <div>
-                <h2 className="text-2xl font-bold mb-4">🌱 Crop Selection & Allocation</h2>
-                <p className="text-gray-600 mb-6">
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">
+                  🌱 Crop Selection & Allocation
+                </h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
                   Select crops you&apos;re interested in growing and allocate land
                 </p>
 
@@ -1376,16 +1382,18 @@ export default function AIWizardPage() {
                       }}
                       className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
                         data.crops.includes(crop.id)
-                          ? 'border-primary-500 bg-primary-50'
-                          : 'border-gray-200 hover:border-primary-300'
+                          ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                          : 'border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600'
                       }`}
                     >
                       <div className="flex items-center">
                         <span className="text-3xl mr-3">{crop.icon}</span>
                         <div>
-                          <h3 className="font-semibold">{crop.name}</h3>
+                          <h3 className="font-semibold dark:text-white">{crop.name}</h3>
                           {data.crops.includes(crop.id) && (
-                            <span className="text-xs text-primary-600">✓ Selected</span>
+                            <span className="text-xs text-primary-600 dark:text-primary-400">
+                              ✓ Selected
+                            </span>
                           )}
                         </div>
                       </div>
@@ -1394,9 +1402,11 @@ export default function AIWizardPage() {
                 </div>
 
                 {data.crops.length > 0 && data.farmSize && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                    <h3 className="font-semibold text-blue-900 mb-3">📊 Land Allocation</h3>
-                    <p className="text-sm text-blue-800 mb-4">
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4 mb-4">
+                    <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-3">
+                      📊 Land Allocation
+                    </h3>
+                    <p className="text-sm text-blue-800 dark:text-blue-300 mb-4">
                       Total farm size:{' '}
                       <strong>{parseFloat(data.farmSize).toFixed(2)} hectares</strong>
                     </p>
@@ -1409,16 +1419,16 @@ export default function AIWizardPage() {
                         return (
                           <div
                             key={cropId}
-                            className="bg-white rounded-lg p-3 border border-blue-200"
+                            className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-blue-200 dark:border-blue-800"
                           >
                             <div className="flex items-center mb-2">
                               <span className="text-2xl mr-2">{crop?.icon}</span>
-                              <h4 className="font-semibold">{crop?.name}</h4>
+                              <h4 className="font-semibold dark:text-white">{crop?.name}</h4>
                             </div>
 
                             <div className="grid grid-cols-2 gap-3">
                               <div>
-                                <label className="block text-xs font-medium text-gray-700 mb-1">
+                                <label className="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1">
                                   Min Hectares
                                 </label>
                                 <input
@@ -1433,13 +1443,13 @@ export default function AIWizardPage() {
                                     )
                                     setData({ ...data, cropAllocations: newAllocations })
                                   }}
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                   placeholder="e.g., 0.5"
                                 />
                               </div>
 
                               <div>
-                                <label className="block text-xs font-medium text-gray-700 mb-1">
+                                <label className="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1">
                                   Max Hectares
                                 </label>
                                 <input
@@ -1454,7 +1464,7 @@ export default function AIWizardPage() {
                                     )
                                     setData({ ...data, cropAllocations: newAllocations })
                                   }}
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                   placeholder="e.g., 1.5"
                                 />
                               </div>
@@ -1476,8 +1486,8 @@ export default function AIWizardPage() {
                       const farmSize = parseFloat(data.farmSize) || 0
 
                       return (
-                        <div className="mt-4 p-3 bg-white rounded-lg border border-blue-200">
-                          <div className="flex justify-between text-sm mb-1">
+                        <div className="mt-4 p-3 bg-white dark:bg-gray-700 rounded-lg border border-blue-200 dark:border-blue-800">
+                          <div className="flex justify-between text-sm mb-1 dark:text-gray-300">
                             <span>Total Min Allocation:</span>
                             <span
                               className={
@@ -1488,7 +1498,7 @@ export default function AIWizardPage() {
                               {totalMin > farmSize && '⚠️ Exceeds farm size!'}
                             </span>
                           </div>
-                          <div className="flex justify-between text-sm mb-1">
+                          <div className="flex justify-between text-sm mb-1 dark:text-gray-300">
                             <span>Total Max Allocation:</span>
                             <span
                               className={
@@ -1499,7 +1509,7 @@ export default function AIWizardPage() {
                               {totalMax > farmSize && '⚠️ Exceeds farm size!'}
                             </span>
                           </div>
-                          <div className="flex justify-between text-sm">
+                          <div className="flex justify-between text-sm dark:text-gray-300">
                             <span>Unallocated Land:</span>
                             <span className="font-semibold text-green-600">
                               {Math.max(0, farmSize - totalMax).toFixed(2)} ha available
@@ -1512,8 +1522,8 @@ export default function AIWizardPage() {
                 )}
 
                 {data.crops.length > 0 && (
-                  <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded">
-                    <p className="text-sm text-green-800">
+                  <div className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 p-4 rounded">
+                    <p className="text-sm text-green-800 dark:text-green-300">
                       <strong>Selected:</strong> {data.crops.length} crop(s). The AI will provide
                       specific recommendations for each crop allocation.
                     </p>
@@ -1524,13 +1534,17 @@ export default function AIWizardPage() {
 
             {currentStep === 'financials' && (
               <div>
-                <h2 className="text-2xl font-bold mb-4">💰 Budget & Financial Goals</h2>
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">
+                  💰 Budget & Financial Goals
+                </h2>
 
                 <div className="space-y-4">
                   {data.farmSize && data.crops.length > 0 && !data.budget && (
-                    <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
-                      <h3 className="font-semibold text-primary-900 mb-2">🤖 Recommended Budget</h3>
-                      <p className="text-sm text-primary-800 mb-3">
+                    <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 rounded-lg p-4">
+                      <h3 className="font-semibold text-primary-900 dark:text-primary-200 mb-2">
+                        🤖 Recommended Budget
+                      </h3>
+                      <p className="text-sm text-primary-800 dark:text-primary-300 mb-3">
                         Based on your farm size ({parseFloat(data.farmSize).toFixed(2)} ha) and
                         selected crops
                       </p>
@@ -1548,17 +1562,17 @@ export default function AIWizardPage() {
                   )}
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Available Investment Budget (ZAR) *
                     </label>
                     <input
                       type="number"
                       value={data.budget}
                       onChange={(e) => setData({ ...data, budget: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       placeholder="e.g., 150000"
                     />
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                       Total capital available for startup and first season
                     </p>
                   </div>
@@ -1577,34 +1591,36 @@ export default function AIWizardPage() {
                           type="text"
                           value={data.soilType || getSoilRecommendation()}
                           onChange={(e) => setData({ ...data, soilType: e.target.value })}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-blue-50"
+                          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-blue-50 dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                           placeholder="Soil type information"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Water Source (Auto-recommended)
                         </label>
                         <input
                           type="text"
                           value={data.waterSource || getWaterSourceRecommendation()}
                           onChange={(e) => setData({ ...data, waterSource: e.target.value })}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-blue-50"
+                          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-blue-50 dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                           placeholder="Water source information"
                         />
                       </div>
                     </div>
 
-                    <p className="text-xs text-gray-500 mt-3">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">
                       💡 These fields are auto-populated based on your location and climate. You can
                       edit them if needed.
                     </p>
                   </div>
 
-                  <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-                    <h3 className="font-semibold text-blue-900 mb-2">Budget Guidelines</h3>
-                    <ul className="text-sm text-blue-800 space-y-1">
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
+                    <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">
+                      Budget Guidelines
+                    </h3>
+                    <ul className="text-sm text-blue-800 dark:text-blue-300 space-y-1">
                       <li>• Small scale (&lt;R100k): Vegetables, herbs, small plot Moringa</li>
                       <li>• Medium scale (R100k-R300k): Dragon Fruit 1-2ha, mixed vegetables</li>
                       <li>• Large scale (&gt;R300k): Diversified operation, multiple crops</li>
@@ -1616,13 +1632,15 @@ export default function AIWizardPage() {
 
             {currentStep === 'timeline' && (
               <div>
-                <h2 className="text-2xl font-bold mb-4">📅 Implementation Timeline</h2>
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">
+                  📅 Implementation Timeline
+                </h2>
 
                 <div className="space-y-4">
                   <div>
                     <label
                       htmlFor="timeline-select"
-                      className="block text-sm font-medium text-gray-700 mb-2"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                     >
                       When do you want to start?
                     </label>
@@ -1630,7 +1648,7 @@ export default function AIWizardPage() {
                       id="timeline-select"
                       value={data.timeline}
                       onChange={(e) => setData({ ...data, timeline: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     >
                       <option value="">Select timeline</option>
                       <option value="immediate">Immediately (within 1 month)</option>
@@ -1640,8 +1658,8 @@ export default function AIWizardPage() {
                     </select>
                   </div>
 
-                  <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
-                    <p className="text-sm text-yellow-800">
+                  <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 p-4 rounded">
+                    <p className="text-sm text-yellow-800 dark:text-yellow-300">
                       <strong>💡 Tip:</strong> Consider seasonal factors and crop planting schedules
                       when planning your start date.
                     </p>
@@ -1652,8 +1670,8 @@ export default function AIWizardPage() {
 
             {currentStep === 'recommendations' && (
               <div>
-                <h2 className="text-2xl font-bold mb-4">🤖 AI Recommendations</h2>
-                <p className="text-gray-600 mb-6">
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">🤖 AI Recommendations</h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
                   Based on your inputs, here are personalized recommendations:
                 </p>
 
@@ -1661,17 +1679,21 @@ export default function AIWizardPage() {
                   {aiRecommendations.map((rec, index) => (
                     <div
                       key={index}
-                      className="flex items-start p-4 bg-green-50 border-l-4 border-green-500 rounded"
+                      className="flex items-start p-4 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 rounded"
                     >
-                      <span className="text-green-600 mr-3 flex-shrink-0">✓</span>
-                      <p className="text-sm text-gray-800">{rec}</p>
+                      <span className="text-green-600 dark:text-green-400 mr-3 flex-shrink-0">
+                        ✓
+                      </span>
+                      <p className="text-sm text-gray-800 dark:text-gray-300">{rec}</p>
                     </div>
                   ))}
                 </div>
 
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
-                  <h3 className="font-semibold text-blue-900 mb-3">📋 Your Farm Profile</h3>
-                  <div className="grid md:grid-cols-2 gap-3 text-sm">
+                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6 mb-6">
+                  <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-3">
+                    📋 Your Farm Profile
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-3 text-sm dark:text-gray-300">
                     <div>
                       <strong>Location:</strong> {data.location}, {data.province}
                     </div>
@@ -1694,29 +1716,31 @@ export default function AIWizardPage() {
                 </div>
 
                 {/* Automation Suggestions Section */}
-                <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-6 mb-6">
+                <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border border-purple-200 dark:border-purple-700 rounded-lg p-6 mb-6">
                   <div className="flex items-center mb-3">
                     <span className="text-2xl mr-2">⚡</span>
-                    <h3 className="font-semibold text-purple-900">
+                    <h3 className="font-semibold text-purple-900 dark:text-purple-200">
                       Future Automation Opportunities
                     </h3>
                   </div>
-                  <p className="text-sm text-purple-800 mb-4">
+                  <p className="text-sm text-purple-800 dark:text-purple-300 mb-4">
                     Here are ways this wizard and your farm operations can be further automated:
                   </p>
                   <div className="space-y-2">
                     {generateAutomationSuggestions().map((suggestion, index) => (
                       <div
                         key={index}
-                        className="flex items-start p-3 bg-white rounded-lg border border-purple-100"
+                        className="flex items-start p-3 bg-white dark:bg-gray-700 rounded-lg border border-purple-100 dark:border-purple-800"
                       >
-                        <span className="text-purple-500 mr-2 flex-shrink-0 text-sm">•</span>
-                        <p className="text-sm text-gray-700">{suggestion}</p>
+                        <span className="text-purple-500 dark:text-purple-400 mr-2 flex-shrink-0 text-sm">
+                          •
+                        </span>
+                        <p className="text-sm text-gray-700 dark:text-gray-300">{suggestion}</p>
                       </div>
                     ))}
                   </div>
-                  <div className="mt-4 p-3 bg-white rounded-lg border border-purple-200">
-                    <p className="text-xs text-purple-700">
+                  <div className="mt-4 p-3 bg-white dark:bg-gray-700 rounded-lg border border-purple-200 dark:border-purple-800">
+                    <p className="text-xs text-purple-700 dark:text-purple-300">
                       💡 <strong>Pro Tip:</strong> Start with 1-2 automation features that align
                       with your immediate needs. Weather integration and task scheduling are great
                       starting points for most farms.
@@ -1724,9 +1748,11 @@ export default function AIWizardPage() {
                   </div>
                 </div>
 
-                <div className="bg-primary-50 border-l-4 border-primary-500 p-4 rounded">
-                  <h3 className="font-semibold text-primary-900 mb-2">🎯 Next Steps</h3>
-                  <ol className="list-decimal list-inside space-y-1 text-sm text-primary-800">
+                <div className="bg-primary-50 dark:bg-primary-900/20 border-l-4 border-primary-500 p-4 rounded">
+                  <h3 className="font-semibold text-primary-900 dark:text-primary-200 mb-2">
+                    🎯 Next Steps
+                  </h3>
+                  <ol className="list-decimal list-inside space-y-1 text-sm text-primary-800 dark:text-primary-300">
                     <li>Use Financial Calculators to validate your projections</li>
                     <li>Review crop templates for detailed growing requirements</li>
                     <li>Create your detailed business plan using the Plan Generator</li>
