@@ -10,6 +10,7 @@ interface WizardNavigationProps {
 
 const steps = [
   { name: 'Setup', href: '/tools/calculators/wizard' },
+  { name: 'Location', href: '/tools/calculators/wizard/location' },
   { name: 'Investment', href: '/tools/calculators/wizard/investment' },
   { name: 'Revenue', href: '/tools/calculators/wizard/revenue' },
   { name: 'Break-Even', href: '/tools/calculators/wizard/break-even' },
@@ -21,7 +22,7 @@ export default function WizardNavigation({
   currentStep,
   prevHref,
   nextHref,
-  totalSteps = 6,
+  totalSteps = 7,
   stepName,
 }: WizardNavigationProps) {
   return (
@@ -45,7 +46,7 @@ export default function WizardNavigation({
       </div>
 
       {/* Step Labels */}
-      <div className="grid grid-cols-6 gap-2 mb-6">
+      <div className="grid grid-cols-7 gap-2 mb-6">
         {steps.map((step, index) => (
           <div
             key={step.name}

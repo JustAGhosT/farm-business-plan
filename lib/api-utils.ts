@@ -130,3 +130,38 @@ export function createSuccessResponse<T = any>(
     { status }
   )
 }
+
+/**
+ * Validation result for UUID parameters
+ */
+export type UuidValidationResult =
+  | { success: true; id: string }
+  | { success: false; response: NextResponse<ApiError> }
+
+/**
+ * Validate and sanitize a UUID parameter
+ * Returns a success object with trimmed ID or a failure response
+ */
+export function validateUuidParam(id: string | undefined | null): UuidValidationResult {
+  // Check for non-empty string
+  if (!id || typeof id !== 'string' || id.trim() === '') {
+    return {
+      success: false,
+      response: createErrorResponse('Invalid ID parameter', 400, undefined, 'INVALID_ID'),
+    }
+  }
+
+  // Validate UUID format
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  if (!uuidRegex.test(id.trim())) {
+    return {
+      success: false,
+      response: createErrorResponse('ID must be a valid UUID', 400, undefined, 'INVALID_ID_FORMAT'),
+    }
+  }
+
+  return {
+    success: true,
+    id: id.trim(),
+  }
+}

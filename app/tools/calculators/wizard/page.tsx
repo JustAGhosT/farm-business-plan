@@ -13,7 +13,7 @@ import { useWizardSessions } from '@/lib/hooks/useWizardSessions'
 import { generateWizardPDF } from '@/lib/wizardPdfExport'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface Crop {
   id: string
@@ -40,12 +40,70 @@ export default function CalculatorWizard() {
   ])
 
   const { sessions, loading, createSession, deleteSession } = useWizardSessions()
+  const hasUserInteracted = useRef(false)
+
+  // Persistent counter for generating unique crop IDs
+  // Initialize to a value greater than any existing crop numeric ID
+  const getInitialCounter = () => {
+    const numericIds = crops
+      .map((c) => {
+        const match = c.id.match(/crop-(\d+)/)
+        return match ? parseInt(match[1], 10) : 0
+      })
+      .filter((n) => !isNaN(n))
+    return numericIds.length > 0 ? Math.max(...numericIds) + 1 : 1
+  }
+  const cropIdCounter = useRef(getInitialCounter())
+
+  // Load data from sessionStorage on mount (e.g., from AI wizard or previous session)
+  useEffect(() => {
+    // Only load if user hasn't interacted and crops are still empty/default
+    if (hasUserInteracted.current || crops.length > 1 || crops[0].name !== '') {
+      return
+    }
+
+    const raw = sessionStorage.getItem('calculatorWizardData')
+    if (!raw) return
+
+    try {
+      const wizardData = JSON.parse(raw)
+
+      // Validate the structure
+      if (!wizardData || typeof wizardData !== 'object') {
+        console.error('Invalid calculatorWizardData structure')
+        return
+      }
+
+      // Apply years if present
+      if (wizardData.years && typeof wizardData.years === 'number') {
+        setYears(wizardData.years.toString())
+      }
+
+      // Apply crops if present with deterministic IDs
+      if (Array.isArray(wizardData.crops) && wizardData.crops.length > 0) {
+        const suggestedCrops = wizardData.crops.map((crop: any, index: number) => ({
+          id: `wizard-crop-${index}`, // Deterministic ID instead of Date.now()
+          name: crop.name || '',
+          percentage: typeof crop.percentage === 'number' ? crop.percentage : 0,
+        }))
+        setCrops(suggestedCrops)
+      }
+    } catch (e) {
+      console.error('Failed to parse calculatorWizardData', e)
+      return
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Empty dependency array - only run on mount, crops checked in condition above
 
   const addCrop = () => {
+    hasUserInteracted.current = true
+    // Use persistent counter to avoid ID collisions when crops are removed then added
+    const nextId = `crop-${cropIdCounter.current}`
+    cropIdCounter.current++ // Increment counter for next use
     setCrops([
       ...crops,
       {
-        id: Date.now().toString(),
+        id: nextId,
         name: '',
         percentage: 0,
       },
@@ -53,12 +111,14 @@ export default function CalculatorWizard() {
   }
 
   const removeCrop = (id: string) => {
+    hasUserInteracted.current = true
     if (crops.length > 1) {
       setCrops(crops.filter((c) => c.id !== id))
     }
   }
 
   const updateCrop = (id: string, field: keyof Crop, value: string | number) => {
+    hasUserInteracted.current = true
     setCrops(crops.map((c) => (c.id === id ? { ...c, [field]: value } : c)))
   }
 
@@ -85,8 +145,9 @@ export default function CalculatorWizard() {
     }
 
     if (selectedCrops) {
+      hasUserInteracted.current = true
       const newCrops = selectedCrops.map((template, index) => ({
-        id: (Date.now() + index).toString(),
+        id: `template-${templateType}-${index}`, // Deterministic ID based on template type and index
         name: template.name,
         percentage: template.typicalPercentage,
       }))
@@ -122,6 +183,7 @@ export default function CalculatorWizard() {
         years: parseInt(years),
         crops: validCrops,
         total_percentage: totalPercentage,
+        total_hectares: parseFloat(totalHectares) || 10,
         current_step: 1,
         step_data: {},
       })
@@ -135,6 +197,7 @@ export default function CalculatorWizard() {
   }
 
   const handleLoadSession = (session: any) => {
+    hasUserInteracted.current = true
     setYears(session.years.toString())
     setCrops(session.crops)
     setShowSavedSessions(false)
@@ -208,7 +271,7 @@ export default function CalculatorWizard() {
   const cropTemplateMap = new Map<string, CropTemplate>()
   CROP_TEMPLATES.forEach((t) => cropTemplateMap.set(t.name, t))
 
-  const handleStartCalculators = () => {
+  const handleNext = () => {
     // Validation warnings
     const warnings = []
     const setupData = {
@@ -262,7 +325,7 @@ export default function CalculatorWizard() {
     sessionStorage.setItem('calculatorWizardData', JSON.stringify(setupData))
 
     // Navigate to the first calculator in the sequence
-    router.push('/tools/calculators/wizard/investment')
+    router.push('/tools/calculators/wizard/location')
   }
 
   return (
@@ -297,10 +360,10 @@ export default function CalculatorWizard() {
           {/* Progress Indicator */}
           <div className="mb-8 bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
             <p className="text-sm text-blue-800">
-              <strong>Step 1 of 6:</strong> Farm Setup - Enter your crops and allocation
+              <strong>Step 1 of 7:</strong> Farm Setup - Enter your crops and allocation
             </p>
             <div className="mt-2 text-xs text-blue-700">
-              Next: Investment → Revenue → Break-Even → ROI → Loan Analysis
+              Next: Location → Investment → Revenue → Break-Even → ROI → Loan Analysis
             </div>
           </div>
 
@@ -727,13 +790,14 @@ export default function CalculatorWizard() {
                 Cancel
               </Link>
               <button
-                onClick={handleStartCalculators}
+                onClick={handleNext}
                 disabled={
                   totalPercentage !== 100 || crops.filter((c) => c.name.trim()).length === 0
                 }
                 className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2 touch-manipulation"
+                data-testid="wizard-next-button"
               >
-                Start Calculators
+                Next
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
@@ -890,6 +954,13 @@ export default function CalculatorWizard() {
         <WizardScenarioComparison
           cropTemplates={cropTemplateMap}
           onClose={() => setShowScenarioComparison(false)}
+          currentPlan={{
+            name: 'Current Plan',
+            crops: crops.map(({ name, percentage }) => ({ name, percentage })),
+            years: parseInt(years),
+            totalHectares: parseFloat(totalHectares),
+            isSaved: false,
+          }}
         />
       )}
     </div>

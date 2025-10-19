@@ -1,4 +1,4 @@
-import { createErrorResponse } from '@/lib/api-utils'
+import { createErrorResponse, validateUuidParam } from '@/lib/api-utils'
 import { query } from '@/lib/db'
 import { FarmPlanSchema, validateData } from '@/lib/validation'
 import { NextResponse } from 'next/server'
@@ -10,9 +10,17 @@ export const dynamic = 'force-dynamic'
  * GET /api/farm-plans/[id]
  * Get a single farm plan by ID
  */
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params
+    const params = await props.params
+    const { id: rawId } = params
+
+    // Validate ID parameter
+    const validation = validateUuidParam(rawId)
+    if (!validation.success) {
+      return validation.response
+    }
+    const id = validation.id
 
     const queryText = `
       SELECT 
@@ -46,9 +54,18 @@ export async function GET(request: Request, { params }: { params: { id: string }
  * PUT /api/farm-plans/[id]
  * Update an existing farm plan
  */
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params
+    const params = await props.params
+    const { id: rawId } = params
+
+    // Validate ID parameter
+    const idValidation = validateUuidParam(rawId)
+    if (!idValidation.success) {
+      return idValidation.response
+    }
+    const id = idValidation.id
+
     const body = await request.json()
 
     // Validate input
@@ -138,9 +155,17 @@ export async function PUT(request: Request, { params }: { params: { id: string }
  * DELETE /api/farm-plans/[id]
  * Delete a farm plan
  */
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, props: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params
+    const params = await props.params
+    const { id: rawId } = params
+
+    // Validate ID parameter
+    const validation = validateUuidParam(rawId)
+    if (!validation.success) {
+      return validation.response
+    }
+    const id = validation.id
 
     // Check if farm plan exists
     const checkQuery = 'SELECT id FROM farm_plans WHERE id = $1'

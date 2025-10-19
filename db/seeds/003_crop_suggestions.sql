@@ -1,0 +1,31 @@
+
+-- 003_crop_suggestions.sql
+
+INSERT INTO crop_suggestions (province, town, crop_name) VALUES
+('Limpopo', 'Bela_Bela', 'Dragon Fruit'),
+('Limpopo', 'Bela_Bela', 'Moringa'),
+('Limpopo', 'Bela_Bela', 'Lucerne'),
+('Limpopo', 'Polokwane', 'Maize'),
+('Limpopo', 'Polokwane', 'Sorghum'),
+('Limpopo', 'Polokwane', 'Sunflowers'),
+('Limpopo', 'Mokopane', 'Citrus'),
+('Limpopo', 'Mokopane', 'Avocado'),
+('Limpopo', 'Mokopane', 'Macadamia'),
+('Gauteng', 'Johannesburg', 'Tomatoes'),
+('Gauteng', 'Johannesburg', 'Cucumbers'),
+('Gauteng', 'Johannesburg', 'Peppers'),
+('Gauteng', 'Pretoria', 'Lettuce'),
+('Gauteng', 'Pretoria', 'Spinach'),
+('Gauteng', 'Pretoria', 'Kale'),
+('Gauteng', 'Soweto', 'Potatoes'),
+('Gauteng', 'Soweto', 'Onions'),
+('Gauteng', 'Soweto', 'Carrots'),
+('Western Cape', 'Cape Town', 'Grapes'),
+('Western Cape', 'Cape Town', 'Olives'),
+('Western Cape', 'Cape Town', 'Wheat'),
+('Western Cape', 'Stellenbosch', 'Apples'),
+('Western Cape', 'Stellenbosch', 'Pears'),
+('Western Cape', 'Stellenbosch', 'Berries'),
+('Western Cape', 'George', 'Hops'),
+('Western Cape', 'George', 'Barley'),
+('Western Cape', 'George', 'Canola');
