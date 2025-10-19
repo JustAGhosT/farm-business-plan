@@ -11,7 +11,7 @@ import {
 } from '@/lib/cropTemplates'
 import { useWizardSessions } from '@/lib/hooks/useWizardSessions'
 import { generateWizardPDF } from '@/lib/wizardPdfExport'
-import Link from 'next/link'
+import { Link } from 'next'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 

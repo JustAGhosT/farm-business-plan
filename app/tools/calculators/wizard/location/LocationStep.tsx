@@ -1,35 +1,48 @@
+
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { Link } from 'next'
 
-// This is a simplified list. In a real application, this would likely come from a database or a more comprehensive library.
-const provinces = {
-  'Eastern Cape': ['East London', 'Port Elizabeth', 'Mthatha'],
-  'Free State': ['Bloemfontein', 'Welkom', 'Kroonstad'],
-  Gauteng: ['Johannesburg', 'Pretoria', 'Soweto'],
-  'KwaZulu-Natal': ['Durban', 'Pietermaritzburg', 'Richards Bay'],
-  Limpopo: ['Polokwane', 'Mokopane', 'Bela_Bela'],
-  Mpumalanga: ['Mbombela', 'Emalahleni', 'Middelburg'],
-  'North West': ['Mahikeng', 'Rustenburg', 'Klerksdorp'],
-  'Northern Cape': ['Kimberley', 'Upington', 'Springbok'],
-  'Western Cape': ['Cape Town', 'Stellenbosch', 'George'],
+interface Town {
+  id: number
+  name: string
+  province_id: number
 }
 
-type Province = keyof typeof provinces
+interface Province {
+  id: number
+  name: string
+  towns: Town[]
+}
 
 export default function LocationStep() {
   const router = useRouter()
-  const [province, setProvince] = useState<Province | ''>('')
+  const [locations, setLocations] = useState<Province[]>([])
+  const [province, setProvince] = useState('')
   const [town, setTown] = useState('')
-  const [towns, setTowns] = useState<string[]>([])
+  const [towns, setTowns] = useState<Town[]>([])
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const response = await fetch('/api/locations')
+        const data = await response.json()
+        setLocations(data.locations)
+      } catch (error) {
+        console.error('Error fetching locations:', error)
+      }
+    }
+    fetchLocations()
+  }, [])
 
   const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedProvince = e.target.value as Province
-    setProvince(selectedProvince)
+    const selectedProvinceId = e.target.value
+    setProvince(selectedProvinceId)
     setTown('')
-    setTowns(selectedProvince ? provinces[selectedProvince] : [])
+    const selectedProvince = locations.find((p) => p.id === parseInt(selectedProvinceId))
+    setTowns(selectedProvince ? selectedProvince.towns : [])
   }
 
   const [suggestedCrops, setSuggestedCrops] = useState<string[]>([])
@@ -40,9 +53,19 @@ export default function LocationStep() {
       return
     }
 
+    const selectedProvince = locations.find((p) => p.id === parseInt(province))
+    const selectedTown = towns.find((t) => t.id === parseInt(town))
+
+    if (!selectedProvince || !selectedTown) {
+      alert('Invalid province or town selected')
+      return
+    }
+
     for (let i = 0; i < 3; i++) {
       try {
-        const response = await fetch(`/api/suggest-crops?province=${province}&town=${town}`)
+        const response = await fetch(
+          `/api/suggest-crops?province=${selectedProvince.name}&town=${selectedTown.name}`
+        )
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
@@ -58,6 +81,32 @@ export default function LocationStep() {
           alert('Failed to fetch crop suggestions. Please try again.')
         }
       }
+    }
+  }
+
+  const handleMoreSuggestions = async () => {
+    if (!province || !town) {
+      alert('Please select a province and town')
+      return
+    }
+
+    const selectedProvince = locations.find((p) => p.id === parseInt(province))
+    const selectedTown = towns.find((t) => t.id === parseInt(town))
+
+    if (!selectedProvince || !selectedTown) {
+      alert('Invalid province or town selected')
+      return
+    }
+
+    try {
+      const response = await fetch(
+        `/api/more-suggestions?province=${selectedProvince.name}&town=${selectedTown.name}`
+      )
+      const data = await response.json()
+      setSuggestedCrops([...suggestedCrops, ...data.crops])
+    } catch (error) {
+      console.error('Error fetching more crop suggestions:', error)
+      alert('Failed to fetch more crop suggestions. Please try again.')
     }
   }
 
@@ -106,9 +155,9 @@ export default function LocationStep() {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
               >
                 <option value="">Select Province</option>
-                {Object.keys(provinces).map((p) => (
-                  <option key={p} value={p}>
-                    {p}
+                {locations.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
                   </option>
                 ))}
               </select>
@@ -126,8 +175,8 @@ export default function LocationStep() {
               >
                 <option value="">Select Town</option>
                 {towns.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
+                  <option key={t.id} value={t.id}>
+                    {t.name}
                   </option>
                 ))}
               </select>
@@ -161,6 +210,13 @@ export default function LocationStep() {
                 className="inline-flex items-center gap-2 px-6 py-3 bg-secondary-600 text-white rounded-lg hover:bg-secondary-700 disabled:bg-gray-400"
               >
                 Suggest Crops
+              </button>
+              <button
+                onClick={handleMoreSuggestions}
+                disabled={!province || !town}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-tertiary-600 text-white rounded-lg hover:bg-tertiary-700 disabled:bg-gray-400"
+              >
+                More Suggestions
               </button>
               <button
                 onClick={handleNext}
