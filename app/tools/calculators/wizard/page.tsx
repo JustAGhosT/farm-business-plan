@@ -39,6 +39,18 @@ export default function CalculatorWizard() {
     },
   ])
 
+  useEffect(() => {
+    const wizardData = JSON.parse(sessionStorage.getItem('calculatorWizardData') || '{}')
+    if (wizardData.suggestedCrops && wizardData.suggestedCrops.length > 0) {
+      const suggestedCrops = wizardData.suggestedCrops.map((cropName: string, index: number) => ({
+        id: Date.now().toString() + index,
+        name: cropName,
+        percentage: 100 / wizardData.suggestedCrops.length,
+      }))
+      setCrops(suggestedCrops)
+    }
+  }, [])
+
   const { sessions, loading, createSession, deleteSession } = useWizardSessions()
   const hasUserInteracted = useRef(false)
 
@@ -256,7 +268,7 @@ export default function CalculatorWizard() {
   const cropTemplateMap = new Map<string, CropTemplate>()
   CROP_TEMPLATES.forEach((t) => cropTemplateMap.set(t.name, t))
 
-  const handleStartCalculators = () => {
+  const handleNext = () => {
     // Validation warnings
     const warnings = []
     const setupData = {
@@ -310,7 +322,7 @@ export default function CalculatorWizard() {
     sessionStorage.setItem('calculatorWizardData', JSON.stringify(setupData))
 
     // Navigate to the first calculator in the sequence
-    router.push('/tools/calculators/wizard/investment')
+    router.push('/tools/calculators/wizard/location')
   }
 
   return (
@@ -345,10 +357,10 @@ export default function CalculatorWizard() {
           {/* Progress Indicator */}
           <div className="mb-8 bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
             <p className="text-sm text-blue-800">
-              <strong>Step 1 of 6:</strong> Farm Setup - Enter your crops and allocation
+              <strong>Step 1 of 7:</strong> Farm Setup - Enter your crops and allocation
             </p>
             <div className="mt-2 text-xs text-blue-700">
-              Next: Investment → Revenue → Break-Even → ROI → Loan Analysis
+              Next: Location → Investment → Revenue → Break-Even → ROI → Loan Analysis
             </div>
           </div>
 
@@ -775,13 +787,14 @@ export default function CalculatorWizard() {
                 Cancel
               </Link>
               <button
-                onClick={handleStartCalculators}
+                onClick={handleNext}
                 disabled={
                   totalPercentage !== 100 || crops.filter((c) => c.name.trim()).length === 0
                 }
                 className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2 touch-manipulation"
+                data-testid="wizard-next-button"
               >
-                Start Calculators
+                Next
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
@@ -938,6 +951,12 @@ export default function CalculatorWizard() {
         <WizardScenarioComparison
           cropTemplates={cropTemplateMap}
           onClose={() => setShowScenarioComparison(false)}
+          currentPlan={{
+            name: 'Current Plan',
+            crops: crops.map(({ name, percentage }) => ({ name, percentage })),
+            years: parseInt(years),
+            totalHectares: parseFloat(totalHectares),
+          }}
         />
       )}
     </div>
