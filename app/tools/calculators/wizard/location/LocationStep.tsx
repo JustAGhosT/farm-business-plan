@@ -8,10 +8,10 @@ import Link from 'next/link'
 const provinces = {
   'Eastern Cape': ['East London', 'Port Elizabeth', 'Mthatha'],
   'Free State': ['Bloemfontein', 'Welkom', 'Kroonstad'],
-  'Gauteng': ['Johannesburg', 'Pretoria', 'Soweto'],
+  Gauteng: ['Johannesburg', 'Pretoria', 'Soweto'],
   'KwaZulu-Natal': ['Durban', 'Pietermaritzburg', 'Richards Bay'],
-  'Limpopo': ['Polokwane', 'Mokopane', 'Bela_Bela'],
-  'Mpumalanga': ['Mbombela', 'Emalahleni', 'Middelburg'],
+  Limpopo: ['Polokwane', 'Mokopane', 'Bela_Bela'],
+  Mpumalanga: ['Mbombela', 'Emalahleni', 'Middelburg'],
   'North West': ['Mahikeng', 'Rustenburg', 'Klerksdorp'],
   'Northern Cape': ['Kimberley', 'Upington', 'Springbok'],
   'Western Cape': ['Cape Town', 'Stellenbosch', 'George'],
