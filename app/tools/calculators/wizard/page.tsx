@@ -169,6 +169,7 @@ export default function CalculatorWizard() {
         years: parseInt(years),
         crops: validCrops,
         total_percentage: totalPercentage,
+        total_hectares: parseFloat(totalHectares) || 10,
         current_step: 1,
         step_data: {},
       })

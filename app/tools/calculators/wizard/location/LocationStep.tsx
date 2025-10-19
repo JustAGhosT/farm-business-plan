@@ -1,9 +1,8 @@
-
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 interface Town {
   id: number
@@ -63,9 +62,11 @@ export default function LocationStep() {
 
     for (let i = 0; i < 3; i++) {
       try {
-        const response = await fetch(
-          `/api/suggest-crops?province=${selectedProvince.name}&town=${selectedTown.name}`
-        )
+        const params = new URLSearchParams({
+          province: selectedProvince.name,
+          town: selectedTown.name,
+        })
+        const response = await fetch(`/api/suggest-crops?${params.toString()}`)
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
@@ -99,9 +100,11 @@ export default function LocationStep() {
     }
 
     try {
-      const response = await fetch(
-        `/api/more-suggestions?province=${selectedProvince.name}&town=${selectedTown.name}`
-      )
+      const params = new URLSearchParams({
+        province: selectedProvince.name,
+        town: selectedTown.name,
+      })
+      const response = await fetch(`/api/more-suggestions?${params.toString()}`)
       const data = await response.json()
       setSuggestedCrops([...suggestedCrops, ...data.crops])
     } catch (error) {
@@ -187,8 +190,8 @@ export default function LocationStep() {
             <div className="mt-8" key={suggestedCrops.join(',')}>
               <h2 className="text-lg font-semibold mb-4">Suggested Crops</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {suggestedCrops.map((crop) => (
-                  <div key={crop} className="bg-gray-100 rounded-lg p-4">
+                {suggestedCrops.map((crop, i) => (
+                  <div key={i} className="bg-gray-100 rounded-lg p-4">
                     {crop}
                   </div>
                 ))}

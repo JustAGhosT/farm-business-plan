@@ -42,6 +42,7 @@ export default function WizardScenarioComparison({
   const { sessions, createSession } = useWizardSessions()
   const [scenarios, setScenarios] = useState<Scenario[]>([])
   const [showLoadModal, setShowLoadModal] = useState(false)
+  const [savingScenarioId, setSavingScenarioId] = useState<string | null>(null)
 
   useEffect(() => {
     setScenarios([
@@ -164,18 +165,36 @@ export default function WizardScenarioComparison({
   }
 
   const handleSaveScenario = async (scenario: Scenario) => {
+    // Validate allocation totals before saving
+    const totalPercentage = getTotalPercentage(scenario)
+    if (totalPercentage !== 100) {
+      alert(
+        `⚠️ Total percentage must equal 100% before saving. Currently at ${totalPercentage.toFixed(0)}%`
+      )
+      return
+    }
+
     const sessionName = prompt('Enter a name for this plan:', scenario.name)
-    if (sessionName) {
+    if (!sessionName) return
+
+    setSavingScenarioId(scenario.id)
+    try {
       await createSession({
         session_name: sessionName,
         years: scenario.years,
         crops: scenario.crops,
-        total_percentage: getTotalPercentage(scenario),
+        total_percentage: totalPercentage,
+        total_hectares: scenario.totalHectares,
         current_step: 1,
         step_data: {},
       })
       alert('Plan saved successfully!')
       updateScenario(scenario.id, { isSaved: true })
+    } catch (error) {
+      console.error('Error saving scenario:', error)
+      alert('Failed to save plan. Please try again.')
+    } finally {
+      setSavingScenarioId(null)
     }
   }
 
@@ -285,10 +304,18 @@ export default function WizardScenarioComparison({
                     <div className="mb-3">
                       <button
                         onClick={() => handleSaveScenario(scenario)}
-                        disabled={scenario.isSaved}
+                        disabled={
+                          scenario.isSaved ||
+                          getTotalPercentage(scenario) !== 100 ||
+                          savingScenarioId === scenario.id
+                        }
                         className="w-full py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 transition-colors disabled:bg-gray-400"
                       >
-                        {scenario.isSaved ? 'Saved' : 'Save Plan'}
+                        {savingScenarioId === scenario.id
+                          ? 'Saving...'
+                          : scenario.isSaved
+                            ? 'Saved'
+                            : 'Save Plan'}
                       </button>
                     </div>
 
@@ -521,7 +548,7 @@ export default function WizardScenarioComparison({
               name: session.session_name,
               crops: session.crops,
               years: session.years,
-              totalHectares: 10, // Assuming a default value
+              totalHectares: session.total_hectares ?? 10,
               color: '#f59e0b',
               isSaved: true,
             }

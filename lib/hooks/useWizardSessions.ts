@@ -7,6 +7,7 @@ export interface WizardSession {
   years: number
   crops: any[]
   total_percentage: number
+  total_hectares?: number
   current_step: number
   step_data: Record<string, any>
   completed_steps: number[]

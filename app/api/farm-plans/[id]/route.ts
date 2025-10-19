@@ -23,7 +23,12 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
     // Check if ID matches UUID format (common in PostgreSQL)
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
     if (!uuidRegex.test(id.trim())) {
-      return createErrorResponse('Farm plan ID must be a valid UUID', 400, undefined, 'INVALID_ID_FORMAT')
+      return createErrorResponse(
+        'Farm plan ID must be a valid UUID',
+        400,
+        undefined,
+        'INVALID_ID_FORMAT'
+      )
     }
 
     const queryText = `
@@ -71,7 +76,12 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
     // Check if ID matches UUID format (common in PostgreSQL)
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
     if (!uuidRegex.test(id.trim())) {
-      return createErrorResponse('Farm plan ID must be a valid UUID', 400, undefined, 'INVALID_ID_FORMAT')
+      return createErrorResponse(
+        'Farm plan ID must be a valid UUID',
+        400,
+        undefined,
+        'INVALID_ID_FORMAT'
+      )
     }
 
     const body = await request.json()
@@ -176,7 +186,12 @@ export async function DELETE(request: Request, props: { params: Promise<{ id: st
     // Check if ID matches UUID format (common in PostgreSQL)
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
     if (!uuidRegex.test(id.trim())) {
-      return createErrorResponse('Farm plan ID must be a valid UUID', 400, undefined, 'INVALID_ID_FORMAT')
+      return createErrorResponse(
+        'Farm plan ID must be a valid UUID',
+        400,
+        undefined,
+        'INVALID_ID_FORMAT'
+      )
     }
 
     // Check if farm plan exists
