@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useDebounce } from './useDebounce'
 
 /**
  * Configuration for the generic CRUD API hook
@@ -7,6 +8,7 @@ export interface CrudApiConfig<T> {
   endpoint: string
   filters?: Record<string, any>
   timeout?: number
+  debounce?: number
   defaultMethod?: 'GET' | 'POST' | 'PATCH' | 'DELETE'
   updateMethod?: 'PATCH' | 'PUT'
   deleteMethod?: 'DELETE'
@@ -48,14 +50,17 @@ export function useCrudApi<T extends { id?: string }>(
     timeout = 30000,
     updateMethod = 'PATCH',
     deleteMethod = 'DELETE',
+    debounce = 0,
   } = config
 
   const [items, setItems] = useState<T[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  const debouncedFilters = useDebounce(filters, debounce)
+
   // Memoize the filters to avoid unnecessary refetches
-  const filterString = useMemo(() => JSON.stringify(filters || {}), [filters])
+  const filterString = useMemo(() => JSON.stringify(debouncedFilters || {}), [debouncedFilters])
 
   const fetchItems = useCallback(async () => {
     const controller = new AbortController()
