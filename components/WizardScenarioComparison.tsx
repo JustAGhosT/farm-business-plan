@@ -1,7 +1,9 @@
 'use client'
 
 import { CropTemplate } from '@/lib/cropTemplates'
+import { useWizardSessions, WizardSession } from '@/lib/hooks/useWizardSessions'
 import { useState } from 'react'
+import LoadPlanModal from './LoadPlanModal'
 
 interface Scenario {
   id: string
@@ -13,11 +15,13 @@ interface Scenario {
   years: number
   totalHectares: number
   color: string
+  isSaved: boolean
 }
 
 interface WizardScenarioComparisonProps {
   cropTemplates: Map<string, CropTemplate>
   onClose: () => void
+  currentPlan: Omit<Scenario, 'id' | 'color'>
 }
 
 interface ScenarioMetrics {
@@ -34,16 +38,21 @@ export default function WizardScenarioComparison({
   cropTemplates,
   onClose,
 }: WizardScenarioComparisonProps) {
-  const [scenarios, setScenarios] = useState<Scenario[]>([
-    {
-      id: '1',
-      name: 'Base Scenario',
-      crops: [],
-      years: 5,
-      totalHectares: 10,
-      color: '#10b981',
-    },
-  ])
+  const { sessions, createSession } = useWizardSessions()
+  const [scenarios, setScenarios] = useState<Scenario[]>([])
+  const [showLoadModal, setShowLoadModal] = useState(false)
+
+  useEffect(() => {
+    setScenarios([
+      {
+        id: '1',
+        name: 'Base Scenario',
+        ...currentPlan,
+        color: '#10b981',
+        isSaved: false,
+      },
+    ])
+  }, [currentPlan])
 
   const calculateScenarioMetrics = (scenario: Scenario): ScenarioMetrics => {
     let totalInvestment = 0
@@ -88,6 +97,7 @@ export default function WizardScenarioComparison({
       years: 5,
       totalHectares: 10,
       color: colors[scenarios.length % colors.length],
+      isSaved: false,
     }
     setScenarios([...scenarios, newScenario])
   }
@@ -153,6 +163,22 @@ export default function WizardScenarioComparison({
     return scenario.crops.reduce((sum, crop) => sum + crop.percentage, 0)
   }
 
+  const handleSaveScenario = async (scenario: Scenario) => {
+    const sessionName = prompt('Enter a name for this plan:', scenario.name)
+    if (sessionName) {
+      await createSession({
+        session_name: sessionName,
+        years: scenario.years,
+        crops: scenario.crops,
+        total_percentage: getTotalPercentage(scenario),
+        current_step: 1,
+        step_data: {},
+      })
+      alert('Plan saved successfully!')
+      updateScenario(scenario.id, { isSaved: true })
+    }
+  }
+
   const findBestScenario = () => {
     let best = scenarios[0]
     let bestROI = 0
@@ -171,12 +197,13 @@ export default function WizardScenarioComparison({
   const bestScenario = scenarios.length > 0 ? findBestScenario() : null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl max-w-7xl w-full max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 flex justify-between items-center z-10">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+    <>
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl max-w-7xl w-full max-h-[90vh] overflow-y-auto">
+          {/* Header */}
+          <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 flex justify-between items-center z-10">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
               🔄 Scenario Comparison
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
@@ -184,6 +211,12 @@ export default function WizardScenarioComparison({
             </p>
           </div>
           <div className="flex gap-2">
+            <button
+              onClick={() => setShowLoadModal(true)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Load Saved Plan
+            </button>
             <button
               onClick={addScenario}
               className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
@@ -232,6 +265,11 @@ export default function WizardScenarioComparison({
                           ⭐ Best ROI
                         </span>
                       )}
+                      {scenario.isSaved && (
+                        <span className="inline-block mt-1 px-2 py-1 bg-blue-500 text-white text-xs rounded-full">
+                          Saved
+                        </span>
+                      )}
                     </div>
                     {scenarios.length > 1 && (
                       <button
@@ -241,6 +279,17 @@ export default function WizardScenarioComparison({
                         ✕
                       </button>
                     )}
+                  </div>
+
+                  {/* Save Button */}
+                  <div className="mb-3">
+                    <button
+                      onClick={() => handleSaveScenario(scenario)}
+                      disabled={scenario.isSaved}
+                      className="w-full py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 transition-colors disabled:bg-gray-400"
+                    >
+                      {scenario.isSaved ? 'Saved' : 'Save Plan'}
+                    </button>
                   </div>
 
                   {/* Configuration */}
@@ -459,7 +508,27 @@ export default function WizardScenarioComparison({
             </div>
           )}
         </div>
+        </div>
       </div>
-    </div>
+      {showLoadModal && (
+        <LoadPlanModal
+          sessions={sessions}
+          onClose={() => setShowLoadModal(false)}
+          onLoad={(session) => {
+            const newScenario: Scenario = {
+              id: Date.now().toString(),
+              name: session.session_name,
+              crops: session.crops,
+              years: session.years,
+              totalHectares: 10, // Assuming a default value
+              color: '#f59e0b',
+              isSaved: true,
+            }
+            setScenarios([...scenarios, newScenario])
+            setShowLoadModal(false)
+          }}
+        />
+      )}
+    </>
   )
 }
