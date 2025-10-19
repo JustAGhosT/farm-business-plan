@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Link } from 'next'
+import Link from 'next/link'
 
 interface Town {
   id: number
