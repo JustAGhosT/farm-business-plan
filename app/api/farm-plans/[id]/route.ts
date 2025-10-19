@@ -11,9 +11,20 @@ export const dynamic = 'force-dynamic'
  * Get a single farm plan by ID
  */
 export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
-  const params = await props.params;
   try {
+    const params = await props.params
     const { id } = params
+
+    // Validate ID parameter
+    if (!id || typeof id !== 'string' || id.trim() === '') {
+      return createErrorResponse('Invalid farm plan ID', 400, undefined, 'INVALID_ID')
+    }
+
+    // Check if ID matches UUID format (common in PostgreSQL)
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+    if (!uuidRegex.test(id.trim())) {
+      return createErrorResponse('Farm plan ID must be a valid UUID', 400, undefined, 'INVALID_ID_FORMAT')
+    }
 
     const queryText = `
       SELECT 
@@ -27,7 +38,7 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
       GROUP BY fp.id
     `
 
-    const result = await query(queryText, [id])
+    const result = await query(queryText, [id.trim()])
 
     if (result.rows.length === 0) {
       return createErrorResponse('Farm plan not found', 404, undefined, 'NOT_FOUND')
@@ -48,9 +59,21 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
  * Update an existing farm plan
  */
 export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
-  const params = await props.params;
   try {
+    const params = await props.params
     const { id } = params
+
+    // Validate ID parameter
+    if (!id || typeof id !== 'string' || id.trim() === '') {
+      return createErrorResponse('Invalid farm plan ID', 400, undefined, 'INVALID_ID')
+    }
+
+    // Check if ID matches UUID format (common in PostgreSQL)
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+    if (!uuidRegex.test(id.trim())) {
+      return createErrorResponse('Farm plan ID must be a valid UUID', 400, undefined, 'INVALID_ID_FORMAT')
+    }
+
     const body = await request.json()
 
     // Validate input
@@ -110,7 +133,7 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
 
     // Add updated_at timestamp
     fields.push(`updated_at = CURRENT_TIMESTAMP`)
-    values.push(id)
+    values.push(id.trim())
 
     const queryText = `
       UPDATE farm_plans 
@@ -141,13 +164,24 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
  * Delete a farm plan
  */
 export async function DELETE(request: Request, props: { params: Promise<{ id: string }> }) {
-  const params = await props.params;
   try {
+    const params = await props.params
     const { id } = params
+
+    // Validate ID parameter
+    if (!id || typeof id !== 'string' || id.trim() === '') {
+      return createErrorResponse('Invalid farm plan ID', 400, undefined, 'INVALID_ID')
+    }
+
+    // Check if ID matches UUID format (common in PostgreSQL)
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+    if (!uuidRegex.test(id.trim())) {
+      return createErrorResponse('Farm plan ID must be a valid UUID', 400, undefined, 'INVALID_ID_FORMAT')
+    }
 
     // Check if farm plan exists
     const checkQuery = 'SELECT id FROM farm_plans WHERE id = $1'
-    const checkResult = await query(checkQuery, [id])
+    const checkResult = await query(checkQuery, [id.trim()])
 
     if (checkResult.rows.length === 0) {
       return createErrorResponse('Farm plan not found', 404, undefined, 'NOT_FOUND')
@@ -155,7 +189,7 @@ export async function DELETE(request: Request, props: { params: Promise<{ id: st
 
     // Delete farm plan (cascade will handle related records)
     const deleteQuery = 'DELETE FROM farm_plans WHERE id = $1 RETURNING id'
-    await query(deleteQuery, [id])
+    await query(deleteQuery, [id.trim()])
 
     return NextResponse.json({
       success: true,

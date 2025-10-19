@@ -39,18 +39,6 @@ export default function CalculatorWizard() {
     },
   ])
 
-  useEffect(() => {
-    const wizardData = JSON.parse(sessionStorage.getItem('calculatorWizardData') || '{}')
-    if (wizardData.suggestedCrops && wizardData.suggestedCrops.length > 0) {
-      const suggestedCrops = wizardData.suggestedCrops.map((cropName: string, index: number) => ({
-        id: Date.now().toString() + index,
-        name: cropName,
-        percentage: 100 / wizardData.suggestedCrops.length,
-      }))
-      setCrops(suggestedCrops)
-    }
-  }, [])
-
   const { sessions, loading, createSession, deleteSession } = useWizardSessions()
   const hasUserInteracted = useRef(false)
 
@@ -66,7 +54,7 @@ export default function CalculatorWizard() {
 
     try {
       const wizardData = JSON.parse(raw)
-      
+
       // Validate the structure
       if (!wizardData || typeof wizardData !== 'object') {
         console.error('Invalid calculatorWizardData structure')
