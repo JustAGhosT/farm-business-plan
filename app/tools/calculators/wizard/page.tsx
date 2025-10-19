@@ -329,7 +329,7 @@ export default function CalculatorWizard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4 py-8 max-w-5xl">
         <Link
           href="/tools/calculators"
@@ -346,31 +346,31 @@ export default function CalculatorWizard() {
           Back to Calculators
         </Link>
 
-        <div className="bg-white rounded-lg shadow-lg p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
           <div className="flex items-center mb-6">
             <span className="text-4xl mr-4">🧭</span>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Calculator Wizard</h1>
-              <p className="text-gray-600">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Calculator Wizard</h1>
+              <p className="text-gray-600 dark:text-gray-300">
                 Set up your crops and timeline once, then navigate through all calculators
               </p>
             </div>
           </div>
 
           {/* Progress Indicator */}
-          <div className="mb-8 bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-            <p className="text-sm text-blue-800">
+          <div className="mb-8 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
+            <p className="text-sm text-blue-800 dark:text-blue-300">
               <strong>Step 1 of 7:</strong> Farm Setup - Enter your crops and allocation
             </p>
-            <div className="mt-2 text-xs text-blue-700">
+            <div className="mt-2 text-xs text-blue-700 dark:text-blue-400">
               Next: Location → Investment → Revenue → Break-Even → ROI → Loan Analysis
             </div>
           </div>
 
           {/* Save/Load Section */}
-          <div className="mb-6 bg-purple-50 border-l-4 border-purple-500 p-4 rounded">
+          <div className="mb-6 bg-purple-50 dark:bg-purple-900/20 border-l-4 border-purple-500 p-4 rounded">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold text-purple-900 flex items-center gap-2">
+              <h3 className="font-semibold text-purple-900 dark:text-purple-200 flex items-center gap-2">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
@@ -390,20 +390,20 @@ export default function CalculatorWizard() {
             </div>
 
             {saveMessage && (
-              <div className="mb-3 p-2 bg-green-100 text-green-800 rounded text-sm">
+              <div className="mb-3 p-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded text-sm">
                 {saveMessage}
               </div>
             )}
 
             <div className="flex gap-2 items-end">
               <div className="flex-1">
-                <label className="block text-xs text-purple-700 mb-1">Session Name</label>
+                <label className="block text-xs text-purple-700 dark:text-purple-300 mb-1">Session Name</label>
                 <input
                   type="text"
                   value={sessionName}
                   onChange={(e) => setSessionName(e.target.value)}
                   placeholder="e.g., My 2025 Farm Plan"
-                  className="w-full px-3 py-2 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm"
+                  className="w-full px-3 py-2 border border-purple-300 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm"
                 />
               </div>
               <button
@@ -424,24 +424,24 @@ export default function CalculatorWizard() {
             </div>
 
             {showSavedSessions && (
-              <div className="mt-4 border-t border-purple-200 pt-4">
-                <h4 className="text-sm font-semibold text-purple-900 mb-2">Saved Sessions</h4>
+              <div className="mt-4 border-t border-purple-200 dark:border-purple-700 pt-4">
+                <h4 className="text-sm font-semibold text-purple-900 dark:text-purple-200 mb-2">Saved Sessions</h4>
                 {loading ? (
-                  <p className="text-sm text-gray-600">Loading sessions...</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Loading sessions...</p>
                 ) : sessions.length === 0 ? (
-                  <p className="text-sm text-gray-600">No saved sessions yet</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">No saved sessions yet</p>
                 ) : (
                   <div className="space-y-2 max-h-60 overflow-y-auto">
                     {sessions.map((session) => (
                       <div
                         key={session.id}
-                        className="flex items-center justify-between bg-white p-3 rounded border border-purple-200 hover:border-purple-400 transition-colors"
+                        className="flex items-center justify-between bg-white dark:bg-gray-700 p-3 rounded border border-purple-200 dark:border-gray-600 hover:border-purple-400 dark:hover:border-purple-500 transition-colors"
                       >
                         <div className="flex-1">
-                          <div className="font-medium text-sm text-gray-900">
+                          <div className="font-medium text-sm text-gray-900 dark:text-white">
                             {session.session_name}
                           </div>
-                          <div className="text-xs text-gray-600">
+                          <div className="text-xs text-gray-600 dark:text-gray-400">
                             {session.crops.length} crops • {session.years} years •{' '}
                             {new Date(session.updated_at).toLocaleDateString()}
                           </div>
@@ -469,13 +469,13 @@ export default function CalculatorWizard() {
           </div>
 
           {/* Global Settings */}
-          <div className="mb-6 bg-gray-50 rounded-lg p-4">
-            <h2 className="text-lg font-semibold mb-4">Farm Configuration</h2>
+          <div className="mb-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+            <h2 className="text-lg font-semibold mb-4 dark:text-white">Farm Configuration</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="years" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="years" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Planning Period (Years)
-                  <span className="ml-2 text-xs text-gray-500">
+                  <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
                     ℹ️ Recommended: 3-5 years for most crops
                   </span>
                 </label>
@@ -486,17 +486,17 @@ export default function CalculatorWizard() {
                   onChange={(e) => setYears(e.target.value)}
                   min="1"
                   max="20"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation"
+                  className="w-full px-4 py-2 border border-gray-300 bg-white dark:bg-gray-800 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation"
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   This timeline will be used across all calculators. Short-term crops: 1-3 years,
                   Perennial crops: 5-10 years
                 </p>
               </div>
               <div>
-                <label htmlFor="hectares" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="hectares" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Total Land (Hectares)
-                  <span className="ml-2 text-xs text-gray-500">
+                  <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
                     ℹ️ Total farm size for analysis
                   </span>
                 </label>
@@ -507,9 +507,9 @@ export default function CalculatorWizard() {
                   onChange={(e) => setTotalHectares(e.target.value)}
                   min="0.1"
                   step="0.1"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation"
+                  className="w-full px-4 py-2 border border-gray-300 bg-white dark:bg-gray-800 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation"
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   Enter total available farmland in hectares (1 hectare ≈ 2.47 acres)
                 </p>
               </div>
@@ -519,7 +519,7 @@ export default function CalculatorWizard() {
           {/* Crop Setup */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">Crop Allocation</h2>
+              <h2 className="text-lg font-semibold dark:text-white">Crop Allocation</h2>
               <div className="flex gap-2">
                 <button
                   onClick={() => setShowTemplates(!showTemplates)}
@@ -546,67 +546,67 @@ export default function CalculatorWizard() {
 
             {/* Template Selector */}
             {showTemplates && (
-              <div className="mb-6 bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-300 rounded-lg p-6">
-                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <div className="mb-6 bg-gradient-to-r from-green-50 to-blue-50 dark:from-gray-700 dark:to-gray-800 border-2 border-green-300 dark:border-green-700 rounded-lg p-6">
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                   <span className="text-2xl">🌱</span>
                   Quick Start Templates
                 </h3>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                   Pre-configured crop combinations optimized for Bela Bela, Limpopo region
                 </p>
 
                 <div className="grid md:grid-cols-3 gap-4 mb-4">
                   <button
                     onClick={() => applyTemplate('balanced')}
-                    className="bg-white border-2 border-green-400 hover:border-green-600 rounded-lg p-4 text-left transition-all hover:shadow-md"
+                    className="bg-white dark:bg-gray-800 border-2 border-green-400 dark:border-green-600 hover:border-green-600 dark:hover:border-green-500 rounded-lg p-4 text-left transition-all hover:shadow-md"
                   >
-                    <div className="font-semibold text-green-700 mb-1">🌾 Balanced Portfolio</div>
-                    <div className="text-xs text-gray-600 mb-2">
+                    <div className="font-semibold text-green-700 dark:text-green-400 mb-1">🌾 Balanced Portfolio</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
                       Dragon Fruit (30%), Moringa (25%), Lucerne (20%), Tomatoes (15%), Butternut
                       (10%)
                     </div>
-                    <div className="text-xs text-green-600">
+                    <div className="text-xs text-green-600 dark:text-green-500">
                       ✓ Diversified risk • Mixed profitability
                     </div>
                   </button>
 
                   <button
                     onClick={() => applyTemplate('lowWater')}
-                    className="bg-white border-2 border-blue-400 hover:border-blue-600 rounded-lg p-4 text-left transition-all hover:shadow-md"
+                    className="bg-white dark:bg-gray-800 border-2 border-blue-400 dark:border-blue-600 hover:border-blue-600 dark:hover:border-blue-500 rounded-lg p-4 text-left transition-all hover:shadow-md"
                   >
-                    <div className="font-semibold text-blue-700 mb-1">💧 Low Water Portfolio</div>
-                    <div className="text-xs text-gray-600 mb-2">
+                    <div className="font-semibold text-blue-700 dark:text-blue-400 mb-1">💧 Low Water Portfolio</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
                       Moringa (40%), Maize (35%), Butternut (25%)
                     </div>
-                    <div className="text-xs text-blue-600">
+                    <div className="text-xs text-blue-600 dark:text-blue-500">
                       ✓ Drought resistant • Lower water costs
                     </div>
                   </button>
 
                   <button
                     onClick={() => applyTemplate('highProfit')}
-                    className="bg-white border-2 border-yellow-400 hover:border-yellow-600 rounded-lg p-4 text-left transition-all hover:shadow-md"
+                    className="bg-white dark:bg-gray-800 border-2 border-yellow-400 dark:border-yellow-600 hover:border-yellow-600 dark:hover:border-yellow-500 rounded-lg p-4 text-left transition-all hover:shadow-md"
                   >
-                    <div className="font-semibold text-yellow-700 mb-1">
+                    <div className="font-semibold text-yellow-700 dark:text-yellow-400 mb-1">
                       💰 High Profit Portfolio
                     </div>
-                    <div className="text-xs text-gray-600 mb-2">
+                    <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
                       Dragon Fruit (50%), Moringa (50%)
                     </div>
-                    <div className="text-xs text-yellow-600">
+                    <div className="text-xs text-yellow-600 dark:text-yellow-500">
                       ✓ Maximum returns • Higher investment
                     </div>
                   </button>
                 </div>
 
-                <div className="border-t pt-4">
-                  <p className="text-xs text-gray-600 mb-2">Or choose individual crops:</p>
+                <div className="border-t dark:border-gray-600 pt-4">
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">Or choose individual crops:</p>
                   <div className="flex flex-wrap gap-2">
                     {CROP_TEMPLATES.map((template) => (
                       <button
                         key={template.name}
                         onClick={() => applyTemplate(template.name)}
-                        className="px-3 py-1 bg-white border border-gray-300 hover:border-primary-500 hover:bg-primary-50 rounded text-sm transition-colors"
+                        className="px-3 py-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:border-primary-500 dark:hover:border-primary-400 hover:bg-primary-50 dark:hover:bg-gray-600 rounded text-sm transition-colors"
                       >
                         {template.name}
                       </button>
@@ -618,9 +618,9 @@ export default function CalculatorWizard() {
 
             <div className="space-y-4 mb-4">
               {crops.map((crop, index) => (
-                <div key={crop.id} className="border border-gray-200 rounded-lg p-4 bg-white">
+                <div key={crop.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-800">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-medium text-gray-900">
+                    <h3 className="font-medium text-gray-900 dark:text-white">
                       Crop {index + 1}
                       {crop.name ? `: ${crop.name}` : ''}
                     </h3>
@@ -650,9 +650,9 @@ export default function CalculatorWizard() {
 
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Crop Name *
-                        <span className="ml-2 text-xs text-gray-500">
+                        <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
                           ℹ️ Select from templates above
                         </span>
                       </label>
@@ -660,7 +660,7 @@ export default function CalculatorWizard() {
                         type="text"
                         value={crop.name}
                         onChange={(e) => updateCrop(crop.id, 'name', e.target.value)}
-                        className="w-full px-4 py-3 md:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation text-base"
+                        className="w-full px-4 py-3 md:py-2 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation text-base"
                         placeholder="e.g., Dragon Fruit, Moringa, Lucerne"
                         list={`crop-suggestions-${crop.id}`}
                       />
@@ -672,9 +672,9 @@ export default function CalculatorWizard() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         % of Land/Resources *
-                        <span className="ml-2 text-xs text-gray-500">ℹ️ Must total 100%</span>
+                        <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">ℹ️ Must total 100%</span>
                       </label>
                       <input
                         type="number"
@@ -685,10 +685,10 @@ export default function CalculatorWizard() {
                         min="0"
                         max="100"
                         step="1"
-                        className="w-full px-4 py-3 md:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation text-base"
+                        className="w-full px-4 py-3 md:py-2 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation text-base"
                         placeholder="e.g., 50"
                       />
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                         Tip: Start with 20-30% for new crops
                       </p>
                     </div>
@@ -698,22 +698,22 @@ export default function CalculatorWizard() {
             </div>
 
             {/* Allocation Status */}
-            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">Total Allocation:</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Total Allocation:</span>
                 <div className="flex items-center gap-2">
                   <span
                     className={`text-2xl font-bold ${
                       totalPercentage === 100
-                        ? 'text-green-600'
+                        ? 'text-green-600 dark:text-green-400'
                         : totalPercentage > 100
-                          ? 'text-red-600'
-                          : 'text-yellow-600'
+                          ? 'text-red-600 dark:text-red-400'
+                          : 'text-yellow-600 dark:text-yellow-400'
                     }`}
                   >
                     {totalPercentage.toFixed(0)}%
                   </span>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
                     {totalPercentage === 100
                       ? '✓ Ready'
                       : totalPercentage > 100
@@ -722,7 +722,7 @@ export default function CalculatorWizard() {
                   </span>
                 </div>
               </div>
-              <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
+              <div className="mt-2 w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
                 <div
                   className={`h-2 rounded-full transition-all ${
                     totalPercentage === 100
@@ -738,7 +738,7 @@ export default function CalculatorWizard() {
           </div>
 
           {/* Navigation */}
-          <div className="flex flex-col gap-3 border-t pt-6">
+          <div className="flex flex-col gap-3 border-t dark:border-gray-700 pt-6">
             {/* Action Buttons Row */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
               <div className="flex flex-col sm:flex-row gap-3 flex-1">
@@ -785,7 +785,7 @@ export default function CalculatorWizard() {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
               <Link
                 href="/tools/calculators"
-                className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium text-gray-700 text-center touch-manipulation"
+                className="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium text-gray-700 dark:text-gray-300 text-center touch-manipulation"
               >
                 Cancel
               </Link>
@@ -812,9 +812,9 @@ export default function CalculatorWizard() {
 
           {/* Visual Charts Section */}
           {crops.filter((c) => c.name.trim() !== '').length > 0 && totalPercentage === 100 && (
-            <div className="mt-8 border-t pt-8">
+            <div className="mt-8 border-t dark:border-gray-700 pt-8">
               <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mb-2">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-2">
                   <svg
                     className="w-7 h-7 text-primary-600"
                     fill="none"
@@ -830,7 +830,7 @@ export default function CalculatorWizard() {
                   </svg>
                   Visual Analysis
                 </h2>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-300">
                   Compare crop performance, revenue projections, and profitability across your
                   portfolio
                 </p>
@@ -841,9 +841,9 @@ export default function CalculatorWizard() {
 
           {/* Help Section - Enhanced with contextual guidance */}
           <div className="mt-8 space-y-4">
-            <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
-              <h3 className="font-semibold text-yellow-900 mb-2">💡 How It Works</h3>
-              <ul className="list-disc list-inside space-y-1 text-sm text-yellow-800">
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 p-4 rounded">
+              <h3 className="font-semibold text-yellow-900 dark:text-yellow-200 mb-2">💡 How It Works</h3>
+              <ul className="list-disc list-inside space-y-1 text-sm text-yellow-800 dark:text-yellow-300">
                 <li>
                   <strong>Use Templates:</strong> Click &quot;Use Template&quot; for pre-configured
                   crop portfolios optimized for South African conditions
@@ -867,9 +867,9 @@ export default function CalculatorWizard() {
               </ul>
             </div>
 
-            <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-              <h3 className="font-semibold text-blue-900 mb-2">📋 Planning Tips</h3>
-              <ul className="list-disc list-inside space-y-1 text-sm text-blue-800">
+            <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
+              <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">📋 Planning Tips</h3>
+              <ul className="list-disc list-inside space-y-1 text-sm text-blue-800 dark:text-blue-300">
                 <li>
                   <strong>Diversification:</strong> Allocate to 3-5 different crops to reduce risk
                 </li>
@@ -892,9 +892,9 @@ export default function CalculatorWizard() {
               </ul>
             </div>
 
-            <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded">
-              <h3 className="font-semibold text-green-900 mb-2">🌱 Crop Selection Guide</h3>
-              <div className="grid md:grid-cols-3 gap-4 text-sm text-green-800">
+            <div className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 p-4 rounded">
+              <h3 className="font-semibold text-green-900 dark:text-green-200 mb-2">🌱 Crop Selection Guide</h3>
+              <div className="grid md:grid-cols-3 gap-4 text-sm text-green-800 dark:text-green-300">
                 <div>
                   <div className="font-semibold mb-1">High Profit Crops:</div>
                   <ul className="list-disc list-inside text-xs">
@@ -921,9 +921,9 @@ export default function CalculatorWizard() {
               </div>
             </div>
 
-            <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded">
-              <h3 className="font-semibold text-red-900 mb-2">⚠️ Common Mistakes to Avoid</h3>
-              <ul className="list-disc list-inside space-y-1 text-sm text-red-800">
+            <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 rounded">
+              <h3 className="font-semibold text-red-900 dark:text-red-200 mb-2">⚠️ Common Mistakes to Avoid</h3>
+              <ul className="list-disc list-inside space-y-1 text-sm text-red-800 dark:text-red-300">
                 <li>
                   <strong>Over-allocation:</strong> Don&apos;t allocate more than 70% to any single
                   crop

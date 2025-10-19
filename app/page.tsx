@@ -274,6 +274,20 @@ export default function Home() {
           </h2>
           <Grid cols={{ md: 2, lg: 4 }}>
             <Card
+              href={session ? '/tools/ai-wizard' : '/auth/signin?callbackUrl=/tools/ai-wizard'}
+              variant="bordered"
+              className="relative"
+            >
+              {!session && (
+                <Badge variant="locked" className="absolute top-2 right-2">
+                  🔒
+                </Badge>
+              )}
+              <CardTitle>🤖 AI Wizard</CardTitle>
+              <CardDescription>Personalized farm planning</CardDescription>
+            </Card>
+
+            <Card
               href={
                 session ? '/tools/plan-generator' : '/auth/signin?callbackUrl=/tools/plan-generator'
               }
