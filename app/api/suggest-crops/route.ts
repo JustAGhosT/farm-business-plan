@@ -1,6 +1,10 @@
 
+import { query } from '@/lib/db'
 import { NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+
+interface CropRow {
+  crop_name: string
+}
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -12,11 +16,11 @@ export async function GET(request: Request) {
   }
 
   try {
-    const { rows } = await db.query(
+    const { rows } = await query<CropRow>(
       'SELECT crop_name FROM crop_suggestions WHERE province = $1 AND town = $2',
       [province, town]
     )
-    const suggestions = rows.map((row) => row.crop_name)
+    const suggestions = rows.map((row: CropRow) => row.crop_name)
     return NextResponse.json({ crops: suggestions })
   } catch (error) {
     console.error('Error fetching crop suggestions:', error)

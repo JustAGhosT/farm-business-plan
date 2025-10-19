@@ -956,6 +956,7 @@ export default function CalculatorWizard() {
             crops: crops.map(({ name, percentage }) => ({ name, percentage })),
             years: parseInt(years),
             totalHectares: parseFloat(totalHectares),
+            isSaved: false,
           }}
         />
       )}

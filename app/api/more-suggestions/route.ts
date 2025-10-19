@@ -1,10 +1,29 @@
 
 import { NextResponse } from 'next/server'
-import OpenAI from 'openai'
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
+// Validate OpenAI API key at startup
+if (!process.env.OPENAI_API_KEY) {
+  console.error('FATAL: OPENAI_API_KEY environment variable is not set')
+}
+
+// Lazy load OpenAI only when needed
+let OpenAI: any
+let openai: any
+
+async function getOpenAIClient() {
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error('OpenAI API key is not configured')
+  }
+  
+  if (!OpenAI) {
+    OpenAI = (await import('openai')).default
+    openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    })
+  }
+  
+  return openai
+}
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -16,7 +35,8 @@ export async function GET(request: Request) {
   }
 
   try {
-    const completion = await openai.chat.completions.create({
+    const client = await getOpenAIClient()
+    const completion = await client.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [
         {

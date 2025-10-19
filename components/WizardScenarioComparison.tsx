@@ -1,8 +1,8 @@
 'use client'
 
 import { CropTemplate } from '@/lib/cropTemplates'
-import { useWizardSessions, WizardSession } from '@/lib/hooks/useWizardSessions'
-import { useState } from 'react'
+import { useWizardSessions } from '@/lib/hooks/useWizardSessions'
+import { useEffect, useState } from 'react'
 import LoadPlanModal from './LoadPlanModal'
 
 interface Scenario {
@@ -37,6 +37,7 @@ interface ScenarioMetrics {
 export default function WizardScenarioComparison({
   cropTemplates,
   onClose,
+  currentPlan,
 }: WizardScenarioComparisonProps) {
   const { sessions, createSession } = useWizardSessions()
   const [scenarios, setScenarios] = useState<Scenario[]>([])
@@ -46,12 +47,11 @@ export default function WizardScenarioComparison({
     setScenarios([
       {
         id: '1',
-        name: 'Base Scenario',
         ...currentPlan,
         color: '#10b981',
-        isSaved: false,
       },
     ])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const calculateScenarioMetrics = (scenario: Scenario): ScenarioMetrics => {
