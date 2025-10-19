@@ -467,24 +467,23 @@ export default function WizardScenarioComparison({
                     </thead>
                     <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                       {[
-                        { label: 'Total Investment', key: 'totalInvestment' },
-                        { label: 'Annual Revenue', key: 'annualRevenue' },
-                        { label: 'Annual Costs', key: 'annualCosts' },
-                        { label: 'Annual Profit', key: 'annualProfit' },
-                        { label: 'ROI (%)', key: 'roi' },
-                        { label: 'Payback (years)', key: 'paybackYears' },
-                        { label: 'Total Net Profit', key: 'totalNetProfit' },
+                        { label: 'Total Investment', key: 'totalInvestment', better: 'min' },
+                        { label: 'Annual Revenue', key: 'annualRevenue', better: 'max' },
+                        { label: 'Annual Costs', key: 'annualCosts', better: 'min' },
+                        { label: 'Annual Profit', key: 'annualProfit', better: 'max' },
+                        { label: 'ROI (%)', key: 'roi', better: 'max' },
+                        { label: 'Payback (years)', key: 'paybackYears', better: 'min' },
+                        { label: 'Total Net Profit', key: 'totalNetProfit', better: 'max' },
                       ].map((row) => (
                         <tr key={row.key}>
                           <td className="px-4 py-3 text-sm font-medium">{row.label}</td>
                           {scenarios.map((scenario) => {
                             const metrics = calculateScenarioMetrics(scenario)
                             const value = metrics[row.key as keyof ScenarioMetrics]
-                            const isBest = scenarios.every(
-                              (s) =>
-                                calculateScenarioMetrics(s)[row.key as keyof ScenarioMetrics] <=
-                                value
-                            )
+                            const isBest = scenarios.every((s) => {
+                              const other = calculateScenarioMetrics(s)[row.key as keyof ScenarioMetrics] as number
+                              return row.better === 'min' ? value <= other : value >= other
+                            })
 
                             return (
                               <td
