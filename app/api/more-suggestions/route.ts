@@ -26,8 +26,20 @@ export async function GET(request: Request) {
       ],
     })
 
+    const content = completion.choices[0]?.message?.content
+    if (!content) {
+      return NextResponse.json({ error: 'No response from AI' }, { status: 500 })
+    }
+
     try {
-      const crops = JSON.parse(completion.choices[0].message.content)
+      const parsed = JSON.parse(content)
+      
+      // Validate response shape
+      if (!Array.isArray(parsed)) {
+        throw new Error('Response is not an array')
+      }
+      const crops = parsed.filter(item => typeof item === 'string')
+      
       return NextResponse.json({ crops })
     } catch (error) {
       console.error('Error parsing LLM response:', error)
