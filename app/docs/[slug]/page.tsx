@@ -22,7 +22,8 @@ export async function generateStaticParams() {
   return docFiles.map((slug) => ({ slug }))
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
+export async function generateMetadata(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const title = params.slug
     .split('-')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -34,7 +35,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
-export default function DocPage({ params }: { params: { slug: string } }) {
+export default async function DocPage(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const filePath = path.join(DOCS_PATH, `${params.slug}.md`)
 
   if (!fs.existsSync(filePath)) {

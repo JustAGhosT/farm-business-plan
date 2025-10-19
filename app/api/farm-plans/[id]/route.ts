@@ -10,7 +10,8 @@ export const dynamic = 'force-dynamic'
  * GET /api/farm-plans/[id]
  * Get a single farm plan by ID
  */
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const { id } = params
 
@@ -46,7 +47,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
  * PUT /api/farm-plans/[id]
  * Update an existing farm plan
  */
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const { id } = params
     const body = await request.json()
@@ -138,7 +140,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
  * DELETE /api/farm-plans/[id]
  * Delete a farm plan
  */
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const { id } = params
 

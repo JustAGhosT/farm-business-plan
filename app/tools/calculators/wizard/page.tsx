@@ -13,7 +13,7 @@ import { useWizardSessions } from '@/lib/hooks/useWizardSessions'
 import { generateWizardPDF } from '@/lib/wizardPdfExport'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface Crop {
   id: string
@@ -40,12 +40,56 @@ export default function CalculatorWizard() {
   ])
 
   const { sessions, loading, createSession, deleteSession } = useWizardSessions()
+  const hasUserInteracted = useRef(false)
+
+  // Load data from sessionStorage on mount (e.g., from AI wizard or previous session)
+  useEffect(() => {
+    // Only load if user hasn't interacted and crops are still empty/default
+    if (hasUserInteracted.current || crops.length > 1 || crops[0].name !== '') {
+      return
+    }
+
+    const raw = sessionStorage.getItem('calculatorWizardData')
+    if (!raw) return
+
+    try {
+      const wizardData = JSON.parse(raw)
+      
+      // Validate the structure
+      if (!wizardData || typeof wizardData !== 'object') {
+        console.error('Invalid calculatorWizardData structure')
+        return
+      }
+
+      // Apply years if present
+      if (wizardData.years && typeof wizardData.years === 'number') {
+        setYears(wizardData.years.toString())
+      }
+
+      // Apply crops if present with deterministic IDs
+      if (Array.isArray(wizardData.crops) && wizardData.crops.length > 0) {
+        const suggestedCrops = wizardData.crops.map((crop: any, index: number) => ({
+          id: `wizard-crop-${index}`, // Deterministic ID instead of Date.now()
+          name: crop.name || '',
+          percentage: typeof crop.percentage === 'number' ? crop.percentage : 0,
+        }))
+        setCrops(suggestedCrops)
+      }
+    } catch (e) {
+      console.error('Failed to parse calculatorWizardData', e)
+      return
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Empty dependency array - only run on mount, crops checked in condition above
 
   const addCrop = () => {
+    hasUserInteracted.current = true
+    // Use the next available index for deterministic ID
+    const nextId = `crop-${crops.length}`
     setCrops([
       ...crops,
       {
-        id: Date.now().toString(),
+        id: nextId,
         name: '',
         percentage: 0,
       },
@@ -53,12 +97,14 @@ export default function CalculatorWizard() {
   }
 
   const removeCrop = (id: string) => {
+    hasUserInteracted.current = true
     if (crops.length > 1) {
       setCrops(crops.filter((c) => c.id !== id))
     }
   }
 
   const updateCrop = (id: string, field: keyof Crop, value: string | number) => {
+    hasUserInteracted.current = true
     setCrops(crops.map((c) => (c.id === id ? { ...c, [field]: value } : c)))
   }
 
@@ -85,8 +131,9 @@ export default function CalculatorWizard() {
     }
 
     if (selectedCrops) {
+      hasUserInteracted.current = true
       const newCrops = selectedCrops.map((template, index) => ({
-        id: (Date.now() + index).toString(),
+        id: `template-${templateType}-${index}`, // Deterministic ID based on template type and index
         name: template.name,
         percentage: template.typicalPercentage,
       }))
@@ -135,6 +182,7 @@ export default function CalculatorWizard() {
   }
 
   const handleLoadSession = (session: any) => {
+    hasUserInteracted.current = true
     setYears(session.years.toString())
     setCrops(session.crops)
     setShowSavedSessions(false)
