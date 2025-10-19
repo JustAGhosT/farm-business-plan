@@ -42,6 +42,19 @@ export default function CalculatorWizard() {
   const { sessions, loading, createSession, deleteSession } = useWizardSessions()
   const hasUserInteracted = useRef(false)
 
+  // Persistent counter for generating unique crop IDs
+  // Initialize to a value greater than any existing crop numeric ID
+  const getInitialCounter = () => {
+    const numericIds = crops
+      .map((c) => {
+        const match = c.id.match(/crop-(\d+)/)
+        return match ? parseInt(match[1], 10) : 0
+      })
+      .filter((n) => !isNaN(n))
+    return numericIds.length > 0 ? Math.max(...numericIds) + 1 : 1
+  }
+  const cropIdCounter = useRef(getInitialCounter())
+
   // Load data from sessionStorage on mount (e.g., from AI wizard or previous session)
   useEffect(() => {
     // Only load if user hasn't interacted and crops are still empty/default
@@ -84,8 +97,9 @@ export default function CalculatorWizard() {
 
   const addCrop = () => {
     hasUserInteracted.current = true
-    // Use the next available index for deterministic ID
-    const nextId = `crop-${crops.length}`
+    // Use persistent counter to avoid ID collisions when crops are removed then added
+    const nextId = `crop-${cropIdCounter.current}`
+    cropIdCounter.current++ // Increment counter for next use
     setCrops([
       ...crops,
       {
