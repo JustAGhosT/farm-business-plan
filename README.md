@@ -12,7 +12,7 @@
 
 **🚀 Live Application:** [https://farmplan.netlify.app/](https://farmplan.netlify.app/)
 
-### 🚀 [Live Demo](https://farmplan.netlify.app/) | 📖 [Documentation](docs/) | 🚀 [Quick Start](docs/guides/QUICKSTART.md) | 💬 [Issues](https://github.com/JustAGhosT/farm-business-plan/issues)
+### 🚀 [Live Demo](https://farmplan.netlify.app/) | 📋 [TODO & Roadmap](TODO.md) | 📖 [Documentation](docs/) | 🚀 [Quick Start](docs/guides/QUICK_START_ENV_SETUP.md) | 💬 [Issues](https://github.com/JustAGhosT/farm-business-plan/issues)
 
 </div>
 
