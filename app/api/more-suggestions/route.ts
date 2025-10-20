@@ -1,10 +1,5 @@
-import { getServerSession } from 'next-auth'
-import { NextResponse } from 'next/server'
-
-// Validate OpenAI API key at startup
-if (!process.env.OPENAI_API_KEY) {
-  console.error('FATAL: OPENAI_API_KEY environment variable is not set')
-}
+import { getServerSession } from 'next-auth';
+import { NextResponse } from 'next/server';
 
 // Simple in-memory rate limiter
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>()
