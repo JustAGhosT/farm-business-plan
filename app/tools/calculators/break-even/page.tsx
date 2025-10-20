@@ -184,7 +184,10 @@ export default function BreakEvenCalculator() {
         <div className="mb-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
           <div className="grid md:grid-cols-3 gap-4">
             <div>
-              <label htmlFor="years" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="years"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Projection Period (Years)
               </label>
               <input
@@ -212,17 +215,21 @@ export default function BreakEvenCalculator() {
                 step="0.1"
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
               />
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Expected production growth</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Expected production growth
+              </p>
             </div>
             <div>
-              <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Total Allocation</div>
+              <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Total Allocation
+              </div>
               <div
                 className={`text-2xl font-bold ${
                   totalPercentage === 100
                     ? 'text-green-600 dark:text-green-400'
                     : totalPercentage > 100
-                    ? 'text-red-600 dark:text-red-400'
-                    : 'text-yellow-600 dark:text-yellow-400'
+                      ? 'text-red-600 dark:text-red-400'
+                      : 'text-yellow-600 dark:text-yellow-400'
                 }`}
               >
                 {totalPercentage.toFixed(0)}%
@@ -231,8 +238,8 @@ export default function BreakEvenCalculator() {
                 {totalPercentage === 100
                   ? '✓ Complete'
                   : totalPercentage > 100
-                  ? '⚠ Over 100%'
-                  : '⚠ Under 100%'}
+                    ? '⚠ Over 100%'
+                    : '⚠ Under 100%'}
               </p>
             </div>
           </div>
@@ -254,12 +261,7 @@ export default function BreakEvenCalculator() {
                   onClick={() => removeCrop(crop.id)}
                   className="text-red-600 hover:text-red-700 transition-colors"
                 >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -300,7 +302,9 @@ export default function BreakEvenCalculator() {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
                   placeholder="e.g., 50"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Allocation percentage</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Allocation percentage
+                </p>
               </div>
 
               <div>
@@ -344,7 +348,9 @@ export default function BreakEvenCalculator() {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
                   placeholder="e.g., 50.00"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Price charged to customers</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Price charged to customers
+                </p>
               </div>
             </div>
           </div>
@@ -352,7 +358,9 @@ export default function BreakEvenCalculator() {
 
         {/* Results Section */}
         <div className="mt-8 pt-6 border-t dark:border-gray-600">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Results & Projections</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            Results & Projections
+          </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 text-center">
             <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
               <div className="text-sm text-blue-800 dark:text-blue-300">Break-Even Units</div>
@@ -367,7 +375,9 @@ export default function BreakEvenCalculator() {
               </div>
             </div>
             <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-              <div className="text-sm text-yellow-800 dark:text-yellow-300">Contribution Margin</div>
+              <div className="text-sm text-yellow-800 dark:text-yellow-300">
+                Contribution Margin
+              </div>
               <div className="text-2xl font-bold text-yellow-900 dark:text-yellow-200">
                 {formatCurrency(results.contributionMargin)}
               </div>
@@ -387,16 +397,30 @@ export default function BreakEvenCalculator() {
               <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
-                    <th scope="col" className="px-6 py-3">Year</th>
-                    <th scope="col" className="px-6 py-3">Projected Units</th>
-                    <th scope="col" className="px-6 py-3">Projected Revenue</th>
-                    <th scope="col" className="px-6 py-3">Profit/Loss</th>
+                    <th scope="col" className="px-6 py-3">
+                      Year
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Projected Units
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Projected Revenue
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Profit/Loss
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {results.yearBreakEvens.map((yearData) => (
-                    <tr key={yearData.year} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                      <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    <tr
+                      key={yearData.year}
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                    >
+                      <th
+                        scope="row"
+                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                      >
                         {yearData.year}
                       </th>
                       <td className="px-6 py-4">{yearData.projectedUnits.toFixed(0)}</td>

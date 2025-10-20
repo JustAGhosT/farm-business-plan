@@ -210,7 +210,10 @@ export default function ROICalculator() {
         <div className="mb-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="years" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="years"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Time Period (Years)
               </label>
               <input
@@ -222,17 +225,21 @@ export default function ROICalculator() {
                 max="20"
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
               />
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Number of years for ROI calculation</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Number of years for ROI calculation
+              </p>
             </div>
             <div>
-              <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Total Allocation</div>
+              <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Total Allocation
+              </div>
               <div
                 className={`text-2xl font-bold ${
                   totalPercentage === 100
                     ? 'text-green-600 dark:text-green-400'
                     : totalPercentage > 100
-                    ? 'text-red-600 dark:text-red-400'
-                    : 'text-yellow-600 dark:text-yellow-400'
+                      ? 'text-red-600 dark:text-red-400'
+                      : 'text-yellow-600 dark:text-yellow-400'
                 }`}
               >
                 {totalPercentage.toFixed(0)}%
@@ -241,8 +248,8 @@ export default function ROICalculator() {
                 {totalPercentage === 100
                   ? '✓ Allocation complete'
                   : totalPercentage > 100
-                  ? '⚠ Over 100% - adjust percentages'
-                  : '⚠ Under 100% - add more crops or increase percentages'}
+                    ? '⚠ Over 100% - adjust percentages'
+                    : '⚠ Under 100% - add more crops or increase percentages'}
               </p>
             </div>
           </div>
@@ -266,12 +273,7 @@ export default function ROICalculator() {
                   aria-label="Remove crop"
                   title="Remove crop"
                 >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -312,7 +314,9 @@ export default function ROICalculator() {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
                   placeholder="e.g., 50"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Allocation percentage</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Allocation percentage
+                </p>
               </div>
 
               <div>
@@ -326,7 +330,9 @@ export default function ROICalculator() {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
                   placeholder="e.g., 150000"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Startup costs at 100%</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Startup costs at 100%
+                </p>
               </div>
 
               <div>
@@ -340,7 +346,9 @@ export default function ROICalculator() {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
                   placeholder="e.g., 250000"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Expected yearly revenue at 100%</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Expected yearly revenue at 100%
+                </p>
               </div>
 
               <div>
@@ -354,7 +362,9 @@ export default function ROICalculator() {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
                   placeholder="e.g., 120000"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Yearly expenses at 100%</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Yearly expenses at 100%
+                </p>
               </div>
             </div>
           </div>

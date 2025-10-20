@@ -81,7 +81,9 @@ export default function AIWizardPage() {
       if (currentStep !== 'crops') return
       try {
         setLoadingSuggestions(true)
-        const response = await fetch(`/api/suggest-crops?province=${data.province}&town=${data.location}`)
+        const response = await fetch(
+          `/api/suggest-crops?province=${data.province}&town=${data.location}`
+        )
         if (!response.ok) {
           throw new Error('Failed to fetch crop suggestions')
         }
@@ -99,15 +101,52 @@ export default function AIWizardPage() {
 
   // South African cities/towns for autocomplete
   const southAfricanLocations = [
-    'Bela Bela', 'Polokwane', 'Tzaneen', 'Mokopane', 'Musina', 'Thohoyandou', // Limpopo
-    'Nelspruit (Mbombela)', 'White River', 'Barberton', 'Hazyview', 'Lydenburg', // Mpumalanga
-    'Johannesburg', 'Pretoria', 'Midrand', 'Sandton', 'Roodepoort', 'Soweto', // Gauteng
-    'Durban', 'Pietermaritzburg', 'Richards Bay', 'Newcastle', 'Ladysmith', // KwaZulu-Natal
-    'Cape Town', 'Stellenbosch', 'Paarl', 'George', 'Knysna', 'Mossel Bay', // Western Cape
-    'Port Elizabeth (Gqeberha)', 'East London', 'Grahamstown (Makhanda)', 'Uitenhage', // Eastern Cape
-    'Kimberley', 'Upington', 'Kuruman', 'Springbok', // Northern Cape
-    'Bloemfontein', 'Welkom', 'Kroonstad', 'Bethlehem', 'Sasolburg', // Free State
-    'Rustenburg', 'Mahikeng', 'Klerksdorp', 'Potchefstroom', 'Brits', // North West
+    'Bela Bela',
+    'Polokwane',
+    'Tzaneen',
+    'Mokopane',
+    'Musina',
+    'Thohoyandou', // Limpopo
+    'Nelspruit (Mbombela)',
+    'White River',
+    'Barberton',
+    'Hazyview',
+    'Lydenburg', // Mpumalanga
+    'Johannesburg',
+    'Pretoria',
+    'Midrand',
+    'Sandton',
+    'Roodepoort',
+    'Soweto', // Gauteng
+    'Durban',
+    'Pietermaritzburg',
+    'Richards Bay',
+    'Newcastle',
+    'Ladysmith', // KwaZulu-Natal
+    'Cape Town',
+    'Stellenbosch',
+    'Paarl',
+    'George',
+    'Knysna',
+    'Mossel Bay', // Western Cape
+    'Port Elizabeth (Gqeberha)',
+    'East London',
+    'Grahamstown (Makhanda)',
+    'Uitenhage', // Eastern Cape
+    'Kimberley',
+    'Upington',
+    'Kuruman',
+    'Springbok', // Northern Cape
+    'Bloemfontein',
+    'Welkom',
+    'Kroonstad',
+    'Bethlehem',
+    'Sasolburg', // Free State
+    'Rustenburg',
+    'Mahikeng',
+    'Klerksdorp',
+    'Potchefstroom',
+    'Brits', // North West
   ]
 
   // Calculate farm size from boundary points
@@ -131,7 +170,9 @@ export default function AIWizardPage() {
   // Detect town name from coordinates
   const detectTownFromCoordinates = async (lat: number, lng: number): Promise<string> => {
     try {
-      const response = await fetch(`https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lng}`)
+      const response = await fetch(
+        `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lng}`
+      )
       if (!response.ok) throw new Error('Reverse geocoding failed')
       const data = await response.json()
       if (data.results && data.results.length > 0) {
@@ -163,7 +204,11 @@ export default function AIWizardPage() {
           location: ipData.city || 'Unknown location',
         }))
       } else {
-        setData((prev) => ({ ...prev, location: ipData.city || 'Unknown location', province: ipData.region || '' }))
+        setData((prev) => ({
+          ...prev,
+          location: ipData.city || 'Unknown location',
+          province: ipData.region || '',
+        }))
       }
     } catch (error) {
       console.error('Error detecting location via IP:', error)
@@ -220,9 +265,13 @@ export default function AIWizardPage() {
   const fetchClimateData = async () => {
     setIsLoadingClimate(true)
     try {
-      const climateData = data.coordinates.lat && data.coordinates.lng
-        ? getClimateDataForCoordinates(parseFloat(data.coordinates.lat), parseFloat(data.coordinates.lng))
-        : getClimateDataForProvince(data.province, data.location)
+      const climateData =
+        data.coordinates.lat && data.coordinates.lng
+          ? getClimateDataForCoordinates(
+              parseFloat(data.coordinates.lat),
+              parseFloat(data.coordinates.lng)
+            )
+          : getClimateDataForProvince(data.province, data.location)
       setData({ ...data, climate: { ...climateData, autoPopulated: true } })
     } catch (error) {
       console.error('Error fetching climate data:', error)
@@ -234,24 +283,79 @@ export default function AIWizardPage() {
   // Simulated climate data
   const getClimateDataForProvince = (province: string, location: string) => {
     const climateDB: Record<string, any> = {
-      Limpopo: { avgTempSummer: '28', avgTempWinter: '16', annualRainfall: '500', frostRisk: 'yes' },
-      Mpumalanga: { avgTempSummer: '26', avgTempWinter: '14', annualRainfall: '750', frostRisk: 'yes' },
-      Gauteng: { avgTempSummer: '26', avgTempWinter: '12', annualRainfall: '650', frostRisk: 'yes' },
-      'KwaZulu-Natal': { avgTempSummer: '27', avgTempWinter: '18', annualRainfall: '1000', frostRisk: 'no' },
-      'Western Cape': { avgTempSummer: '24', avgTempWinter: '12', annualRainfall: '520', frostRisk: 'yes' },
-      'Eastern Cape': { avgTempSummer: '25', avgTempWinter: '14', annualRainfall: '650', frostRisk: 'yes' },
-      'Northern Cape': { avgTempSummer: '30', avgTempWinter: '14', annualRainfall: '200', frostRisk: 'yes' },
-      'Free State': { avgTempSummer: '27', avgTempWinter: '10', annualRainfall: '550', frostRisk: 'yes' },
-      'North West': { avgTempSummer: '28', avgTempWinter: '12', annualRainfall: '500', frostRisk: 'yes' },
+      Limpopo: {
+        avgTempSummer: '28',
+        avgTempWinter: '16',
+        annualRainfall: '500',
+        frostRisk: 'yes',
+      },
+      Mpumalanga: {
+        avgTempSummer: '26',
+        avgTempWinter: '14',
+        annualRainfall: '750',
+        frostRisk: 'yes',
+      },
+      Gauteng: {
+        avgTempSummer: '26',
+        avgTempWinter: '12',
+        annualRainfall: '650',
+        frostRisk: 'yes',
+      },
+      'KwaZulu-Natal': {
+        avgTempSummer: '27',
+        avgTempWinter: '18',
+        annualRainfall: '1000',
+        frostRisk: 'no',
+      },
+      'Western Cape': {
+        avgTempSummer: '24',
+        avgTempWinter: '12',
+        annualRainfall: '520',
+        frostRisk: 'yes',
+      },
+      'Eastern Cape': {
+        avgTempSummer: '25',
+        avgTempWinter: '14',
+        annualRainfall: '650',
+        frostRisk: 'yes',
+      },
+      'Northern Cape': {
+        avgTempSummer: '30',
+        avgTempWinter: '14',
+        annualRainfall: '200',
+        frostRisk: 'yes',
+      },
+      'Free State': {
+        avgTempSummer: '27',
+        avgTempWinter: '10',
+        annualRainfall: '550',
+        frostRisk: 'yes',
+      },
+      'North West': {
+        avgTempSummer: '28',
+        avgTempWinter: '12',
+        annualRainfall: '500',
+        frostRisk: 'yes',
+      },
     }
-    return climateDB[province] || { avgTempSummer: '26', avgTempWinter: '14', annualRainfall: '600', frostRisk: 'no' }
+    return (
+      climateDB[province] || {
+        avgTempSummer: '26',
+        avgTempWinter: '14',
+        annualRainfall: '600',
+        frostRisk: 'no',
+      }
+    )
   }
 
   const getClimateDataForCoordinates = (lat: number, lng: number) => {
     const avgLat = Math.abs(lat)
-    if (avgLat < 26) return { avgTempSummer: '30', avgTempWinter: '18', annualRainfall: '450', frostRisk: 'no' }
-    else if (avgLat < 28) return { avgTempSummer: '27', avgTempWinter: '14', annualRainfall: '600', frostRisk: 'yes' }
-    else return { avgTempSummer: '24', avgTempWinter: '12', annualRainfall: '550', frostRisk: 'yes' }
+    if (avgLat < 26)
+      return { avgTempSummer: '30', avgTempWinter: '18', annualRainfall: '450', frostRisk: 'no' }
+    else if (avgLat < 28)
+      return { avgTempSummer: '27', avgTempWinter: '14', annualRainfall: '600', frostRisk: 'yes' }
+    else
+      return { avgTempSummer: '24', avgTempWinter: '12', annualRainfall: '550', frostRisk: 'yes' }
   }
 
   // Get budget recommendations
@@ -261,14 +365,16 @@ export default function AIWizardPage() {
     if (size === 0 || cropCount === 0) return ''
     let costPerHectare = 50000
     if (data.crops.includes('dragon-fruit')) costPerHectare = 150000
-    else if (data.crops.includes('moringa') || data.crops.includes('lucerne')) costPerHectare = 70000
+    else if (data.crops.includes('moringa') || data.crops.includes('lucerne'))
+      costPerHectare = 70000
     else if (data.crops.includes('vegetables')) costPerHectare = 80000
     return Math.round(size * costPerHectare).toString()
   }
 
   // Get soil and water recommendations
   const getSoilRecommendation = () => {
-    if (data.province === 'Limpopo' || data.province === 'Northern Cape') return 'Sandy loam with low organic matter - may require amendments'
+    if (data.province === 'Limpopo' || data.province === 'Northern Cape')
+      return 'Sandy loam with low organic matter - may require amendments'
     else if (data.province === 'KwaZulu-Natal') return 'Clay-rich soils with good water retention'
     else if (data.province === 'Western Cape') return 'Sandy or alluvial soils - good drainage'
     return 'Mixed soil types - conduct soil test for specifics'
@@ -296,43 +402,84 @@ export default function AIWizardPage() {
   const generateAIRecommendations = () => {
     const recommendations: string[] = []
     if (parseInt(data.climate.annualRainfall) < 600) {
-      recommendations.push('Low rainfall area detected. Consider drought-resistant crops like Moringa, Dragon Fruit, or dry-land crops.', 'Implement drip irrigation for water efficiency.')
+      recommendations.push(
+        'Low rainfall area detected. Consider drought-resistant crops like Moringa, Dragon Fruit, or dry-land crops.',
+        'Implement drip irrigation for water efficiency.'
+      )
     } else if (parseInt(data.climate.annualRainfall) > 1000) {
-      recommendations.push('High rainfall area. Perfect for crops like Lucerne, vegetables, and high-water-demand crops.')
+      recommendations.push(
+        'High rainfall area. Perfect for crops like Lucerne, vegetables, and high-water-demand crops.'
+      )
     }
     if (parseInt(data.climate.avgTempSummer) > 30) {
-      recommendations.push('Hot climate detected. Dragon Fruit and heat-tolerant crops recommended.', 'Consider shade structures for sensitive crops.')
+      recommendations.push(
+        'Hot climate detected. Dragon Fruit and heat-tolerant crops recommended.',
+        'Consider shade structures for sensitive crops.'
+      )
     }
     if (data.climate.frostRisk === 'yes') {
-      recommendations.push('Frost risk identified. Avoid frost-sensitive crops or implement frost protection measures.')
+      recommendations.push(
+        'Frost risk identified. Avoid frost-sensitive crops or implement frost protection measures.'
+      )
     }
     const budget = parseInt(data.budget)
     if (budget < 100000) {
-      recommendations.push('Starting budget: Focus on low-capital crops like leafy vegetables, herbs (Basil), or small-scale Moringa.', 'Consider phased investment approach - start small and expand.')
+      recommendations.push(
+        'Starting budget: Focus on low-capital crops like leafy vegetables, herbs (Basil), or small-scale Moringa.',
+        'Consider phased investment approach - start small and expand.'
+      )
     } else if (budget < 300000) {
-      recommendations.push('Medium budget: You can start with Dragon Fruit (1-2 hectares) or mixed vegetable production.', 'Allocate 20% for infrastructure, 30% for inputs, 50% for working capital.')
+      recommendations.push(
+        'Medium budget: You can start with Dragon Fruit (1-2 hectares) or mixed vegetable production.',
+        'Allocate 20% for infrastructure, 30% for inputs, 50% for working capital.'
+      )
     } else {
-      recommendations.push('Strong budget: Consider diversified operation with multiple high-value crops.', 'Invest in quality infrastructure and irrigation systems.')
+      recommendations.push(
+        'Strong budget: Consider diversified operation with multiple high-value crops.',
+        'Invest in quality infrastructure and irrigation systems.'
+      )
     }
     if (data.crops.includes('dragon-fruit')) {
-      recommendations.push('Dragon Fruit: Expected ROI of 40-60% annually. 18-24 months to first harvest.', 'Recommended tools: ROI Calculator, Break-Even Analysis, Investment Calculator')
+      recommendations.push(
+        'Dragon Fruit: Expected ROI of 40-60% annually. 18-24 months to first harvest.',
+        'Recommended tools: ROI Calculator, Break-Even Analysis, Investment Calculator'
+      )
     }
     if (data.crops.includes('moringa')) {
-      recommendations.push('Moringa: Fast-growing, 6-8 months to first harvest. Lower capital requirements.', 'Consider value-added products (powder, tea) for higher margins.')
+      recommendations.push(
+        'Moringa: Fast-growing, 6-8 months to first harvest. Lower capital requirements.',
+        'Consider value-added products (powder, tea) for higher margins.'
+      )
     }
     if (data.crops.includes('vegetables')) {
-      recommendations.push('Vegetables: Quick returns (2-4 months), but require intensive management.', 'Focus on high-demand local varieties for better market access.')
+      recommendations.push(
+        'Vegetables: Quick returns (2-4 months), but require intensive management.',
+        'Focus on high-demand local varieties for better market access.'
+      )
     }
     const size = parseFloat(data.farmSize)
     if (size < 1) {
-      recommendations.push('Small farm: Focus on high-value crops per square meter.', 'Consider intensive methods like hydroponics or vertical farming.')
+      recommendations.push(
+        'Small farm: Focus on high-value crops per square meter.',
+        'Consider intensive methods like hydroponics or vertical farming.'
+      )
     } else if (size > 5) {
-      recommendations.push('Larger farm: Implement crop rotation and diversification strategies.', 'Consider mechanization to reduce labor costs.')
+      recommendations.push(
+        'Larger farm: Implement crop rotation and diversification strategies.',
+        'Consider mechanization to reduce labor costs.'
+      )
     }
     if (data.timeline === 'immediate') {
-      recommendations.push('Immediate start: Begin with quick-growing crops (vegetables, herbs) for cash flow.', 'Use revenue from fast crops to fund longer-term investments.')
+      recommendations.push(
+        'Immediate start: Begin with quick-growing crops (vegetables, herbs) for cash flow.',
+        'Use revenue from fast crops to fund longer-term investments.'
+      )
     }
-    recommendations.push('Next steps: Use Financial Calculators to validate projections.', 'Visit Templates Library to explore detailed crop profiles.', 'Review Operations Manual for daily management guidelines.')
+    recommendations.push(
+      'Next steps: Use Financial Calculators to validate projections.',
+      'Visit Templates Library to explore detailed crop profiles.',
+      'Review Operations Manual for daily management guidelines.'
+    )
     setAiRecommendations(recommendations)
   }
 
@@ -381,7 +528,10 @@ export default function AIWizardPage() {
           name: `${data.location} Farm Plan`,
           location: data.location,
           province: data.province,
-          coordinates: data.coordinates.lat && data.coordinates.lng ? { lat: parseFloat(data.coordinates.lat), lng: parseFloat(data.coordinates.lng) } : undefined,
+          coordinates:
+            data.coordinates.lat && data.coordinates.lng
+              ? { lat: parseFloat(data.coordinates.lat), lng: parseFloat(data.coordinates.lng) }
+              : undefined,
           farm_size: parseFloat(data.farmSize),
           soil_type: data.soilType,
           water_source: data.waterSource,
@@ -391,7 +541,11 @@ export default function AIWizardPage() {
       const farmPlanResult = await farmPlanResponse.json()
       if (farmPlanResult.success && farmPlanResult.data) {
         const farmPlanId = farmPlanResult.data.id
-        if (data.climate.avgTempSummer && data.climate.avgTempWinter && data.climate.annualRainfall) {
+        if (
+          data.climate.avgTempSummer &&
+          data.climate.avgTempWinter &&
+          data.climate.annualRainfall
+        ) {
           await fetch('/api/climate-data', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -433,10 +587,22 @@ export default function AIWizardPage() {
         }
         for (const recommendation of aiRecommendations) {
           let category = 'general'
-          if (recommendation.toLowerCase().includes('irrigation') || recommendation.toLowerCase().includes('water')) category = 'irrigation'
-          else if (recommendation.toLowerCase().includes('budget') || recommendation.toLowerCase().includes('cost')) category = 'financial'
+          if (
+            recommendation.toLowerCase().includes('irrigation') ||
+            recommendation.toLowerCase().includes('water')
+          )
+            category = 'irrigation'
+          else if (
+            recommendation.toLowerCase().includes('budget') ||
+            recommendation.toLowerCase().includes('cost')
+          )
+            category = 'financial'
           else if (recommendation.toLowerCase().includes('crop')) category = 'crop-selection'
-          else if (recommendation.toLowerCase().includes('climate') || recommendation.toLowerCase().includes('frost')) category = 'climate'
+          else if (
+            recommendation.toLowerCase().includes('climate') ||
+            recommendation.toLowerCase().includes('frost')
+          )
+            category = 'climate'
           await fetch('/api/ai-recommendations', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -462,20 +628,39 @@ export default function AIWizardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <Link href="/" className="inline-flex items-center text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 mb-6 transition-colors">
-          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+        <Link
+          href="/"
+          className="inline-flex items-center text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 mb-6 transition-colors"
+        >
+          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
+          </svg>
           Back to Home
         </Link>
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">🤖 AI Farm Planning Wizard</h1>
-            <p className="text-gray-600 dark:text-gray-300">Get personalized recommendations based on your location, climate, and goals</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              🤖 AI Farm Planning Wizard
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300">
+              Get personalized recommendations based on your location, climate, and goals
+            </p>
           </div>
           <div className="mb-8">
             <div className="flex justify-between mb-4">
               {steps.map((step, index) => (
-                <div key={step.id} className={`flex flex-col items-center ${index <= currentStepIndex ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400 dark:text-gray-500'}`}>
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xl mb-2 ${index < currentStepIndex ? 'bg-primary-600 text-white' : index === currentStepIndex ? 'bg-primary-100 dark:bg-primary-900/30 border-2 border-primary-600 dark:border-primary-500' : 'bg-gray-100 dark:bg-gray-700'}`}>
+                <div
+                  key={step.id}
+                  className={`flex flex-col items-center ${index <= currentStepIndex ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400 dark:text-gray-500'}`}
+                >
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center text-xl mb-2 ${index < currentStepIndex ? 'bg-primary-600 text-white' : index === currentStepIndex ? 'bg-primary-100 dark:bg-primary-900/30 border-2 border-primary-600 dark:border-primary-500' : 'bg-gray-100 dark:bg-gray-700'}`}
+                  >
                     {index < currentStepIndex ? '✓' : step.icon}
                   </div>
                   <span className="text-xs text-center hidden md:block">{step.title}</span>
@@ -483,7 +668,10 @@ export default function AIWizardPage() {
               ))}
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
-              <div className="bg-primary-600 dark:bg-primary-500 h-2 rounded-full transition-all duration-300" style={{ width: `${((currentStepIndex + 1) / steps.length) * 100}%` }}></div>
+              <div
+                className="bg-primary-600 dark:bg-primary-500 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${((currentStepIndex + 1) / steps.length) * 100}%` }}
+              ></div>
             </div>
           </div>
           <div className="min-h-[400px]">
@@ -492,27 +680,123 @@ export default function AIWizardPage() {
                 <h2 className="text-2xl font-bold mb-4 dark:text-white">📍 Location & Farm Size</h2>
                 <div className="space-y-4">
                   <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 rounded-lg p-4">
-                    <h3 className="font-semibold text-primary-900 dark:text-primary-200 mb-2">📍 Auto-Detect Your Location</h3>
-                    <p className="text-sm text-primary-800 dark:text-primary-300 mb-3">Use your device&apos;s GPS to automatically detect your current location and coordinates</p>
+                    <h3 className="font-semibold text-primary-900 dark:text-primary-200 mb-2">
+                      📍 Auto-Detect Your Location
+                    </h3>
+                    <p className="text-sm text-primary-800 dark:text-primary-300 mb-3">
+                      Use your device&apos;s GPS to automatically detect your current location and
+                      coordinates
+                    </p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                      <button onClick={detectCurrentLocation} disabled={isDetectingLocation} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 flex items-center justify-center">
-                        {isDetectingLocation ? (<> <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle> <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg> Detecting... </>) : ('🎯 Use GPS Location')}
+                      <button
+                        onClick={detectCurrentLocation}
+                        disabled={isDetectingLocation}
+                        className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 flex items-center justify-center"
+                      >
+                        {isDetectingLocation ? (
+                          <>
+                            {' '}
+                            <svg
+                              className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              {' '}
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              ></circle>{' '}
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              ></path>{' '}
+                            </svg>{' '}
+                            Detecting...{' '}
+                          </>
+                        ) : (
+                          '🎯 Use GPS Location'
+                        )}
                       </button>
-                      <button onClick={detectLocationViaIP} disabled={isDetectingLocation} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center">
-                        {isDetectingLocation ? (<> <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle> <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg> Detecting... </>) : ('🌐 Use IP Location')}
+                      <button
+                        onClick={detectLocationViaIP}
+                        disabled={isDetectingLocation}
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center"
+                      >
+                        {isDetectingLocation ? (
+                          <>
+                            {' '}
+                            <svg
+                              className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              {' '}
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              ></circle>{' '}
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              ></path>{' '}
+                            </svg>{' '}
+                            Detecting...{' '}
+                          </>
+                        ) : (
+                          '🌐 Use IP Location'
+                        )}
                       </button>
                     </div>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">GPS is more accurate. IP location is used as fallback if GPS fails.</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
+                      GPS is more accurate. IP location is used as fallback if GPS fails.
+                    </p>
                   </div>
                   <div className="relative">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Location / Town *</label>
-                    <input type="text" list="locations" value={data.location} onChange={(e) => setData({ ...data, location: e.target.value })} className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="e.g., Bela Bela, Polokwane" />
-                    <datalist id="locations">{southAfricanLocations.map((loc) => (<option key={loc} value={loc} />))}</datalist>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Start typing to see suggestions</p>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Location / Town *
+                    </label>
+                    <input
+                      type="text"
+                      list="locations"
+                      value={data.location}
+                      onChange={(e) => setData({ ...data, location: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="e.g., Bela Bela, Polokwane"
+                    />
+                    <datalist id="locations">
+                      {southAfricanLocations.map((loc) => (
+                        <option key={loc} value={loc} />
+                      ))}
+                    </datalist>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Start typing to see suggestions
+                    </p>
                   </div>
                   <div>
-                    <label htmlFor="province-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Province *</label>
-                    <select id="province-select" value={data.province} onChange={(e) => setData({ ...data, province: e.target.value })} className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    <label
+                      htmlFor="province-select"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    >
+                      Province *
+                    </label>
+                    <select
+                      id="province-select"
+                      value={data.province}
+                      onChange={(e) => setData({ ...data, province: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    >
                       <option value="">Select Province</option>
                       <option value="Limpopo">Limpopo</option>
                       <option value="Mpumalanga">Mpumalanga</option>
@@ -526,112 +810,392 @@ export default function AIWizardPage() {
                     </select>
                   </div>
                   <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
-                    <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">📍 Optional: Farm Coordinates</h3>
-                    <p className="text-sm text-blue-800 dark:text-blue-300 mb-3">Provide exact coordinates for more accurate climate data</p>
+                    <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">
+                      📍 Optional: Farm Coordinates
+                    </h3>
+                    <p className="text-sm text-blue-800 dark:text-blue-300 mb-3">
+                      Provide exact coordinates for more accurate climate data
+                    </p>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Latitude</label>
-                        <input type="number" step="0.000001" value={data.coordinates.lat} onChange={(e) => setData({ ...data, coordinates: { ...data.coordinates, lat: e.target.value } })} className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="e.g., -24.2819" />
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                          Latitude
+                        </label>
+                        <input
+                          type="number"
+                          step="0.000001"
+                          value={data.coordinates.lat}
+                          onChange={(e) =>
+                            setData({
+                              ...data,
+                              coordinates: { ...data.coordinates, lat: e.target.value },
+                            })
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          placeholder="e.g., -24.2819"
+                        />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Longitude</label>
-                        <input type="number" step="0.000001" value={data.coordinates.lng} onChange={(e) => setData({ ...data, coordinates: { ...data.coordinates, lng: e.target.value } })} className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="e.g., 28.4167" />
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                          Longitude
+                        </label>
+                        <input
+                          type="number"
+                          step="0.000001"
+                          value={data.coordinates.lng}
+                          onChange={(e) =>
+                            setData({
+                              ...data,
+                              coordinates: { ...data.coordinates, lng: e.target.value },
+                            })
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          placeholder="e.g., 28.4167"
+                        />
                       </div>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Farm Size Method *</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Farm Size Method *
+                    </label>
                     <div className="flex gap-4 mb-3">
-                      <label className="flex items-center dark:text-gray-300"><input type="radio" name="farmSizeSource" value="manual" checked={data.farmSizeSource === 'manual'} onChange={(e) => setData({ ...data, farmSizeSource: 'manual' as 'manual' | 'boundary' | 'calculated' })} className="mr-2" />Manual Entry</label>
-                      <label className="flex items-center dark:text-gray-300"><input type="radio" name="farmSizeSource" value="boundary" checked={data.farmSizeSource === 'boundary'} onChange={(e) => setData({ ...data, farmSizeSource: 'boundary' as 'manual' | 'boundary' | 'calculated' })} className="mr-2" />Boundary Points</label>
+                      <label className="flex items-center dark:text-gray-300">
+                        <input
+                          type="radio"
+                          name="farmSizeSource"
+                          value="manual"
+                          checked={data.farmSizeSource === 'manual'}
+                          onChange={(e) =>
+                            setData({
+                              ...data,
+                              farmSizeSource: 'manual' as 'manual' | 'boundary' | 'calculated',
+                            })
+                          }
+                          className="mr-2"
+                        />
+                        Manual Entry
+                      </label>
+                      <label className="flex items-center dark:text-gray-300">
+                        <input
+                          type="radio"
+                          name="farmSizeSource"
+                          value="boundary"
+                          checked={data.farmSizeSource === 'boundary'}
+                          onChange={(e) =>
+                            setData({
+                              ...data,
+                              farmSizeSource: 'boundary' as 'manual' | 'boundary' | 'calculated',
+                            })
+                          }
+                          className="mr-2"
+                        />
+                        Boundary Points
+                      </label>
                     </div>
                     {data.farmSizeSource === 'manual' ? (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Farm Size (hectares) *</label>
-                        <input type="number" value={data.farmSize} onChange={(e) => setData({ ...data, farmSize: e.target.value })} step="0.1" className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="e.g., 2.5" />
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Farm Size (hectares) *
+                        </label>
+                        <input
+                          type="number"
+                          value={data.farmSize}
+                          onChange={(e) => setData({ ...data, farmSize: e.target.value })}
+                          step="0.1"
+                          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          placeholder="e.g., 2.5"
+                        />
                       </div>
                     ) : (
                       <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg p-4">
-                        <h3 className="font-semibold text-green-900 dark:text-green-200 mb-2">🗺️ Define Farm Boundary</h3>
-                        <p className="text-sm text-green-800 dark:text-green-300 mb-3">Enter at least 3 corner points (lat, lng) to calculate area</p>
+                        <h3 className="font-semibold text-green-900 dark:text-green-200 mb-2">
+                          🗺️ Define Farm Boundary
+                        </h3>
+                        <p className="text-sm text-green-800 dark:text-green-300 mb-3">
+                          Enter at least 3 corner points (lat, lng) to calculate area
+                        </p>
                         {data.boundaryPoints.map((point, index) => (
                           <div key={index} className="flex gap-2 mb-2">
-                            <input type="number" step="0.000001" value={point.lat} onChange={(e) => { const newPoints = [...data.boundaryPoints]; newPoints[index].lat = parseFloat(e.target.value) || 0; setData({ ...data, boundaryPoints: newPoints }) }} className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg" placeholder="Latitude" />
-                            <input type="number" step="0.000001" value={point.lng} onChange={(e) => { const newPoints = [...data.boundaryPoints]; newPoints[index].lng = parseFloat(e.target.value) || 0; setData({ ...data, boundaryPoints: newPoints }) }} className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg" placeholder="Longitude" />
-                            <button onClick={() => { const newPoints = data.boundaryPoints.filter((_, i) => i !== index); setData({ ...data, boundaryPoints: newPoints }) }} className="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200">✕</button>
+                            <input
+                              type="number"
+                              step="0.000001"
+                              value={point.lat}
+                              onChange={(e) => {
+                                const newPoints = [...data.boundaryPoints]
+                                newPoints[index].lat = parseFloat(e.target.value) || 0
+                                setData({ ...data, boundaryPoints: newPoints })
+                              }}
+                              className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg"
+                              placeholder="Latitude"
+                            />
+                            <input
+                              type="number"
+                              step="0.000001"
+                              value={point.lng}
+                              onChange={(e) => {
+                                const newPoints = [...data.boundaryPoints]
+                                newPoints[index].lng = parseFloat(e.target.value) || 0
+                                setData({ ...data, boundaryPoints: newPoints })
+                              }}
+                              className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg"
+                              placeholder="Longitude"
+                            />
+                            <button
+                              onClick={() => {
+                                const newPoints = data.boundaryPoints.filter((_, i) => i !== index)
+                                setData({ ...data, boundaryPoints: newPoints })
+                              }}
+                              className="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200"
+                            >
+                              ✕
+                            </button>
                           </div>
                         ))}
-                        <button onClick={() => { setData({ ...data, boundaryPoints: [...data.boundaryPoints, { lat: 0, lng: 0 }] }) }} className="w-full px-4 py-2 border-2 border-dashed border-green-300 dark:border-green-600 rounded-lg text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors mt-2">+ Add Boundary Point</button>
+                        <button
+                          onClick={() => {
+                            setData({
+                              ...data,
+                              boundaryPoints: [...data.boundaryPoints, { lat: 0, lng: 0 }],
+                            })
+                          }}
+                          className="w-full px-4 py-2 border-2 border-dashed border-green-300 dark:border-green-600 rounded-lg text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors mt-2"
+                        >
+                          + Add Boundary Point
+                        </button>
                         {data.boundaryPoints.length >= 3 && (
                           <div className="mt-4">
-                            <button onClick={() => { const calculatedSize = calculateAreaFromBoundary(data.boundaryPoints); setData({ ...data, farmSize: calculatedSize.toFixed(2), farmSizeSource: 'calculated' }) }} className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">Calculate Area from Boundary</button>
-                            {data.farmSizeSource === 'calculated' && data.farmSize && (<div className="mt-2 p-3 bg-white dark:bg-gray-700 border border-green-300 dark:border-green-600 rounded-lg"><p className="text-sm text-gray-700 dark:text-gray-300"><strong>Calculated Area:</strong> {parseFloat(data.farmSize).toFixed(2)} hectares</p></div>)}
+                            <button
+                              onClick={() => {
+                                const calculatedSize = calculateAreaFromBoundary(
+                                  data.boundaryPoints
+                                )
+                                setData({
+                                  ...data,
+                                  farmSize: calculatedSize.toFixed(2),
+                                  farmSizeSource: 'calculated',
+                                })
+                              }}
+                              className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                            >
+                              Calculate Area from Boundary
+                            </button>
+                            {data.farmSizeSource === 'calculated' && data.farmSize && (
+                              <div className="mt-2 p-3 bg-white dark:bg-gray-700 border border-green-300 dark:border-green-600 rounded-lg">
+                                <p className="text-sm text-gray-700 dark:text-gray-300">
+                                  <strong>Calculated Area:</strong>{' '}
+                                  {parseFloat(data.farmSize).toFixed(2)} hectares
+                                </p>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
                     )}
                   </div>
-                  <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded"><p className="text-sm text-blue-800 dark:text-blue-300"><strong>💡 Tip:</strong> The AI will use your location to provide climate-specific recommendations and suitable crop suggestions.{data.coordinates.lat && data.coordinates.lng && ' Coordinates will enable precise climate data.'}</p></div>
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
+                    <p className="text-sm text-blue-800 dark:text-blue-300">
+                      <strong>💡 Tip:</strong> The AI will use your location to provide
+                      climate-specific recommendations and suitable crop suggestions.
+                      {data.coordinates.lat &&
+                        data.coordinates.lng &&
+                        ' Coordinates will enable precise climate data.'}
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
             {currentStep === 'climate' && (
               <div>
                 <h2 className="text-2xl font-bold mb-4 dark:text-white">🌡️ Climate Information</h2>
-                <p className="text-gray-600 dark:text-gray-300 mb-6">Help us understand your local climate conditions</p>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  Help us understand your local climate conditions
+                </p>
                 <div className="space-y-4">
                   {!data.climate.autoPopulated && (data.location || data.coordinates.lat) && (
                     <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 rounded-lg p-4">
-                      <h3 className="font-semibold text-primary-900 dark:text-primary-200 mb-2">🤖 Auto-Populate Climate Data</h3>
-                      <p className="text-sm text-primary-800 dark:text-primary-300 mb-3">We can automatically fetch climate data based on your location</p>
-                      <button onClick={fetchClimateData} disabled={isLoadingClimate} className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50">{isLoadingClimate ? 'Loading...' : '✨ Auto-Fill Climate Data'}</button>
+                      <h3 className="font-semibold text-primary-900 dark:text-primary-200 mb-2">
+                        🤖 Auto-Populate Climate Data
+                      </h3>
+                      <p className="text-sm text-primary-800 dark:text-primary-300 mb-3">
+                        We can automatically fetch climate data based on your location
+                      </p>
+                      <button
+                        onClick={fetchClimateData}
+                        disabled={isLoadingClimate}
+                        className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
+                      >
+                        {isLoadingClimate ? 'Loading...' : '✨ Auto-Fill Climate Data'}
+                      </button>
                     </div>
                   )}
-                  {data.climate.autoPopulated && (<div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg p-4"><p className="text-sm text-green-800 dark:text-green-300">✓ Climate data auto-populated based on your location. You can adjust values if needed.</p></div>)}
+                  {data.climate.autoPopulated && (
+                    <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg p-4">
+                      <p className="text-sm text-green-800 dark:text-green-300">
+                        ✓ Climate data auto-populated based on your location. You can adjust values
+                        if needed.
+                      </p>
+                    </div>
+                  )}
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Average Summer Temperature (°C)</label>
-                      <input type="number" value={data.climate.avgTempSummer} onChange={(e) => setData({ ...data, climate: { ...data.climate, avgTempSummer: e.target.value, autoPopulated: false } })} className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="e.g., 28" />
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Average Summer Temperature (°C)
+                      </label>
+                      <input
+                        type="number"
+                        value={data.climate.avgTempSummer}
+                        onChange={(e) =>
+                          setData({
+                            ...data,
+                            climate: {
+                              ...data.climate,
+                              avgTempSummer: e.target.value,
+                              autoPopulated: false,
+                            },
+                          })
+                        }
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        placeholder="e.g., 28"
+                      />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Average Winter Temperature (°C)</label>
-                      <input type="number" value={data.climate.avgTempWinter} onChange={(e) => setData({ ...data, climate: { ...data.climate, avgTempWinter: e.target.value, autoPopulated: false } })} className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="e.g., 16" />
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Average Winter Temperature (°C)
+                      </label>
+                      <input
+                        type="number"
+                        value={data.climate.avgTempWinter}
+                        onChange={(e) =>
+                          setData({
+                            ...data,
+                            climate: {
+                              ...data.climate,
+                              avgTempWinter: e.target.value,
+                              autoPopulated: false,
+                            },
+                          })
+                        }
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        placeholder="e.g., 16"
+                      />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Annual Rainfall (mm)</label>
-                    <input type="number" value={data.climate.annualRainfall} onChange={(e) => setData({ ...data, climate: { ...data.climate, annualRainfall: e.target.value, autoPopulated: false } })} className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="e.g., 600" />
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Annual Rainfall (mm)
+                    </label>
+                    <input
+                      type="number"
+                      value={data.climate.annualRainfall}
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          climate: {
+                            ...data.climate,
+                            annualRainfall: e.target.value,
+                            autoPopulated: false,
+                          },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="e.g., 600"
+                    />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Frost Risk</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Frost Risk
+                    </label>
                     <div className="flex gap-4 dark:text-gray-300">
-                      <label className="flex items-center"><input type="radio" name="frostRisk" value="no" checked={data.climate.frostRisk === 'no'} onChange={(e) => setData({ ...data, climate: { ...data.climate, frostRisk: e.target.value } })} className="mr-2" />No frost</label>
-                      <label className="flex items-center"><input type="radio" name="frostRisk" value="yes" checked={data.climate.frostRisk === 'yes'} onChange={(e) => setData({ ...data, climate: { ...data.climate, frostRisk: e.target.value } })} className="mr-2" />Frost occurs</label>
+                      <label className="flex items-center">
+                        <input
+                          type="radio"
+                          name="frostRisk"
+                          value="no"
+                          checked={data.climate.frostRisk === 'no'}
+                          onChange={(e) =>
+                            setData({
+                              ...data,
+                              climate: { ...data.climate, frostRisk: e.target.value },
+                            })
+                          }
+                          className="mr-2"
+                        />
+                        No frost
+                      </label>
+                      <label className="flex items-center">
+                        <input
+                          type="radio"
+                          name="frostRisk"
+                          value="yes"
+                          checked={data.climate.frostRisk === 'yes'}
+                          onChange={(e) =>
+                            setData({
+                              ...data,
+                              climate: { ...data.climate, frostRisk: e.target.value },
+                            })
+                          }
+                          className="mr-2"
+                        />
+                        Frost occurs
+                      </label>
                     </div>
                   </div>
-                  <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 p-4 rounded"><p className="text-sm text-yellow-800 dark:text-yellow-300"><strong>💡 Tip:</strong> You can find this information from your local weather station or agricultural extension office.</p></div>
+                  <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 p-4 rounded">
+                    <p className="text-sm text-yellow-800 dark:text-yellow-300">
+                      <strong>💡 Tip:</strong> You can find this information from your local weather
+                      station or agricultural extension office.
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
             {currentStep === 'crops' && (
               <div>
-                <h2 className="text-2xl font-bold mb-4 dark:text-white">🌱 Crop Selection & Allocation</h2>
-                <p className="text-gray-600 dark:text-gray-300 mb-6">Select crops you&apos;re interested in growing and allocate land</p>
-                {loadingSuggestions ? (<p>Loading crop suggestions...</p>) : (
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">
+                  🌱 Crop Selection & Allocation
+                </h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  Select crops you&apos;re interested in growing and allocate land
+                </p>
+                {loadingSuggestions ? (
+                  <p>Loading crop suggestions...</p>
+                ) : (
                   <div className="grid md:grid-cols-2 gap-4 mb-6">
                     {cropSuggestions.map((crop) => (
-                      <div key={crop.id} onClick={() => {
-                        if (data.crops.includes(crop.id)) {
-                          setData({ ...data, crops: data.crops.filter((c) => c !== crop.id), cropAllocations: data.cropAllocations.filter((a) => a.cropId !== crop.id) })
-                        } else {
-                          setData({ ...data, crops: [...data.crops, crop.id], cropAllocations: [...data.cropAllocations, { cropId: crop.id, minHectares: '', maxHectares: '' }] })
-                        }
-                      }} className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${data.crops.includes(crop.id) ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600'}`}>
+                      <div
+                        key={crop.id}
+                        onClick={() => {
+                          if (data.crops.includes(crop.id)) {
+                            setData({
+                              ...data,
+                              crops: data.crops.filter((c) => c !== crop.id),
+                              cropAllocations: data.cropAllocations.filter(
+                                (a) => a.cropId !== crop.id
+                              ),
+                            })
+                          } else {
+                            setData({
+                              ...data,
+                              crops: [...data.crops, crop.id],
+                              cropAllocations: [
+                                ...data.cropAllocations,
+                                { cropId: crop.id, minHectares: '', maxHectares: '' },
+                              ],
+                            })
+                          }
+                        }}
+                        className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${data.crops.includes(crop.id) ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600'}`}
+                      >
                         <div className="flex items-center">
                           <span className="text-3xl mr-3">🌱</span>
                           <div>
                             <h3 className="font-semibold dark:text-white">{crop.name}</h3>
-                            {data.crops.includes(crop.id) && (<span className="text-xs text-primary-600 dark:text-primary-400">✓ Selected</span>)}
+                            {data.crops.includes(crop.id) && (
+                              <span className="text-xs text-primary-600 dark:text-primary-400">
+                                ✓ Selected
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -642,11 +1206,27 @@ export default function AIWizardPage() {
             )}
           </div>
           <div className="flex justify-between mt-8 pt-6 border-t">
-            <button onClick={handlePrevious} disabled={currentStepIndex === 0} className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+            <button
+              onClick={handlePrevious}
+              disabled={currentStepIndex === 0}
+              className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Previous
+            </button>
             {currentStep === 'recommendations' ? (
-              <button onClick={handleComplete} className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">Complete & Go to Dashboard</button>
+              <button
+                onClick={handleComplete}
+                className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+              >
+                Complete & Go to Dashboard
+              </button>
             ) : (
-              <button onClick={handleNext} className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">Next Step</button>
+              <button
+                onClick={handleNext}
+                className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+              >
+                Next Step
+              </button>
             )}
           </div>
         </div>

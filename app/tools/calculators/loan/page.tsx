@@ -132,7 +132,9 @@ export default function LoanCalculator() {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
                   placeholder="e.g., 200000"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Total amount you want to borrow</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Total amount you want to borrow
+                </p>
               </div>
 
               <div>
@@ -175,11 +177,15 @@ export default function LoanCalculator() {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
                   placeholder="e.g., 5"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Number of years to repay the loan</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Number of years to repay the loan
+                </p>
               </div>
 
               <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
-                <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">Typical SA Rates</h3>
+                <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">
+                  Typical SA Rates
+                </h3>
                 <ul className="text-sm text-blue-800 dark:text-blue-300 space-y-1">
                   <li>• Commercial banks: 10-13% for agriculture</li>
                   <li>• Land Bank: 8-11% for farming loans</li>
@@ -196,31 +202,45 @@ export default function LoanCalculator() {
             {results ? (
               <div className="space-y-4">
                 <div className="bg-primary-50 dark:bg-primary-900/20 rounded-lg p-4 border-2 border-primary-200 dark:border-primary-700">
-                  <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Monthly Payment</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">
+                    Monthly Payment
+                  </div>
                   <div className="text-3xl font-bold text-primary-700 dark:text-primary-400">
                     {formatCurrency(results.monthlyPayment)}
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">Fixed monthly installment</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                    Fixed monthly installment
+                  </div>
                 </div>
 
                 <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                  <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Total Amount Paid</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">
+                    Total Amount Paid
+                  </div>
                   <div className="text-2xl font-bold text-gray-900 dark:text-white">
                     {formatCurrency(results.totalPayment)}
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">Over {values.termYears} years</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                    Over {values.termYears} years
+                  </div>
                 </div>
 
                 <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                  <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Total Interest Paid</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">
+                    Total Interest Paid
+                  </div>
                   <div className="text-2xl font-bold text-red-700 dark:text-red-400">
                     {formatCurrency(results.totalInterest)}
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">Cost of borrowing</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                    Cost of borrowing
+                  </div>
                 </div>
 
                 <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Cost Breakdown</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
+                    Cost Breakdown
+                  </h3>
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm dark:text-gray-300">
                       <span>Principal</span>

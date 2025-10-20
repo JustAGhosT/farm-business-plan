@@ -169,7 +169,10 @@ export default function RevenueCalculator() {
         <div className="mb-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="years" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="years"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Projection Period (Years)
               </label>
               <input
@@ -183,14 +186,16 @@ export default function RevenueCalculator() {
               />
             </div>
             <div>
-              <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Total Allocation</div>
+              <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Total Allocation
+              </div>
               <div
                 className={`text-2xl font-bold ${
                   totalPercentage === 100
                     ? 'text-green-600 dark:text-green-400'
                     : totalPercentage > 100
-                    ? 'text-red-600 dark:text-red-400'
-                    : 'text-yellow-600 dark:text-yellow-400'
+                      ? 'text-red-600 dark:text-red-400'
+                      : 'text-yellow-600 dark:text-yellow-400'
                 }`}
               >
                 {totalPercentage.toFixed(0)}%
@@ -199,8 +204,8 @@ export default function RevenueCalculator() {
                 {totalPercentage === 100
                   ? '✓ Allocation complete'
                   : totalPercentage > 100
-                  ? '⚠ Over 100% - adjust percentages'
-                  : '⚠ Under 100% - add more crops or increase percentages'}
+                    ? '⚠ Over 100% - adjust percentages'
+                    : '⚠ Under 100% - add more crops or increase percentages'}
               </p>
             </div>
           </div>
@@ -222,12 +227,7 @@ export default function RevenueCalculator() {
                   onClick={() => removeCrop(crop.id)}
                   className="text-red-600 hover:text-red-700 transition-colors"
                 >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -268,7 +268,9 @@ export default function RevenueCalculator() {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
                   placeholder="e.g., 50"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Allocation percentage</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Allocation percentage
+                </p>
               </div>
 
               <div>
@@ -282,7 +284,9 @@ export default function RevenueCalculator() {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
                   placeholder="e.g., 5000"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Year 1 production at 100%</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Year 1 production at 100%
+                </p>
               </div>
 
               <div>
@@ -297,7 +301,9 @@ export default function RevenueCalculator() {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
                   placeholder="e.g., 45.00"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Current market price</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Current market price
+                </p>
               </div>
 
               <div>
@@ -325,7 +331,9 @@ export default function RevenueCalculator() {
                   step="0.1"
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Annual price increase</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Annual price increase
+                </p>
               </div>
             </div>
           </div>
@@ -337,7 +345,9 @@ export default function RevenueCalculator() {
             Revenue Projections
           </h2>
           <div className="mb-6 p-6 bg-green-50 dark:bg-green-900/20 rounded-lg text-center">
-            <div className="text-lg text-green-800 dark:text-green-300">Total Projected Revenue</div>
+            <div className="text-lg text-green-800 dark:text-green-300">
+              Total Projected Revenue
+            </div>
             <div className="text-4xl font-bold text-green-900 dark:text-green-200">
               {formatCurrency(totalRevenue)}
             </div>
@@ -351,14 +361,24 @@ export default function RevenueCalculator() {
               <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
-                    <th scope="col" className="px-6 py-3">Year</th>
-                    <th scope="col" className="px-6 py-3">Total Revenue</th>
+                    <th scope="col" className="px-6 py-3">
+                      Year
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Total Revenue
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {totalProjections.map((yearData) => (
-                    <tr key={yearData.year} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                      <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    <tr
+                      key={yearData.year}
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                    >
+                      <th
+                        scope="row"
+                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                      >
                         {yearData.year}
                       </th>
                       <td className="px-6 py-4">{formatCurrency(yearData.revenue)}</td>
