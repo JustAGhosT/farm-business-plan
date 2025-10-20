@@ -3,20 +3,80 @@
 import WizardWrapper from '@/components/WizardWrapper'
 import { useState } from 'react'
 
-// ... (interfaces remain the same)
+interface Town {
+  id: number
+  name: string
+  province_id: number
+}
 
-export default function LocationStep({ initialLocations }: { initialLocations: any[] }) {
+interface Province {
+  id: number
+  name: string
+  towns: Town[]
+}
+
+export default function LocationStep({ initialLocations }: { initialLocations: Province[] }) {
   const [locations] = useState(initialLocations)
-  // ... (other state variables remain the same)
+  const [province, setProvince] = useState('')
+  const [town, setTown] = useState('')
+  const [towns, setTowns] = useState<Town[]>([])
+  const [suggestedCrops, setSuggestedCrops] = useState<string[]>([])
 
-  // ... (handleProvinceChange remains the same)
+  const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedProvinceId = e.target.value
+    setProvince(selectedProvinceId)
+    setTown('')
+    const selectedProvince = locations.find((p) => p.id === parseInt(selectedProvinceId))
+    setTowns(selectedProvince ? selectedProvince.towns : [])
+  }
 
   const fetchSuggestions = async (endpoint: string, append = false) => {
-    // ... (logic for fetching suggestions)
+    if (!province || !town) {
+      alert('Please select a province and town')
+      return
+    }
+
+    const selectedProvince = locations.find((p) => p.id === parseInt(province))
+    const selectedTown = towns.find((t) => t.id === parseInt(town))
+
+    if (!selectedProvince || !selectedTown) {
+      alert('Invalid province or town selected')
+      return
+    }
+
+    for (let i = 0; i < 3; i++) {
+      try {
+        const params = new URLSearchParams({
+          province: selectedProvince.name,
+          town: selectedTown.name,
+        })
+        const response = await fetch(`${endpoint}?${params.toString()}`)
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const data = await response.json()
+        if (append) {
+          setSuggestedCrops((prev) => [...prev, ...data.crops])
+        } else {
+          setSuggestedCrops(data.crops)
+        }
+        return
+      } catch (error) {
+        console.error('Error fetching crop suggestions:', error)
+        if (i < 2) {
+          await new Promise((resolve) => setTimeout(resolve, 1000))
+        } else {
+          alert('Failed to fetch crop suggestions. Please try again.')
+        }
+      }
+    }
   }
 
   const handleNext = () => {
-    // ... (handleNext logic remains the same)
+    const wizardData = JSON.parse(sessionStorage.getItem('calculatorWizardData') || '{}')
+    wizardData.location = { province, town }
+    wizardData.suggestedCrops = suggestedCrops
+    sessionStorage.setItem('calculatorWizardData', JSON.stringify(wizardData))
   }
 
   return (
@@ -28,7 +88,43 @@ export default function LocationStep({ initialLocations }: { initialLocations: a
       onNext={handleNext}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* ... (province and town select inputs) */}
+        <div>
+          <label htmlFor="province" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Province
+          </label>
+          <select
+            id="province"
+            value={province}
+            onChange={handleProvinceChange}
+            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500"
+          >
+            <option value="">Select Province</option>
+            {locations.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="town" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Town
+          </label>
+          <select
+            id="town"
+            value={town}
+            onChange={(e) => setTown(e.target.value)}
+            disabled={!province}
+            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 disabled:bg-gray-100 dark:disabled:bg-gray-600"
+          >
+            <option value="">Select Town</option>
+            {towns.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {suggestedCrops.length > 0 && (
