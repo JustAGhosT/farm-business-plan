@@ -138,15 +138,17 @@ let AzureOpenAI: any
 let azureOpenai: any
 
 async function getAzureOpenAIClient() {
-  if (!process.env.AZURE_OPENAI_API_KEY || !process.env.AZURE_OPENAI_ENDPOINT) {
+  if (!process.env.AZURE_OPENAI_SECRET_KEY || !process.env.AZURE_OPENAI_URL) {
     throw new Error('Azure OpenAI API key or endpoint is not configured')
   }
 
   if (!AzureOpenAI) {
-    AzureOpenAI = (await import('openai')).default
+    const { AzureOpenAI: AzureClient } = await import('openai')
+    AzureOpenAI = AzureClient
     azureOpenai = new AzureOpenAI({
-      apiKey: process.env.AZURE_OPENAI_API_KEY,
-      endpoint: process.env.AZURE_OPENAI_ENDPOINT,
+      apiKey: process.env.AZURE_OPENAI_SECRET_KEY,
+      endpoint: process.env.AZURE_OPENAI_URL,
+      apiVersion: '2024-10-21',
     })
   }
 
@@ -157,7 +159,7 @@ export class AzureOpenAIProvider implements LlmProvider {
   async generateSuggestions(prompt: string): Promise<string[]> {
     const client = await getAzureOpenAIClient()
     const completion = await client.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-5-chat',
       messages: [
         {
           role: 'system',
