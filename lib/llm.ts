@@ -148,7 +148,7 @@ async function getAzureOpenAIClient() {
     azureOpenai = new AzureOpenAI({
       apiKey: process.env.AZURE_OPENAI_SECRET_KEY,
       endpoint: process.env.AZURE_OPENAI_URL,
-      apiVersion: '2024-02-15-preview',
+      apiVersion: '2024-10-21',
     })
   }
 
