@@ -144,7 +144,8 @@ async function getAzureOpenAIClient() {
 
   if (!AzureOpenAI) {
     const { AzureOpenAI: AzureClient } = await import('openai')
-    azureOpenai = new AzureClient({
+    AzureOpenAI = AzureClient
+    azureOpenai = new AzureOpenAI({
       apiKey: process.env.AZURE_OPENAI_SECRET_KEY,
       endpoint: process.env.AZURE_OPENAI_URL,
       apiVersion: '2024-02-15-preview',
