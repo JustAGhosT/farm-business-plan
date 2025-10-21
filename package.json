@@ -34,10 +34,12 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.67.0",
     "@netlify/neon": "^0.1.0",
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^3.0.2",
     "gray-matter": "^4.0.3",
+    "groq-sdk": "^0.34.0",
     "jspdf": "^3.0.3",
     "jspdf-autotable": "^5.0.2",
     "next": "^15.5.6",
