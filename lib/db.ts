@@ -65,9 +65,12 @@ function initializePool(): Pool {
 
   // Determine SSL configuration
   let sslConfig: boolean | { rejectUnauthorized: boolean } = false
-  
+
   // Only use SSL in production and not during build phase
-  if (process.env.NODE_ENV === 'production' && process.env.NEXT_PHASE !== 'phase-production-build') {
+  if (
+    process.env.NODE_ENV === 'production' &&
+    process.env.NEXT_PHASE !== 'phase-production-build'
+  ) {
     // Check if the connection string explicitly disables SSL
     if (!connectionString.includes('sslmode=disable')) {
       sslConfig = { rejectUnauthorized: false }
