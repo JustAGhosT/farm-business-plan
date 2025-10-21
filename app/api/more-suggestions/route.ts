@@ -51,7 +51,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const province = searchParams.get('province')
   const town = searchParams.get('town')
-  
+
   if (!province || !town) {
     return NextResponse.json({ error: 'Province and town are required' }, { status: 400 })
   }
