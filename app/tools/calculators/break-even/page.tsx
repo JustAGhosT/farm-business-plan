@@ -283,6 +283,7 @@ export default function BreakEvenCalculator() {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
                   placeholder="e.g., Dragon Fruit"
                 />
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Fixed costs at 100%</p>
               </div>
 
               <div>
