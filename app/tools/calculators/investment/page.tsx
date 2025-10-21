@@ -193,7 +193,10 @@ export default function InvestmentCalculator() {
         <div className="mb-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
           <div className="grid md:grid-cols-3 gap-4">
             <div>
-              <label htmlFor="years" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="years"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Investment Timeline (Years)
               </label>
               <input
@@ -221,17 +224,21 @@ export default function InvestmentCalculator() {
                 step="0.1"
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
               />
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Additional investment each year</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Additional investment each year
+              </p>
             </div>
             <div>
-              <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Total Allocation</div>
+              <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Total Allocation
+              </div>
               <div
                 className={`text-2xl font-bold ${
                   totalPercentage === 100
                     ? 'text-green-600 dark:text-green-400'
                     : totalPercentage > 100
-                    ? 'text-red-600 dark:text-red-400'
-                    : 'text-yellow-600 dark:text-yellow-400'
+                      ? 'text-red-600 dark:text-red-400'
+                      : 'text-yellow-600 dark:text-yellow-400'
                 }`}
               >
                 {totalPercentage.toFixed(0)}%
@@ -240,8 +247,8 @@ export default function InvestmentCalculator() {
                 {totalPercentage === 100
                   ? '✓ Complete'
                   : totalPercentage > 100
-                  ? '⚠ Over 100%'
-                  : '⚠ Under 100%'}
+                    ? '⚠ Over 100%'
+                    : '⚠ Under 100%'}
               </p>
             </div>
           </div>
@@ -263,12 +270,7 @@ export default function InvestmentCalculator() {
                   onClick={() => removeCrop(crop.id)}
                   className="text-red-600 hover:text-red-700 transition-colors"
                 >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -292,9 +294,6 @@ export default function InvestmentCalculator() {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
                   placeholder="e.g., Dragon Fruit"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Allocation percentage
-                </p>
               </div>
 
               <div>
@@ -312,7 +311,9 @@ export default function InvestmentCalculator() {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
                   placeholder="e.g., 50"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Allocation percentage</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Allocation percentage
+                </p>
               </div>
 
               <div>
@@ -340,7 +341,9 @@ export default function InvestmentCalculator() {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
                   placeholder="e.g., 150000"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Irrigation, fencing, structures</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Irrigation, fencing, structures
+                </p>
               </div>
 
               <div>
@@ -354,7 +357,9 @@ export default function InvestmentCalculator() {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
                   placeholder="e.g., 80000"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Tractors, implements, tools</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Tractors, implements, tools
+                </p>
               </div>
 
               <div>
@@ -368,7 +373,9 @@ export default function InvestmentCalculator() {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
                   placeholder="e.g., 30000"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Seeds, fertilizers, pesticides</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Seeds, fertilizers, pesticides
+                </p>
               </div>
 
               <div>
@@ -382,7 +389,9 @@ export default function InvestmentCalculator() {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
                   placeholder="e.g., 40000"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">3-6 months operating expenses</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  3-6 months operating expenses
+                </p>
               </div>
             </div>
           </div>
@@ -394,7 +403,9 @@ export default function InvestmentCalculator() {
             <h2 className="text-xl font-semibold mb-4 dark:text-white">Investment Summary</h2>
             <div className="space-y-4">
               <div className="bg-primary-50 dark:bg-primary-900/20 rounded-lg p-4 border-2 border-primary-200 dark:border-primary-700">
-                <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Total Initial Investment</div>
+                <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">
+                  Total Initial Investment
+                </div>
                 <div className="text-3xl font-bold text-primary-700 dark:text-primary-400">
                   {formatCurrency(totalInvestment)}
                 </div>
@@ -403,7 +414,9 @@ export default function InvestmentCalculator() {
               {/* Multi-Year Investment Timeline */}
               {yearInvestments.length > 1 && (
                 <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Investment Timeline</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
+                    Investment Timeline
+                  </h3>
                   <div className="space-y-2">
                     {yearInvestments.map((year) => (
                       <div key={year.year} className="flex justify-between text-sm">
@@ -425,7 +438,9 @@ export default function InvestmentCalculator() {
               {/* Per-Crop Breakdown */}
               {crops.length > 1 && (
                 <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Investment by Crop</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
+                    Investment by Crop
+                  </h3>
                   <div className="space-y-2">
                     {crops.map((crop) => {
                       const percentage = crop.percentage / 100
@@ -441,7 +456,9 @@ export default function InvestmentCalculator() {
                           <span className="text-gray-600 dark:text-gray-400">
                             {crop.name || 'Unnamed'} ({crop.percentage}%):
                           </span>
-                          <span className="font-medium dark:text-white">{formatCurrency(cropInvestment)}</span>
+                          <span className="font-medium dark:text-white">
+                            {formatCurrency(cropInvestment)}
+                          </span>
                         </div>
                       )
                     })}
@@ -489,7 +506,9 @@ export default function InvestmentCalculator() {
 
             <div className="mt-6 space-y-4">
               <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Total Funding Secured</div>
+                <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">
+                  Total Funding Secured
+                </div>
                 <div className="text-2xl font-bold text-gray-900 dark:text-white">
                   {formatCurrency(totalFunding)}
                 </div>
@@ -510,7 +529,9 @@ export default function InvestmentCalculator() {
                 <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Funding Gap</div>
                 <div
                   className={`text-2xl font-bold ${
-                    fundingGap > 0 ? 'text-red-700 dark:text-red-400' : 'text-green-700 dark:text-green-400'
+                    fundingGap > 0
+                      ? 'text-red-700 dark:text-red-400'
+                      : 'text-green-700 dark:text-green-400'
                   }`}
                 >
                   {formatCurrency(Math.abs(fundingGap))}
@@ -522,7 +543,9 @@ export default function InvestmentCalculator() {
 
               {totalInvestment > 0 && (
                 <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Funding Breakdown</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
+                    Funding Breakdown
+                  </h3>
                   {fundingSources
                     .filter((s) => parseFloat(s.amount) > 0)
                     .map((source, index) => {

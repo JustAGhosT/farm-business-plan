@@ -7,17 +7,27 @@ export async function GET(request: Request) {
   const town = searchParams.get('town')
 
   try {
-    let query = db.selectFrom('crops')
+    let baseQuery = 'SELECT * FROM crops'
+    const whereClauses = []
+    const params = []
+    let paramIndex = 1
 
     if (province) {
-      query = query.where('province', '=', province)
+      whereClauses.push(`province = $${paramIndex++}`)
+      params.push(province)
     }
 
     if (town) {
-      query = query.where('town', '=', town)
+      whereClauses.push(`town = $${paramIndex++}`)
+      params.push(town)
     }
 
-    const suggestions = await query.selectAll().execute()
+    if (whereClauses.length > 0) {
+      baseQuery += ' WHERE ' + whereClauses.join(' AND ')
+    }
+
+    const result = await query(baseQuery, params)
+    const suggestions = result.rows
     return NextResponse.json({ suggestions })
   } catch (error) {
     console.error('Error fetching crop suggestions:', error)

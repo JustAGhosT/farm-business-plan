@@ -156,7 +156,9 @@ export default function CalculatorWizard() {
       return
     }
     if (totalPercentage !== 100) {
-      alert(`Total percentage must equal 100% before saving. Currently at ${totalPercentage.toFixed(0)}%`)
+      alert(
+        `Total percentage must equal 100% before saving. Currently at ${totalPercentage.toFixed(0)}%`
+      )
       return
     }
     const validCrops = crops.filter((c) => c.name.trim() !== '')
@@ -206,7 +208,9 @@ export default function CalculatorWizard() {
 
   const handleExportPDF = async () => {
     if (totalPercentage !== 100) {
-      alert(`Total percentage must equal 100% to export. Currently at ${totalPercentage.toFixed(0)}%`)
+      alert(
+        `Total percentage must equal 100% to export. Currently at ${totalPercentage.toFixed(0)}%`
+      )
       return
     }
     const validCrops = crops.filter((c) => c.name.trim() !== '')
@@ -255,11 +259,19 @@ export default function CalculatorWizard() {
       return
     }
     const yearsNum = parseInt(years)
-    if (yearsNum > 10) warnings.push('Planning period over 10 years may have significant uncertainty')
-    if (yearsNum < 3) warnings.push('Short planning periods may not show full crop maturity benefits')
+    if (yearsNum > 10)
+      warnings.push('Planning period over 10 years may have significant uncertainty')
+    if (yearsNum < 3)
+      warnings.push('Short planning periods may not show full crop maturity benefits')
     setupData.crops.forEach((crop) => {
-      if (crop.percentage < 5) warnings.push(`${crop.name}: Very low allocation (${crop.percentage}%) may not be economically viable`)
-      if (crop.percentage > 70) warnings.push(`${crop.name}: High allocation (${crop.percentage}%) increases risk - consider diversification`)
+      if (crop.percentage < 5)
+        warnings.push(
+          `${crop.name}: Very low allocation (${crop.percentage}%) may not be economically viable`
+        )
+      if (crop.percentage > 70)
+        warnings.push(
+          `${crop.name}: High allocation (${crop.percentage}%) increases risk - consider diversification`
+        )
     })
     if (warnings.length > 0) {
       const proceed = confirm(`⚠️ Validation Warnings:\n\n${warnings.map((w) => `• ${w}`).join('\n')}\n\nProceed anyway?`)
@@ -296,7 +308,11 @@ export default function CalculatorWizard() {
               </h3>
               <button onClick={() => setShowSavedSessions(!showSavedSessions)} className="text-sm text-purple-700 hover:text-purple-900 underline">{showSavedSessions ? 'Hide' : 'View Saved Sessions'}</button>
             </div>
-            {saveMessage && (<div className="mb-3 p-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded text-sm">{saveMessage}</div>)}
+            {saveMessage && (
+              <div className="mb-3 p-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded text-sm">
+                {saveMessage}
+              </div>
+            )}
             <div className="flex gap-2 items-end">
               <div className="flex-1">
                 <label className="block text-xs text-purple-700 dark:text-purple-300 mb-1">Session Name</label>
@@ -357,23 +373,45 @@ export default function CalculatorWizard() {
             </div>
             {showTemplates && (
               <div className="mb-6 bg-gradient-to-r from-green-50 to-blue-50 dark:from-gray-700 dark:to-gray-800 border-2 border-green-300 dark:border-green-700 rounded-lg p-6">
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2"><span className="text-2xl">🌱</span>Quick Start Templates</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">Pre-configured crop combinations optimized for Bela Bela, Limpopo region</p>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <span className="text-2xl">🌱</span>Quick Start Templates
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                  Pre-configured crop combinations optimized for Bela Bela, Limpopo region
+                </p>
                 <div className="grid md:grid-cols-3 gap-4 mb-4">
                   <button onClick={() => applyTemplate('balanced')} className="bg-white dark:bg-gray-800 border-2 border-green-400 dark:border-green-600 hover:border-green-600 dark:hover:border-green-500 rounded-lg p-4 text-left transition-all hover:shadow-md">
                     <div className="font-semibold text-green-700 dark:text-green-400 mb-1">🌾 Balanced Portfolio</div>
                     <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">Dragon Fruit (30%), Moringa (25%), Lucerne (20%), Tomatoes (15%), Butternut (10%)</div>
                     <div className="text-xs text-green-600 dark:text-green-500">✓ Diversified risk • Mixed profitability</div>
                   </button>
-                  <button onClick={() => applyTemplate('lowWater')} className="bg-white dark:bg-gray-800 border-2 border-blue-400 dark:border-blue-600 hover:border-blue-600 dark:hover:border-blue-500 rounded-lg p-4 text-left transition-all hover:shadow-md">
-                    <div className="font-semibold text-blue-700 dark:text-blue-400 mb-1">💧 Low Water Portfolio</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">Moringa (40%), Maize (35%), Butternut (25%)</div>
-                    <div className="text-xs text-blue-600 dark:text-blue-500">✓ Drought resistant • Lower water costs</div>
+                  <button
+                    onClick={() => applyTemplate('lowWater')}
+                    className="bg-white dark:bg-gray-800 border-2 border-blue-400 dark:border-blue-600 hover:border-blue-600 dark:hover:border-blue-500 rounded-lg p-4 text-left transition-all hover:shadow-md"
+                  >
+                    <div className="font-semibold text-blue-700 dark:text-blue-400 mb-1">
+                      💧 Low Water Portfolio
+                    </div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
+                      Moringa (40%), Maize (35%), Butternut (25%)
+                    </div>
+                    <div className="text-xs text-blue-600 dark:text-blue-500">
+                      ✓ Drought resistant • Lower water costs
+                    </div>
                   </button>
-                  <button onClick={() => applyTemplate('highProfit')} className="bg-white dark:bg-gray-800 border-2 border-yellow-400 dark:border-yellow-600 hover:border-yellow-600 dark:hover:border-yellow-500 rounded-lg p-4 text-left transition-all hover:shadow-md">
-                    <div className="font-semibold text-yellow-700 dark:text-yellow-400 mb-1">💰 High Profit Portfolio</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">Dragon Fruit (50%), Moringa (50%)</div>
-                    <div className="text-xs text-yellow-600 dark:text-yellow-500">✓ Maximum returns • Higher investment</div>
+                  <button
+                    onClick={() => applyTemplate('highProfit')}
+                    className="bg-white dark:bg-gray-800 border-2 border-yellow-400 dark:border-yellow-600 hover:border-yellow-600 dark:hover:border-yellow-500 rounded-lg p-4 text-left transition-all hover:shadow-md"
+                  >
+                    <div className="font-semibold text-yellow-700 dark:text-yellow-400 mb-1">
+                      💰 High Profit Portfolio
+                    </div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
+                      Dragon Fruit (50%), Moringa (50%)
+                    </div>
+                    <div className="text-xs text-yellow-600 dark:text-yellow-500">
+                      ✓ Maximum returns • Higher investment
+                    </div>
                   </button>
                 </div>
                 <div className="border-t dark:border-gray-600 pt-4">
@@ -387,26 +425,83 @@ export default function CalculatorWizard() {
               </div>
             )}
             <div className="space-y-4 mb-4">
-              {loadingSuggestions ? (<p>Loading crop suggestions...</p>) : crops.map((crop, index) => (
-                <div key={crop.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-800">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-medium text-gray-900 dark:text-white">Crop {index + 1}{crop.name ? `: ${crop.name}` : ''}</h3>
-                    {crops.length > 1 && (<button onClick={() => removeCrop(crop.id)} className="text-red-600 hover:text-red-700 transition-colors" aria-label="Remove crop" title="Remove crop"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>)}
-                  </div>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Crop Name *</label>
-                      <select value={crop.name} onChange={(e) => updateCrop(crop.id, 'name', e.target.value)} className="w-full px-4 py-3 md:py-2 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation text-base">
-                        <option value="">Select a crop</option>
-                        {cropSuggestions.map((suggestion) => (
-                          <option key={suggestion.id} value={suggestion.name}>{suggestion.name}</option>
-                        ))}
-                      </select>
+              {loadingSuggestions ? (
+                <p>Loading crop suggestions...</p>
+              ) : (
+                crops.map((crop, index) => (
+                  <div
+                    key={crop.id}
+                    className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-800"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="font-medium text-gray-900 dark:text-white">
+                        Crop {index + 1}
+                        {crop.name ? `: ${crop.name}` : ''}
+                      </h3>
+                      {crops.length > 1 && (
+                        <button
+                          onClick={() => removeCrop(crop.id)}
+                          className="text-red-600 hover:text-red-700 transition-colors"
+                          aria-label="Remove crop"
+                          title="Remove crop"
+                        >
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      )}
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">% of Land/Resources *<span className="ml-2 text-xs text-gray-500 dark:text-gray-400">ℹ️ Must total 100%</span></label>
-                      <input type="number" value={crop.percentage} onChange={(e) => updateCrop(crop.id, 'percentage', parseFloat(e.target.value) || 0)} min="0" max="100" step="1" className="w-full px-4 py-3 md:py-2 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation text-base" placeholder="e.g., 50" />
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Tip: Start with 20-30% for new crops</p>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Crop Name *
+                        </label>
+                        <select
+                          value={crop.name}
+                          onChange={(e) => updateCrop(crop.id, 'name', e.target.value)}
+                          className="w-full px-4 py-3 md:py-2 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation text-base"
+                        >
+                          <option value="">Select a crop</option>
+                          {cropSuggestions.map((suggestion) => (
+                            <option key={suggestion.id} value={suggestion.name}>
+                              {suggestion.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          % of Land/Resources *
+                          <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
+                            ℹ️ Must total 100%
+                          </span>
+                        </label>
+                        <input
+                          type="number"
+                          value={crop.percentage}
+                          onChange={(e) =>
+                            updateCrop(crop.id, 'percentage', parseFloat(e.target.value) || 0)
+                          }
+                          min="0"
+                          max="100"
+                          step="1"
+                          className="w-full px-4 py-3 md:py-2 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation text-base"
+                          placeholder="e.g., 50"
+                        />
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          Tip: Start with 20-30% for new crops
+                        </p>
+                      </div>
                     </div>
                   </div>
                 ))
@@ -416,33 +511,97 @@ export default function CalculatorWizard() {
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Total Allocation:</span>
                 <div className="flex items-center gap-2">
-                  <span className={`text-2xl font-bold ${totalPercentage === 100 ? 'text-green-600 dark:text-green-400' : totalPercentage > 100 ? 'text-red-600 dark:text-red-400' : 'text-yellow-600 dark:text-yellow-400'}`}>{totalPercentage.toFixed(0)}%</span>
-                  <span className="text-sm text-gray-600 dark:text-gray-400">{totalPercentage === 100 ? '✓ Ready' : totalPercentage > 100 ? '⚠ Over 100%' : '⚠ Under 100%'}</span>
+                  <span
+                    className={`text-2xl font-bold ${totalPercentage === 100 ? 'text-green-600 dark:text-green-400' : totalPercentage > 100 ? 'text-red-600 dark:text-red-400' : 'text-yellow-600 dark:text-yellow-400'}`}
+                  >
+                    {totalPercentage.toFixed(0)}%
+                  </span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    {totalPercentage === 100
+                      ? '✓ Ready'
+                      : totalPercentage > 100
+                        ? '⚠ Over 100%'
+                        : '⚠ Under 100%'}
+                  </span>
                 </div>
               </div>
               <div className="mt-2 w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
-                <div className={`h-2 rounded-full transition-all ${totalPercentage === 100 ? 'bg-green-600' : totalPercentage > 100 ? 'bg-red-600' : 'bg-yellow-600'}`} style={{ width: `${Math.min(totalPercentage, 100)}%` }}></div>
+                <div
+                  className={`h-2 rounded-full transition-all ${totalPercentage === 100 ? 'bg-green-600' : totalPercentage > 100 ? 'bg-red-600' : 'bg-yellow-600'}`}
+                  style={{ width: `${Math.min(totalPercentage, 100)}%` }}
+                ></div>
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-3 border-t dark:border-gray-700 pt-6">
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-              <div className="flex flex-col sm:flex-row gap-3 flex-1">
-                <button onClick={() => setShowScenarioComparison(true)} disabled={totalPercentage !== 100 || crops.filter((c) => c.name.trim()).length === 0} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2 touch-manipulation">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+          <div className="border-t dark:border-gray-700 pt-6">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              {/* Left-aligned action buttons */}
+              <div className="flex w-full sm:w-auto items-center gap-3">
+                <button
+                  onClick={() => setShowScenarioComparison(true)}
+                  disabled={
+                    totalPercentage !== 100 || crops.filter((c) => c.name.trim()).length === 0
+                  }
+                  className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                    />
+                  </svg>
                   Compare Scenarios
                 </button>
-                <button onClick={handleExportPDF} disabled={exportingPDF || totalPercentage !== 100 || crops.filter((c) => c.name.trim()).length === 0} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2 touch-manipulation">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" /></svg>
+                <button
+                  onClick={handleExportPDF}
+                  disabled={
+                    exportingPDF ||
+                    totalPercentage !== 100 ||
+                    crops.filter((c) => c.name.trim()).length === 0
+                  }
+                  className="w-full sm:w-auto px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"
+                    />
+                  </svg>
                   {exportingPDF ? 'Exporting...' : 'Export PDF'}
                 </button>
               </div>
-            </div>
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-              <Link href="/tools/calculators" className="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium text-gray-700 dark:text-gray-300 text-center touch-manipulation">Cancel</Link>
-              <button onClick={handleNext} disabled={totalPercentage !== 100 || crops.filter((c) => c.name.trim()).length === 0} className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2 touch-manipulation" data-testid="wizard-next-button">
-                Next <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-              </button>
+
+              {/* Right-aligned navigation buttons */}
+              <div className="flex w-full sm:w-auto items-center gap-3">
+                <Link
+                  href="/tools/calculators"
+                  className="w-full sm:w-auto px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium text-gray-700 dark:text-gray-300 text-center"
+                >
+                  Cancel
+                </Link>
+                <button
+                  onClick={handleNext}
+                  disabled={
+                    totalPercentage !== 100 || crops.filter((c) => c.name.trim()).length === 0
+                  }
+                  className="w-full sm:w-auto px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2"
+                  data-testid="wizard-next-button"
+                >
+                  Next{' '}
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
           {crops.filter((c) => c.name.trim() !== '').length > 0 && totalPercentage === 100 && (
@@ -459,7 +618,19 @@ export default function CalculatorWizard() {
           )}
         </div>
       </div>
-      {showScenarioComparison && (<WizardScenarioComparison cropTemplates={cropTemplateMap} onClose={() => setShowScenarioComparison(false)} currentPlan={{ name: 'Current Plan', crops: crops.map(({ name, percentage }) => ({ name, percentage })), years: parseInt(years), totalHectares: parseFloat(totalHectares), isSaved: false }} />)}
+      {showScenarioComparison && (
+        <WizardScenarioComparison
+          cropTemplates={cropTemplateMap}
+          onClose={() => setShowScenarioComparison(false)}
+          currentPlan={{
+            name: 'Current Plan',
+            crops: crops.map(({ name, percentage }) => ({ name, percentage })),
+            years: parseInt(years),
+            totalHectares: parseFloat(totalHectares),
+            isSaved: false,
+          }}
+        />
+      )}
     </div>
   )
 }
