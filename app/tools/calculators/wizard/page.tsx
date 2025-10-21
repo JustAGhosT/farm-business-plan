@@ -31,6 +31,8 @@ export default function CalculatorWizard() {
   const [saveMessage, setSaveMessage] = useState('')
   const [totalHectares, setTotalHectares] = useState('10')
   const [exportingPDF, setExportingPDF] = useState(false)
+  const [cropSuggestions, setCropSuggestions] = useState<any[]>([])
+  const [loadingSuggestions, setLoadingSuggestions] = useState(true)
   const [crops, setCrops] = useState<Crop[]>([
     {
       id: '1',
@@ -42,85 +44,25 @@ export default function CalculatorWizard() {
   const { sessions, loading, createSession, deleteSession } = useWizardSessions()
   const hasUserInteracted = useRef(false)
 
-  // Persistent counter for generating unique crop IDs
-  // Initialize to a value greater than any existing crop numeric ID
-  const getInitialCounter = () => {
-    const numericIds = crops
-      .map((c) => {
-        const match = c.id.match(/crop-(\d+)/)
-        return match ? parseInt(match[1], 10) : 0
-      })
-      .filter((n) => !isNaN(n))
-    return numericIds.length > 0 ? Math.max(...numericIds) + 1 : 1
-  }
-  const cropIdCounter = useRef(getInitialCounter())
-
-  // Load data from sessionStorage on mount (e.g., from AI wizard or previous session)
   useEffect(() => {
-    // Only load if user hasn't interacted and crops are still empty/default
-    if (hasUserInteracted.current || crops.length > 1 || crops[0].name !== '') {
-      return
+    const fetchSuggestions = async () => {
+      try {
+        setLoadingSuggestions(true)
+        const response = await fetch(`/api/suggest-crops?province=&town=`)
+        if (!response.ok) {
+          throw new Error('Failed to fetch crop suggestions')
+        }
+        const data = await response.json()
+        setCropSuggestions(data.suggestions)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setLoadingSuggestions(false)
+      }
     }
 
-    const raw = sessionStorage.getItem('calculatorWizardData')
-    if (!raw) return
-
-    try {
-      const wizardData = JSON.parse(raw)
-
-      // Validate the structure
-      if (!wizardData || typeof wizardData !== 'object') {
-        console.error('Invalid calculatorWizardData structure')
-        return
-      }
-
-      // Apply years if present
-      if (wizardData.years && typeof wizardData.years === 'number') {
-        setYears(wizardData.years.toString())
-      }
-
-      // Apply crops if present with deterministic IDs
-      if (Array.isArray(wizardData.crops) && wizardData.crops.length > 0) {
-        const suggestedCrops = wizardData.crops.map((crop: any, index: number) => ({
-          id: `wizard-crop-${index}`, // Deterministic ID instead of Date.now()
-          name: crop.name || '',
-          percentage: typeof crop.percentage === 'number' ? crop.percentage : 0,
-        }))
-        setCrops(suggestedCrops)
-      }
-    } catch (e) {
-      console.error('Failed to parse calculatorWizardData', e)
-      return
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // Empty dependency array - only run on mount, crops checked in condition above
-
-  const addCrop = () => {
-    hasUserInteracted.current = true
-    // Use persistent counter to avoid ID collisions when crops are removed then added
-    const nextId = `crop-${cropIdCounter.current}`
-    cropIdCounter.current++ // Increment counter for next use
-    setCrops([
-      ...crops,
-      {
-        id: nextId,
-        name: '',
-        percentage: 0,
-      },
-    ])
-  }
-
-  const removeCrop = (id: string) => {
-    hasUserInteracted.current = true
-    if (crops.length > 1) {
-      setCrops(crops.filter((c) => c.id !== id))
-    }
-  }
-
-  const updateCrop = (id: string, field: keyof Crop, value: string | number) => {
-    hasUserInteracted.current = true
-    setCrops(crops.map((c) => (c.id === id ? { ...c, [field]: value } : c)))
-  }
+    fetchSuggestions()
+  }, [])
 
   const applyTemplate = (templateType: 'balanced' | 'lowWater' | 'highProfit' | string) => {
     let selectedCrops
@@ -136,7 +78,6 @@ export default function CalculatorWizard() {
         selectedCrops = getHighProfitPortfolio()
         break
       default:
-        // Individual crop template
         const template = CROP_TEMPLATES.find((t) => t.name === templateType)
         if (template) {
           selectedCrops = [template]
@@ -147,13 +88,70 @@ export default function CalculatorWizard() {
     if (selectedCrops) {
       hasUserInteracted.current = true
       const newCrops = selectedCrops.map((template, index) => ({
-        id: `template-${templateType}-${index}`, // Deterministic ID based on template type and index
+        id: `template-${templateType}-${index}`,
         name: template.name,
         percentage: template.typicalPercentage,
       }))
       setCrops(newCrops)
       setShowTemplates(false)
     }
+  }
+
+  // Persistent counter for generating unique crop IDs
+  const getInitialCounter = () => {
+    const numericIds = crops
+      .map((c) => {
+        const match = c.id.match(/crop-(\d+)/)
+        return match ? parseInt(match[1], 10) : 0
+      })
+      .filter((n) => !isNaN(n))
+    return numericIds.length > 0 ? Math.max(...numericIds) + 1 : 1
+  }
+  const cropIdCounter = useRef(getInitialCounter())
+
+  // Load data from sessionStorage on mount
+  useEffect(() => {
+    if (hasUserInteracted.current || crops.length > 1 || crops[0].name !== '') {
+      return
+    }
+    const raw = sessionStorage.getItem('calculatorWizardData')
+    if (!raw) return
+    try {
+      const wizardData = JSON.parse(raw)
+      if (!wizardData || typeof wizardData !== 'object') return
+      if (wizardData.years && typeof wizardData.years === 'number') {
+        setYears(wizardData.years.toString())
+      }
+      if (Array.isArray(wizardData.crops) && wizardData.crops.length > 0) {
+        const suggestedCrops = wizardData.crops.map((crop: any, index: number) => ({
+          id: `wizard-crop-${index}`,
+          name: crop.name || '',
+          percentage: typeof crop.percentage === 'number' ? crop.percentage : 0,
+        }))
+        setCrops(suggestedCrops)
+      }
+    } catch (e) {
+      console.error('Failed to parse calculatorWizardData', e)
+    }
+  }, [crops])
+
+  const addCrop = () => {
+    hasUserInteracted.current = true
+    const nextId = `crop-${cropIdCounter.current}`
+    cropIdCounter.current++
+    setCrops([...crops, { id: nextId, name: '', percentage: 0 }])
+  }
+
+  const removeCrop = (id: string) => {
+    hasUserInteracted.current = true
+    if (crops.length > 1) {
+      setCrops(crops.filter((c) => c.id !== id))
+    }
+  }
+
+  const updateCrop = (id: string, field: keyof Crop, value: string | number) => {
+    hasUserInteracted.current = true
+    setCrops(crops.map((c) => (c.id === id ? { ...c, [field]: value } : c)))
   }
 
   const totalPercentage = crops.reduce((sum, c) => sum + (parseFloat(String(c.percentage)) || 0), 0)
@@ -163,20 +161,17 @@ export default function CalculatorWizard() {
       alert('Please enter a session name')
       return
     }
-
     if (totalPercentage !== 100) {
       alert(
-        `⚠️ Total percentage must equal 100% before saving. Currently at ${totalPercentage.toFixed(0)}%`
+        `Total percentage must equal 100% before saving. Currently at ${totalPercentage.toFixed(0)}%`
       )
       return
     }
-
     const validCrops = crops.filter((c) => c.name.trim() !== '')
     if (validCrops.length === 0) {
-      alert('⚠️ Please add at least one crop before saving')
+      alert('Please add at least one crop before saving')
       return
     }
-
     try {
       await createSession({
         session_name: sessionName,
@@ -220,33 +215,17 @@ export default function CalculatorWizard() {
   const handleExportPDF = async () => {
     if (totalPercentage !== 100) {
       alert(
-        `⚠️ Total percentage must equal 100% to export. Currently at ${totalPercentage.toFixed(0)}%`
+        `Total percentage must equal 100% to export. Currently at ${totalPercentage.toFixed(0)}%`
       )
       return
     }
-
     const validCrops = crops.filter((c) => c.name.trim() !== '')
     if (validCrops.length === 0) {
-      alert('⚠️ Please add at least one crop before exporting')
+      alert('Please add at least one crop before exporting')
       return
     }
-
-    // Check if all crops have templates
-    const missingTemplates = validCrops.filter(
-      (c) => !CROP_TEMPLATES.find((t) => t.name === c.name)
-    )
-    if (missingTemplates.length > 0) {
-      alert(
-        `⚠️ Some crops don't have template data: ${missingTemplates.map((c) => c.name).join(', ')}. Please use crops from the template list.`
-      )
-      return
-    }
-
     setExportingPDF(true)
     try {
-      const cropTemplateMap = new Map<string, CropTemplate>()
-      CROP_TEMPLATES.forEach((t) => cropTemplateMap.set(t.name, t))
-
       const fileName = await generateWizardPDF(
         {
           years: parseInt(years),
@@ -254,10 +233,9 @@ export default function CalculatorWizard() {
           totalPercentage,
         },
         parseFloat(totalHectares) || 10,
-        cropTemplateMap,
+        new Map(), // Pass an empty map for now
         sessionName || 'Farm Business Plan'
       )
-
       setSaveMessage(`✅ PDF exported successfully: ${fileName}`)
       setTimeout(() => setSaveMessage(''), 5000)
     } catch (error) {
@@ -272,59 +250,42 @@ export default function CalculatorWizard() {
   CROP_TEMPLATES.forEach((t) => cropTemplateMap.set(t.name, t))
 
   const handleNext = () => {
-    // Validation warnings
     const warnings = []
     const setupData = {
       years,
       crops: crops.filter((c) => c.name.trim() !== ''),
       totalPercentage,
     }
-
     if (setupData.crops.length === 0) {
-      alert('⚠️ Please add at least one crop with a name')
+      alert('Please add at least one crop with a name')
       return
     }
-
     if (totalPercentage !== 100) {
-      alert(`⚠️ Total percentage must equal 100%. Currently at ${totalPercentage.toFixed(0)}%`)
+      alert(`Total percentage must equal 100%. Currently at ${totalPercentage.toFixed(0)}%`)
       return
     }
-
-    // Check for validation warnings
     const yearsNum = parseInt(years)
-    if (yearsNum > 10) {
+    if (yearsNum > 10)
       warnings.push('Planning period over 10 years may have significant uncertainty')
-    }
-
-    if (yearsNum < 3) {
+    if (yearsNum < 3)
       warnings.push('Short planning periods may not show full crop maturity benefits')
-    }
-
-    // Check for crops with very low or high allocations
     setupData.crops.forEach((crop) => {
-      if (crop.percentage < 5) {
+      if (crop.percentage < 5)
         warnings.push(
           `${crop.name}: Very low allocation (${crop.percentage}%) may not be economically viable`
         )
-      }
-      if (crop.percentage > 70) {
+      if (crop.percentage > 70)
         warnings.push(
           `${crop.name}: High allocation (${crop.percentage}%) increases risk - consider diversification`
         )
-      }
     })
-
-    // Show warnings if any
     if (warnings.length > 0) {
       const proceed = confirm(
         `⚠️ Validation Warnings:\n\n${warnings.map((w) => `• ${w}`).join('\n')}\n\nProceed anyway?`
       )
       if (!proceed) return
     }
-
     sessionStorage.setItem('calculatorWizardData', JSON.stringify(setupData))
-
-    // Navigate to the first calculator in the sequence
     router.push('/tools/calculators/wizard/location')
   }
 
@@ -345,7 +306,6 @@ export default function CalculatorWizard() {
           </svg>
           Back to Calculators
         </Link>
-
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
           <div className="flex items-center mb-6">
             <span className="text-4xl mr-4">🧭</span>
@@ -358,8 +318,6 @@ export default function CalculatorWizard() {
               </p>
             </div>
           </div>
-
-          {/* Progress Indicator */}
           <div className="mb-8 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
             <p className="text-sm text-blue-800 dark:text-blue-300">
               <strong>Step 1 of 7:</strong> Farm Setup - Enter your crops and allocation
@@ -368,8 +326,6 @@ export default function CalculatorWizard() {
               Next: Location → Investment → Revenue → Break-Even → ROI → Loan Analysis
             </div>
           </div>
-
-          {/* Save/Load Section */}
           <div className="mb-6 bg-purple-50 dark:bg-purple-900/20 border-l-4 border-purple-500 p-4 rounded">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-semibold text-purple-900 dark:text-purple-200 flex items-center gap-2">
@@ -390,13 +346,11 @@ export default function CalculatorWizard() {
                 {showSavedSessions ? 'Hide' : 'View Saved Sessions'}
               </button>
             </div>
-
             {saveMessage && (
               <div className="mb-3 p-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded text-sm">
                 {saveMessage}
               </div>
             )}
-
             <div className="flex gap-2 items-end">
               <div className="flex-1">
                 <label className="block text-xs text-purple-700 dark:text-purple-300 mb-1">
@@ -426,7 +380,6 @@ export default function CalculatorWizard() {
                 Save Current Setup
               </button>
             </div>
-
             {showSavedSessions && (
               <div className="mt-4 border-t border-purple-200 dark:border-purple-700 pt-4">
                 <h4 className="text-sm font-semibold text-purple-900 dark:text-purple-200 mb-2">
@@ -473,8 +426,6 @@ export default function CalculatorWizard() {
               </div>
             )}
           </div>
-
-          {/* Global Settings */}
           <div className="mb-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
             <h2 className="text-lg font-semibold mb-4 dark:text-white">Farm Configuration</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -527,8 +478,6 @@ export default function CalculatorWizard() {
               </div>
             </div>
           </div>
-
-          {/* Crop Setup */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold dark:text-white">Crop Allocation</h2>
@@ -555,18 +504,14 @@ export default function CalculatorWizard() {
                 </button>
               </div>
             </div>
-
-            {/* Template Selector */}
             {showTemplates && (
               <div className="mb-6 bg-gradient-to-r from-green-50 to-blue-50 dark:from-gray-700 dark:to-gray-800 border-2 border-green-300 dark:border-green-700 rounded-lg p-6">
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                  <span className="text-2xl">🌱</span>
-                  Quick Start Templates
+                  <span className="text-2xl">🌱</span>Quick Start Templates
                 </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                   Pre-configured crop combinations optimized for Bela Bela, Limpopo region
                 </p>
-
                 <div className="grid md:grid-cols-3 gap-4 mb-4">
                   <button
                     onClick={() => applyTemplate('balanced')}
@@ -583,7 +528,6 @@ export default function CalculatorWizard() {
                       ✓ Diversified risk • Mixed profitability
                     </div>
                   </button>
-
                   <button
                     onClick={() => applyTemplate('lowWater')}
                     className="bg-white dark:bg-gray-800 border-2 border-blue-400 dark:border-blue-600 hover:border-blue-600 dark:hover:border-blue-500 rounded-lg p-4 text-left transition-all hover:shadow-md"
@@ -598,7 +542,6 @@ export default function CalculatorWizard() {
                       ✓ Drought resistant • Lower water costs
                     </div>
                   </button>
-
                   <button
                     onClick={() => applyTemplate('highProfit')}
                     className="bg-white dark:bg-gray-800 border-2 border-yellow-400 dark:border-yellow-600 hover:border-yellow-600 dark:hover:border-yellow-500 rounded-lg p-4 text-left transition-all hover:shadow-md"
@@ -614,7 +557,6 @@ export default function CalculatorWizard() {
                     </div>
                   </button>
                 </div>
-
                 <div className="border-t dark:border-gray-600 pt-4">
                   <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
                     Or choose individual crops:
@@ -633,94 +575,89 @@ export default function CalculatorWizard() {
                 </div>
               </div>
             )}
-
             <div className="space-y-4 mb-4">
-              {crops.map((crop, index) => (
-                <div
-                  key={crop.id}
-                  className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-800"
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-medium text-gray-900 dark:text-white">
-                      Crop {index + 1}
-                      {crop.name ? `: ${crop.name}` : ''}
-                    </h3>
-                    {crops.length > 1 && (
-                      <button
-                        onClick={() => removeCrop(crop.id)}
-                        className="text-red-600 hover:text-red-700 transition-colors"
-                        aria-label="Remove crop"
-                        title="Remove crop"
-                      >
-                        <svg
-                          className="w-5 h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
+              {loadingSuggestions ? (
+                <p>Loading crop suggestions...</p>
+              ) : (
+                crops.map((crop, index) => (
+                  <div
+                    key={crop.id}
+                    className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-800"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="font-medium text-gray-900 dark:text-white">
+                        Crop {index + 1}
+                        {crop.name ? `: ${crop.name}` : ''}
+                      </h3>
+                      {crops.length > 1 && (
+                        <button
+                          onClick={() => removeCrop(crop.id)}
+                          className="text-red-600 hover:text-red-700 transition-colors"
+                          aria-label="Remove crop"
+                          title="Remove crop"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Crop Name *
-                        <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
-                          ℹ️ Select from templates above
-                        </span>
-                      </label>
-                      <input
-                        type="text"
-                        value={crop.name}
-                        onChange={(e) => updateCrop(crop.id, 'name', e.target.value)}
-                        className="w-full px-4 py-3 md:py-2 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation text-base"
-                        placeholder="e.g., Dragon Fruit, Moringa, Lucerne"
-                        list={`crop-suggestions-${crop.id}`}
-                      />
-                      <datalist id={`crop-suggestions-${crop.id}`}>
-                        {CROP_TEMPLATES.map((template) => (
-                          <option key={template.name} value={template.name} />
-                        ))}
-                      </datalist>
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      )}
                     </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        % of Land/Resources *
-                        <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
-                          ℹ️ Must total 100%
-                        </span>
-                      </label>
-                      <input
-                        type="number"
-                        value={crop.percentage}
-                        onChange={(e) =>
-                          updateCrop(crop.id, 'percentage', parseFloat(e.target.value) || 0)
-                        }
-                        min="0"
-                        max="100"
-                        step="1"
-                        className="w-full px-4 py-3 md:py-2 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation text-base"
-                        placeholder="e.g., 50"
-                      />
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        Tip: Start with 20-30% for new crops
-                      </p>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Crop Name *
+                        </label>
+                        <select
+                          value={crop.name}
+                          onChange={(e) => updateCrop(crop.id, 'name', e.target.value)}
+                          className="w-full px-4 py-3 md:py-2 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation text-base"
+                        >
+                          <option value="">Select a crop</option>
+                          {cropSuggestions.map((suggestion) => (
+                            <option key={suggestion.id} value={suggestion.name}>
+                              {suggestion.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          % of Land/Resources *
+                          <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
+                            ℹ️ Must total 100%
+                          </span>
+                        </label>
+                        <input
+                          type="number"
+                          value={crop.percentage}
+                          onChange={(e) =>
+                            updateCrop(crop.id, 'percentage', parseFloat(e.target.value) || 0)
+                          }
+                          min="0"
+                          max="100"
+                          step="1"
+                          className="w-full px-4 py-3 md:py-2 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation text-base"
+                          placeholder="e.g., 50"
+                        />
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          Tip: Start with 20-30% for new crops
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
-
-            {/* Allocation Status */}
             <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -728,13 +665,7 @@ export default function CalculatorWizard() {
                 </span>
                 <div className="flex items-center gap-2">
                   <span
-                    className={`text-2xl font-bold ${
-                      totalPercentage === 100
-                        ? 'text-green-600 dark:text-green-400'
-                        : totalPercentage > 100
-                          ? 'text-red-600 dark:text-red-400'
-                          : 'text-yellow-600 dark:text-yellow-400'
-                    }`}
+                    className={`text-2xl font-bold ${totalPercentage === 100 ? 'text-green-600 dark:text-green-400' : totalPercentage > 100 ? 'text-red-600 dark:text-red-400' : 'text-yellow-600 dark:text-yellow-400'}`}
                   >
                     {totalPercentage.toFixed(0)}%
                   </span>
@@ -749,30 +680,22 @@ export default function CalculatorWizard() {
               </div>
               <div className="mt-2 w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
                 <div
-                  className={`h-2 rounded-full transition-all ${
-                    totalPercentage === 100
-                      ? 'bg-green-600'
-                      : totalPercentage > 100
-                        ? 'bg-red-600'
-                        : 'bg-yellow-600'
-                  }`}
+                  className={`h-2 rounded-full transition-all ${totalPercentage === 100 ? 'bg-green-600' : totalPercentage > 100 ? 'bg-red-600' : 'bg-yellow-600'}`}
                   style={{ width: `${Math.min(totalPercentage, 100)}%` }}
                 ></div>
               </div>
             </div>
           </div>
-
-          {/* Navigation */}
-          <div className="flex flex-col gap-3 border-t dark:border-gray-700 pt-6">
-            {/* Action Buttons Row */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-              <div className="flex flex-col sm:flex-row gap-3 flex-1">
+          <div className="border-t dark:border-gray-700 pt-6">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              {/* Left-aligned action buttons */}
+              <div className="flex w-full sm:w-auto items-center gap-3">
                 <button
                   onClick={() => setShowScenarioComparison(true)}
                   disabled={
                     totalPercentage !== 100 || crops.filter((c) => c.name.trim()).length === 0
                   }
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2 touch-manipulation"
+                  className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
@@ -791,7 +714,7 @@ export default function CalculatorWizard() {
                     totalPercentage !== 100 ||
                     crops.filter((c) => c.name.trim()).length === 0
                   }
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2 touch-manipulation"
+                  className="w-full sm:w-auto px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
@@ -804,38 +727,36 @@ export default function CalculatorWizard() {
                   {exportingPDF ? 'Exporting...' : 'Export PDF'}
                 </button>
               </div>
-            </div>
 
-            {/* Main Navigation Row */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-              <Link
-                href="/tools/calculators"
-                className="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium text-gray-700 dark:text-gray-300 text-center touch-manipulation"
-              >
-                Cancel
-              </Link>
-              <button
-                onClick={handleNext}
-                disabled={
-                  totalPercentage !== 100 || crops.filter((c) => c.name.trim()).length === 0
-                }
-                className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2 touch-manipulation"
-                data-testid="wizard-next-button"
-              >
-                Next
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
+              {/* Right-aligned navigation buttons */}
+              <div className="flex w-full sm:w-auto items-center gap-3">
+                <Link
+                  href="/tools/calculators"
+                  className="w-full sm:w-auto px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium text-gray-700 dark:text-gray-300 text-center"
+                >
+                  Cancel
+                </Link>
+                <button
+                  onClick={handleNext}
+                  disabled={
+                    totalPercentage !== 100 || crops.filter((c) => c.name.trim()).length === 0
+                  }
+                  className="w-full sm:w-auto px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2"
+                  data-testid="wizard-next-button"
+                >
+                  Next{' '}
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
-
-          {/* Visual Charts Section */}
           {crops.filter((c) => c.name.trim() !== '').length > 0 && totalPercentage === 100 && (
             <div className="mt-8 border-t dark:border-gray-700 pt-8">
               <div className="mb-6">
@@ -863,126 +784,8 @@ export default function CalculatorWizard() {
               <WizardCropCharts crops={crops} years={parseInt(years)} totalHectares={10} />
             </div>
           )}
-
-          {/* Help Section - Enhanced with contextual guidance */}
-          <div className="mt-8 space-y-4">
-            <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 p-4 rounded">
-              <h3 className="font-semibold text-yellow-900 dark:text-yellow-200 mb-2">
-                💡 How It Works
-              </h3>
-              <ul className="list-disc list-inside space-y-1 text-sm text-yellow-800 dark:text-yellow-300">
-                <li>
-                  <strong>Use Templates:</strong> Click &quot;Use Template&quot; for pre-configured
-                  crop portfolios optimized for South African conditions
-                </li>
-                <li>
-                  <strong>Enter Crops:</strong> Add your crops and allocate percentages (must total
-                  100%)
-                </li>
-                <li>
-                  <strong>Set Timeline:</strong> Choose your planning period (3-5 years recommended
-                  for most crops)
-                </li>
-                <li>
-                  <strong>Navigate Calculators:</strong> Use Next/Back buttons to move through
-                  financial analysis steps
-                </li>
-                <li>
-                  <strong>Modify As Needed:</strong> Your setup data is pre-filled but can be
-                  adjusted in each calculator
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
-              <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">
-                📋 Planning Tips
-              </h3>
-              <ul className="list-disc list-inside space-y-1 text-sm text-blue-800 dark:text-blue-300">
-                <li>
-                  <strong>Diversification:</strong> Allocate to 3-5 different crops to reduce risk
-                </li>
-                <li>
-                  <strong>Water Management:</strong> Consider water availability - mix high and low
-                  water-need crops
-                </li>
-                <li>
-                  <strong>Maturity Timelines:</strong> Include crops with different maturity periods
-                  for steady cash flow
-                </li>
-                <li>
-                  <strong>Market Demand:</strong> Research local and export market demand before
-                  finalizing allocations
-                </li>
-                <li>
-                  <strong>Start Small:</strong> For new crops, consider starting with 10-20%
-                  allocation initially
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 p-4 rounded">
-              <h3 className="font-semibold text-green-900 dark:text-green-200 mb-2">
-                🌱 Crop Selection Guide
-              </h3>
-              <div className="grid md:grid-cols-3 gap-4 text-sm text-green-800 dark:text-green-300">
-                <div>
-                  <div className="font-semibold mb-1">High Profit Crops:</div>
-                  <ul className="list-disc list-inside text-xs">
-                    <li>Dragon Fruit (R65/kg)</li>
-                    <li>Moringa (R45/kg)</li>
-                  </ul>
-                </div>
-                <div>
-                  <div className="font-semibold mb-1">Low Water Needs:</div>
-                  <ul className="list-disc list-inside text-xs">
-                    <li>Moringa</li>
-                    <li>Maize</li>
-                    <li>Butternut</li>
-                  </ul>
-                </div>
-                <div>
-                  <div className="font-semibold mb-1">Quick Returns:</div>
-                  <ul className="list-disc list-inside text-xs">
-                    <li>Moringa (1 year)</li>
-                    <li>Lucerne (1 year)</li>
-                    <li>Tomatoes (1 year)</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 rounded">
-              <h3 className="font-semibold text-red-900 dark:text-red-200 mb-2">
-                ⚠️ Common Mistakes to Avoid
-              </h3>
-              <ul className="list-disc list-inside space-y-1 text-sm text-red-800 dark:text-red-300">
-                <li>
-                  <strong>Over-allocation:</strong> Don&apos;t allocate more than 70% to any single
-                  crop
-                </li>
-                <li>
-                  <strong>Insufficient Water:</strong> Ensure your water supply supports all
-                  crops&apos; needs
-                </li>
-                <li>
-                  <strong>Unrealistic Timeline:</strong> Very long projections (&gt;10 years) have
-                  high uncertainty
-                </li>
-                <li>
-                  <strong>Market Research:</strong> Verify local demand and prices before committing
-                </li>
-                <li>
-                  <strong>Ignoring Costs:</strong> High-revenue crops often have high operating
-                  costs
-                </li>
-              </ul>
-            </div>
-          </div>
         </div>
       </div>
-
-      {/* Scenario Comparison Modal */}
       {showScenarioComparison && (
         <WizardScenarioComparison
           cropTemplates={cropTemplateMap}
