@@ -51,11 +51,15 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const province = searchParams.get('province')
   const town = searchParams.get('town')
-  const provider = searchParams.get('provider') || 'openai'
-
+  
   if (!province || !town) {
     return NextResponse.json({ error: 'Province and town are required' }, { status: 400 })
   }
+
+  // Determine provider: default to Azure if configured, otherwise use specified provider or OpenAI
+  const providerParam = searchParams.get('provider')
+  const hasAzureConfig = process.env.AZURE_OPENAI_SECRET_KEY && process.env.AZURE_OPENAI_URL
+  const provider = providerParam || (hasAzureConfig ? 'azure' : 'openai')
 
   let llmProvider
   switch (provider) {
