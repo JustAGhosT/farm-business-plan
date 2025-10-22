@@ -614,13 +614,15 @@ export default function CalculatorWizard() {
                     </div>
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label htmlFor={`crop-name-${crop.id}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Crop Name *
                         </label>
                         <select
+                          id={`crop-name-${crop.id}`}
                           value={crop.name}
                           onChange={(e) => updateCrop(crop.id, 'name', e.target.value)}
                           className="w-full px-4 py-3 md:py-2 border border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent touch-manipulation text-base"
+                          aria-label={`Select crop for ${crop.id}`}
                         >
                           <option value="">Select a crop</option>
                           {cropSuggestions.map((suggestion) => (
@@ -679,6 +681,7 @@ export default function CalculatorWizard() {
                 </div>
               </div>
               <div className="mt-2 w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                {/* eslint-disable-next-line no-inline-styles */}
                 <div
                   className={`h-2 rounded-full transition-all ${totalPercentage === 100 ? 'bg-green-600' : totalPercentage > 100 ? 'bg-red-600' : 'bg-yellow-600'}`}
                   style={{ width: `${Math.min(totalPercentage, 100)}%` }}
