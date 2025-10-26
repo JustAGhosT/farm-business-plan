@@ -6,23 +6,23 @@
 
 [build]
   # Build command for Next.js
-  command = "npm run build"
+  command = "pnpm run build"
   
   # Node.js version to use
   [build.environment]
-    NODE_VERSION = "18"
+    NODE_VERSION = "20"
 
 # Deploy Preview settings for pull requests
 [context.deploy-preview]
-  command = "npm run build"
+  command = "pnpm run build"
 
 # Branch deploy settings for non-production branches
 [context.branch-deploy]
-  command = "npm run build"
+  command = "pnpm run build"
 
 # Production-specific settings
 [context.production]
-  command = "npm run build"
+  command = "pnpm run build"
 
 # Next.js plugin for Netlify - enables serverless functions and ISR
 [[plugins]]

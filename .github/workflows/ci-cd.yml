@@ -22,17 +22,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Validate environment variables
-        run: npm run validate:env
+        run: pnpm run validate:env
         env:
           # Required base configuration for build
           DATABASE_URL: postgresql://ci_user:ci_password@localhost:5432/ci_db
@@ -56,20 +60,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Run Prettier check
-        run: npm run format:check
+        run: pnpm run format:check
 
       - name: Run ESLint
-        run: npm run lint
+        run: pnpm run lint
 
       - name: TypeScript type check
         run: npx tsc --noEmit
@@ -93,17 +101,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Run unit tests
-        run: npm test -- --ci --coverage --maxWorkers=2
+        run: pnpm run test --ci --coverage --maxWorkers=2
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4
@@ -146,14 +158,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Validate migration files
         run: |
@@ -169,7 +185,7 @@ jobs:
           fi
 
       - name: Test database connection
-        run: npm run db:test
+        run: pnpm run db:test
         env:
           DATABASE_URL: postgresql://test_user:test_password@localhost:5432/farm_plan_test
 
@@ -224,14 +240,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Setup test database
         run: |
@@ -248,7 +268,7 @@ jobs:
           PGPASSWORD: api_test_password
 
       - name: Build Next.js application
-        run: npm run build
+        run: pnpm run build
         env:
           DATABASE_URL: postgresql://api_test_user:api_test_password@localhost:5432/farm_plan_api_test
           NEXTAUTH_SECRET: test_secret_key_for_ci_pipeline
@@ -258,7 +278,7 @@ jobs:
           NEXT_PUBLIC_GITHUB_ENABLED: 'false'
 
       - name: Start Next.js server
-        run: npm run start &
+        run: pnpm run start &
         env:
           DATABASE_URL: postgresql://api_test_user:api_test_password@localhost:5432/farm_plan_api_test
           NEXTAUTH_SECRET: test_secret_key_for_ci_pipeline
@@ -313,19 +333,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
 
       - name: Run npm audit
-        run: npm audit --audit-level=moderate || true
+        run: pnpm audit --audit-level=moderate || true
 
       - name: Check for vulnerabilities
         run: |
           echo "Checking for known vulnerabilities..."
-          npm audit --json > audit-results.json || true
+          pnpm audit --json > audit-results.json || true
           cat audit-results.json
 
       - name: Upload security report
@@ -346,17 +370,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build application
-        run: npm run build
+        run: pnpm run build
         env:
           DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
           NEXTAUTH_SECRET: dummy_secret_for_build
@@ -394,17 +422,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build application for deployment
-        run: npm run build
+        run: pnpm run build
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL_PRODUCTION }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
@@ -417,7 +449,7 @@ jobs:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         if: env.NETLIFY_AUTH_TOKEN != '' && env.NETLIFY_SITE_ID != ''
         run: |
-          npm install -g netlify-cli
+          pnpm install -g netlify-cli
           netlify deploy --prod --message="Production deploy from CI/CD pipeline"
 
       - name: Run post-deployment health check
