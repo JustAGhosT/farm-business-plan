@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-type Step = 'basic-info' | 'location' | 'climate' | 'crops' | 'financials' | 'timeline' | 'recommendations'
+type Step = 'basic-info' | 'location' | 'climate' | 'crops' | 'financials' | 'timeline' | 'calculators' | 'recommendations'
 
 interface BoundaryPoint {
   lat: number
@@ -413,6 +413,7 @@ export default function AIWizardPage() {
     { id: 'crops', title: 'Crop Selection', icon: '🌱' },
     { id: 'financials', title: 'Budget & Goals', icon: '💰' },
     { id: 'timeline', title: 'Timeline', icon: '📅' },
+    { id: 'calculators', title: 'Financial Analysis', icon: '🧮' },
     { id: 'recommendations', title: 'AI Recommendations', icon: '🤖' },
   ]
 
@@ -519,6 +520,8 @@ export default function AIWizardPage() {
 
   const handleNext = () => {
     if (currentStep === 'timeline') {
+      setCurrentStep('calculators')
+    } else if (currentStep === 'calculators') {
       generateAIRecommendations()
       setCurrentStep('recommendations')
     } else {
@@ -1292,6 +1295,107 @@ export default function AIWizardPage() {
                     ))}
                   </div>
                 )}
+              </div>
+            )}
+            {currentStep === 'calculators' && (
+              <div>
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">🧮 Financial Analysis Tools</h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  Use our financial calculators to analyze your farm's profitability and investment requirements
+                </p>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <Link
+                    href="/tools/calculators/roi"
+                    className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                  >
+                    <div className="flex items-start mb-4">
+                      <span className="text-3xl mr-4">📈</span>
+                      <div>
+                        <h3 className="text-lg font-semibold mb-2 dark:text-white">ROI Calculator</h3>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm">
+                          Calculate Return on Investment for your farm operations
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                  <Link
+                    href="/tools/calculators/break-even"
+                    className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                  >
+                    <div className="flex items-start mb-4">
+                      <span className="text-3xl mr-4">⚖️</span>
+                      <div>
+                        <h3 className="text-lg font-semibold mb-2 dark:text-white">Break-Even Analysis</h3>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm">
+                          Determine your break-even point for production and sales
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                  <Link
+                    href="/tools/calculators/investment"
+                    className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                  >
+                    <div className="flex items-start mb-4">
+                      <span className="text-3xl mr-4">💰</span>
+                      <div>
+                        <h3 className="text-lg font-semibold mb-2 dark:text-white">Investment Calculator</h3>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm">
+                          Plan your startup investment and funding requirements
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                  <Link
+                    href="/tools/calculators/revenue"
+                    className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                  >
+                    <div className="flex items-start mb-4">
+                      <span className="text-3xl mr-4">📊</span>
+                      <div>
+                        <h3 className="text-lg font-semibold mb-2 dark:text-white">Revenue Projections</h3>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm">
+                          Project revenue based on yield and market prices
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                  <Link
+                    href="/tools/calculators/operating-costs"
+                    className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                  >
+                    <div className="flex items-start mb-4">
+                      <span className="text-3xl mr-4">💸</span>
+                      <div>
+                        <h3 className="text-lg font-semibold mb-2 dark:text-white">Operating Costs</h3>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm">
+                          Calculate monthly and annual operating expenses
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                  <Link
+                    href="/tools/calculators/loan"
+                    className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                  >
+                    <div className="flex items-start mb-4">
+                      <span className="text-3xl mr-4">🏦</span>
+                      <div>
+                        <h3 className="text-lg font-semibold mb-2 dark:text-white">Loan Calculator</h3>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm">
+                          Calculate loan payments and interest costs
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+                <div className="mt-6 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
+                  <p className="text-sm text-blue-800 dark:text-blue-300">
+                    <strong>💡 Tip:</strong> Use these calculators to validate your financial projections and 
+                    get detailed analysis of your farm's profitability. You can also view your calculation 
+                    history and generate reports from the dashboard.
+                  </p>
+                </div>
               </div>
             )}
           </div>
