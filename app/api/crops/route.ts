@@ -1,19 +1,19 @@
-import { sql } from '@vercel/postgres'
 import { NextResponse } from 'next/server'
 
+// Force this route to be dynamic (not pre-rendered during build)
+export const dynamic = 'force-dynamic'
+
+// Example crop data
+const crops = [
+  { id: 'dragon-fruit', name: 'Dragon Fruit', category: 'Fruit', avgYield: '15-25 tons/hectare' },
+  { id: 'moringa', name: 'Moringa', category: 'Leaf Vegetable', avgYield: '20-30 tons/hectare' },
+  { id: 'lucerne', name: 'Lucerne', category: 'Forage', avgYield: '10-15 tons/hectare' },
+]
+
 export async function GET() {
-  try {
-    const { rows } = await sql`
-      SELECT id, name, slug, description, image_url, category
-      FROM crops
-      ORDER BY name;
-    `
-    return NextResponse.json(rows)
-  } catch (error) {
-    console.error('Error fetching crops:', error)
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 },
-    )
-  }
+  return NextResponse.json({
+    success: true,
+    data: crops,
+    count: crops.length,
+  })
 }
