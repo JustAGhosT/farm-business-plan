@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { withTransaction } from '@/lib/db'
+import { taskRepository } from '@/lib/repositories/taskRepository'
 import { TaskSchema, validateData } from '@/lib/validation'
 import type { Task } from '@/lib/validation'
 
@@ -68,44 +68,8 @@ export async function POST(request: Request) {
     }
 
     // Create all tasks in a transaction
-    const createdTasks = await withTransaction(async (client) => {
-      const tasks = []
-
-      for (const taskData of validatedTasks) {
-        const createdBy = session?.user?.id || null
-
-        const result = await client.query(
-          `INSERT INTO tasks (
-            farm_plan_id, crop_plan_id, title, description, 
-            status, priority, category, due_date,
-            assigned_to, assigned_by, created_by, 
-            estimated_duration, requires_approval, notes
-          )
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
-          RETURNING *`,
-          [
-            taskData.farm_plan_id,
-            taskData.crop_plan_id || null,
-            taskData.title,
-            taskData.description || null,
-            taskData.status || 'pending',
-            taskData.priority || 'medium',
-            taskData.category || null,
-            taskData.due_date || null,
-            taskData.assigned_to || null,
-            createdBy,
-            createdBy,
-            taskData.estimated_duration || null,
-            taskData.requires_approval || false,
-            taskData.notes || null,
-          ]
-        )
-
-        tasks.push(result.rows[0])
-      }
-
-      return tasks
-    })
+    const createdBy = session?.user?.id || null
+    const createdTasks = await taskRepository.createMany(validatedTasks, createdBy)
 
     return NextResponse.json(
       {
@@ -172,46 +136,7 @@ export async function PATCH(request: Request) {
     ]
 
     // Update all tasks in a transaction
-    const updatedTasks = await withTransaction(async (client) => {
-      const tasks = []
-
-      for (const update of body.updates) {
-        const { id, ...updates } = update
-
-        const fields: string[] = []
-        const values: any[] = []
-        let paramIndex = 1
-
-        for (const [key, value] of Object.entries(updates)) {
-          if (ALLOWED_FIELDS.includes(key)) {
-            fields.push(`${key} = $${paramIndex++}`)
-            values.push(value)
-          }
-        }
-
-        if (fields.length === 0) {
-          continue // Skip if no valid fields to update
-        }
-
-        fields.push(`updated_at = $${paramIndex++}`)
-        values.push(new Date().toISOString())
-        values.push(id)
-
-        const result = await client.query(
-          `UPDATE tasks
-           SET ${fields.join(', ')}
-           WHERE id = $${paramIndex}
-           RETURNING *`,
-          values
-        )
-
-        if (result.rows.length > 0) {
-          tasks.push(result.rows[0])
-        }
-      }
-
-      return tasks
-    })
+    const updatedTasks = await taskRepository.updateMany(body.updates)
 
     return NextResponse.json({
       success: true,
@@ -265,14 +190,7 @@ export async function DELETE(request: Request) {
     }
 
     // Delete all tasks in a transaction
-    const deletedCount = await withTransaction(async (client) => {
-      const placeholders = ids.map((_, index) => `$${index + 1}`).join(',')
-      const result = await client.query(
-        `DELETE FROM tasks WHERE id IN (${placeholders}) RETURNING id`,
-        ids
-      )
-      return result.rowCount || 0
-    })
+    const deletedCount = await taskRepository.deleteMany(ids)
 
     return NextResponse.json({
       success: true,
