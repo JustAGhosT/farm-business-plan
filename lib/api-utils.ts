@@ -46,21 +46,22 @@ export class ApiClient {
       })
 
       // Handle empty responses (204 No Content, empty body)
-      const isNoContent = response.status === 204 || 
-                         response.headers.get('content-length') === '0' ||
-                         response.headers.get('content-type')?.includes('text/plain') && 
-                         response.headers.get('content-length') === '0'
+      const isNoContent =
+        response.status === 204 ||
+        response.headers.get('content-length') === '0' ||
+        (response.headers.get('content-type')?.includes('text/plain') &&
+          response.headers.get('content-length') === '0')
 
       let data: any = null
-      
+
       if (!isNoContent) {
         const contentType = response.headers.get('content-type')
         const responseText = await response.text()
-        
+
         if (responseText && contentType?.includes('application/json')) {
           try {
             data = JSON.parse(responseText)
-        } catch (parseError) {
+          } catch (parseError) {
             // If JSON parsing fails, return the text as error
             return {
               success: false,
@@ -87,7 +88,7 @@ export class ApiClient {
       }
     } catch (error) {
       return {
-            success: false,
+        success: false,
         error: error instanceof Error ? error.message : 'Unknown error occurred',
       }
     }
@@ -297,7 +298,12 @@ export const apiUtils = {
 }
 
 // Utility functions for API responses
-export function createErrorResponse(error: string, status = 400, details?: any, code?: string): Response {
+export function createErrorResponse(
+  error: string,
+  status = 400,
+  details?: any,
+  code?: string
+): Response {
   return new Response(
     JSON.stringify({
       success: false,
@@ -334,11 +340,11 @@ export function validateUuidParam(param: string | null): string {
   if (!param) {
     throw new Error('Missing required parameter')
   }
-  
+
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
   if (!uuidRegex.test(param)) {
     throw new Error('Invalid UUID format')
   }
-  
+
   return param
 }

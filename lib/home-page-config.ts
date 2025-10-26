@@ -35,9 +35,10 @@ export interface BenefitItem {
 export const HOME_CONFIG = {
   hero: {
     title: 'Agricultural Business Plan Template',
-    subtitle: 'A comprehensive framework for developing professional agricultural business plans and managing farm operations - adaptable for any crop, location, or scale',
+    subtitle:
+      'A comprehensive framework for developing professional agricultural business plans and managing farm operations - adaptable for any crop, location, or scale',
   },
-  
+
   quickStartSteps: [
     {
       title: 'Review the Framework',
@@ -79,12 +80,14 @@ export const HOME_CONFIG = {
     {
       icon: '🤖',
       title: 'AI-Powered Recommendations',
-      description: 'Get personalized crop suggestions and investment advice based on your location and budget',
+      description:
+        'Get personalized crop suggestions and investment advice based on your location and budget',
     },
     {
       icon: '💾',
       title: 'Save Your Progress',
-      description: 'Store your business plans, calculations, and track your farm operations over time',
+      description:
+        'Store your business plans, calculations, and track your farm operations over time',
     },
     {
       icon: '📊',
@@ -113,7 +116,8 @@ export const HOME_CONFIG = {
 
   tools: [
     {
-      href: (session: any) => (session ? '/tools/ai-wizard' : '/auth/signin?callbackUrl=/tools/ai-wizard'),
+      href: (session: any) =>
+        session ? '/tools/ai-wizard' : '/auth/signin?callbackUrl=/tools/ai-wizard',
       title: '🤖 AI Farm Planning',
       description: 'Complete farm planning with AI recommendations',
       requiresAuth: true,
@@ -125,7 +129,8 @@ export const HOME_CONFIG = {
       requiresAuth: false,
     },
     {
-      href: (session: any) => (session ? '/tools/dashboard' : '/auth/signin?callbackUrl=/tools/dashboard'),
+      href: (session: any) =>
+        session ? '/tools/dashboard' : '/auth/signin?callbackUrl=/tools/dashboard',
       title: '📊 Dashboard',
       description: 'Unified overview with financial metrics',
       requiresAuth: true,

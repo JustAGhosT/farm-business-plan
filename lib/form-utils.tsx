@@ -131,9 +131,9 @@ export const renderFormField = (
 
     case 'select':
       return (
-        <select 
-          value={value} 
-          onChange={(e) => onChange(e.target.value)} 
+        <select
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
           className={inputClasses}
           aria-invalid={Boolean(error)}
         >
