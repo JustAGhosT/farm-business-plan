@@ -1,7 +1,7 @@
 'use client'
 
-import React from 'react'
 import { ErrorMessage } from '@/lib/error-handling'
+import React from 'react'
 
 // Base form field props
 export interface BaseFormFieldProps {
@@ -211,7 +211,9 @@ export function FormTextarea({
 }
 
 // Select component
-export interface FormSelectProps extends BaseFormFieldProps {
+export interface FormSelectProps extends Omit<BaseFormFieldProps, 'value' | 'onChange'> {
+  value?: string | string[]
+  onChange?: (value?: string | string[]) => void
   options: Array<{ value: string; label: string; disabled?: boolean }>
   multiple?: boolean
 }
@@ -238,6 +240,15 @@ export function FormSelect({
 
   const selectClasses = `${baseClasses} ${errorClasses} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`
 
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (multiple) {
+      const selectedValues = Array.from(e.target.selectedOptions).map(option => option.value)
+      onChange?.(selectedValues)
+    } else {
+      onChange?.(e.target.value)
+    }
+  }
+
   return (
     <div className={className}>
       <label
@@ -250,8 +261,8 @@ export function FormSelect({
       <select
         id={name}
         name={name}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
+        value={multiple ? (Array.isArray(value) ? value : []) : (value || '')}
+        onChange={handleChange}
         onBlur={(e) => onBlur?.(name, e.target.value)}
         multiple={multiple}
         disabled={disabled}
@@ -259,7 +270,7 @@ export function FormSelect({
         aria-describedby={error ? `${name}-error` : helpText ? `${name}-help` : undefined}
         {...(error && { 'aria-invalid': 'true' })}
       >
-        <option value="">Select {label}</option>
+        {!multiple && <option value="">Select {label}</option>}
         {options.map((option) => (
           <option key={option.value} value={option.value} disabled={option.disabled}>
             {option.label}

@@ -24,7 +24,7 @@ export function PageLayout({
     <div
       className={`min-h-screen bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800 ${className}`}
     >
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <main className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="mb-8">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
             <div>
@@ -35,7 +35,7 @@ export function PageLayout({
           </div>
         </div>
         {children}
-      </div>
+      </main>
     </div>
   )
 }
@@ -59,11 +59,12 @@ export function LoadingState({
   }
 
   return (
-    <div className={`text-center py-12 ${className}`}>
+    <div className={`text-center py-12 ${className}`} role="status">
       <div
         className={`inline-block animate-spin rounded-full border-b-2 border-primary-600 ${sizeClasses[size]}`}
+        aria-hidden="true"
       ></div>
-      <p className="mt-4 text-gray-600 dark:text-gray-300">{message}</p>
+      <p className="mt-4 text-gray-600 dark:text-gray-300" aria-live="polite">{message}</p>
     </div>
   )
 }
@@ -160,6 +161,7 @@ export function ActionButtons({
       <div className="flex gap-3">
         {onBack && (
           <button
+            type="button"
             onClick={onBack}
             disabled={loading || disabled}
             className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -169,6 +171,7 @@ export function ActionButtons({
         )}
         {onCancel && (
           <button
+            type="button"
             onClick={onCancel}
             disabled={loading || disabled}
             className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -181,6 +184,7 @@ export function ActionButtons({
       <div className="flex gap-3">
         {onSave && (
           <button
+            type="button"
             onClick={onSave}
             disabled={loading || disabled}
             className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -190,6 +194,7 @@ export function ActionButtons({
         )}
         {onNext && (
           <button
+            type="button"
             onClick={onNext}
             disabled={loading || disabled}
             className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -281,6 +286,7 @@ export function DataGrid({ data, columns, className = '' }: DataGridProps) {
             {columns.map((column) => (
               <th
                 key={column.key}
+                scope="col"
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
               >
                 {column.label}

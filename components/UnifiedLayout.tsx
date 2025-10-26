@@ -234,12 +234,14 @@ export function UnifiedWizardLayout({
           {/* Navigation */}
           <div className="flex justify-between">
             <button
+              type="button"
               onClick={handleBack}
               className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               ← Back
             </button>
             <button
+              type="button"
               onClick={handleNext}
               disabled={!isFormValid}
               className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
