@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import { query } from '@/lib/db'
+import { farmPlanRepository } from '@/lib/repositories/farmPlanRepository'
+import { cropRepository } from '@/lib/repositories/cropRepository'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -21,21 +22,16 @@ export async function POST(request: Request) {
     }
 
     // Get farm plan details
-    const farmPlanResult = await query('SELECT * FROM farm_plans WHERE id = $1', [farm_plan_id])
+    const farmPlan = await farmPlanRepository.getById(farm_plan_id)
 
-    if (farmPlanResult.rows.length === 0) {
+    if (!farmPlan) {
       return NextResponse.json({ success: false, error: 'Farm plan not found' }, { status: 404 })
     }
 
-    const farmPlan = farmPlanResult.rows[0]
-
     // Get existing crop plans (history)
-    const existingCropsResult = await query(
-      'SELECT * FROM crop_plans WHERE farm_plan_id = $1 ORDER BY created_at DESC',
-      [farm_plan_id]
-    )
+    const existingCrops = await cropRepository.getHistory(farm_plan_id)
 
-    const rotationPlan = generateRotationPlan(farmPlan, existingCropsResult.rows, hectares, years)
+    const rotationPlan = generateRotationPlan(farmPlan, existingCrops, hectares, years)
 
     return NextResponse.json({
       success: true,

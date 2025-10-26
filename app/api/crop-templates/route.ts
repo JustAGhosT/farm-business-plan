@@ -1,5 +1,5 @@
 import { createErrorResponse } from '@/lib/api-utils'
-import { query } from '@/lib/db'
+import { cropRepository } from '@/lib/repositories/cropRepository'
 import { CropTemplateSchema, validateData } from '@/lib/validation'
 import { NextResponse } from 'next/server'
 
@@ -16,34 +16,12 @@ export async function GET(request: Request) {
     const category = searchParams.get('category')
     const isPublic = searchParams.get('is_public')
 
-    let queryText = `
-      SELECT * FROM crop_templates
-      WHERE 1=1
-    `
-
-    const params: any[] = []
-    let paramIndex = 1
-
-    if (category) {
-      queryText += ` AND category = $${paramIndex}`
-      params.push(category)
-      paramIndex++
-    }
-
-    if (isPublic !== null && isPublic !== undefined) {
-      queryText += ` AND is_public = $${paramIndex}`
-      params.push(isPublic === 'true')
-      paramIndex++
-    }
-
-    queryText += ' ORDER BY name ASC'
-
-    const result = await query(queryText, params)
+    const templates = await cropRepository.getAllTemplates(category, isPublic)
 
     return NextResponse.json({
       success: true,
-      data: result.rows,
-      count: result.rows.length,
+      data: templates,
+      count: templates.length,
     })
   } catch (error) {
     console.error('Error fetching crop templates:', error)
@@ -70,36 +48,12 @@ export async function POST(request: Request) {
       )
     }
 
-    const data = validation.data!
-
-    const queryText = `
-      INSERT INTO crop_templates (
-        name, description, category, technical_specs,
-        financial_projections, growing_requirements, market_info,
-        is_public, created_by
-      )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-      RETURNING *
-    `
-
-    const params = [
-      data.name,
-      data.description || null,
-      data.category || null,
-      data.technical_specs ? JSON.stringify(data.technical_specs) : null,
-      data.financial_projections ? JSON.stringify(data.financial_projections) : null,
-      data.growing_requirements ? JSON.stringify(data.growing_requirements) : null,
-      data.market_info ? JSON.stringify(data.market_info) : null,
-      data.is_public !== undefined ? data.is_public : true,
-      data.created_by || null,
-    ]
-
-    const result = await query(queryText, params)
+    const newTemplate = await cropRepository.createTemplate(validation.data!)
 
     return NextResponse.json(
       {
         success: true,
-        data: result.rows[0],
+        data: newTemplate,
         message: 'Crop template created successfully',
       },
       { status: 201 }
@@ -123,64 +77,20 @@ export async function PATCH(request: Request) {
       return createErrorResponse('Crop template ID is required', 400, undefined, 'MISSING_ID')
     }
 
-    const setClauses: string[] = []
-    const params: any[] = []
-    let paramIndex = 1
+    const updatedTemplate = await cropRepository.updateTemplate(id, updates)
 
-    // Build dynamic update query
-    const allowedFields = [
-      'name',
-      'description',
-      'category',
-      'technical_specs',
-      'financial_projections',
-      'growing_requirements',
-      'market_info',
-      'is_public',
-    ]
-
-    const jsonFields = [
-      'technical_specs',
-      'financial_projections',
-      'growing_requirements',
-      'market_info',
-    ]
-
-    allowedFields.forEach((field) => {
-      if (updates[field] !== undefined) {
-        // Convert objects to JSON string for JSONB fields
-        if (jsonFields.includes(field) && updates[field] !== null) {
-          setClauses.push(`${field} = $${paramIndex}`)
-          params.push(JSON.stringify(updates[field]))
-        } else {
-          setClauses.push(`${field} = $${paramIndex}`)
-          params.push(updates[field])
-        }
-        paramIndex++
-      }
-    })
-
-    if (setClauses.length === 0) {
-      return createErrorResponse('No valid fields to update', 400, undefined, 'NO_FIELDS')
-    }
-
-    params.push(id)
-    const queryText = `
-      UPDATE crop_templates 
-      SET ${setClauses.join(', ')}
-      WHERE id = $${paramIndex}
-      RETURNING *
-    `
-
-    const result = await query(queryText, params)
-
-    if (result.rows.length === 0) {
-      return createErrorResponse('Crop template not found', 404, undefined, 'NOT_FOUND')
+    if (!updatedTemplate) {
+      return createErrorResponse(
+        'Crop template not found or no fields to update',
+        404,
+        undefined,
+        'NOT_FOUND'
+      )
     }
 
     return NextResponse.json({
       success: true,
-      data: result.rows[0],
+      data: updatedTemplate,
       message: 'Crop template updated successfully',
     })
   } catch (error) {
@@ -202,9 +112,9 @@ export async function DELETE(request: Request) {
       return createErrorResponse('Crop template ID is required', 400, undefined, 'MISSING_ID')
     }
 
-    const result = await query('DELETE FROM crop_templates WHERE id = $1 RETURNING id', [id])
+    const deletedTemplate = await cropRepository.deleteTemplate(id)
 
-    if (result.rows.length === 0) {
+    if (!deletedTemplate) {
       return createErrorResponse('Crop template not found', 404, undefined, 'NOT_FOUND')
     }
 

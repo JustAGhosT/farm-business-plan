@@ -1,5 +1,5 @@
 import { createErrorResponse, validateUuidParam } from '@/lib/api-utils'
-import { query } from '@/lib/db'
+import { farmPlanRepository } from '@/lib/repositories/farmPlanRepository'
 import { FarmPlanSchema, validateData } from '@/lib/validation'
 import { NextResponse } from 'next/server'
 
@@ -22,27 +22,15 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
     }
     const id = validation.id
 
-    const queryText = `
-      SELECT 
-        fp.*,
-        COUNT(DISTINCT cp.id) as crop_count,
-        COUNT(DISTINCT t.id) as task_count
-      FROM farm_plans fp
-      LEFT JOIN crop_plans cp ON fp.id = cp.farm_plan_id
-      LEFT JOIN tasks t ON fp.id = t.farm_plan_id
-      WHERE fp.id = $1
-      GROUP BY fp.id
-    `
+    const farmPlan = await farmPlanRepository.getById(id)
 
-    const result = await query(queryText, [id])
-
-    if (result.rows.length === 0) {
+    if (!farmPlan) {
       return createErrorResponse('Farm plan not found', 404, undefined, 'NOT_FOUND')
     }
 
     return NextResponse.json({
       success: true,
-      data: result.rows[0],
+      data: farmPlan,
     })
   } catch (error) {
     console.error('Error fetching farm plan:', error)
@@ -79,70 +67,20 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
       )
     }
 
-    const data = validation.data!
+    const updatedFarmPlan = await farmPlanRepository.update(id, validation.data!)
 
-    // Build dynamic UPDATE query
-    const fields: string[] = []
-    const values: any[] = []
-    let paramIndex = 1
-
-    if (data.name !== undefined) {
-      fields.push(`name = $${paramIndex++}`)
-      values.push(data.name)
-    }
-    if (data.location !== undefined) {
-      fields.push(`location = $${paramIndex++}`)
-      values.push(data.location)
-    }
-    if (data.province !== undefined) {
-      fields.push(`province = $${paramIndex++}`)
-      values.push(data.province)
-    }
-    if (data.coordinates !== undefined) {
-      fields.push(`coordinates = $${paramIndex++}`)
-      values.push(data.coordinates ? JSON.stringify(data.coordinates) : null)
-    }
-    if (data.farm_size !== undefined) {
-      fields.push(`farm_size = $${paramIndex++}`)
-      values.push(data.farm_size)
-    }
-    if (data.soil_type !== undefined) {
-      fields.push(`soil_type = $${paramIndex++}`)
-      values.push(data.soil_type)
-    }
-    if (data.water_source !== undefined) {
-      fields.push(`water_source = $${paramIndex++}`)
-      values.push(data.water_source)
-    }
-    if (data.status !== undefined) {
-      fields.push(`status = $${paramIndex++}`)
-      values.push(data.status)
-    }
-
-    if (fields.length === 0) {
-      return createErrorResponse('No fields to update', 400, undefined, 'NO_FIELDS')
-    }
-
-    // Add updated_at timestamp
-    fields.push(`updated_at = CURRENT_TIMESTAMP`)
-    values.push(id)
-
-    const queryText = `
-      UPDATE farm_plans 
-      SET ${fields.join(', ')}
-      WHERE id = $${paramIndex}
-      RETURNING *
-    `
-
-    const result = await query(queryText, values)
-
-    if (result.rows.length === 0) {
-      return createErrorResponse('Farm plan not found', 404, undefined, 'NOT_FOUND')
+    if (!updatedFarmPlan) {
+      return createErrorResponse(
+        'Farm plan not found or no fields to update',
+        404,
+        undefined,
+        'NOT_FOUND'
+      )
     }
 
     return NextResponse.json({
       success: true,
-      data: result.rows[0],
+      data: updatedFarmPlan,
       message: 'Farm plan updated successfully',
     })
   } catch (error) {
@@ -167,17 +105,11 @@ export async function DELETE(request: Request, props: { params: Promise<{ id: st
     }
     const id = validation.id
 
-    // Check if farm plan exists
-    const checkQuery = 'SELECT id FROM farm_plans WHERE id = $1'
-    const checkResult = await query(checkQuery, [id])
+    const deletedFarmPlan = await farmPlanRepository.delete(id)
 
-    if (checkResult.rows.length === 0) {
+    if (!deletedFarmPlan) {
       return createErrorResponse('Farm plan not found', 404, undefined, 'NOT_FOUND')
     }
-
-    // Delete farm plan (cascade will handle related records)
-    const deleteQuery = 'DELETE FROM farm_plans WHERE id = $1 RETURNING id'
-    await query(deleteQuery, [id])
 
     return NextResponse.json({
       success: true,
