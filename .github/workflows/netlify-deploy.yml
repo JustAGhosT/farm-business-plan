@@ -49,16 +49,16 @@ jobs:
         with:
           ssh-key: ${{ secrets.DEPLOY_NETLIFY }}
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
           node-version: "20"
           cache: "pnpm"
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: latest
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -145,16 +145,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
           node-version: "20"
           cache: "pnpm"
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: latest
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
