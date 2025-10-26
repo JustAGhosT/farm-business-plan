@@ -29,6 +29,14 @@ export default function ReportsPage() {
     }
   }, [filter])
 
+  // Refetch data when filter changes
+  useEffect(() => {
+    if (activeTab === 'history') {
+      fetchResults()
+      setSelectedResults([]) // Clear selections when filter changes
+    }
+  }, [filter, activeTab, fetchResults])
+
   useEffect(() => {
     fetchResults()
   }, [fetchResults])

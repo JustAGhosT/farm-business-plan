@@ -7,7 +7,7 @@ export interface ResourceItem {
 }
 
 export interface ToolItem {
-  href: string | ((session: any) => string)
+  href: (session: any) => string
   title: string
   description: string
   requiresAuth: boolean
@@ -119,7 +119,7 @@ export const HOME_CONFIG = {
       requiresAuth: true,
     },
     {
-      href: () => '/tools/calculators',
+      href: (session: any) => '/tools/calculators',
       title: '💰 Financial Tools',
       description: '6 calculators + unified reports & analytics',
       requiresAuth: false,
@@ -131,7 +131,7 @@ export const HOME_CONFIG = {
       requiresAuth: true,
     },
     {
-      href: () => '/tools/templates',
+      href: (session: any) => '/tools/templates',
       title: '📚 Crop Templates',
       description: 'Browse pre-built crop profiles',
       requiresAuth: false,

@@ -21,13 +21,23 @@ export default function CalculatorRedirect({
   const { loading, error, executeWithLoading } = useLoadingState()
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout
+    
     executeWithLoading(async () => {
       // Add a small delay to show the redirect message
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      await new Promise((resolve) => {
+        timeoutId = setTimeout(resolve, 1500)
+      })
 
       // Redirect to unified calculator with the specific calculator pre-selected
       router.push(`/tools/calculators/unified?calculator=${calculatorType}`)
     })
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+      }
+    }
   }, [calculatorType, router, executeWithLoading])
 
   if (error) {

@@ -169,6 +169,12 @@ export function LinkButton({
         target="_blank"
         rel="noopener noreferrer"
         className={buttonClasses}
+        tabIndex={disabled || loading ? -1 : undefined}
+        onClick={(e) => {
+          if (disabled || loading) {
+            e.preventDefault()
+          }
+        }}
         {...((disabled || loading) && { 'aria-disabled': 'true' })}
       >
         {loading && <Spinner size="sm" variant="secondary" className="mr-2" />}
@@ -178,7 +184,17 @@ export function LinkButton({
   }
 
   return (
-    <Link href={href} className={buttonClasses}>
+    <Link 
+      href={href} 
+      className={buttonClasses}
+      tabIndex={disabled || loading ? -1 : undefined}
+      onClick={(e) => {
+        if (disabled || loading) {
+          e.preventDefault()
+        }
+      }}
+      {...((disabled || loading) && { 'aria-disabled': 'true' })}
+    >
       {loading && <Spinner size="sm" variant="secondary" className="mr-2" />}
       {children}
     </Link>

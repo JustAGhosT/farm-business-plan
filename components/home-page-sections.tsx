@@ -2,6 +2,7 @@
 
 import { Badge, Card, CardDescription, CardTitle, Grid, Section } from '@/components/ui'
 import { BenefitItem, FeatureItem, ResourceItem, StepItem, ToolItem } from '@/lib/home-page-config'
+import type { Session } from 'next-auth'
 import Link from 'next/link'
 import React from 'react'
 
@@ -51,11 +52,11 @@ export const BenefitCard = ({ benefit }: BenefitCardProps) => (
 
 export interface ToolCardProps {
   tool: ToolItem
-  session: any
+  session: Session | null
 }
 
 export const ToolCard = ({ tool, session }: ToolCardProps) => {
-  const href = typeof tool.href === 'function' ? tool.href(session) : tool.href()
+  const href = tool.href(session)
 
   return (
     <Card href={href} variant="bordered" className="relative">
@@ -211,7 +212,7 @@ export const AccountBenefitsSection = ({ benefits }: AccountBenefitsSectionProps
 
 export interface ToolsSectionProps {
   tools: ToolItem[]
-  session: any
+  session: Session | null
 }
 
 export const ToolsSection = ({ tools, session }: ToolsSectionProps) => (

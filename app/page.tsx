@@ -1,5 +1,6 @@
 'use client'
 
+import type { Session } from 'next-auth'
 import {
     AccountBenefitsSection,
     DocumentationSection,

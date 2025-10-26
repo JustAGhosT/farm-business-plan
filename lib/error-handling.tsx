@@ -202,6 +202,9 @@ export function SuccessMessage({ message, onDismiss, className = '' }: SuccessMe
 
   return (
     <div
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
       className={`p-4 rounded-lg border bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-700 text-green-800 dark:text-green-200 ${className}`}
     >
       <div className="flex items-start">

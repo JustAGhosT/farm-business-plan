@@ -74,24 +74,27 @@ export const validateForm = (formData: FormState, fields: FormField[]): FormErro
 
     // Run type-specific validation
     switch (field.type) {
-      case 'number':
+      case 'number': {
         const numberError = validators.number(value)
         if (numberError) {
           errors[field.id] = numberError
         }
         break
-      case 'email':
+      }
+      case 'email': {
         const emailError = validators.email(value)
         if (emailError) {
           errors[field.id] = emailError
         }
         break
-      case 'tel':
+      }
+      case 'tel': {
         const phoneError = validators.phone(value)
         if (phoneError) {
           errors[field.id] = phoneError
         }
         break
+      }
     }
   })
 
@@ -122,12 +125,18 @@ export const renderFormField = (
           className={inputClasses}
           placeholder={field.placeholder}
           rows={3}
+          aria-invalid={Boolean(error)}
         />
       )
 
     case 'select':
       return (
-        <select value={value} onChange={(e) => onChange(e.target.value)} className={inputClasses}>
+        <select 
+          value={value} 
+          onChange={(e) => onChange(e.target.value)} 
+          className={inputClasses}
+          aria-invalid={Boolean(error)}
+        >
           <option value="">Select {field.label}</option>
           {field.options?.map((option) => (
             <option key={option} value={option}>
@@ -148,6 +157,7 @@ export const renderFormField = (
           min={field.min}
           max={field.max}
           step={field.step}
+          aria-invalid={Boolean(error)}
         />
       )
   }

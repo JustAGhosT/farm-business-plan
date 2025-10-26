@@ -60,6 +60,7 @@ const CALCULATOR_CONFIGS: CalculatorConfig[] = [
       },
       { id: 'annualRevenue', label: 'Annual Revenue (R)', type: 'number', required: true, min: 0 },
       { id: 'annualCosts', label: 'Annual Costs (R)', type: 'number', required: true, min: 0 },
+      { id: 'discountRate', label: 'Discount Rate (%)', type: 'number', required: false, min: 0, max: 100, placeholder: 'e.g., 8 for 8%' },
       { id: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Additional notes...' },
     ],
     calculate: (data) => {
@@ -67,18 +68,30 @@ const CALCULATOR_CONFIGS: CalculatorConfig[] = [
       const initialInvestment = parseFloat(data.initialInvestment) || 0
       const annualRevenue = parseFloat(data.annualRevenue) || 0
       const annualCosts = parseFloat(data.annualCosts) || 0
+      const discountRate = parseFloat(data.discountRate) || 0
 
       const annualProfit = annualRevenue - annualCosts
       const totalProfit = annualProfit * years - initialInvestment
       const roi = initialInvestment > 0 ? (totalProfit / initialInvestment) * 100 : 0
       const paybackPeriod = annualProfit > 0 ? initialInvestment / annualProfit : 0
 
+      // Calculate NPV: -initialInvestment + sum of discounted annual profits
+      let npv = -initialInvestment
+      if (discountRate > 0) {
+        for (let t = 1; t <= years; t++) {
+          npv += annualProfit / Math.pow(1 + discountRate / 100, t)
+        }
+      } else {
+        // If no discount rate, NPV = total profit
+        npv = totalProfit
+      }
+
       return {
         roi: roi.toFixed(2),
         totalProfit: totalProfit.toLocaleString(),
         annualProfit: annualProfit.toLocaleString(),
         paybackPeriod: paybackPeriod.toFixed(1),
-        netPresentValue: totalProfit.toLocaleString(),
+        netPresentValue: npv.toLocaleString(),
       }
     },
     resultsComponent: (results) => (

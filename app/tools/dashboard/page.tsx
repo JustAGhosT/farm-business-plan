@@ -224,7 +224,7 @@ export default function DashboardPage() {
                 💰 Financial Overview
               </h2>
               <Link
-                href="/tools/calculators/dashboard"
+                href="/tools/reports"
                 className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
               >
                 View Full Dashboard →
