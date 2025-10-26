@@ -55,7 +55,7 @@ export interface ToolCardProps {
 }
 
 export const ToolCard = ({ tool, session }: ToolCardProps) => {
-  const href = typeof tool.href === 'function' ? tool.href(session) : tool.href()
+  const href = typeof tool.href === 'function' ? tool.href(session) : tool.href
 
   return (
     <Card href={href} variant="bordered" className="relative">
