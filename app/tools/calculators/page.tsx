@@ -9,6 +9,14 @@ export const metadata: Metadata = {
 export default function CalculatorsPage() {
   const calculators = [
     {
+      title: 'Unified Calculator',
+      description: 'All calculators in one interface - switch between ROI, Break-Even, Investment, and more',
+      icon: '🧮',
+      href: '/tools/calculators/unified',
+      color:
+        'border-primary-300 dark:border-primary-700 hover:border-primary-500 dark:hover:border-primary-600',
+    },
+    {
       title: 'ROI Calculator',
       description: 'Calculate Return on Investment for your farm operations',
       icon: '📈',
