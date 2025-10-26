@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import type { Metadata } from 'next'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Financial Calculators | Agricultural Business Plan',
@@ -63,14 +63,6 @@ export default function CalculatorsPage() {
       description: 'Complete farm planning with integrated financial analysis tools',
       icon: '🤖',
       href: '/tools/ai-wizard',
-      color:
-        'border-primary-300 dark:border-primary-700 hover:border-primary-500 dark:hover:border-primary-600',
-    },
-    {
-      title: 'Financial Dashboard',
-      description: 'Comprehensive overview of all your financial metrics and trends',
-      icon: '📊',
-      href: '/tools/calculators/dashboard',
       color:
         'border-primary-300 dark:border-primary-700 hover:border-primary-500 dark:hover:border-primary-600',
     },
