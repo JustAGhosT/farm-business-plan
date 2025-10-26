@@ -264,10 +264,6 @@ export function GhostButton(props: BaseButtonProps) {
   return <Button {...props} variant="ghost" />
 }
 
-export function LinkButton(props: BaseButtonProps) {
-  return <Button {...props} variant="link" />
-}
-
 // Specialized button components
 export interface SaveButtonProps extends Omit<BaseButtonProps, 'children'> {
   saving?: boolean

@@ -20,7 +20,7 @@ export interface BaseFormFieldProps {
 
 // Input field component
 export interface FormInputProps extends BaseFormFieldProps {
-  type?: 'text' | 'email' | 'password' | 'tel' | 'url' | 'search'
+  type?: 'text' | 'email' | 'password' | 'tel' | 'url' | 'search' | 'number'
   min?: number | string
   max?: number | string
   step?: number | string
@@ -114,8 +114,8 @@ export function FormNumber({
   disabled = false,
   className = '',
 }: FormNumberProps) {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let newValue = e.target.value
+  const handleChange = (value: string) => {
+    let newValue = value
 
     if (precision !== undefined && newValue) {
       const num = parseFloat(newValue)
