@@ -199,7 +199,9 @@ export function UnifiedWizardLayout({
     }
   }
 
-  const progressPercentage = (step / totalSteps) * 100
+  const progressPercentage = totalSteps > 0
+    ? Math.min(100, Math.max(0, (step / totalSteps) * 100))
+    : 0
 
   return (
     <BaseLayout variant="wizard" className={className}>
