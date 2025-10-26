@@ -1,7 +1,16 @@
 'use client'
 
 import { Card } from '@/components/Card'
-import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts'
 
 interface HistoryTabProps {
   results: any[]
@@ -20,7 +29,7 @@ export default function HistoryTab({
   selectedResults,
   setSelectedResults,
   handleDelete,
-  exportToPDF
+  exportToPDF,
 }: HistoryTabProps) {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-ZA', {
@@ -30,8 +39,8 @@ export default function HistoryTab({
   }
 
   const toggleSelection = (result: any) => {
-    if (selectedResults.find(r => r.id === result.id)) {
-      setSelectedResults(selectedResults.filter(r => r.id !== result.id))
+    if (selectedResults.find((r) => r.id === result.id)) {
+      setSelectedResults(selectedResults.filter((r) => r.id !== result.id))
     } else {
       setSelectedResults([...selectedResults, result])
     }
@@ -39,23 +48,25 @@ export default function HistoryTab({
 
   const getComparisonData = () => {
     if (selectedResults.length < 2) return []
-    
-    return selectedResults.map(result => ({
+
+    return selectedResults.map((result) => ({
       name: result.calculator_type,
       roi: result.roi || 0,
       investment: result.initial_investment || 0,
-      revenue: result.total_revenue || 0
+      revenue: result.total_revenue || 0,
     }))
   }
 
-  const filteredResults = filter ? results.filter(r => r.calculator_type === filter) : results
+  const filteredResults = filter ? results.filter((r) => r.calculator_type === filter) : results
 
   return (
     <>
       {/* Filter Controls */}
       <div className="mb-8 flex gap-4 items-end">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Filter by Calculator</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Filter by Calculator
+          </label>
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
@@ -117,7 +128,7 @@ export default function HistoryTab({
                 <div className="flex items-start gap-3">
                   <input
                     type="checkbox"
-                    checked={selectedResults.find(r => r.id === result.id) !== undefined}
+                    checked={selectedResults.find((r) => r.id === result.id) !== undefined}
                     onChange={() => toggleSelection(result)}
                     className="mt-1"
                     aria-label={`Select ${result.calculator_type} calculation`}

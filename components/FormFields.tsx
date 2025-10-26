@@ -84,7 +84,7 @@ export function FormInput({
           {helpText}
         </p>
       )}
-      {error && <ErrorMessage error={error} className="mt-1" />}
+      {error && <ErrorMessage error={error} className="mt-1" id={`${name}-error`} />}
     </div>
   )
 }
@@ -205,7 +205,7 @@ export function FormTextarea({
           {helpText}
         </p>
       )}
-      {error && <ErrorMessage error={error} className="mt-1" />}
+      {error && <ErrorMessage error={error} className="mt-1" id={`${name}-error`} />}
     </div>
   )
 }
@@ -242,7 +242,7 @@ export function FormSelect({
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (multiple) {
-      const selectedValues = Array.from(e.target.selectedOptions).map(option => option.value)
+      const selectedValues = Array.from(e.target.selectedOptions).map((option) => option.value)
       onChange?.(selectedValues)
     } else {
       onChange?.(e.target.value)
@@ -261,7 +261,7 @@ export function FormSelect({
       <select
         id={name}
         name={name}
-        value={multiple ? (Array.isArray(value) ? value : []) : (value || '')}
+        value={multiple ? (Array.isArray(value) ? value : []) : value || ''}
         onChange={handleChange}
         onBlur={(e) => onBlur?.(name, e.target.value)}
         multiple={multiple}
@@ -282,7 +282,7 @@ export function FormSelect({
           {helpText}
         </p>
       )}
-      {error && <ErrorMessage error={error} className="mt-1" />}
+      {error && <ErrorMessage error={error} className="mt-1" id={`${name}-error`} />}
     </div>
   )
 }
@@ -332,7 +332,7 @@ export function FormCheckbox({
               {helpText}
             </p>
           )}
-          {error && <ErrorMessage error={error} className="mt-1" />}
+          {error && <ErrorMessage error={error} className="mt-1" id={`${name}-error`} />}
         </div>
       </div>
     </div>

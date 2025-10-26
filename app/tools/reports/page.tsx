@@ -47,8 +47,8 @@ export default function ReportsPage() {
         method: 'DELETE',
       })
       if (!response.ok) throw new Error('Failed to delete result')
-      setResults(results.filter(r => r.id !== id))
-      setSelectedResults(selectedResults.filter(r => r.id !== id))
+      setResults(results.filter((r) => r.id !== id))
+      setSelectedResults(selectedResults.filter((r) => r.id !== id))
     } catch (error) {
       console.error('Error deleting result:', error)
     }
@@ -57,56 +57,58 @@ export default function ReportsPage() {
   const exportToPDF = (selectedResults?: any[]) => {
     const resultsToExport = selectedResults || results
     const doc = new jsPDF()
-    
+
     doc.setFontSize(20)
     doc.text('Farm Financial Reports', 20, 20)
-    
+
     doc.setFontSize(12)
     let y = 40
-    
+
     resultsToExport.forEach((result, index) => {
       if (y > 280) {
         doc.addPage()
         y = 20
       }
-      
+
       doc.text(`${index + 1}. ${result.calculator_type}`, 20, y)
       y += 10
-      
+
       if (result.roi) {
         doc.text(`ROI: ${result.roi.toFixed(1)}%`, 30, y)
         y += 7
       }
-      
+
       if (result.initial_investment) {
         doc.text(`Investment: R${result.initial_investment.toLocaleString()}`, 30, y)
         y += 7
       }
-      
+
       if (result.total_revenue) {
         doc.text(`Revenue: R${result.total_revenue.toLocaleString()}`, 30, y)
         y += 7
       }
-      
+
       y += 10
     })
-    
+
     doc.save('farm-financial-reports.pdf')
   }
 
   const exportToCSV = () => {
     const csvContent = [
       ['Calculator Type', 'ROI (%)', 'Investment', 'Revenue', 'Net Profit', 'Created Date'],
-      ...results.map(result => [
+      ...results.map((result) => [
         result.calculator_type,
         result.roi?.toFixed(1) || '',
         result.initial_investment || '',
         result.total_revenue || '',
         result.net_profit || '',
-        new Date(result.created_at).toLocaleDateString()
-      ])
-    ].map(row => row.join(',')).join('\n')
-    
+        new Date(result.created_at).toLocaleDateString(),
+      ]),
+    ]
+      .map((row) => row.join(','))
+      .join('\n')
+
     const blob = new Blob([csvContent], { type: 'text/csv' })
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -120,7 +122,7 @@ export default function ReportsPage() {
     avgRoi: results.reduce((sum, r) => sum + (r.roi || 0), 0) / results.length || 0,
     totalInvestment: results.reduce((sum, r) => sum + (r.initial_investment || 0), 0),
     totalNetProfit: results.reduce((sum, r) => sum + (r.net_profit || 0), 0),
-    avgPayback: results.reduce((sum, r) => sum + (r.payback_period || 0), 0) / results.length || 0
+    avgPayback: results.reduce((sum, r) => sum + (r.payback_period || 0), 0) / results.length || 0,
   }
 
   return (

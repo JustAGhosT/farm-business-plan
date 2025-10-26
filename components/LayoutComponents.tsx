@@ -64,7 +64,9 @@ export function LoadingState({
         className={`inline-block animate-spin rounded-full border-b-2 border-primary-600 ${sizeClasses[size]}`}
         aria-hidden="true"
       ></div>
-      <p className="mt-4 text-gray-600 dark:text-gray-300" aria-live="polite">{message}</p>
+      <p className="mt-4 text-gray-600 dark:text-gray-300" aria-live="polite">
+        {message}
+      </p>
     </div>
   )
 }
@@ -315,6 +317,18 @@ export function DataGrid({ data, columns, className = '' }: DataGridProps) {
 
 // Export all components
 export {
-  ActionButtons, ActionCard, Card, DataGrid, EmptyState, ErrorMessage, FormSection, InfoCard, LoadingState, MetricCard, PageLayout, ResultsDisplay, StatusIndicator, SuccessMessage
+  ActionButtons,
+  ActionCard,
+  Card,
+  DataGrid,
+  EmptyState,
+  ErrorMessage,
+  FormSection,
+  InfoCard,
+  LoadingState,
+  MetricCard,
+  PageLayout,
+  ResultsDisplay,
+  StatusIndicator,
+  SuccessMessage,
 }
-

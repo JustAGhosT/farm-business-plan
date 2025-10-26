@@ -60,7 +60,15 @@ const CALCULATOR_CONFIGS: CalculatorConfig[] = [
       },
       { id: 'annualRevenue', label: 'Annual Revenue (R)', type: 'number', required: true, min: 0 },
       { id: 'annualCosts', label: 'Annual Costs (R)', type: 'number', required: true, min: 0 },
-      { id: 'discountRate', label: 'Discount Rate (%)', type: 'number', required: false, min: 0, max: 100, placeholder: 'e.g., 8 for 8%' },
+      {
+        id: 'discountRate',
+        label: 'Discount Rate (%)',
+        type: 'number',
+        required: false,
+        min: 0,
+        max: 100,
+        placeholder: 'e.g., 8 for 8%',
+      },
       { id: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Additional notes...' },
     ],
     calculate: (data) => {

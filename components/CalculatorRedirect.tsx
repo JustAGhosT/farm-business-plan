@@ -22,7 +22,7 @@ export default function CalculatorRedirect({
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout
-    
+
     executeWithLoading(async () => {
       // Add a small delay to show the redirect message
       await new Promise((resolve) => {
@@ -72,9 +72,14 @@ export default function CalculatorRedirect({
             </p>
 
             {loading && (
-              <div className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
-                <span className="ml-3 text-gray-600 dark:text-gray-300">Loading...</span>
+              <div className="flex items-center justify-center" role="status" aria-busy="true">
+                <div
+                  className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"
+                  aria-hidden="true"
+                ></div>
+                <span className="ml-3 text-gray-600 dark:text-gray-300" aria-live="polite">
+                  Loading...
+                </span>
               </div>
             )}
 

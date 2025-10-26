@@ -9,19 +9,16 @@ const suggestCropsSchema = z.object({
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
-  
+
   const validationResult = suggestCropsSchema.safeParse({
     province: searchParams.get('province'),
     town: searchParams.get('town'),
   })
-  
+
   if (!validationResult.success) {
-    return NextResponse.json(
-      { error: 'Invalid input parameters' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'Invalid input parameters' }, { status: 400 })
   }
-  
+
   const { province, town } = validationResult.data
 
   try {

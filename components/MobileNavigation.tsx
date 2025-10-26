@@ -1,6 +1,6 @@
 'use client'
 
-import SharedNavigation from '@/components/SharedNavigation'
+import SharedNavigation from '@/components/NavigationComponents'
 import UserProfile from '@/components/UserProfile'
 
 interface MobileNavigationProps {

@@ -234,7 +234,9 @@ export const DocumentationSection = ({ documentation }: DocumentationSectionProp
   <Section variant="default">
     <div className="flex items-center justify-between mb-8">
       <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Documentation</h2>
-      <Badge variant="success" size="md">Free Access - No Login Required</Badge>
+      <Badge variant="success" size="md">
+        Free Access - No Login Required
+      </Badge>
     </div>
     <Grid cols={{ md: 2 }}>
       {documentation.map((doc, index) => (

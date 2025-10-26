@@ -1,6 +1,5 @@
 'use client'
 
-
 interface ReportsHeaderProps {
   exportToPDF: () => void
   exportToCSV: () => void

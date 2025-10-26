@@ -184,8 +184,8 @@ export function LinkButton({
   }
 
   return (
-    <Link 
-      href={href} 
+    <Link
+      href={href}
       className={buttonClasses}
       tabIndex={disabled || loading ? -1 : undefined}
       onClick={(e) => {

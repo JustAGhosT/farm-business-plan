@@ -138,6 +138,7 @@ export interface ErrorMessageProps {
   onDismiss?: () => void
   variant?: 'error' | 'warning' | 'info'
   className?: string
+  id?: string
 }
 
 // Error message component
@@ -146,6 +147,7 @@ export function ErrorMessage({
   onDismiss,
   variant = 'error',
   className = '',
+  id,
 }: ErrorMessageProps) {
   if (!error) return null
 
@@ -170,7 +172,7 @@ export function ErrorMessage({
   }
 
   return (
-    <div className={`p-4 rounded-lg border ${variantStyles[variant]} ${className}`}>
+    <div className={`p-4 rounded-lg border ${variantStyles[variant]} ${className}`} id={id}>
       <div className="flex items-start">
         <span className={`text-lg mr-3 ${iconStyles[variant]}`}>{icons[variant]}</span>
         <div className="flex-1">

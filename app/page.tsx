@@ -2,13 +2,13 @@
 
 import type { Session } from 'next-auth'
 import {
-    AccountBenefitsSection,
-    DocumentationSection,
-    FeaturesSection,
-    HeroSection,
-    PublicResourcesSection,
-    QuickStartSection,
-    ToolsSection,
+  AccountBenefitsSection,
+  DocumentationSection,
+  FeaturesSection,
+  HeroSection,
+  PublicResourcesSection,
+  QuickStartSection,
+  ToolsSection,
 } from '@/components/home-page-sections'
 import { Container } from '@/components/ui'
 import { HOME_CONFIG } from '@/lib/home-page-config'

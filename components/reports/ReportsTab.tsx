@@ -1,7 +1,18 @@
 'use client'
 
 import { Card } from '@/components/Card'
-import { Bar, BarChart, CartesianGrid, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts'
 
 interface ReportsTabProps {
   results: any[]
@@ -13,14 +24,14 @@ interface ReportsTabProps {
   exportToCSV: () => void
 }
 
-export default function ReportsTab({ 
-  results, 
-  summary, 
-  loading, 
-  dateRange, 
-  setDateRange, 
-  exportToPDF, 
-  exportToCSV 
+export default function ReportsTab({
+  results,
+  summary,
+  loading,
+  dateRange,
+  setDateRange,
+  exportToPDF,
+  exportToCSV,
 }: ReportsTabProps) {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-ZA', {
@@ -61,9 +72,7 @@ export default function ReportsTab({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 border border-green-200">
           <div className="text-sm text-green-700 mb-1">Average ROI</div>
-          <div className="text-3xl font-bold text-green-900">
-            {summary.avgRoi.toFixed(1)}%
-          </div>
+          <div className="text-3xl font-bold text-green-900">{summary.avgRoi.toFixed(1)}%</div>
           <div className="text-xs text-green-600 mt-2">Across all ROI calculations</div>
         </div>
 
@@ -100,7 +109,7 @@ export default function ReportsTab({
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
-                data={results.map(r => ({ name: r.calculator_type, value: r.roi || 0 }))}
+                data={results.map((r) => ({ name: r.calculator_type, value: r.roi || 0 }))}
                 cx="50%"
                 cy="50%"
                 labelLine={false}

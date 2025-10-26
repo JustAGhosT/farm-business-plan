@@ -79,17 +79,21 @@ export function Card({
     .filter(Boolean)
     .join(' ')
 
-  const content = (
-    <div className={baseClasses} onClick={onClick}>
-      {children}
-    </div>
-  )
+  const content = <div className={baseClasses}>{children}</div>
 
   if (href) {
     return (
       <Link href={href} className="block">
         {content}
       </Link>
+    )
+  }
+
+  if (onClick) {
+    return (
+      <button type="button" className={baseClasses} onClick={onClick}>
+        {children}
+      </button>
     )
   }
 

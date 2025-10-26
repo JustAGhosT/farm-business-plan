@@ -1310,8 +1310,8 @@ export default function AIWizardPage() {
                   🧮 Financial Analysis Tools
                 </h2>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
-                  Use our financial calculators to analyze your farm&apos;s profitability and investment
-                  requirements
+                  Use our financial calculators to analyze your farm&apos;s profitability and
+                  investment requirements
                 </p>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <Link
@@ -1414,8 +1414,8 @@ export default function AIWizardPage() {
                 <div className="mt-6 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
                   <p className="text-sm text-blue-800 dark:text-blue-300">
                     <strong>💡 Tip:</strong> Use these calculators to validate your financial
-                    projections and get detailed analysis of your farm&apos;s profitability. You can also
-                    view your calculation history and generate reports from the dashboard.
+                    projections and get detailed analysis of your farm&apos;s profitability. You can
+                    also view your calculation history and generate reports from the dashboard.
                   </p>
                 </div>
               </div>
