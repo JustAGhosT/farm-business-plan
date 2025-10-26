@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import React from 'react'
 
-export interface SharedCardProps {
+export interface CardProps {
   children: React.ReactNode
   className?: string
   variant?: 'default' | 'elevated' | 'bordered' | 'outlined'
@@ -54,7 +54,7 @@ const backgroundClasses = {
   transparent: 'bg-transparent'
 }
 
-export function SharedCard({
+export function Card({
   children,
   className = '',
   variant = 'default',
@@ -65,7 +65,7 @@ export function SharedCard({
   rounded = 'lg',
   shadow = 'md',
   background = 'white'
-}: SharedCardProps) {
+}: CardProps) {
   const baseClasses = [
     variantClasses[variant],
     paddingClasses[padding],
@@ -111,7 +111,7 @@ export function MetricCard({
   className?: string
 }) {
   return (
-    <SharedCard className={className} padding="lg">
+    <Card className={className} padding="lg">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{title}</p>
@@ -159,7 +159,7 @@ export function ActionCard({
   }
 
   return (
-    <SharedCard
+    <Card
       href={href}
       onClick={onClick}
       variant="bordered"
@@ -203,7 +203,7 @@ export function InfoCard({
   }
 
   return (
-    <SharedCard
+    <Card
       variant="bordered"
       className={`${variantStyles[variant]} ${className}`}
     >

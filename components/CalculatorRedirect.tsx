@@ -1,6 +1,6 @@
 'use client'
 
-import { SharedCard } from '@/components/SharedCard'
+import { Card } from '@/components/Card'
 import { ErrorMessage } from '@/lib/error-handling'
 import { useLoadingState } from '@/lib/hooks/useLoadingState'
 import { useRouter } from 'next/navigation'
@@ -51,7 +51,7 @@ export default function CalculatorRedirect({
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
-        <SharedCard className="text-center">
+        <Card className="text-center">
           <div className="py-8">
             <div className="text-6xl mb-4">{calculatorIcon}</div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">

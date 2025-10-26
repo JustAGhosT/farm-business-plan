@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import React from 'react'
-import { Spinner } from './SharedLoading'
+import { Spinner } from './Loading'
 
 // Button variants and sizes
 export type ButtonVariant = 

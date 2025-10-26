@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Button, LinkButton } from './SharedButtons'
+import { Button, LinkButton } from './Buttons'
 
 // Empty state variants
 export type EmptyStateVariant = 'default' | 'error' | 'warning' | 'info' | 'success'

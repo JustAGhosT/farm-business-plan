@@ -1,6 +1,6 @@
 'use client'
 
-import { ActionCard, InfoCard, MetricCard, SharedCard } from '@/components/SharedCard'
+import { ActionCard, InfoCard, MetricCard, Card } from '@/components/Card'
 import { ErrorMessage, SuccessMessage } from '@/lib/error-handling'
 import React from 'react'
 
@@ -119,7 +119,7 @@ export function FormSection({
   className = '' 
 }: FormSectionProps) {
   return (
-    <SharedCard className={`mb-8 ${className}`}>
+    <Card className={`mb-8 ${className}`}>
       <div className="mb-6">
         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
           {title}
@@ -152,7 +152,7 @@ export function ResultsDisplay({
   if (!results) return null
   
   return (
-    <SharedCard className={`mb-8 ${className}`}>
+    <Card className={`mb-8 ${className}`}>
       <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
         {title}
       </h3>
@@ -358,6 +358,6 @@ export function DataGrid({
 
 // Export all components
 export {
-    ActionCard, ErrorMessage, InfoCard, MetricCard, SharedCard, SuccessMessage
+    ActionCard, ErrorMessage, InfoCard, MetricCard, Card, SuccessMessage
 }
 
