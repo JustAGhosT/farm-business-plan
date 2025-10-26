@@ -61,7 +61,7 @@ export class ApiClient {
         if (responseText && contentType?.includes('application/json')) {
           try {
             data = JSON.parse(responseText)
-          } catch (parseError) {
+        } catch (parseError) {
             // If JSON parsing fails, return the text as error
             return {
               success: false,
@@ -88,7 +88,7 @@ export class ApiClient {
       }
     } catch (error) {
       return {
-        success: false,
+            success: false,
         error: error instanceof Error ? error.message : 'Unknown error occurred',
       }
     }
@@ -146,8 +146,8 @@ export const calculatorApi = {
     params?: PaginationParams
   ): Promise<ApiResponse<CalculatorResult[]>> {
     const queryParams: Record<string, any> = {
-      limit: params?.limit || 50,
       ...params,
+      limit: params?.limit ?? 50,
     }
 
     if (calculatorType) {

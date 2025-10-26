@@ -95,11 +95,11 @@ const CALCULATOR_CONFIGS: CalculatorConfig[] = [
       }
 
       return {
-        roi: roi.toFixed(2),
-        totalProfit: totalProfit.toLocaleString(),
-        annualProfit: annualProfit.toLocaleString(),
-        paybackPeriod: paybackPeriod.toFixed(1),
-        netPresentValue: npv.toLocaleString(),
+        roi: formatPercentage(roi),
+        totalProfit: formatNumber(totalProfit),
+        annualProfit: formatNumber(annualProfit),
+        paybackPeriod: formatPaybackPeriod(paybackPeriod, annualProfit, initialInvestment),
+        netPresentValue: formatNumber(npv),
       }
     },
     resultsComponent: (results) => (
@@ -280,7 +280,36 @@ export default function UnifiedCalculator() {
   const [formData, setFormData] = useState<Record<string, string>>({})
   const [results, setResults] = useState<any>(null)
   const [savedMessage, setSavedMessage] = useState('')
+  const [saveError, setSaveError] = useState('')
   const [isSaving, setIsSaving] = useState(false)
+
+  // Formatting helper for numeric values
+  const formatNumber = (value: number, decimals: number = 2, showThousands: boolean = true): string => {
+    if (isNaN(value) || !isFinite(value)) return 'N/A'
+    
+    if (showThousands) {
+      return value.toLocaleString('en-US', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+      })
+    } else {
+      return value.toFixed(decimals)
+    }
+  }
+
+  // Format percentage values
+  const formatPercentage = (value: number): string => {
+    if (isNaN(value) || !isFinite(value)) return 'N/A'
+    return `${value.toFixed(2)}%`
+  }
+
+  // Format payback period with special handling
+  const formatPaybackPeriod = (paybackPeriod: number, annualProfit: number, initialInvestment: number): string => {
+    if (isNaN(paybackPeriod) || !isFinite(paybackPeriod) || annualProfit <= 0 || initialInvestment <= 0) {
+      return 'N/A'
+    }
+    return `${paybackPeriod.toFixed(1)} years`
+  }
 
   // Handle URL parameter for pre-selecting calculator
   useEffect(() => {

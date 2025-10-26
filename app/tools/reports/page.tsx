@@ -29,17 +29,13 @@ export default function ReportsPage() {
     }
   }, [filter])
 
-  // Refetch data when filter changes
-  useEffect(() => {
-    if (activeTab === 'history') {
-      fetchResults()
-      setSelectedResults([]) // Clear selections when filter changes
-    }
-  }, [filter, activeTab, fetchResults])
-
+  // Fetch on mount and when filter changes (for history tab)
   useEffect(() => {
     fetchResults()
-  }, [fetchResults])
+    if (activeTab === 'history') {
+      setSelectedResults([]) // Clear selections when filter changes
+    }
+  }, [filter, fetchResults, activeTab])
 
   const handleDelete = async (id: string) => {
     try {
@@ -73,17 +69,17 @@ export default function ReportsPage() {
       doc.text(`${index + 1}. ${result.calculator_type}`, 20, y)
       y += 10
 
-      if (result.roi) {
+      if (Number.isFinite(result.roi)) {
         doc.text(`ROI: ${result.roi.toFixed(1)}%`, 30, y)
         y += 7
       }
 
-      if (result.initial_investment) {
+      if (Number.isFinite(result.initial_investment)) {
         doc.text(`Investment: R${result.initial_investment.toLocaleString()}`, 30, y)
         y += 7
       }
 
-      if (result.total_revenue) {
+      if (Number.isFinite(result.total_revenue)) {
         doc.text(`Revenue: R${result.total_revenue.toLocaleString()}`, 30, y)
         y += 7
       }
@@ -147,9 +143,13 @@ export default function ReportsPage() {
           <ReportsHeader exportToPDF={exportToPDF} exportToCSV={exportToCSV} />
 
           {/* Tab Navigation */}
-          <div className="flex border-b border-gray-200 mb-6">
-            <button
+          <div className="flex border-b border-gray-200 mb-6" role="tablist">
+              <button
               onClick={() => setActiveTab('reports')}
+              role="tab"
+              aria-selected={activeTab === 'reports'}
+              aria-controls="reports-panel"
+              tabIndex={activeTab === 'reports' ? 0 : -1}
               className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
                 activeTab === 'reports'
                   ? 'border-primary-500 text-primary-600'
@@ -157,9 +157,13 @@ export default function ReportsPage() {
               }`}
             >
               📊 Reports & Analytics
-            </button>
-            <button
+              </button>
+              <button
               onClick={() => setActiveTab('history')}
+              role="tab"
+              aria-selected={activeTab === 'history'}
+              aria-controls="history-panel"
+              tabIndex={activeTab === 'history' ? 0 : -1}
               className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
                 activeTab === 'history'
                   ? 'border-primary-500 text-primary-600'
@@ -172,27 +176,31 @@ export default function ReportsPage() {
 
           {/* Tab Content */}
           {activeTab === 'reports' && (
-            <ReportsTab
-              results={results}
-              summary={summary}
-              loading={loading}
-              dateRange={dateRange}
-              setDateRange={setDateRange}
-              exportToPDF={exportToPDF}
-              exportToCSV={exportToCSV}
-            />
+            <div role="tabpanel" id="reports-panel" aria-labelledby="reports-tab">
+              <ReportsTab
+                results={results}
+                summary={summary}
+                loading={loading}
+                dateRange={dateRange}
+                setDateRange={setDateRange}
+                exportToPDF={exportToPDF}
+                exportToCSV={exportToCSV}
+              />
+            </div>
           )}
 
           {activeTab === 'history' && (
-            <HistoryTab
-              results={results}
-              filter={filter}
-              setFilter={setFilter}
-              selectedResults={selectedResults}
-              setSelectedResults={setSelectedResults}
-              handleDelete={handleDelete}
-              exportToPDF={exportToPDF}
-            />
+            <div role="tabpanel" id="history-panel" aria-labelledby="history-tab">
+              <HistoryTab
+                results={results}
+                filter={filter}
+                setFilter={setFilter}
+                selectedResults={selectedResults}
+                setSelectedResults={setSelectedResults}
+                handleDelete={handleDelete}
+                exportToPDF={exportToPDF}
+              />
+            </div>
           )}
         </div>
       </div>
