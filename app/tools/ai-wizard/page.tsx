@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-type Step = 'location' | 'climate' | 'crops' | 'financials' | 'timeline' | 'recommendations'
+type Step = 'basic-info' | 'location' | 'climate' | 'crops' | 'financials' | 'timeline' | 'recommendations'
 
 interface BoundaryPoint {
   lat: number
@@ -18,6 +18,12 @@ interface CropAllocation {
 }
 
 interface WizardData {
+  // Basic Info
+  farmName: string
+  ownerName: string
+  contactEmail: string
+  contactPhone: string
+  // Location & Size
   location: string
   province: string
   coordinates: {
@@ -27,6 +33,7 @@ interface WizardData {
   farmSize: string
   farmSizeSource: 'manual' | 'boundary' | 'calculated'
   boundaryPoints: BoundaryPoint[]
+  // Climate
   climate: {
     avgTempSummer: string
     avgTempWinter: string
@@ -34,8 +41,10 @@ interface WizardData {
     frostRisk: string
     autoPopulated: boolean
   }
+  // Crops
   crops: string[]
   cropAllocations: CropAllocation[]
+  // Financials
   budget: string
   timeline: string
   soilType: string
@@ -44,12 +53,18 @@ interface WizardData {
 
 export default function AIWizardPage() {
   const router = useRouter()
-  const [currentStep, setCurrentStep] = useState<Step>('location')
+  const [currentStep, setCurrentStep] = useState<Step>('basic-info')
   const [isLoadingClimate, setIsLoadingClimate] = useState(false)
   const [isDetectingLocation, setIsDetectingLocation] = useState(false)
   const [cropSuggestions, setCropSuggestions] = useState<any[]>([])
   const [loadingSuggestions, setLoadingSuggestions] = useState(true)
   const [data, setData] = useState<WizardData>({
+    // Basic Info
+    farmName: '',
+    ownerName: '',
+    contactEmail: '',
+    contactPhone: '',
+    // Location & Size
     location: '',
     province: '',
     coordinates: {
@@ -59,6 +74,7 @@ export default function AIWizardPage() {
     farmSize: '',
     farmSizeSource: 'manual',
     boundaryPoints: [],
+    // Climate
     climate: {
       avgTempSummer: '',
       avgTempWinter: '',
@@ -66,8 +82,10 @@ export default function AIWizardPage() {
       frostRisk: 'no',
       autoPopulated: false,
     },
+    // Crops
     crops: [],
     cropAllocations: [],
+    // Financials
     budget: '',
     timeline: '',
     soilType: '',
@@ -389,6 +407,7 @@ export default function AIWizardPage() {
   }
 
   const steps: { id: Step; title: string; icon: string }[] = [
+    { id: 'basic-info', title: 'Basic Info', icon: '📝' },
     { id: 'location', title: 'Location & Size', icon: '📍' },
     { id: 'climate', title: 'Climate Data', icon: '🌡️' },
     { id: 'crops', title: 'Crop Selection', icon: '🌱' },
@@ -525,7 +544,7 @@ export default function AIWizardPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: `${data.location} Farm Plan`,
+          name: data.farmName || `${data.location} Farm Plan`,
           location: data.location,
           province: data.province,
           coordinates:
@@ -648,7 +667,7 @@ export default function AIWizardPage() {
               🤖 AI Farm Planning Wizard
             </h1>
             <p className="text-gray-600 dark:text-gray-300">
-              Get personalized recommendations based on your location, climate, and goals
+              Create your complete farm business plan with AI-powered recommendations
             </p>
           </div>
           <div className="mb-8">
@@ -668,6 +687,7 @@ export default function AIWizardPage() {
               ))}
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+              {/* eslint-disable-next-line react/no-inline-styles */}
               <div
                 className="bg-primary-600 dark:bg-primary-500 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${((currentStepIndex + 1) / steps.length) * 100}%` }}
@@ -675,6 +695,76 @@ export default function AIWizardPage() {
             </div>
           </div>
           <div className="min-h-[400px]">
+            {currentStep === 'basic-info' && (
+              <div>
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">📝 Basic Information</h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  Tell us about your farm and contact information
+                </p>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Farm Name *
+                    </label>
+                    <input
+                      type="text"
+                      value={data.farmName}
+                      onChange={(e) => setData({ ...data, farmName: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="e.g., Green Valley Farm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Owner/Manager Name *
+                    </label>
+                    <input
+                      type="text"
+                      value={data.ownerName}
+                      onChange={(e) => setData({ ...data, ownerName: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="Your name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Contact Email
+                    </label>
+                    <input
+                      type="email"
+                      value={data.contactEmail}
+                      onChange={(e) => setData({ ...data, contactEmail: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="your@email.com"
+                    />
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Optional: For sharing and collaboration
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Contact Phone
+                    </label>
+                    <input
+                      type="tel"
+                      value={data.contactPhone}
+                      onChange={(e) => setData({ ...data, contactPhone: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="+27 12 345 6789"
+                    />
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Optional: Include country code
+                    </p>
+                  </div>
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
+                    <p className="text-sm text-blue-800 dark:text-blue-300">
+                      <strong>💡 Tip:</strong> This information will be used throughout your business plan.
+                      You can always come back and edit it later.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
             {currentStep === 'location' && (
               <div>
                 <h2 className="text-2xl font-bold mb-4 dark:text-white">📍 Location & Farm Size</h2>

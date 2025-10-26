@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import type { Metadata } from 'next'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Create Farm Plan | Agricultural Business Plan',
@@ -44,15 +44,15 @@ export default function PlanGeneratorPage() {
 
           <div className="grid md:grid-cols-2 gap-6">
             <Link
-              href="/tools/plan-generator/basic-info"
+              href="/tools/ai-wizard"
               className="block p-6 border-2 border-gray-200 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all"
             >
               <div className="flex items-start mb-4">
                 <span className="text-3xl mr-4">🌱</span>
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">Start New Plan</h3>
+                  <h3 className="text-xl font-semibold mb-2">AI-Powered Plan Generator</h3>
                   <p className="text-gray-600">
-                    Begin creating your farm business plan from scratch with our guided wizard
+                    Create your complete farm business plan with AI recommendations and automated analysis
                   </p>
                 </div>
               </div>
