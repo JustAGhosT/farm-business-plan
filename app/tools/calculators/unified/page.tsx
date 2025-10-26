@@ -2,7 +2,8 @@
 
 import WizardWrapper from '@/components/WizardWrapper'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 // Unified calculator configuration
 interface CalculatorConfig {
@@ -201,11 +202,20 @@ const CALCULATOR_CONFIGS: CalculatorConfig[] = [
 ]
 
 export default function UnifiedCalculator() {
+  const searchParams = useSearchParams()
   const [selectedCalculator, setSelectedCalculator] = useState<string>('roi')
   const [formData, setFormData] = useState<Record<string, string>>({})
   const [results, setResults] = useState<any>(null)
   const [savedMessage, setSavedMessage] = useState('')
   const [isSaving, setIsSaving] = useState(false)
+
+  // Handle URL parameter for pre-selecting calculator
+  useEffect(() => {
+    const calculatorParam = searchParams.get('calculator')
+    if (calculatorParam && CALCULATOR_CONFIGS.find(config => config.id === calculatorParam)) {
+      setSelectedCalculator(calculatorParam)
+    }
+  }, [searchParams])
 
   const currentConfig = CALCULATOR_CONFIGS.find(config => config.id === selectedCalculator)
 
