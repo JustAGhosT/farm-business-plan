@@ -37,16 +37,19 @@ export async function POST(request: Request) {
 
       // Insert tasks into database
       for (const task of tasks) {
-        const newTask = await taskRepository.create({
-          farm_plan_id,
-          crop_plan_id: cropPlan.id,
-          title: task.title,
-          description: task.description,
-          status: 'pending',
-          priority: task.priority,
-          category: task.category,
-          due_date: task.due_date,
-        }, null)
+        const newTask = await taskRepository.create(
+          {
+            farm_plan_id,
+            crop_plan_id: cropPlan.id,
+            title: task.title,
+            description: task.description,
+            status: 'pending',
+            priority: task.priority,
+            category: task.category,
+            due_date: task.due_date,
+          },
+          null
+        )
         generatedTasks.push(newTask)
       }
     }

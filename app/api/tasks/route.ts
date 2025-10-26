@@ -129,23 +129,30 @@ export async function PATCH(request: Request) {
     const updatedTask = await taskRepository.update(id, updates)
 
     if (!updatedTask) {
-      return createErrorResponse('Task not found or no fields to update', 404, undefined, 'NOT_FOUND')
+      return createErrorResponse(
+        'Task not found or no fields to update',
+        404,
+        undefined,
+        'NOT_FOUND'
+      )
     }
 
     const session = await getServerSession(authOptions)
 
     // Send notification if task assignment changed
     if (updates.assigned_to !== undefined && session?.user) {
-      await communicationRepository.createNotification({
-        user_id: updates.assigned_to,
-        type: 'task-assigned',
-        title: 'Task Reassigned',
-        message: `Task "${updatedTask.title}" has been assigned to you`,
-        priority: updatedTask.priority || 'medium',
-        context_type: 'task',
-        context_id: updatedTask.id,
-        action_url: `/tools/dashboard?task=${updatedTask.id}`,
-      }).catch((err) => console.error('Failed to send notification:', err))
+      await communicationRepository
+        .createNotification({
+          user_id: updates.assigned_to,
+          type: 'task-assigned',
+          title: 'Task Reassigned',
+          message: `Task "${updatedTask.title}" has been assigned to you`,
+          priority: updatedTask.priority || 'medium',
+          context_type: 'task',
+          context_id: updatedTask.id,
+          action_url: `/tools/dashboard?task=${updatedTask.id}`,
+        })
+        .catch((err) => console.error('Failed to send notification:', err))
     }
 
     // Log the change
@@ -153,14 +160,16 @@ export async function PATCH(request: Request) {
       const changedFields = Object.keys(updates)
         .filter((k) => k !== 'id')
         .join(', ')
-      await systemRepository.logChange({
-        target_type: 'task',
-        target_id: id,
-        user_id: session.user.id,
-        user_name: session.user.name || session.user.email,
-        action: 'updated',
-        description: `Updated task fields: ${changedFields}`,
-      }).catch((err) => console.error('Failed to log change:', err))
+      await systemRepository
+        .logChange({
+          target_type: 'task',
+          target_id: id,
+          user_id: session.user.id,
+          user_name: session.user.name || session.user.email,
+          action: 'updated',
+          description: `Updated task fields: ${changedFields}`,
+        })
+        .catch((err) => console.error('Failed to log change:', err))
     }
 
     return NextResponse.json({

@@ -1,4 +1,4 @@
-import { query } from '@/lib/db';
+import { query } from '@/lib/db'
 
 const ALLOWED_UPDATE_FIELDS = Object.freeze([
   'crop_name',
@@ -9,7 +9,7 @@ const ALLOWED_UPDATE_FIELDS = Object.freeze([
   'expected_yield',
   'yield_unit',
   'status',
-]) as readonly string[];
+]) as readonly string[]
 
 const ALLOWED_TEMPLATE_UPDATE_FIELDS = Object.freeze([
   'name',
@@ -20,36 +20,36 @@ const ALLOWED_TEMPLATE_UPDATE_FIELDS = Object.freeze([
   'growing_requirements',
   'market_info',
   'is_public',
-]) as readonly string[];
+]) as readonly string[]
 
 export const cropRepository = {
   async getAll() {
-    const result = await query('SELECT * FROM crops');
-    return result.rows;
+    const result = await query('SELECT * FROM crops')
+    return result.rows
   },
 
   async getSuggestions(province?: string, town?: string) {
-    let baseQuery = 'SELECT * FROM crops';
-    const whereClauses = [];
-    const params = [];
-    let paramIndex = 1;
+    let baseQuery = 'SELECT * FROM crops'
+    const whereClauses = []
+    const params = []
+    let paramIndex = 1
 
     if (province) {
-      whereClauses.push(`province = $${paramIndex++}`);
-      params.push(province);
+      whereClauses.push(`province = $${paramIndex++}`)
+      params.push(province)
     }
 
     if (town) {
-      whereClauses.push(`town = $${paramIndex++}`);
-      params.push(town);
+      whereClauses.push(`town = $${paramIndex++}`)
+      params.push(town)
     }
 
     if (whereClauses.length > 0) {
-      baseQuery += ' WHERE ' + whereClauses.join(' AND ');
+      baseQuery += ' WHERE ' + whereClauses.join(' AND ')
     }
 
-    const result = await query(baseQuery, params);
-    return result.rows;
+    const result = await query(baseQuery, params)
+    return result.rows
   },
 
   async getAllPlans(farmPlanId?: string, status?: string) {
@@ -64,27 +64,27 @@ export const cropRepository = {
       LEFT JOIN financial_data fd ON cp.id = fd.crop_plan_id
       LEFT JOIN tasks t ON cp.id = t.crop_plan_id
       WHERE 1=1
-    `;
+    `
 
-    const params: any[] = [];
-    let paramIndex = 1;
+    const params: any[] = []
+    let paramIndex = 1
 
     if (farmPlanId) {
-      queryText += ` AND cp.farm_plan_id = $${paramIndex}`;
-      params.push(farmPlanId);
-      paramIndex++;
+      queryText += ` AND cp.farm_plan_id = $${paramIndex}`
+      params.push(farmPlanId)
+      paramIndex++
     }
 
     if (status) {
-      queryText += ` AND cp.status = $${paramIndex}`;
-      params.push(status);
-      paramIndex++;
+      queryText += ` AND cp.status = $${paramIndex}`
+      params.push(status)
+      paramIndex++
     }
 
-    queryText += ' GROUP BY cp.id, fp.name ORDER BY cp.created_at DESC';
+    queryText += ' GROUP BY cp.id, fp.name ORDER BY cp.created_at DESC'
 
-    const result = await query(queryText, params);
-    return result.rows;
+    const result = await query(queryText, params)
+    return result.rows
   },
 
   async createPlan(planData: any) {
@@ -98,7 +98,7 @@ export const cropRepository = {
       expected_yield,
       yield_unit,
       status,
-    } = planData;
+    } = planData
 
     const queryText = `
       INSERT INTO crop_plans (
@@ -107,7 +107,7 @@ export const cropRepository = {
       )
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *
-    `;
+    `
 
     const params = [
       farm_plan_id,
@@ -119,79 +119,79 @@ export const cropRepository = {
       expected_yield || null,
       yield_unit || null,
       status || 'planned',
-    ];
+    ]
 
-    const result = await query(queryText, params);
-    return result.rows[0];
+    const result = await query(queryText, params)
+    return result.rows[0]
   },
 
   async updatePlan(id: string, updates: any) {
-    const setClauses: string[] = [];
-    const params: any[] = [];
-    let paramIndex = 1;
+    const setClauses: string[] = []
+    const params: any[] = []
+    let paramIndex = 1
 
     for (const field of ALLOWED_UPDATE_FIELDS) {
       if (updates[field] !== undefined) {
-        setClauses.push(`${field} = $${paramIndex}`);
-        params.push(updates[field]);
-        paramIndex++;
+        setClauses.push(`${field} = $${paramIndex}`)
+        params.push(updates[field])
+        paramIndex++
       }
     }
 
     if (setClauses.length === 0) {
-      return null;
+      return null
     }
 
-    params.push(id);
+    params.push(id)
     const queryText = `
       UPDATE crop_plans
       SET ${setClauses.join(', ')}
       WHERE id = $${paramIndex}
       RETURNING *
-    `;
+    `
 
-    const result = await query(queryText, params);
-    return result.rows[0];
+    const result = await query(queryText, params)
+    return result.rows[0]
   },
 
   async deletePlan(id: string) {
-    const result = await query('DELETE FROM crop_plans WHERE id = $1 RETURNING id', [id]);
-    return result.rows[0];
+    const result = await query('DELETE FROM crop_plans WHERE id = $1 RETURNING id', [id])
+    return result.rows[0]
   },
 
   async getHistory(farmPlanId: string) {
     const result = await query(
       'SELECT * FROM crop_plans WHERE farm_plan_id = $1 ORDER BY created_at DESC',
       [farmPlanId]
-    );
-    return result.rows;
+    )
+    return result.rows
   },
 
   async getAllTemplates(category?: string, isPublic?: string) {
     let queryText = `
       SELECT * FROM crop_templates
       WHERE 1=1
-    `;
+    `
 
-    const params: any[] = [];
-    let paramIndex = 1;
+    const params: any[] = []
+    let paramIndex = 1
 
     if (category) {
-      queryText += ` AND category = $${paramIndex}`;
-      params.push(category);
-      paramIndex++;
+      queryText += ` AND category = $${paramIndex}`
+      params.push(category)
+      paramIndex++
     }
 
     if (isPublic !== null && isPublic !== undefined) {
-      queryText += ` AND is_public = $${paramIndex}`;
-      params.push(isPublic === 'true');
-      paramIndex++;
+      queryText += ` AND is_public = $${paramIndex}`
+      params.push(isPublic === 'true')
+      paramIndex++
     }
 
-    queryText += ' ORDER BY name ASC';
+    queryText += ' ORDER BY name ASC'
 
-    const result = await query(queryText, params);
-    return result.rows;
+    const result = await query(queryText, params)
+    return result.rows
   },
 
   async createTemplate(templateData: any) {
@@ -205,7 +205,7 @@ export const cropRepository = {
       market_info,
       is_public,
       created_by,
-    } = templateData;
+    } = templateData
 
     const queryText = `
       INSERT INTO crop_templates (
@@ -215,7 +215,7 @@ export const cropRepository = {
       )
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *
-    `;
+    `
 
     const params = [
       name,
@@ -227,55 +227,55 @@ export const cropRepository = {
       market_info ? JSON.stringify(market_info) : null,
       is_public !== undefined ? is_public : true,
       created_by || null,
-    ];
+    ]
 
-    const result = await query(queryText, params);
-    return result.rows[0];
+    const result = await query(queryText, params)
+    return result.rows[0]
   },
 
   async updateTemplate(id: string, updates: any) {
-    const setClauses: string[] = [];
-    const params: any[] = [];
-    let paramIndex = 1;
+    const setClauses: string[] = []
+    const params: any[] = []
+    let paramIndex = 1
 
     const jsonFields = [
       'technical_specs',
       'financial_projections',
       'growing_requirements',
       'market_info',
-    ];
+    ]
 
     ALLOWED_TEMPLATE_UPDATE_FIELDS.forEach((field) => {
       if (updates[field] !== undefined) {
         if (jsonFields.includes(field) && updates[field] !== null) {
-          setClauses.push(`${field} = $${paramIndex}`);
-          params.push(JSON.stringify(updates[field]));
+          setClauses.push(`${field} = $${paramIndex}`)
+          params.push(JSON.stringify(updates[field]))
         } else {
-          setClauses.push(`${field} = $${paramIndex}`);
-          params.push(updates[field]);
+          setClauses.push(`${field} = $${paramIndex}`)
+          params.push(updates[field])
         }
-        paramIndex++;
+        paramIndex++
       }
-    });
+    })
 
     if (setClauses.length === 0) {
-      return null;
+      return null
     }
 
-    params.push(id);
+    params.push(id)
     const queryText = `
       UPDATE crop_templates
       SET ${setClauses.join(', ')}
       WHERE id = $${paramIndex}
       RETURNING *
-    `;
+    `
 
-    const result = await query(queryText, params);
-    return result.rows[0];
+    const result = await query(queryText, params)
+    return result.rows[0]
   },
 
   async deleteTemplate(id: string) {
-    const result = await query('DELETE FROM crop_templates WHERE id = $1 RETURNING id', [id]);
-    return result.rows[0];
-  }
-};
+    const result = await query('DELETE FROM crop_templates WHERE id = $1 RETURNING id', [id])
+    return result.rows[0]
+  },
+}

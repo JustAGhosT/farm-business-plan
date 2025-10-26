@@ -80,7 +80,12 @@ export async function PATCH(request: Request) {
     const updatedTemplate = await cropRepository.updateTemplate(id, updates)
 
     if (!updatedTemplate) {
-      return createErrorResponse('Crop template not found or no fields to update', 404, undefined, 'NOT_FOUND')
+      return createErrorResponse(
+        'Crop template not found or no fields to update',
+        404,
+        undefined,
+        'NOT_FOUND'
+      )
     }
 
     return NextResponse.json({

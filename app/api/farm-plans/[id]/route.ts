@@ -70,7 +70,12 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
     const updatedFarmPlan = await farmPlanRepository.update(id, validation.data!)
 
     if (!updatedFarmPlan) {
-      return createErrorResponse('Farm plan not found or no fields to update', 404, undefined, 'NOT_FOUND')
+      return createErrorResponse(
+        'Farm plan not found or no fields to update',
+        404,
+        undefined,
+        'NOT_FOUND'
+      )
     }
 
     return NextResponse.json({

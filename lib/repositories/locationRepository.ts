@@ -1,14 +1,14 @@
-import { query } from '@/lib/db';
+import { query } from '@/lib/db'
 
 interface Province {
-  id: string;
-  name: string;
+  id: string
+  name: string
 }
 
 interface Town {
-  id: string;
-  name: string;
-  province_id: string;
+  id: string
+  name: string
+  province_id: string
 }
 
 export const locationRepository = {
@@ -16,14 +16,12 @@ export const locationRepository = {
     const { rows } = await query<Province>(
       'SELECT id, name FROM provinces ORDER BY name LIMIT $1 OFFSET $2',
       [limit, offset]
-    );
-    return rows;
+    )
+    return rows
   },
 
   async getTowns() {
-    const { rows } = await query<Town>(
-      'SELECT id, name, province_id FROM towns ORDER BY name'
-    );
-    return rows;
-  }
-};
+    const { rows } = await query<Town>('SELECT id, name, province_id FROM towns ORDER BY name')
+    return rows
+  },
+}
