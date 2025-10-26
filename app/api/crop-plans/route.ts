@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     const farmPlanId = searchParams.get('farm_plan_id')
     const status = searchParams.get('status')
 
-    const cropPlans = await cropRepository.getAllPlans(farmPlanId, status)
+    const cropPlans = await cropRepository.getAllPlans(farmPlanId || undefined, status || undefined)
 
     return NextResponse.json({
       success: true,

@@ -291,6 +291,6 @@ export const taskRepository = {
 
   async deleteDependency(dependencyId: string) {
     const result = await query('DELETE FROM task_dependencies WHERE id = $1', [dependencyId])
-    return result.rowCount > 0
+    return result.rowCount && result.rowCount > 0
   },
 }

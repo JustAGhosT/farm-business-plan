@@ -1,8 +1,8 @@
 import { createErrorResponse } from '@/lib/api-utils'
 import { authOptions } from '@/lib/auth'
-import { taskRepository } from '@/lib/repositories/taskRepository'
 import { communicationRepository } from '@/lib/repositories/communicationRepository'
 import { systemRepository } from '@/lib/repositories/systemRepository'
+import { taskRepository } from '@/lib/repositories/taskRepository'
 import { TaskSchema, validateData } from '@/lib/validation'
 import { getServerSession } from 'next-auth'
 import { NextResponse } from 'next/server'
@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     const status = searchParams.get('status')
     const priority = searchParams.get('priority')
 
-    const tasks = await taskRepository.getAll(farmPlanId, status, priority)
+    const tasks = await taskRepository.getAll(farmPlanId || undefined, status || undefined, priority || undefined)
 
     return NextResponse.json({
       success: true,
