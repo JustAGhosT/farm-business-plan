@@ -1,24 +1,24 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts'
 
 interface CalculatorResult {
   id: string
@@ -35,6 +35,9 @@ export default function FinancialReportsPage() {
   const [results, setResults] = useState<CalculatorResult[]>([])
   const [loading, setLoading] = useState(true)
   const [dateRange, setDateRange] = useState<string>('30')
+  const [activeTab, setActiveTab] = useState<'reports' | 'history'>('reports')
+  const [filter, setFilter] = useState<string>('all')
+  const [selectedResults, setSelectedResults] = useState<string[]>([])
 
   useEffect(() => {
     fetchResults()
@@ -43,7 +46,12 @@ export default function FinancialReportsPage() {
   const fetchResults = async () => {
     setLoading(true)
     try {
-      const response = await fetch('/api/calculator-results?limit=100')
+      const url =
+        filter === 'all'
+          ? '/api/calculator-results?limit=100'
+          : `/api/calculator-results?calculator_type=${filter}&limit=100`
+
+      const response = await fetch(url)
       const data = await response.json()
 
       if (data.success) {
@@ -54,6 +62,39 @@ export default function FinancialReportsPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this calculation?')) return
+
+    try {
+      const response = await fetch(`/api/calculator-results?id=${id}`, {
+        method: 'DELETE',
+      })
+
+      if (response.ok) {
+        fetchResults()
+      }
+    } catch (error) {
+      console.error('Error deleting result:', error)
+    }
+  }
+
+  const toggleSelection = (id: string) => {
+    setSelectedResults((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    )
+  }
+
+  const getComparisonData = () => {
+    const selected = results.filter((r) => selectedResults.includes(r.id))
+    return selected.map((r, index) => ({
+      name: `Calc ${index + 1}`,
+      date: new Date(r.created_at).toLocaleDateString(),
+      roi: r.results.roi || 0,
+      netProfit: r.results.netProfit || r.results.profit || 0,
+      payback: r.results.paybackPeriod || 0,
+    }))
   }
 
   const filterByDateRange = (results: CalculatorResult[]) => {
@@ -254,7 +295,7 @@ export default function FinancialReportsPage() {
             <div className="flex items-center">
               <span className="text-4xl mr-4">📈</span>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">Financial Reports</h1>
+                <h1 className="text-3xl font-bold text-gray-900">Financial Reports & History</h1>
                 <p className="text-gray-600">
                   Comprehensive analysis of your farm financial calculations
                 </p>
@@ -292,21 +333,48 @@ export default function FinancialReportsPage() {
             </div>
           </div>
 
-          {/* Date Range Filter */}
-          <div className="mb-8">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Time Period</label>
-            <select
-              value={dateRange}
-              onChange={(e) => setDateRange(e.target.value)}
-              className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          {/* Tab Navigation */}
+          <div className="flex border-b border-gray-200 mb-6">
+            <button
+              onClick={() => setActiveTab('reports')}
+              className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
+                activeTab === 'reports'
+                  ? 'border-primary-500 text-primary-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
             >
-              <option value="7">Last 7 days</option>
-              <option value="30">Last 30 days</option>
-              <option value="90">Last 90 days</option>
-              <option value="365">Last year</option>
-              <option value="10000">All time</option>
-            </select>
+              📊 Reports & Analytics
+            </button>
+            <button
+              onClick={() => setActiveTab('history')}
+              className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
+                activeTab === 'history'
+                  ? 'border-primary-500 text-primary-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              📋 Calculation History
+            </button>
           </div>
+
+          {/* Tab Content */}
+          {activeTab === 'reports' && (
+            <>
+              {/* Date Range Filter */}
+              <div className="mb-8">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Time Period</label>
+                <select
+                  value={dateRange}
+                  onChange={(e) => setDateRange(e.target.value)}
+                  className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                >
+                  <option value="7">Last 7 days</option>
+                  <option value="30">Last 30 days</option>
+                  <option value="90">Last 90 days</option>
+                  <option value="365">Last year</option>
+                  <option value="10000">All time</option>
+                </select>
+              </div>
 
           {loading ? (
             <div className="text-center py-12">
@@ -447,8 +515,188 @@ export default function FinancialReportsPage() {
               </div>
             </>
           )}
+
+          {activeTab === 'history' && (
+            <>
+              {/* Filter Controls */}
+              <div className="mb-8 flex gap-4 items-end">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Filter by Calculator</label>
+                  <select
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                    className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  >
+                    <option value="all">All Calculators</option>
+                    <option value="roi">ROI Calculator</option>
+                    <option value="break-even">Break-Even Analysis</option>
+                    <option value="investment">Investment Calculator</option>
+                    <option value="revenue">Revenue Projections</option>
+                    <option value="operating-costs">Operating Costs</option>
+                    <option value="loan">Loan Calculator</option>
+                  </select>
+                </div>
+                {selectedResults.length > 0 && (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        const selected = results.filter((r) => selectedResults.includes(r.id))
+                        exportToPDF(selected)
+                      }}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      Export Selected ({selectedResults.length})
+                    </button>
+                    <button
+                      onClick={() => setSelectedResults([])}
+                      className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                    >
+                      Clear Selection
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* History Content */}
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+                  <p className="mt-4 text-gray-600">Loading calculation history...</p>
+                </div>
+              ) : results.length === 0 ? (
+                <div className="text-center py-12">
+                  <span className="text-6xl mb-4 block">📊</span>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">No Calculations Found</h3>
+                  <p className="text-gray-600 mb-6">
+                    Start by using our calculators to generate some financial analysis.
+                  </p>
+                  <Link
+                    href="/tools/calculators"
+                    className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                  >
+                    <span className="mr-2">💰</span>
+                    Go to Calculators
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {/* Comparison Chart */}
+                  {selectedResults.length > 1 && (
+                    <div className="bg-white p-6 rounded-lg border border-gray-200">
+                      <h3 className="text-lg font-semibold mb-4">Comparison Chart</h3>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={getComparisonData()}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="name" />
+                          <YAxis />
+                          <Tooltip />
+                          <Legend />
+                          <Bar dataKey="roi" fill="#10b981" name="ROI (%)" />
+                          <Bar dataKey="netProfit" fill="#3b82f6" name="Net Profit (R)" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  )}
+
+                  {/* Results List */}
+                  <div className="space-y-4">
+                    {results.map((result) => (
+                      <div
+                        key={result.id}
+                        className={`p-6 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-shadow ${
+                          selectedResults.includes(result.id) ? 'ring-2 ring-primary-500' : ''
+                        }`}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-start space-x-4">
+                            <input
+                              type="checkbox"
+                              checked={selectedResults.includes(result.id)}
+                              onChange={() => toggleSelection(result.id)}
+                              className="mt-1 h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                            />
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-2 mb-2">
+                                <span className="text-2xl">
+                                  {result.calculator_type === 'roi' && '📈'}
+                                  {result.calculator_type === 'break-even' && '⚖️'}
+                                  {result.calculator_type === 'investment' && '💰'}
+                                  {result.calculator_type === 'revenue' && '📊'}
+                                  {result.calculator_type === 'operating-costs' && '💸'}
+                                  {result.calculator_type === 'loan' && '🏦'}
+                                </span>
+                                <h3 className="text-lg font-semibold text-gray-900">
+                                  {result.calculator_type.replace('-', ' ').toUpperCase()} Calculator
+                                </h3>
+                                <span className="text-sm text-gray-500">
+                                  {new Date(result.created_at).toLocaleDateString()}
+                                </span>
+                              </div>
+                              
+                              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                                {result.results.roi !== undefined && (
+                                  <div>
+                                    <span className="text-gray-600">ROI:</span>
+                                    <span className="ml-2 font-semibold text-green-600">
+                                      {result.results.roi.toFixed(1)}%
+                                    </span>
+                                  </div>
+                                )}
+                                {result.results.netProfit !== undefined && (
+                                  <div>
+                                    <span className="text-gray-600">Net Profit:</span>
+                                    <span className="ml-2 font-semibold text-blue-600">
+                                      R {result.results.netProfit.toLocaleString()}
+                                    </span>
+                                  </div>
+                                )}
+                                {result.results.paybackPeriod !== undefined && (
+                                  <div>
+                                    <span className="text-gray-600">Payback:</span>
+                                    <span className="ml-2 font-semibold text-purple-600">
+                                      {result.results.paybackPeriod.toFixed(1)} years
+                                    </span>
+                                  </div>
+                                )}
+                                {result.results.totalRevenue !== undefined && (
+                                  <div>
+                                    <span className="text-gray-600">Revenue:</span>
+                                    <span className="ml-2 font-semibold text-orange-600">
+                                      R {result.results.totalRevenue.toLocaleString()}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                              
+                              {result.notes && (
+                                <p className="mt-2 text-sm text-gray-600 italic">"{result.notes}"</p>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={() => {
+                                const singleResult = [result]
+                                exportToPDF(singleResult)
+                              }}
+                              className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors"
+                            >
+                              Export
+                            </button>
+                            <button
+                              onClick={() => handleDelete(result.id)}
+                              className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
         </div>
-      </div>
-    </div>
-  )
-}
