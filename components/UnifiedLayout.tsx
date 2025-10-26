@@ -37,32 +37,25 @@ export interface WizardLayoutProps extends BaseLayoutProps {
 }
 
 // Shared layout component
-export function BaseLayout({ 
-  children, 
-  variant = 'default',
-  className = '' 
-}: BaseLayoutProps) {
-  const baseClasses = "min-h-screen bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800"
-  
+export function BaseLayout({ children, variant = 'default', className = '' }: BaseLayoutProps) {
+  const baseClasses =
+    'min-h-screen bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800'
+
   const variantClasses = {
-    default: "flex items-center justify-center px-4 py-8",
-    auth: "flex items-center justify-center px-4 py-12",
-    wizard: "px-4 py-8",
-    page: "px-4 py-8"
+    default: 'flex items-center justify-center px-4 py-8',
+    auth: 'flex items-center justify-center px-4 py-12',
+    wizard: 'px-4 py-8',
+    page: 'px-4 py-8',
   }
-  
-  return (
-    <div className={`${baseClasses} ${variantClasses[variant]} ${className}`}>
-      {children}
-    </div>
-  )
+
+  return <div className={`${baseClasses} ${variantClasses[variant]} ${className}`}>{children}</div>
 }
 
 // Container component with consistent max-widths
-export function LayoutContainer({ 
-  children, 
+export function LayoutContainer({
+  children,
   maxWidth = 'xl',
-  className = '' 
+  className = '',
 }: {
   children: React.ReactNode
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
@@ -70,26 +63,24 @@ export function LayoutContainer({
 }) {
   const maxWidthClasses = {
     sm: 'max-w-sm',
-    md: 'max-w-md', 
+    md: 'max-w-md',
     lg: 'max-w-lg',
     xl: 'max-w-xl',
     '2xl': 'max-w-2xl',
-    full: 'max-w-full'
+    full: 'max-w-full',
   }
-  
+
   return (
-    <div className={`container mx-auto ${maxWidthClasses[maxWidth]} ${className}`}>
-      {children}
-    </div>
+    <div className={`container mx-auto ${maxWidthClasses[maxWidth]} ${className}`}>{children}</div>
   )
 }
 
 // Card wrapper component
-export function LayoutCard({ 
-  children, 
+export function LayoutCard({
+  children,
   className = '',
   padding = 'lg',
-  shadow = 'lg'
+  shadow = 'lg',
 }: {
   children: React.ReactNode
   className?: string
@@ -100,18 +91,20 @@ export function LayoutCard({
     sm: 'p-4',
     md: 'p-6',
     lg: 'p-8',
-    xl: 'p-10'
+    xl: 'p-10',
   }
-  
+
   const shadowClasses = {
     sm: 'shadow-sm',
     md: 'shadow-md',
     lg: 'shadow-lg',
-    xl: 'shadow-xl'
+    xl: 'shadow-xl',
   }
-  
+
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-lg ${shadowClasses[shadow]} ${paddingClasses[padding]} ${className}`}>
+    <div
+      className={`bg-white dark:bg-gray-800 rounded-lg ${shadowClasses[shadow]} ${paddingClasses[padding]} ${className}`}
+    >
       {children}
     </div>
   )
@@ -124,7 +117,7 @@ export function UnifiedPageLayout({
   subtitle,
   actions,
   maxWidth = 'xl',
-  className = ''
+  className = '',
 }: PageLayoutProps) {
   return (
     <BaseLayout variant="page" className={className}>
@@ -132,20 +125,10 @@ export function UnifiedPageLayout({
         <div className="mb-8">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                {title}
-              </h1>
-              {subtitle && (
-                <p className="text-gray-600 dark:text-gray-300">
-                  {subtitle}
-                </p>
-              )}
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{title}</h1>
+              {subtitle && <p className="text-gray-600 dark:text-gray-300">{subtitle}</p>}
             </div>
-            {actions && (
-              <div className="flex gap-3">
-                {actions}
-              </div>
-            )}
+            {actions && <div className="flex gap-3">{actions}</div>}
           </div>
         </div>
         {children}
@@ -160,23 +143,17 @@ export function UnifiedAuthLayout({
   title,
   subtitle,
   showBackLink = true,
-  className = ''
+  className = '',
 }: AuthLayoutProps) {
   return (
     <BaseLayout variant="auth" className={className}>
       <LayoutContainer maxWidth="md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            {title}
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            {subtitle}
-          </p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{title}</h1>
+          <p className="text-gray-600 dark:text-gray-400">{subtitle}</p>
         </div>
 
-        <LayoutCard>
-          {children}
-        </LayoutCard>
+        <LayoutCard>{children}</LayoutCard>
 
         {showBackLink && (
           <div className="mt-6 text-center">
@@ -204,10 +181,10 @@ export function UnifiedWizardLayout({
   onNext,
   onBack,
   showProgress = true,
-  className = ''
+  className = '',
 }: WizardLayoutProps) {
   const router = useRouter()
-  
+
   const handleNext = () => {
     if (onNext) {
       onNext()
@@ -231,12 +208,8 @@ export function UnifiedWizardLayout({
           {/* Header */}
           <div className="flex items-center mb-6">
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                {title}
-              </h1>
-              <p className="text-gray-600 dark:text-gray-300">
-                {description}
-              </p>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{title}</h1>
+              <p className="text-gray-600 dark:text-gray-300">{description}</p>
             </div>
             <div className="text-sm text-gray-500 dark:text-gray-400">
               Step {step} of {totalSteps}
@@ -249,7 +222,6 @@ export function UnifiedWizardLayout({
               <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
           <div
             className="bg-primary-600 h-2 rounded-full transition-all duration-300"
-            /* eslint-disable-next-line react/no-inline-styles */
             style={{ width: `${progressPercentage}%` }}
           />
               </div>
@@ -257,9 +229,7 @@ export function UnifiedWizardLayout({
           )}
 
           {/* Content */}
-          <div className="mb-8">
-            {children}
-          </div>
+          <div className="mb-8">{children}</div>
 
           {/* Navigation */}
           <div className="flex justify-between">

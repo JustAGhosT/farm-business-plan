@@ -32,10 +32,7 @@ export class ApiClient {
     this.baseUrl = baseUrl
   }
 
-  private async request<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<ApiResponse<T>> {
+  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
     try {
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         headers: {
@@ -122,7 +119,7 @@ export const calculatorApi = {
       limit: params?.limit || 50,
       ...params,
     }
-    
+
     if (calculatorType) {
       queryParams.calculator_type = calculatorType
     }
@@ -163,7 +160,7 @@ export const calculatorApi = {
     }
 
     return response.blob()
-  }
+  },
 }
 
 // Farm plan API functions
@@ -186,7 +183,7 @@ export const farmPlanApi = {
 
   async deletePlan(id: string): Promise<ApiResponse<void>> {
     return apiClient.delete(`/api/farm-plans/${id}`)
-  }
+  },
 }
 
 // Crop suggestions API
@@ -197,7 +194,7 @@ export const cropApi = {
 
   async getTemplates(): Promise<ApiResponse<any[]>> {
     return apiClient.get('/api/crop-templates')
-  }
+  },
 }
 
 // Climate data API
@@ -208,7 +205,7 @@ export const climateApi = {
 
   async getData(farmPlanId: string): Promise<ApiResponse<any>> {
     return apiClient.get(`/api/climate-data?farm_plan_id=${farmPlanId}`)
-  }
+  },
 }
 
 // AI recommendations API
@@ -219,7 +216,7 @@ export const aiApi = {
 
   async getRecommendations(farmPlanId: string): Promise<ApiResponse<any[]>> {
     return apiClient.get(`/api/ai-recommendations?farm_plan_id=${farmPlanId}`)
-  }
+  },
 }
 
 // Utility functions for common API patterns
@@ -267,5 +264,5 @@ export const apiUtils = {
     a.click()
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
-  }
+  },
 }

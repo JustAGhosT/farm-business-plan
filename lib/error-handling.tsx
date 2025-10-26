@@ -21,7 +21,7 @@ export enum ErrorType {
   AUTHORIZATION = 'AUTHORIZATION',
   NOT_FOUND = 'NOT_FOUND',
   SERVER = 'SERVER',
-  UNKNOWN = 'UNKNOWN'
+  UNKNOWN = 'UNKNOWN',
 }
 
 export interface CategorizedError {
@@ -34,101 +34,101 @@ export interface CategorizedError {
 // Error categorization utility
 export function categorizeError(error: unknown): CategorizedError {
   const timestamp = new Date()
-  
+
   if (error instanceof Error) {
     const message = error.message.toLowerCase()
-    
+
     if (message.includes('network') || message.includes('fetch')) {
       return {
         type: ErrorType.NETWORK,
         message: 'Network connection error. Please check your internet connection.',
         originalError: error,
-        timestamp
+        timestamp,
       }
     }
-    
+
     if (message.includes('unauthorized') || message.includes('401')) {
       return {
         type: ErrorType.AUTHENTICATION,
         message: 'Authentication required. Please sign in again.',
         originalError: error,
-        timestamp
+        timestamp,
       }
     }
-    
+
     if (message.includes('forbidden') || message.includes('403')) {
       return {
         type: ErrorType.AUTHORIZATION,
         message: 'You do not have permission to perform this action.',
         originalError: error,
-        timestamp
+        timestamp,
       }
     }
-    
+
     if (message.includes('not found') || message.includes('404')) {
       return {
         type: ErrorType.NOT_FOUND,
         message: 'The requested resource was not found.',
         originalError: error,
-        timestamp
+        timestamp,
       }
     }
-    
+
     if (message.includes('server') || message.includes('500')) {
       return {
         type: ErrorType.SERVER,
         message: 'Server error occurred. Please try again later.',
         originalError: error,
-        timestamp
+        timestamp,
       }
     }
-    
+
     return {
       type: ErrorType.UNKNOWN,
       message: error.message || 'An unexpected error occurred',
       originalError: error,
-      timestamp
+      timestamp,
     }
   }
-  
+
   if (typeof error === 'string') {
     return {
       type: ErrorType.UNKNOWN,
       message: error,
       originalError: error,
-      timestamp
+      timestamp,
     }
   }
-  
+
   return {
     type: ErrorType.UNKNOWN,
     message: 'An unexpected error occurred',
     originalError: error,
-    timestamp
+    timestamp,
   }
 }
 
 // Hook for error state management
 export function useErrorState(): ErrorState {
   const [error, setError] = useState<string | null>(null)
-  
+
   const clearError = useCallback(() => {
     setError(null)
   }, [])
-  
+
   const handleError = useCallback((error: unknown) => {
     const categorizedError = categorizeError(error)
     setError(categorizedError.message)
-    
+
     // Log error for debugging
     console.error('Error handled:', categorizedError)
   }, [])
-  
+
   return {
     error,
     setError,
     clearError,
-    handleError
+    handleError,
   }
 }
 
@@ -141,38 +141,38 @@ export interface ErrorMessageProps {
 }
 
 // Error message component
-export function ErrorMessage({ 
-  error, 
-  onDismiss, 
+export function ErrorMessage({
+  error,
+  onDismiss,
   variant = 'error',
-  className = '' 
+  className = '',
 }: ErrorMessageProps) {
   if (!error) return null
-  
+
   const variantStyles = {
-    error: 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-700 text-red-800 dark:text-red-200',
-    warning: 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-700 text-yellow-800 dark:text-yellow-200',
-    info: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700 text-blue-800 dark:text-blue-200'
+    error:
+      'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-700 text-red-800 dark:text-red-200',
+    warning:
+      'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-700 text-yellow-800 dark:text-yellow-200',
+    info: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700 text-blue-800 dark:text-blue-200',
   }
-  
+
   const iconStyles = {
     error: 'text-red-600 dark:text-red-400',
     warning: 'text-yellow-600 dark:text-yellow-400',
-    info: 'text-blue-600 dark:text-blue-400'
+    info: 'text-blue-600 dark:text-blue-400',
   }
-  
+
   const icons = {
     error: '⚠️',
     warning: '⚠️',
-    info: 'ℹ️'
+    info: 'ℹ️',
   }
-  
+
   return (
     <div className={`p-4 rounded-lg border ${variantStyles[variant]} ${className}`}>
       <div className="flex items-start">
-        <span className={`text-lg mr-3 ${iconStyles[variant]}`}>
-          {icons[variant]}
-        </span>
+        <span className={`text-lg mr-3 ${iconStyles[variant]}`}>{icons[variant]}</span>
         <div className="flex-1">
           <p className="text-sm font-medium">{error}</p>
         </div>
@@ -197,19 +197,15 @@ export interface SuccessMessageProps {
   className?: string
 }
 
-export function SuccessMessage({ 
-  message, 
-  onDismiss, 
-  className = '' 
-}: SuccessMessageProps) {
+export function SuccessMessage({ message, onDismiss, className = '' }: SuccessMessageProps) {
   if (!message) return null
-  
+
   return (
-    <div className={`p-4 rounded-lg border bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-700 text-green-800 dark:text-green-200 ${className}`}>
+    <div
+      className={`p-4 rounded-lg border bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-700 text-green-800 dark:text-green-200 ${className}`}
+    >
       <div className="flex items-start">
-        <span className="text-lg mr-3 text-green-600 dark:text-green-400">
-          ✅
-        </span>
+        <span className="text-lg mr-3 text-green-600 dark:text-green-400">✅</span>
         <div className="flex-1">
           <p className="text-sm font-medium">{message}</p>
         </div>
@@ -237,13 +233,13 @@ export function withErrorHandling<T extends any[], R>(
       return await fn(...args)
     } catch (error) {
       const categorizedError = categorizeError(error)
-      
+
       if (errorHandler) {
         errorHandler(categorizedError.message)
       } else {
         console.error('Unhandled error:', categorizedError)
       }
-      
+
       return null
     }
   }
@@ -252,19 +248,19 @@ export function withErrorHandling<T extends any[], R>(
 // Error boundary hook for functional components
 export function useErrorBoundary() {
   const [error, setError] = useState<Error | null>(null)
-  
+
   const resetError = useCallback(() => {
     setError(null)
   }, [])
-  
+
   const captureError = useCallback((error: Error) => {
     setError(error)
   }, [])
-  
+
   if (error) {
     throw error
   }
-  
+
   return { captureError, resetError }
 }
 
@@ -274,15 +270,15 @@ export function setupGlobalErrorHandling() {
     window.addEventListener('error', (event) => {
       const categorizedError = categorizeError(event.error)
       console.error('Global error:', categorizedError)
-      
+
       // You could send this to an error reporting service
       // errorReportingService.report(categorizedError)
     })
-    
+
     window.addEventListener('unhandledrejection', (event) => {
       const categorizedError = categorizeError(event.reason)
       console.error('Unhandled promise rejection:', categorizedError)
-      
+
       // You could send this to an error reporting service
       // errorReportingService.report(categorizedError)
     })
@@ -302,12 +298,12 @@ export const errorReportingService: ErrorReportingService = {
     console.log('Error reported:', error)
     // In a real implementation, this would send to Sentry, LogRocket, etc.
   },
-  
+
   setUser: (user: { id: string; email?: string }) => {
     console.log('Error reporting user set:', user)
   },
-  
+
   clearUser: () => {
     console.log('Error reporting user cleared')
-  }
+  },
 }

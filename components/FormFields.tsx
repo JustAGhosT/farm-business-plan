@@ -43,13 +43,14 @@ export function FormInput({
   step,
   disabled = false,
   className = '',
-  autoComplete
+  autoComplete,
 }: FormInputProps) {
-  const baseClasses = "w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
-  const errorClasses = error 
-    ? "border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20" 
-    : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
-  
+  const baseClasses =
+    'w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors'
+  const errorClasses = error
+    ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
+    : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
+
   const inputClasses = `${baseClasses} ${errorClasses} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`
 
   return (
@@ -83,9 +84,7 @@ export function FormInput({
           {helpText}
         </p>
       )}
-      {error && (
-        <ErrorMessage error={error} className="mt-1" />
-      )}
+      {error && <ErrorMessage error={error} className="mt-1" />}
     </div>
   )
 }
@@ -113,18 +112,18 @@ export function FormNumber({
   step = 1,
   precision,
   disabled = false,
-  className = ''
+  className = '',
 }: FormNumberProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let newValue = e.target.value
-    
+
     if (precision !== undefined && newValue) {
       const num = parseFloat(newValue)
       if (!isNaN(num)) {
         newValue = num.toFixed(precision)
       }
     }
-    
+
     onChange(newValue)
   }
 
@@ -168,13 +167,14 @@ export function FormTextarea({
   rows = 3,
   maxLength,
   disabled = false,
-  className = ''
+  className = '',
 }: FormTextareaProps) {
-  const baseClasses = "w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors resize-vertical"
-  const errorClasses = error 
-    ? "border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20" 
-    : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
-  
+  const baseClasses =
+    'w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors resize-vertical'
+  const errorClasses = error
+    ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
+    : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
+
   const textareaClasses = `${baseClasses} ${errorClasses} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`
 
   return (
@@ -205,9 +205,7 @@ export function FormTextarea({
           {helpText}
         </p>
       )}
-      {error && (
-        <ErrorMessage error={error} className="mt-1" />
-      )}
+      {error && <ErrorMessage error={error} className="mt-1" />}
     </div>
   )
 }
@@ -230,13 +228,14 @@ export function FormSelect({
   options,
   multiple = false,
   disabled = false,
-  className = ''
+  className = '',
 }: FormSelectProps) {
-  const baseClasses = "w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
-  const errorClasses = error 
-    ? "border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20" 
-    : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
-  
+  const baseClasses =
+    'w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors'
+  const errorClasses = error
+    ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
+    : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
+
   const selectClasses = `${baseClasses} ${errorClasses} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`
 
   return (
@@ -262,11 +261,7 @@ export function FormSelect({
       >
         <option value="">Select {label}</option>
         {options.map((option) => (
-          <option
-            key={option.value}
-            value={option.value}
-            disabled={option.disabled}
-          >
+          <option key={option.value} value={option.value} disabled={option.disabled}>
             {option.label}
           </option>
         ))}
@@ -276,9 +271,7 @@ export function FormSelect({
           {helpText}
         </p>
       )}
-      {error && (
-        <ErrorMessage error={error} className="mt-1" />
-      )}
+      {error && <ErrorMessage error={error} className="mt-1" />}
     </div>
   )
 }
@@ -299,7 +292,7 @@ export function FormCheckbox({
   required = false,
   helpText,
   disabled = false,
-  className = ''
+  className = '',
 }: FormCheckboxProps) {
   return (
     <div className={className}>
@@ -319,10 +312,7 @@ export function FormCheckbox({
           />
         </div>
         <div className="ml-3 text-sm">
-          <label
-            htmlFor={name}
-            className="font-medium text-gray-700 dark:text-gray-300"
-          >
+          <label htmlFor={name} className="font-medium text-gray-700 dark:text-gray-300">
             {label}
             {required && <span className="text-red-500 ml-1">*</span>}
           </label>
@@ -331,9 +321,7 @@ export function FormCheckbox({
               {helpText}
             </p>
           )}
-          {error && (
-            <ErrorMessage error={error} className="mt-1" />
-          )}
+          {error && <ErrorMessage error={error} className="mt-1" />}
         </div>
       </div>
     </div>
@@ -358,7 +346,7 @@ export function FormRadioGroup({
   helpText,
   options,
   disabled = false,
-  className = ''
+  className = '',
 }: FormRadioGroupProps) {
   return (
     <div className={className}>
@@ -397,9 +385,7 @@ export function FormRadioGroup({
             {helpText}
           </p>
         )}
-        {error && (
-          <ErrorMessage error={error} className="mt-2" />
-        )}
+        {error && <ErrorMessage error={error} className="mt-2" />}
       </fieldset>
     </div>
   )
@@ -412,21 +398,13 @@ export interface FormFieldGroupProps {
   className?: string
 }
 
-export function FormFieldGroup({
-  children,
-  columns = 1,
-  className = ''
-}: FormFieldGroupProps) {
+export function FormFieldGroup({ children, columns = 1, className = '' }: FormFieldGroupProps) {
   const gridClasses = {
     1: 'grid-cols-1',
     2: 'grid-cols-1 md:grid-cols-2',
     3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
-    4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
+    4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
   }
 
-  return (
-    <div className={`grid ${gridClasses[columns]} gap-6 ${className}`}>
-      {children}
-    </div>
-  )
+  return <div className={`grid ${gridClasses[columns]} gap-6 ${className}`}>{children}</div>
 }

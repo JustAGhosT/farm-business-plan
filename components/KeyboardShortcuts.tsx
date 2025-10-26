@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 interface KeyboardShortcut {
   key: string
@@ -85,6 +85,7 @@ export function KeyboardShortcutsHelp({ shortcuts }: { shortcuts: KeyboardShortc
             <button
               onClick={() => setIsOpen(false)}
               className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              aria-label="Close keyboard shortcuts"
             >
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path

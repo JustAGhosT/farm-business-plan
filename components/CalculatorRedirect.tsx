@@ -12,10 +12,10 @@ interface CalculatorRedirectProps {
   calculatorIcon: string
 }
 
-export default function CalculatorRedirect({ 
-  calculatorType, 
-  calculatorName, 
-  calculatorIcon 
+export default function CalculatorRedirect({
+  calculatorType,
+  calculatorName,
+  calculatorIcon,
 }: CalculatorRedirectProps) {
   const router = useRouter()
   const { loading, error, executeWithLoading } = useLoadingState()
@@ -23,8 +23,8 @@ export default function CalculatorRedirect({
   useEffect(() => {
     executeWithLoading(async () => {
       // Add a small delay to show the redirect message
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+
       // Redirect to unified calculator with the specific calculator pre-selected
       router.push(`/tools/calculators/unified?calculator=${calculatorType}`)
     })
@@ -60,21 +60,21 @@ export default function CalculatorRedirect({
             <p className="text-gray-600 dark:text-gray-300 mb-6">
               Redirecting to the unified calculator interface...
             </p>
-            
+
             {loading && (
               <div className="flex items-center justify-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
                 <span className="ml-3 text-gray-600 dark:text-gray-300">Loading...</span>
               </div>
             )}
-            
+
             <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg">
               <p className="text-sm text-blue-800 dark:text-blue-200">
-                <strong>✨ New Feature:</strong> All calculators are now available in a unified interface 
-                where you can switch between different calculator types seamlessly.
+                <strong>✨ New Feature:</strong> All calculators are now available in a unified
+                interface where you can switch between different calculator types seamlessly.
               </p>
             </div>
-            
+
             <div className="mt-4">
               <button
                 onClick={() => router.push('/tools/calculators')}
@@ -84,7 +84,7 @@ export default function CalculatorRedirect({
               </button>
             </div>
           </div>
-        </SharedCard>
+        </Card>
       </div>
     </div>
   )

@@ -8,194 +8,184 @@ import Link from 'next/link'
 const QUICK_START_STEPS = [
   {
     title: 'Review the Framework',
-    description: 'Explore the comprehensive business plan template to understand all components'
+    description: 'Explore the comprehensive business plan template to understand all components',
   },
   {
-    title: 'Assess Your Context', 
-    description: 'Conduct climate, soil, and resource analysis for your specific location'
+    title: 'Assess Your Context',
+    description: 'Conduct climate, soil, and resource analysis for your specific location',
   },
   {
     title: 'Select Your Crops',
-    description: 'Choose crops well-matched to your conditions and market opportunities'
+    description: 'Choose crops well-matched to your conditions and market opportunities',
   },
   {
     title: 'Develop Your Plan',
-    description: 'Complete the templates with your specific data and projections'
-  }
+    description: 'Complete the templates with your specific data and projections',
+  },
 ]
 
 const FEATURE_CARDS = [
   {
     icon: '🌱',
     title: 'Crop-Agnostic',
-    description: 'Adaptable framework for any agricultural crop or livestock system'
+    description: 'Adaptable framework for any agricultural crop or livestock system',
   },
   {
-    icon: '🌍', 
+    icon: '🌍',
     title: 'Location-Flexible',
-    description: 'Templates for climate, soil, and market analysis for any region'
+    description: 'Templates for climate, soil, and market analysis for any region',
   },
   {
     icon: '📊',
-    title: 'Comprehensive', 
-    description: 'Covers technical planning, financial modeling, and operations management'
-  }
+    title: 'Comprehensive',
+    description: 'Covers technical planning, financial modeling, and operations management',
+  },
 ]
 
 const ACCOUNT_BENEFITS = [
   {
     icon: '🤖',
     title: 'AI-Powered Recommendations',
-    description: 'Get personalized crop suggestions and investment advice based on your location and budget'
+    description:
+      'Get personalized crop suggestions and investment advice based on your location and budget',
   },
   {
     icon: '💾',
     title: 'Save Your Progress',
-    description: 'Store your business plans, calculations, and track your farm operations over time'
+    description:
+      'Store your business plans, calculations, and track your farm operations over time',
   },
   {
     icon: '📊',
     title: 'Advanced Analytics',
-    description: 'Access detailed reports, financial projections, and operational dashboards'
-  }
+    description: 'Access detailed reports, financial projections, and operational dashboards',
+  },
 ]
 
 const PUBLIC_RESOURCES = [
   {
     href: '/docs/diversified-farm-plan',
     title: '📚 Documentation',
-    description: 'Business plan templates and guides'
+    description: 'Business plan templates and guides',
   },
   {
     href: '/tools/calculators',
-    title: '💰 Calculators', 
-    description: 'ROI, break-even & financial tools'
+    title: '💰 Calculators',
+    description: 'ROI, break-even & financial tools',
   },
   {
     href: '/tools/templates',
     title: '🌾 Templates',
-    description: 'Pre-built crop profiles'
-  }
+    description: 'Pre-built crop profiles',
+  },
 ]
 
 const TOOLS = [
   {
-    href: session => session ? '/tools/ai-wizard' : '/auth/signin?callbackUrl=/tools/ai-wizard',
+    href: (session) => (session ? '/tools/ai-wizard' : '/auth/signin?callbackUrl=/tools/ai-wizard'),
     title: '🤖 AI Farm Planning',
     description: 'Complete farm planning with AI recommendations',
-    requiresAuth: true
+    requiresAuth: true,
   },
   {
     href: () => '/tools/calculators',
     title: '💰 Financial Tools',
     description: '6 calculators + unified reports & analytics',
-    requiresAuth: false
+    requiresAuth: false,
   },
   {
-    href: session => session ? '/tools/dashboard' : '/auth/signin?callbackUrl=/tools/dashboard',
+    href: (session) => (session ? '/tools/dashboard' : '/auth/signin?callbackUrl=/tools/dashboard'),
     title: '📊 Dashboard',
     description: 'Unified overview with financial metrics',
-    requiresAuth: true
+    requiresAuth: true,
   },
   {
     href: () => '/tools/templates',
     title: '📚 Crop Templates',
     description: 'Browse pre-built crop profiles',
-    requiresAuth: false
-  }
+    requiresAuth: false,
+  },
 ]
 
 const DOCUMENTATION_LINKS = [
   {
     href: '/docs/diversified-farm-plan',
     title: '🌾 Main Business Plan Template',
-    description: 'Comprehensive agricultural business planning framework'
+    description: 'Comprehensive agricultural business planning framework',
   },
   {
     href: '/docs/executive-summary',
     title: '📋 Executive Summary Template',
-    description: 'High-level business plan summary structure'
+    description: 'High-level business plan summary structure',
   },
   {
     href: '/docs/technical-implementation',
     title: '🔧 Technical Implementation',
-    description: 'Technical specifications and implementation details'
+    description: 'Technical specifications and implementation details',
   },
   {
     href: '/docs/financial-analysis',
     title: '💰 Financial Analysis Framework',
-    description: 'Financial modeling and projection tools'
+    description: 'Financial modeling and projection tools',
   },
   {
     href: '/docs/operations-manual',
     title: '⚙️ Operations Manual',
-    description: 'Daily operations and maintenance procedures'
+    description: 'Daily operations and maintenance procedures',
   },
   {
     href: '/docs/market-strategy',
     title: '🛒 Market Strategy',
-    description: 'Marketing and sales planning guide'
+    description: 'Marketing and sales planning guide',
   },
   {
     href: '/docs/risk-management',
     title: '⚠️ Risk Management',
-    description: 'Risk assessment and mitigation frameworks'
+    description: 'Risk assessment and mitigation frameworks',
   },
   {
     href: '/docs/implementation-timeline',
     title: '📅 Implementation Timeline',
-    description: 'Project timeline and milestone templates'
-  }
+    description: 'Project timeline and milestone templates',
+  },
 ]
 
 // Reusable components
-const StepCard = ({ step, index }: { step: typeof QUICK_START_STEPS[0], index: number }) => (
+const StepCard = ({ step, index }: { step: (typeof QUICK_START_STEPS)[0]; index: number }) => (
   <div className="flex items-start group">
     <span className="bg-primary-500 dark:bg-primary-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-5 mt-1 flex-shrink-0 font-bold shadow-md group-hover:bg-primary-600 dark:group-hover:bg-primary-700 transition-colors">
       {index + 1}
     </span>
     <div>
-      <h4 className="font-bold mb-2 text-lg text-gray-900 dark:text-white">
-        {step.title}
-      </h4>
-      <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-        {step.description}
-      </p>
+      <h4 className="font-bold mb-2 text-lg text-gray-900 dark:text-white">{step.title}</h4>
+      <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{step.description}</p>
     </div>
   </div>
 )
 
-const FeatureCard = ({ feature }: { feature: typeof FEATURE_CARDS[0] }) => (
+const FeatureCard = ({ feature }: { feature: (typeof FEATURE_CARDS)[0] }) => (
   <Card hover={true}>
     <div className="text-5xl mb-4">{feature.icon}</div>
     <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">{feature.title}</h3>
-    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-      {feature.description}
-    </p>
+    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{feature.description}</p>
   </Card>
 )
 
-const BenefitCard = ({ benefit }: { benefit: typeof ACCOUNT_BENEFITS[0] }) => (
+const BenefitCard = ({ benefit }: { benefit: (typeof ACCOUNT_BENEFITS)[0] }) => (
   <div className="text-center">
     <div className="text-5xl mb-4">{benefit.icon}</div>
-    <h3 className="font-bold text-lg mb-3 text-gray-900 dark:text-white">
-      {benefit.title}
-    </h3>
+    <h3 className="font-bold text-lg mb-3 text-gray-900 dark:text-white">{benefit.title}</h3>
     <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
       {benefit.description}
     </p>
   </div>
 )
 
-const ToolCard = ({ tool }: { tool: typeof TOOLS[0] }) => {
+const ToolCard = ({ tool }: { tool: (typeof TOOLS)[0] }) => {
   const href = typeof tool.href === 'function' ? tool.href(session) : tool.href()
-  
+
   return (
-    <Card
-      href={href}
-      variant="bordered"
-      className="relative"
-    >
+    <Card href={href} variant="bordered" className="relative">
       {tool.requiresAuth && !session && (
         <Badge variant="locked" className="absolute top-2 right-2">
           🔒
@@ -212,20 +202,22 @@ const ToolCard = ({ tool }: { tool: typeof TOOLS[0] }) => {
   )
 }
 
-const CTAButton = ({ 
-  href, 
-  children, 
-  variant = 'primary' 
-}: { 
+const CTAButton = ({
+  href,
+  children,
+  variant = 'primary',
+}: {
   href: string
   children: React.ReactNode
   variant?: 'primary' | 'secondary'
 }) => {
-  const baseClasses = "px-8 py-4 rounded-lg transition-colors shadow-lg hover:shadow-xl font-bold text-lg transform hover:scale-105"
-  const variantClasses = variant === 'primary' 
-    ? "bg-green-600 text-white hover:bg-green-700"
-    : "bg-white dark:bg-gray-800 text-green-600 dark:text-green-400 border-2 border-green-600 dark:border-green-400 hover:bg-green-50 dark:hover:bg-gray-700"
-  
+  const baseClasses =
+    'px-8 py-4 rounded-lg transition-colors shadow-lg hover:shadow-xl font-bold text-lg transform hover:scale-105'
+  const variantClasses =
+    variant === 'primary'
+      ? 'bg-green-600 text-white hover:bg-green-700'
+      : 'bg-white dark:bg-gray-800 text-green-600 dark:text-green-400 border-2 border-green-600 dark:border-green-400 hover:bg-green-50 dark:hover:bg-gray-700'
+
   return (
     <Link href={href} className={`${baseClasses} ${variantClasses}`}>
       {children}
@@ -253,14 +245,10 @@ export default function Home() {
           {status !== 'loading' && (
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
               {session ? (
-                <CTAButton href="/tools/dashboard">
-                  Go to Dashboard →
-                </CTAButton>
+                <CTAButton href="/tools/dashboard">Go to Dashboard →</CTAButton>
               ) : (
                 <>
-                  <CTAButton href="/auth/signin">
-                    Sign In
-                  </CTAButton>
+                  <CTAButton href="/auth/signin">Sign In</CTAButton>
                   <CTAButton href="/auth/register" variant="secondary">
                     Get Started Free
                   </CTAButton>
@@ -321,9 +309,7 @@ export default function Home() {
               ))}
             </Grid>
             <div className="text-center mt-8">
-              <CTAButton href="/auth/register">
-                Create Free Account →
-              </CTAButton>
+              <CTAButton href="/auth/register">Create Free Account →</CTAButton>
               <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
                 Or sign in with <span className="font-semibold">Google</span> in just one click!
               </p>

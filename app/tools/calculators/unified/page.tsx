@@ -43,29 +43,42 @@ const CALCULATOR_CONFIGS: CalculatorConfig[] = [
     description: 'Calculate Return on Investment for your farm operations',
     icon: '📈',
     fields: [
-      { id: 'years', label: 'Investment Period (years)', type: 'number', required: true, min: 1, max: 20 },
-      { id: 'initialInvestment', label: 'Initial Investment (R)', type: 'number', required: true, min: 0 },
+      {
+        id: 'years',
+        label: 'Investment Period (years)',
+        type: 'number',
+        required: true,
+        min: 1,
+        max: 20,
+      },
+      {
+        id: 'initialInvestment',
+        label: 'Initial Investment (R)',
+        type: 'number',
+        required: true,
+        min: 0,
+      },
       { id: 'annualRevenue', label: 'Annual Revenue (R)', type: 'number', required: true, min: 0 },
       { id: 'annualCosts', label: 'Annual Costs (R)', type: 'number', required: true, min: 0 },
-      { id: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Additional notes...' }
+      { id: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Additional notes...' },
     ],
     calculate: (data) => {
       const years = parseInt(data.years) || 1
       const initialInvestment = parseFloat(data.initialInvestment) || 0
       const annualRevenue = parseFloat(data.annualRevenue) || 0
       const annualCosts = parseFloat(data.annualCosts) || 0
-      
+
       const annualProfit = annualRevenue - annualCosts
-      const totalProfit = (annualProfit * years) - initialInvestment
+      const totalProfit = annualProfit * years - initialInvestment
       const roi = initialInvestment > 0 ? (totalProfit / initialInvestment) * 100 : 0
       const paybackPeriod = annualProfit > 0 ? initialInvestment / annualProfit : 0
-      
+
       return {
         roi: roi.toFixed(2),
         totalProfit: totalProfit.toLocaleString(),
         annualProfit: annualProfit.toLocaleString(),
         paybackPeriod: paybackPeriod.toFixed(1),
-        netPresentValue: totalProfit.toLocaleString()
+        netPresentValue: totalProfit.toLocaleString(),
       }
     },
     resultsComponent: (results) => (
@@ -76,18 +89,24 @@ const CALCULATOR_CONFIGS: CalculatorConfig[] = [
         </div>
         <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
           <h4 className="font-semibold text-blue-800 dark:text-blue-200">Total Profit</h4>
-          <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">R {results.totalProfit}</p>
+          <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">
+            R {results.totalProfit}
+          </p>
         </div>
         <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
           <h4 className="font-semibold text-purple-800 dark:text-purple-200">Payback Period</h4>
-          <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">{results.paybackPeriod} years</p>
+          <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">
+            {results.paybackPeriod} years
+          </p>
         </div>
         <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg">
           <h4 className="font-semibold text-orange-800 dark:text-orange-200">Annual Profit</h4>
-          <p className="text-2xl font-bold text-orange-900 dark:text-orange-100">R {results.annualProfit}</p>
+          <p className="text-2xl font-bold text-orange-900 dark:text-orange-100">
+            R {results.annualProfit}
+          </p>
         </div>
       </div>
-    )
+    ),
   },
   {
     id: 'break-even',
@@ -96,46 +115,65 @@ const CALCULATOR_CONFIGS: CalculatorConfig[] = [
     icon: '⚖️',
     fields: [
       { id: 'fixedCosts', label: 'Fixed Costs (R)', type: 'number', required: true, min: 0 },
-      { id: 'variableCosts', label: 'Variable Costs per Unit (R)', type: 'number', required: true, min: 0 },
-      { id: 'sellingPrice', label: 'Selling Price per Unit (R)', type: 'number', required: true, min: 0 },
+      {
+        id: 'variableCosts',
+        label: 'Variable Costs per Unit (R)',
+        type: 'number',
+        required: true,
+        min: 0,
+      },
+      {
+        id: 'sellingPrice',
+        label: 'Selling Price per Unit (R)',
+        type: 'number',
+        required: true,
+        min: 0,
+      },
       { id: 'units', label: 'Expected Units Sold', type: 'number', required: true, min: 0 },
-      { id: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Additional notes...' }
+      { id: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Additional notes...' },
     ],
     calculate: (data) => {
       const fixedCosts = parseFloat(data.fixedCosts) || 0
       const variableCosts = parseFloat(data.variableCosts) || 0
       const sellingPrice = parseFloat(data.sellingPrice) || 0
       const units = parseFloat(data.units) || 0
-      
-      const breakEvenUnits = sellingPrice > variableCosts ? fixedCosts / (sellingPrice - variableCosts) : 0
+
+      const breakEvenUnits =
+        sellingPrice > variableCosts ? fixedCosts / (sellingPrice - variableCosts) : 0
       const totalRevenue = units * sellingPrice
-      const totalCosts = fixedCosts + (units * variableCosts)
+      const totalCosts = fixedCosts + units * variableCosts
       const profit = totalRevenue - totalCosts
-      
+
       return {
         breakEvenUnits: breakEvenUnits.toFixed(0),
         breakEvenRevenue: (breakEvenUnits * sellingPrice).toLocaleString(),
         totalRevenue: totalRevenue.toLocaleString(),
         totalCosts: totalCosts.toLocaleString(),
-        profit: profit.toLocaleString()
+        profit: profit.toLocaleString(),
       }
     },
     resultsComponent: (results) => (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg">
           <h4 className="font-semibold text-red-800 dark:text-red-200">Break-Even Units</h4>
-          <p className="text-2xl font-bold text-red-900 dark:text-red-100">{results.breakEvenUnits}</p>
+          <p className="text-2xl font-bold text-red-900 dark:text-red-100">
+            {results.breakEvenUnits}
+          </p>
         </div>
         <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
           <h4 className="font-semibold text-blue-800 dark:text-blue-200">Break-Even Revenue</h4>
-          <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">R {results.breakEvenRevenue}</p>
+          <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">
+            R {results.breakEvenRevenue}
+          </p>
         </div>
         <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
           <h4 className="font-semibold text-green-800 dark:text-green-200">Expected Profit</h4>
-          <p className="text-2xl font-bold text-green-900 dark:text-green-100">R {results.profit}</p>
+          <p className="text-2xl font-bold text-green-900 dark:text-green-100">
+            R {results.profit}
+          </p>
         </div>
       </div>
-    )
+    ),
   },
   {
     id: 'investment',
@@ -148,7 +186,7 @@ const CALCULATOR_CONFIGS: CalculatorConfig[] = [
       { id: 'equipment', label: 'Equipment (R)', type: 'number', min: 0 },
       { id: 'initialInputs', label: 'Initial Inputs (R)', type: 'number', min: 0 },
       { id: 'workingCapital', label: 'Working Capital (R)', type: 'number', min: 0 },
-      { id: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Additional notes...' }
+      { id: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Additional notes...' },
     ],
     calculate: (data) => {
       const landPrep = parseFloat(data.landPrep) || 0
@@ -156,49 +194,63 @@ const CALCULATOR_CONFIGS: CalculatorConfig[] = [
       const equipment = parseFloat(data.equipment) || 0
       const initialInputs = parseFloat(data.initialInputs) || 0
       const workingCapital = parseFloat(data.workingCapital) || 0
-      
+
       const totalInvestment = landPrep + infrastructure + equipment + initialInputs + workingCapital
-      
+
       return {
         totalInvestment: totalInvestment.toLocaleString(),
         landPrep: landPrep.toLocaleString(),
         infrastructure: infrastructure.toLocaleString(),
         equipment: equipment.toLocaleString(),
         initialInputs: initialInputs.toLocaleString(),
-        workingCapital: workingCapital.toLocaleString()
+        workingCapital: workingCapital.toLocaleString(),
       }
     },
     resultsComponent: (results) => (
       <div className="space-y-4">
         <div className="bg-primary-50 dark:bg-primary-900/20 p-6 rounded-lg">
-          <h4 className="font-semibold text-primary-800 dark:text-primary-200 mb-2">Total Investment Required</h4>
-          <p className="text-3xl font-bold text-primary-900 dark:text-primary-100">R {results.totalInvestment}</p>
+          <h4 className="font-semibold text-primary-800 dark:text-primary-200 mb-2">
+            Total Investment Required
+          </h4>
+          <p className="text-3xl font-bold text-primary-900 dark:text-primary-100">
+            R {results.totalInvestment}
+          </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
             <h5 className="font-medium text-gray-800 dark:text-gray-200">Land Preparation</h5>
-            <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">R {results.landPrep}</p>
+            <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              R {results.landPrep}
+            </p>
           </div>
           <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
             <h5 className="font-medium text-gray-800 dark:text-gray-200">Infrastructure</h5>
-            <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">R {results.infrastructure}</p>
+            <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              R {results.infrastructure}
+            </p>
           </div>
           <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
             <h5 className="font-medium text-gray-800 dark:text-gray-200">Equipment</h5>
-            <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">R {results.equipment}</p>
+            <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              R {results.equipment}
+            </p>
           </div>
           <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
             <h5 className="font-medium text-gray-800 dark:text-gray-200">Initial Inputs</h5>
-            <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">R {results.initialInputs}</p>
+            <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              R {results.initialInputs}
+            </p>
           </div>
           <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
             <h5 className="font-medium text-gray-800 dark:text-gray-200">Working Capital</h5>
-            <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">R {results.workingCapital}</p>
+            <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              R {results.workingCapital}
+            </p>
           </div>
         </div>
       </div>
-    )
-  }
+    ),
+  },
 ]
 
 export default function UnifiedCalculator() {
@@ -212,28 +264,28 @@ export default function UnifiedCalculator() {
   // Handle URL parameter for pre-selecting calculator
   useEffect(() => {
     const calculatorParam = searchParams.get('calculator')
-    if (calculatorParam && CALCULATOR_CONFIGS.find(config => config.id === calculatorParam)) {
+    if (calculatorParam && CALCULATOR_CONFIGS.find((config) => config.id === calculatorParam)) {
       setSelectedCalculator(calculatorParam)
     }
   }, [searchParams])
 
-  const currentConfig = CALCULATOR_CONFIGS.find(config => config.id === selectedCalculator)
+  const currentConfig = CALCULATOR_CONFIGS.find((config) => config.id === selectedCalculator)
 
   const handleInputChange = (fieldId: string, value: string) => {
-    setFormData(prev => ({ ...prev, [fieldId]: value }))
+    setFormData((prev) => ({ ...prev, [fieldId]: value }))
     setResults(null) // Clear results when input changes
   }
 
   const calculateResults = () => {
     if (!currentConfig) return
-    
+
     const calculatedResults = currentConfig.calculate(formData)
     setResults(calculatedResults)
   }
 
   const saveResults = async () => {
     if (!currentConfig || !results) return
-    
+
     setIsSaving(true)
     try {
       const response = await fetch('/api/calculator-results', {
@@ -243,10 +295,10 @@ export default function UnifiedCalculator() {
           calculator_type: selectedCalculator,
           input_data: formData,
           results: results,
-          notes: formData.notes || ''
-        })
+          notes: formData.notes || '',
+        }),
       })
-      
+
       if (response.ok) {
         setSavedMessage('Results saved successfully!')
         setTimeout(() => setSavedMessage(''), 3000)
@@ -283,7 +335,9 @@ export default function UnifiedCalculator() {
               >
                 <div className="text-3xl mb-2">{config.icon}</div>
                 <h3 className="font-semibold text-gray-900 dark:text-white">{config.name}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{config.description}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                  {config.description}
+                </p>
               </button>
             ))}
           </div>
@@ -295,7 +349,9 @@ export default function UnifiedCalculator() {
             <div className="flex items-center mb-6">
               <span className="text-3xl mr-4">{currentConfig.icon}</span>
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{currentConfig.name}</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {currentConfig.name}
+                </h2>
                 <p className="text-gray-600 dark:text-gray-300">{currentConfig.description}</p>
               </div>
             </div>
@@ -323,7 +379,9 @@ export default function UnifiedCalculator() {
                     >
                       <option value="">Select {field.label}</option>
                       {field.options?.map((option) => (
-                        <option key={option} value={option}>{option}</option>
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
                       ))}
                     </select>
                   ) : (

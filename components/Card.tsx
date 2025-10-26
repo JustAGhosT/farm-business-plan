@@ -20,7 +20,7 @@ const variantClasses = {
   default: 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700',
   elevated: 'bg-white dark:bg-gray-800 shadow-lg',
   bordered: 'bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700',
-  outlined: 'bg-transparent border-2 border-gray-300 dark:border-gray-600'
+  outlined: 'bg-transparent border-2 border-gray-300 dark:border-gray-600',
 }
 
 const paddingClasses = {
@@ -28,7 +28,7 @@ const paddingClasses = {
   sm: 'p-3',
   md: 'p-4',
   lg: 'p-6',
-  xl: 'p-8'
+  xl: 'p-8',
 }
 
 const roundedClasses = {
@@ -36,7 +36,7 @@ const roundedClasses = {
   sm: 'rounded-sm',
   md: 'rounded-md',
   lg: 'rounded-lg',
-  xl: 'rounded-xl'
+  xl: 'rounded-xl',
 }
 
 const shadowClasses = {
@@ -44,14 +44,14 @@ const shadowClasses = {
   sm: 'shadow-sm',
   md: 'shadow-md',
   lg: 'shadow-lg',
-  xl: 'shadow-xl'
+  xl: 'shadow-xl',
 }
 
 const backgroundClasses = {
   white: 'bg-white dark:bg-gray-800',
   gray: 'bg-gray-50 dark:bg-gray-700',
   primary: 'bg-primary-50 dark:bg-primary-900/20',
-  transparent: 'bg-transparent'
+  transparent: 'bg-transparent',
 }
 
 export function Card({
@@ -64,7 +64,7 @@ export function Card({
   padding = 'md',
   rounded = 'lg',
   shadow = 'md',
-  background = 'white'
+  background = 'white',
 }: CardProps) {
   const baseClasses = [
     variantClasses[variant],
@@ -74,8 +74,10 @@ export function Card({
     backgroundClasses[background],
     hover ? 'hover:shadow-lg hover:-translate-y-1 transition-all duration-300' : '',
     onClick || href ? 'cursor-pointer' : '',
-    className
-  ].filter(Boolean).join(' ')
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   const content = (
     <div className={baseClasses} onClick={onClick}>
@@ -101,7 +103,7 @@ export function MetricCard({
   subtitle,
   icon,
   trend,
-  className = ''
+  className = '',
 }: {
   title: string
   value: string | number
@@ -116,20 +118,16 @@ export function MetricCard({
         <div>
           <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{title}</p>
           <p className="text-2xl font-bold text-gray-900 dark:text-white">{value}</p>
-          {subtitle && (
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{subtitle}</p>
-          )}
+          {subtitle && <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{subtitle}</p>}
           {trend && (
             <p className={`text-xs mt-1 ${trend.positive ? 'text-green-600' : 'text-red-600'}`}>
               {trend.positive ? '↗' : '↘'} {Math.abs(trend.value)}%
             </p>
           )}
         </div>
-        {icon && (
-          <div className="text-3xl opacity-60">{icon}</div>
-        )}
+        {icon && <div className="text-3xl opacity-60">{icon}</div>}
       </div>
-    </SharedCard>
+    </Card>
   )
 }
 
@@ -140,7 +138,7 @@ export function ActionCard({
   href,
   onClick,
   variant = 'default',
-  className = ''
+  className = '',
 }: {
   title: string
   description: string
@@ -151,11 +149,15 @@ export function ActionCard({
   className?: string
 }) {
   const variantStyles = {
-    default: 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600',
-    primary: 'border-primary-200 dark:border-primary-700 hover:border-primary-300 dark:hover:border-primary-600',
-    success: 'border-green-200 dark:border-green-700 hover:border-green-300 dark:hover:border-green-600',
-    warning: 'border-yellow-200 dark:border-yellow-700 hover:border-yellow-300 dark:hover:border-yellow-600',
-    error: 'border-red-200 dark:border-red-700 hover:border-red-300 dark:hover:border-red-600'
+    default:
+      'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600',
+    primary:
+      'border-primary-200 dark:border-primary-700 hover:border-primary-300 dark:hover:border-primary-600',
+    success:
+      'border-green-200 dark:border-green-700 hover:border-green-300 dark:hover:border-green-600',
+    warning:
+      'border-yellow-200 dark:border-yellow-700 hover:border-yellow-300 dark:hover:border-yellow-600',
+    error: 'border-red-200 dark:border-red-700 hover:border-red-300 dark:hover:border-red-600',
   }
 
   return (
@@ -171,7 +173,7 @@ export function ActionCard({
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{title}</h3>
         <p className="text-sm text-gray-600 dark:text-gray-300">{description}</p>
       </div>
-    </SharedCard>
+    </Card>
   )
 }
 
@@ -180,7 +182,7 @@ export function InfoCard({
   children,
   icon,
   variant = 'info',
-  className = ''
+  className = '',
 }: {
   title?: string
   children: React.ReactNode
@@ -192,34 +194,25 @@ export function InfoCard({
     info: 'border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20',
     success: 'border-green-200 dark:border-green-700 bg-green-50 dark:bg-green-900/20',
     warning: 'border-yellow-200 dark:border-yellow-700 bg-yellow-50 dark:bg-yellow-900/20',
-    error: 'border-red-200 dark:border-red-700 bg-red-50 dark:bg-red-900/20'
+    error: 'border-red-200 dark:border-red-700 bg-red-50 dark:bg-red-900/20',
   }
 
   const iconStyles = {
     info: 'text-blue-600 dark:text-blue-400',
     success: 'text-green-600 dark:text-green-400',
     warning: 'text-yellow-600 dark:text-yellow-400',
-    error: 'text-red-600 dark:text-red-400'
+    error: 'text-red-600 dark:text-red-400',
   }
 
   return (
-    <Card
-      variant="bordered"
-      className={`${variantStyles[variant]} ${className}`}
-    >
+    <Card variant="bordered" className={`${variantStyles[variant]} ${className}`}>
       {(title || icon) && (
         <div className="flex items-center mb-3">
-          {icon && (
-            <span className={`text-xl mr-2 ${iconStyles[variant]}`}>{icon}</span>
-          )}
-          {title && (
-            <h4 className={`font-semibold ${iconStyles[variant]}`}>{title}</h4>
-          )}
+          {icon && <span className={`text-xl mr-2 ${iconStyles[variant]}`}>{icon}</span>}
+          {title && <h4 className={`font-semibold ${iconStyles[variant]}`}>{title}</h4>}
         </div>
       )}
-      <div className="text-sm text-gray-700 dark:text-gray-300">
-        {children}
-      </div>
-    </SharedCard>
+      <div className="text-sm text-gray-700 dark:text-gray-300">{children}</div>
+    </Card>
   )
 }

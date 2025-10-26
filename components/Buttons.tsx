@@ -5,14 +5,14 @@ import React from 'react'
 import { Spinner } from './Loading'
 
 // Button variants and sizes
-export type ButtonVariant = 
-  | 'primary' 
-  | 'secondary' 
-  | 'success' 
-  | 'warning' 
-  | 'error' 
-  | 'outline' 
-  | 'ghost' 
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'warning'
+  | 'error'
+  | 'outline'
+  | 'ghost'
   | 'link'
 
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
@@ -36,7 +36,7 @@ const sizeClasses = {
   sm: 'px-3 py-1.5 text-sm',
   md: 'px-4 py-2 text-sm',
   lg: 'px-6 py-3 text-base',
-  xl: 'px-8 py-4 text-lg'
+  xl: 'px-8 py-4 text-lg',
 }
 
 // Variant configurations
@@ -46,9 +46,10 @@ const variantClasses = {
   success: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500',
   warning: 'bg-yellow-600 text-white hover:bg-yellow-700 focus:ring-yellow-500',
   error: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
-  outline: 'border-2 border-primary-600 text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 focus:ring-primary-500',
+  outline:
+    'border-2 border-primary-600 text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 focus:ring-primary-500',
   ghost: 'text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 focus:ring-primary-500',
-  link: 'text-primary-600 hover:text-primary-700 underline focus:ring-primary-500'
+  link: 'text-primary-600 hover:text-primary-700 underline focus:ring-primary-500',
 }
 
 // Base button component
@@ -61,26 +62,24 @@ export function Button({
   className = '',
   onClick,
   type = 'button',
-  fullWidth = false
+  fullWidth = false,
 }: BaseButtonProps) {
-  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+  const baseClasses =
+    'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
   const widthClass = fullWidth ? 'w-full' : ''
-  
+
   const buttonClasses = [
     baseClasses,
     sizeClasses[size],
     variantClasses[variant],
     widthClass,
-    className
-  ].filter(Boolean).join(' ')
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled || loading}
-      className={buttonClasses}
-    >
+    <button type={type} onClick={onClick} disabled={disabled || loading} className={buttonClasses}>
       {loading && <Spinner size="sm" variant="secondary" className="mr-2" />}
       {children}
     </button>
@@ -102,24 +101,22 @@ export function IconButton({
   className = '',
   onClick,
   type = 'button',
-  'aria-label': ariaLabel
+  'aria-label': ariaLabel,
 }: IconButtonProps) {
-  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
-  
+  const baseClasses =
+    'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+
   const iconSizeClasses = {
     xs: 'p-1',
     sm: 'p-1.5',
     md: 'p-2',
     lg: 'p-3',
-    xl: 'p-4'
+    xl: 'p-4',
   }
-  
-  const buttonClasses = [
-    baseClasses,
-    iconSizeClasses[size],
-    variantClasses[variant],
-    className
-  ].filter(Boolean).join(' ')
+
+  const buttonClasses = [baseClasses, iconSizeClasses[size], variantClasses[variant], className]
+    .filter(Boolean)
+    .join(' ')
 
   return (
     <button
@@ -149,18 +146,21 @@ export function LinkButton({
   disabled = false,
   loading = false,
   className = '',
-  fullWidth = false
+  fullWidth = false,
 }: LinkButtonProps) {
-  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+  const baseClasses =
+    'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
   const widthClass = fullWidth ? 'w-full' : ''
-  
+
   const buttonClasses = [
     baseClasses,
     sizeClasses[size],
     variantClasses[variant],
     widthClass,
-    className
-  ].filter(Boolean).join(' ')
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   if (external) {
     return (
@@ -197,21 +197,23 @@ export function ButtonGroup({
   children,
   orientation = 'horizontal',
   spacing = 'md',
-  className = ''
+  className = '',
 }: ButtonGroupProps) {
   const orientationClasses = {
     horizontal: 'flex-row',
-    vertical: 'flex-col'
+    vertical: 'flex-col',
   }
-  
+
   const spacingClasses = {
     sm: orientation === 'horizontal' ? 'space-x-1' : 'space-y-1',
     md: orientation === 'horizontal' ? 'space-x-2' : 'space-y-2',
-    lg: orientation === 'horizontal' ? 'space-x-4' : 'space-y-4'
+    lg: orientation === 'horizontal' ? 'space-x-4' : 'space-y-4',
   }
 
   return (
-    <div className={`flex ${orientationClasses[orientation]} ${spacingClasses[spacing]} ${className}`}>
+    <div
+      className={`flex ${orientationClasses[orientation]} ${spacingClasses[spacing]} ${className}`}
+    >
       {children}
     </div>
   )
@@ -256,17 +258,9 @@ export interface SaveButtonProps extends Omit<BaseButtonProps, 'children'> {
   saved?: boolean
 }
 
-export function SaveButton({
-  saving = false,
-  saved = false,
-  ...props
-}: SaveButtonProps) {
+export function SaveButton({ saving = false, saved = false, ...props }: SaveButtonProps) {
   return (
-    <Button
-      {...props}
-      variant={saved ? 'success' : 'primary'}
-      loading={saving}
-    >
+    <Button {...props} variant={saved ? 'success' : 'primary'} loading={saving}>
       {saved ? 'Saved' : 'Save'}
     </Button>
   )
@@ -276,16 +270,9 @@ export interface DeleteButtonProps extends Omit<BaseButtonProps, 'children' | 'v
   deleting?: boolean
 }
 
-export function DeleteButton({
-  deleting = false,
-  ...props
-}: DeleteButtonProps) {
+export function DeleteButton({ deleting = false, ...props }: DeleteButtonProps) {
   return (
-    <Button
-      {...props}
-      variant="error"
-      loading={deleting}
-    >
+    <Button {...props} variant="error" loading={deleting}>
       Delete
     </Button>
   )
@@ -295,10 +282,7 @@ export interface CancelButtonProps extends Omit<BaseButtonProps, 'children' | 'v
 
 export function CancelButton(props: CancelButtonProps) {
   return (
-    <Button
-      {...props}
-      variant="outline"
-    >
+    <Button {...props} variant="outline">
       Cancel
     </Button>
   )
@@ -308,17 +292,9 @@ export interface SubmitButtonProps extends Omit<BaseButtonProps, 'children' | 'v
   submitting?: boolean
 }
 
-export function SubmitButton({
-  submitting = false,
-  ...props
-}: SubmitButtonProps) {
+export function SubmitButton({ submitting = false, ...props }: SubmitButtonProps) {
   return (
-    <Button
-      {...props}
-      variant="primary"
-      type="submit"
-      loading={submitting}
-    >
+    <Button {...props} variant="primary" type="submit" loading={submitting}>
       Submit
     </Button>
   )

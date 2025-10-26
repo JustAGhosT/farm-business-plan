@@ -21,7 +21,7 @@ const variantClasses = {
   error: 'text-red-600 dark:text-red-400',
   warning: 'text-yellow-600 dark:text-yellow-400',
   info: 'text-blue-600 dark:text-blue-400',
-  success: 'text-green-600 dark:text-green-400'
+  success: 'text-green-600 dark:text-green-400',
 }
 
 // Base empty state component
@@ -31,14 +31,12 @@ export function EmptyState({
   description,
   action,
   variant = 'default',
-  className = ''
+  className = '',
 }: EmptyStateProps) {
   return (
     <div className={`text-center py-12 ${className}`}>
       <span className="text-6xl mb-4 block">{icon}</span>
-      <h3 className={`text-xl font-semibold mb-2 ${variantClasses[variant]}`}>
-        {title}
-      </h3>
+      <h3 className={`text-xl font-semibold mb-2 ${variantClasses[variant]}`}>{title}</h3>
       <p className={`text-gray-600 dark:text-gray-300 mb-6 ${variantClasses[variant]}`}>
         {description}
       </p>
@@ -63,7 +61,7 @@ export function NoDataEmptyState({
   actionLabel = 'Add Data',
   actionHref,
   actionOnClick,
-  className = ''
+  className = '',
 }: NoDataEmptyStateProps) {
   const action = actionHref ? (
     <LinkButton href={actionHref} variant="primary">
@@ -99,7 +97,7 @@ export function ErrorEmptyState({
   description = 'We encountered an error while loading the data',
   actionLabel = 'Try Again',
   actionOnClick,
-  className = ''
+  className = '',
 }: ErrorEmptyStateProps) {
   const action = actionOnClick ? (
     <Button onClick={actionOnClick} variant="primary">
@@ -132,7 +130,7 @@ export function NotFoundEmptyState({
   description = 'The requested resource could not be found',
   actionLabel = 'Go Home',
   actionHref = '/',
-  className = ''
+  className = '',
 }: NotFoundEmptyStateProps) {
   return (
     <EmptyState
@@ -165,7 +163,7 @@ export function SuccessEmptyState({
   actionLabel = 'View Dashboard',
   actionHref,
   actionOnClick,
-  className = ''
+  className = '',
 }: SuccessEmptyStateProps) {
   const action = actionHref ? (
     <LinkButton href={actionHref} variant="primary">
@@ -204,7 +202,7 @@ export function InfoEmptyState({
   actionLabel = 'Create Item',
   actionHref,
   actionOnClick,
-  className = ''
+  className = '',
 }: InfoEmptyStateProps) {
   const action = actionHref ? (
     <LinkButton href={actionHref} variant="primary">
@@ -238,7 +236,7 @@ export interface CalculatorEmptyStateProps {
 export function CalculatorEmptyState({
   calculatorType,
   actionHref = '/tools/calculators',
-  className = ''
+  className = '',
 }: CalculatorEmptyStateProps) {
   const calculatorIcons = {
     roi: '📈',
@@ -246,7 +244,7 @@ export function CalculatorEmptyState({
     investment: '💰',
     revenue: '📊',
     'operating-costs': '💸',
-    loan: '🏦'
+    loan: '🏦',
   }
 
   const icon = calculatorIcons[calculatorType as keyof typeof calculatorIcons] || '🧮'
@@ -276,7 +274,7 @@ export interface ReportsEmptyStateProps {
 export function ReportsEmptyState({
   reportType = 'reports',
   actionHref = '/tools/calculators',
-  className = ''
+  className = '',
 }: ReportsEmptyStateProps) {
   return (
     <EmptyState
@@ -304,7 +302,7 @@ export interface DashboardEmptyStateProps {
 export function DashboardEmptyState({
   section = 'data',
   actionHref = '/tools/ai-wizard',
-  className = ''
+  className = '',
 }: DashboardEmptyStateProps) {
   return (
     <EmptyState
@@ -338,14 +336,12 @@ export function CustomEmptyState({
   description,
   actions = [],
   variant = 'default',
-  className = ''
+  className = '',
 }: CustomEmptyStateProps) {
   return (
     <div className={`text-center py-12 ${className}`}>
       <span className="text-6xl mb-4 block">{icon}</span>
-      <h3 className={`text-xl font-semibold mb-2 ${variantClasses[variant]}`}>
-        {title}
-      </h3>
+      <h3 className={`text-xl font-semibold mb-2 ${variantClasses[variant]}`}>{title}</h3>
       <p className={`text-gray-600 dark:text-gray-300 mb-6 ${variantClasses[variant]}`}>
         {description}
       </p>

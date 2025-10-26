@@ -18,7 +18,7 @@ const sizeClasses = {
   sm: 'h-4 w-4',
   md: 'h-6 w-6',
   lg: 'h-8 w-8',
-  xl: 'h-12 w-12'
+  xl: 'h-12 w-12',
 }
 
 // Color configurations
@@ -28,15 +28,11 @@ const variantClasses = {
   success: 'border-green-600',
   warning: 'border-yellow-600',
   error: 'border-red-600',
-  info: 'border-blue-600'
+  info: 'border-blue-600',
 }
 
 // Base spinner component
-export function Spinner({
-  size = 'md',
-  variant = 'primary',
-  className = ''
-}: SpinnerProps) {
+export function Spinner({ size = 'md', variant = 'primary', className = '' }: SpinnerProps) {
   return (
     <div
       className={`animate-spin rounded-full border-2 border-transparent ${sizeClasses[size]} ${variantClasses[variant]} ${className}`}
@@ -62,17 +58,13 @@ export function LoadingState({
   size = 'md',
   variant = 'primary',
   className = '',
-  showMessage = true
+  showMessage = true,
 }: LoadingStateProps) {
   return (
     <div className={`text-center py-12 ${className}`}>
       <div className="flex items-center justify-center">
         <Spinner size={size} variant={variant} />
-        {showMessage && (
-          <span className="ml-3 text-gray-600 dark:text-gray-300">
-            {message}
-          </span>
-        )}
+        {showMessage && <span className="ml-3 text-gray-600 dark:text-gray-300">{message}</span>}
       </div>
     </div>
   )
@@ -90,14 +82,12 @@ export function InlineLoading({
   message = 'Loading...',
   size = 'sm',
   variant = 'primary',
-  className = ''
+  className = '',
 }: InlineLoadingProps) {
   return (
     <div className={`flex items-center ${className}`}>
       <Spinner size={size} variant={variant} />
-      <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">
-        {message}
-      </span>
+      <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">{message}</span>
     </div>
   )
 }
@@ -109,16 +99,10 @@ export interface ButtonLoadingProps {
   className?: string
 }
 
-export function ButtonLoading({
-  loading = false,
-  children,
-  className = ''
-}: ButtonLoadingProps) {
+export function ButtonLoading({ loading = false, children, className = '' }: ButtonLoadingProps) {
   return (
     <div className={`flex items-center ${className}`}>
-      {loading && (
-        <Spinner size="sm" variant="secondary" className="mr-2" />
-      )}
+      {loading && <Spinner size="sm" variant="secondary" className="mr-2" />}
       {children}
     </div>
   )
@@ -136,7 +120,7 @@ export function LoadingOverlay({
   loading = false,
   message = 'Loading...',
   children,
-  className = ''
+  className = '',
 }: LoadingOverlayProps) {
   if (!loading) return <>{children}</>
 
@@ -146,9 +130,7 @@ export function LoadingOverlay({
       <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 flex items-center justify-center z-50">
         <div className="text-center">
           <Spinner size="lg" variant="primary" />
-          <p className="mt-4 text-gray-600 dark:text-gray-300">
-            {message}
-          </p>
+          <p className="mt-4 text-gray-600 dark:text-gray-300">{message}</p>
         </div>
       </div>
     </div>
@@ -167,7 +149,7 @@ export function Skeleton({
   className = '',
   height = 'h-4',
   width = 'w-full',
-  rounded = true
+  rounded = true,
 }: SkeletonProps) {
   const roundedClass = rounded ? 'rounded' : ''
   return (
@@ -180,7 +162,7 @@ export function Skeleton({
 // Text skeleton
 export function SkeletonText({
   lines = 1,
-  className = ''
+  className = '',
 }: {
   lines?: number
   className?: string
@@ -188,22 +170,14 @@ export function SkeletonText({
   return (
     <div className={`space-y-2 ${className}`}>
       {Array.from({ length: lines }).map((_, index) => (
-        <Skeleton
-          key={index}
-          height="h-4"
-          width={index === lines - 1 ? 'w-3/4' : 'w-full'}
-        />
+        <Skeleton key={index} height="h-4" width={index === lines - 1 ? 'w-3/4' : 'w-full'} />
       ))}
     </div>
   )
 }
 
 // Card skeleton
-export function SkeletonCard({
-  className = ''
-}: {
-  className?: string
-}) {
+export function SkeletonCard({ className = '' }: { className?: string }) {
   return (
     <div className={`p-6 border border-gray-200 dark:border-gray-700 rounded-lg ${className}`}>
       <div className="space-y-4">
@@ -222,7 +196,7 @@ export function SkeletonCard({
 export function SkeletonTable({
   rows = 5,
   columns = 4,
-  className = ''
+  className = '',
 }: {
   rows?: number
   columns?: number
@@ -259,51 +233,30 @@ export function SkeletonTable({
 // Loading states for specific use cases
 export function DataLoadingState({
   message = 'Loading data...',
-  className = ''
+  className = '',
 }: {
   message?: string
   className?: string
 }) {
-  return (
-    <LoadingState
-      message={message}
-      size="lg"
-      variant="primary"
-      className={className}
-    />
-  )
+  return <LoadingState message={message} size="lg" variant="primary" className={className} />
 }
 
 export function FormLoadingState({
   message = 'Saving...',
-  className = ''
+  className = '',
 }: {
   message?: string
   className?: string
 }) {
-  return (
-    <LoadingState
-      message={message}
-      size="md"
-      variant="primary"
-      className={className}
-    />
-  )
+  return <LoadingState message={message} size="md" variant="primary" className={className} />
 }
 
 export function ActionLoadingState({
   message = 'Processing...',
-  className = ''
+  className = '',
 }: {
   message?: string
   className?: string
 }) {
-  return (
-    <InlineLoading
-      message={message}
-      size="sm"
-      variant="primary"
-      className={className}
-    />
-  )
+  return <InlineLoading message={message} size="sm" variant="primary" className={className} />
 }

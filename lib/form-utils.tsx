@@ -22,7 +22,7 @@ export interface FormErrors {
 
 // Common validation functions
 export const validators = {
-  required: (value: string) => (!value || value.trim() === '') ? 'This field is required' : null,
+  required: (value: string) => (!value || value.trim() === '' ? 'This field is required' : null),
   number: (value: string) => {
     if (!value) return null
     const num = parseFloat(value)
@@ -44,25 +44,25 @@ export const validators = {
     if (!value) return null
     const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/
     return !phoneRegex.test(value.replace(/\s/g, '')) ? 'Must be a valid phone number' : null
-  }
+  },
 }
 
 // Form validation helper
 export const validateForm = (formData: FormState, fields: FormField[]): FormErrors => {
   const errors: FormErrors = {}
-  
-  fields.forEach(field => {
+
+  fields.forEach((field) => {
     const value = formData[field.id] || ''
-    
+
     // Check required fields
     if (field.required && validators.required(value)) {
       errors[field.id] = validators.required(value)!
       return
     }
-    
+
     // Skip validation for empty optional fields
     if (!value && !field.required) return
-    
+
     // Run custom validation
     if (field.validation) {
       const error = field.validation(value)
@@ -71,7 +71,7 @@ export const validateForm = (formData: FormState, fields: FormField[]): FormErro
         return
       }
     }
-    
+
     // Run type-specific validation
     switch (field.type) {
       case 'number':
@@ -94,7 +94,7 @@ export const validateForm = (formData: FormState, fields: FormField[]): FormErro
         break
     }
   })
-  
+
   return errors
 }
 
@@ -105,13 +105,14 @@ export const renderFormField = (
   onChange: (value: string) => void,
   error?: string
 ) => {
-  const baseClasses = "w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-  const errorClasses = error 
-    ? "border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20" 
-    : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
-  
+  const baseClasses =
+    'w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent'
+  const errorClasses = error
+    ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
+    : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
+
   const inputClasses = `${baseClasses} ${errorClasses}`
-  
+
   switch (field.type) {
     case 'textarea':
       return (
@@ -123,21 +124,19 @@ export const renderFormField = (
           rows={3}
         />
       )
-    
+
     case 'select':
       return (
-        <select
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className={inputClasses}
-        >
+        <select value={value} onChange={(e) => onChange(e.target.value)} className={inputClasses}>
           <option value="">Select {field.label}</option>
           {field.options?.map((option) => (
-            <option key={option} value={option}>{option}</option>
+            <option key={option} value={option}>
+              {option}
+            </option>
           ))}
         </select>
       )
-    
+
     default:
       return (
         <input
@@ -163,28 +162,28 @@ export const commonFields = {
     required: true,
     min: 1,
     max: 20,
-    validation: validators.positiveNumber
+    validation: validators.positiveNumber,
   },
   notes: {
     id: 'notes',
     label: 'Notes',
     type: 'textarea' as const,
-    placeholder: 'Additional notes...'
+    placeholder: 'Additional notes...',
   },
   email: {
     id: 'email',
     label: 'Email Address',
     type: 'email' as const,
     placeholder: 'your@email.com',
-    validation: validators.email
+    validation: validators.email,
   },
   phone: {
     id: 'phone',
     label: 'Phone Number',
     type: 'tel' as const,
     placeholder: '+27 12 345 6789',
-    validation: validators.phone
-  }
+    validation: validators.phone,
+  },
 }
 
 // API utilities for calculator results
@@ -201,27 +200,27 @@ export const saveCalculatorResult = async (
       calculator_type: calculatorType,
       input_data: inputData,
       results: results,
-      notes: notes || ''
-    })
+      notes: notes || '',
+    }),
   })
-  
+
   if (!response.ok) {
     throw new Error('Failed to save calculator result')
   }
-  
+
   return response.json()
 }
 
 export const fetchCalculatorResults = async (calculatorType?: string, limit = 50) => {
-  const url = calculatorType 
+  const url = calculatorType
     ? `/api/calculator-results?calculator_type=${calculatorType}&limit=${limit}`
     : `/api/calculator-results?limit=${limit}`
-    
+
   const response = await fetch(url)
-  
+
   if (!response.ok) {
     throw new Error('Failed to fetch calculator results')
   }
-  
+
   return response.json()
 }

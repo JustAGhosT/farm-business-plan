@@ -18,23 +18,24 @@ export function useLoadingState(initialLoading = false): LoadingState {
     setError(null)
   }, [])
 
-  const executeWithLoading = useCallback(async <T>(
-    asyncFn: () => Promise<T>
-  ): Promise<T | null> => {
-    setLoading(true)
-    setError(null)
-    
-    try {
-      const result = await asyncFn()
-      return result
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred'
-      setError(errorMessage)
-      return null
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+  const executeWithLoading = useCallback(
+    async <T>(asyncFn: () => Promise<T>): Promise<T | null> => {
+      setLoading(true)
+      setError(null)
+
+      try {
+        const result = await asyncFn()
+        return result
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred'
+        setError(errorMessage)
+        return null
+      } finally {
+        setLoading(false)
+      }
+    },
+    []
+  )
 
   return {
     loading,
@@ -42,7 +43,7 @@ export function useLoadingState(initialLoading = false): LoadingState {
     setLoading,
     setError,
     clearError,
-    executeWithLoading
+    executeWithLoading,
   }
 }
 
@@ -50,16 +51,17 @@ export function useLoadingState(initialLoading = false): LoadingState {
 export function useAsyncOperation<T = any>() {
   const { loading, error, executeWithLoading } = useLoadingState()
 
-  const execute = useCallback(async (
-    operation: () => Promise<T>
-  ): Promise<T | null> => {
-    return executeWithLoading(operation)
-  }, [executeWithLoading])
+  const execute = useCallback(
+    async (operation: () => Promise<T>): Promise<T | null> => {
+      return executeWithLoading(operation)
+    },
+    [executeWithLoading]
+  )
 
   return {
     loading,
     error,
-    execute
+    execute,
   }
 }
 
@@ -67,17 +69,18 @@ export function useAsyncOperation<T = any>() {
 export function useFormSubmission() {
   const { loading, error, executeWithLoading } = useLoadingState()
 
-  const submit = useCallback(async (
-    submitFn: () => Promise<any>
-  ): Promise<boolean> => {
-    const result = await executeWithLoading(submitFn)
-    return result !== null
-  }, [executeWithLoading])
+  const submit = useCallback(
+    async (submitFn: () => Promise<any>): Promise<boolean> => {
+      const result = await executeWithLoading(submitFn)
+      return result !== null
+    },
+    [executeWithLoading]
+  )
 
   return {
     loading,
     error,
-    submit
+    submit,
   }
 }
 
@@ -85,15 +88,16 @@ export function useFormSubmission() {
 export function useDataFetching<T = any>() {
   const { loading, error, executeWithLoading } = useLoadingState(true)
 
-  const fetch = useCallback(async (
-    fetchFn: () => Promise<T>
-  ): Promise<T | null> => {
-    return executeWithLoading(fetchFn)
-  }, [executeWithLoading])
+  const fetch = useCallback(
+    async (fetchFn: () => Promise<T>): Promise<T | null> => {
+      return executeWithLoading(fetchFn)
+    },
+    [executeWithLoading]
+  )
 
   return {
     loading,
     error,
-    fetch
+    fetch,
   }
 }

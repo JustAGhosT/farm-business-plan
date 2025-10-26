@@ -4,7 +4,15 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-type Step = 'basic-info' | 'location' | 'climate' | 'crops' | 'financials' | 'timeline' | 'calculators' | 'recommendations'
+type Step =
+  | 'basic-info'
+  | 'location'
+  | 'climate'
+  | 'crops'
+  | 'financials'
+  | 'timeline'
+  | 'calculators'
+  | 'recommendations'
 
 interface BoundaryPoint {
   lat: number
@@ -690,7 +698,6 @@ export default function AIWizardPage() {
               ))}
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
-              {/* eslint-disable-next-line react/no-inline-styles */}
               <div
                 className="bg-primary-600 dark:bg-primary-500 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${((currentStepIndex + 1) / steps.length) * 100}%` }}
@@ -761,8 +768,8 @@ export default function AIWizardPage() {
                   </div>
                   <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
                     <p className="text-sm text-blue-800 dark:text-blue-300">
-                      <strong>💡 Tip:</strong> This information will be used throughout your business plan.
-                      You can always come back and edit it later.
+                      <strong>💡 Tip:</strong> This information will be used throughout your
+                      business plan. You can always come back and edit it later.
                     </p>
                   </div>
                 </div>
@@ -1299,9 +1306,12 @@ export default function AIWizardPage() {
             )}
             {currentStep === 'calculators' && (
               <div>
-                <h2 className="text-2xl font-bold mb-4 dark:text-white">🧮 Financial Analysis Tools</h2>
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">
+                  🧮 Financial Analysis Tools
+                </h2>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
-                  Use our financial calculators to analyze your farm's profitability and investment requirements
+                  Use our financial calculators to analyze your farm&apos;s profitability and investment
+                  requirements
                 </p>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <Link
@@ -1311,7 +1321,9 @@ export default function AIWizardPage() {
                     <div className="flex items-start mb-4">
                       <span className="text-3xl mr-4">📈</span>
                       <div>
-                        <h3 className="text-lg font-semibold mb-2 dark:text-white">ROI Calculator</h3>
+                        <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                          ROI Calculator
+                        </h3>
                         <p className="text-gray-600 dark:text-gray-300 text-sm">
                           Calculate Return on Investment for your farm operations
                         </p>
@@ -1325,7 +1337,9 @@ export default function AIWizardPage() {
                     <div className="flex items-start mb-4">
                       <span className="text-3xl mr-4">⚖️</span>
                       <div>
-                        <h3 className="text-lg font-semibold mb-2 dark:text-white">Break-Even Analysis</h3>
+                        <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                          Break-Even Analysis
+                        </h3>
                         <p className="text-gray-600 dark:text-gray-300 text-sm">
                           Determine your break-even point for production and sales
                         </p>
@@ -1339,7 +1353,9 @@ export default function AIWizardPage() {
                     <div className="flex items-start mb-4">
                       <span className="text-3xl mr-4">💰</span>
                       <div>
-                        <h3 className="text-lg font-semibold mb-2 dark:text-white">Investment Calculator</h3>
+                        <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                          Investment Calculator
+                        </h3>
                         <p className="text-gray-600 dark:text-gray-300 text-sm">
                           Plan your startup investment and funding requirements
                         </p>
@@ -1353,7 +1369,9 @@ export default function AIWizardPage() {
                     <div className="flex items-start mb-4">
                       <span className="text-3xl mr-4">📊</span>
                       <div>
-                        <h3 className="text-lg font-semibold mb-2 dark:text-white">Revenue Projections</h3>
+                        <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                          Revenue Projections
+                        </h3>
                         <p className="text-gray-600 dark:text-gray-300 text-sm">
                           Project revenue based on yield and market prices
                         </p>
@@ -1367,7 +1385,9 @@ export default function AIWizardPage() {
                     <div className="flex items-start mb-4">
                       <span className="text-3xl mr-4">💸</span>
                       <div>
-                        <h3 className="text-lg font-semibold mb-2 dark:text-white">Operating Costs</h3>
+                        <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                          Operating Costs
+                        </h3>
                         <p className="text-gray-600 dark:text-gray-300 text-sm">
                           Calculate monthly and annual operating expenses
                         </p>
@@ -1381,7 +1401,9 @@ export default function AIWizardPage() {
                     <div className="flex items-start mb-4">
                       <span className="text-3xl mr-4">🏦</span>
                       <div>
-                        <h3 className="text-lg font-semibold mb-2 dark:text-white">Loan Calculator</h3>
+                        <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                          Loan Calculator
+                        </h3>
                         <p className="text-gray-600 dark:text-gray-300 text-sm">
                           Calculate loan payments and interest costs
                         </p>
@@ -1391,9 +1413,9 @@ export default function AIWizardPage() {
                 </div>
                 <div className="mt-6 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
                   <p className="text-sm text-blue-800 dark:text-blue-300">
-                    <strong>💡 Tip:</strong> Use these calculators to validate your financial projections and 
-                    get detailed analysis of your farm's profitability. You can also view your calculation 
-                    history and generate reports from the dashboard.
+                    <strong>💡 Tip:</strong> Use these calculators to validate your financial
+                    projections and get detailed analysis of your farm&apos;s profitability. You can also
+                    view your calculation history and generate reports from the dashboard.
                   </p>
                 </div>
               </div>

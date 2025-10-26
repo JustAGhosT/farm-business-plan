@@ -10,7 +10,8 @@ export default function CalculatorsPage() {
   const calculators = [
     {
       title: 'Unified Calculator',
-      description: 'All calculators in one interface - switch between ROI, Break-Even, Investment, and more',
+      description:
+        'All calculators in one interface - switch between ROI, Break-Even, Investment, and more',
       icon: '🧮',
       href: '/tools/calculators/unified',
       color:

@@ -170,9 +170,10 @@ export default function FinancialReportsPage() {
     }).format(value)
   }
 
-  const exportToPDF = () => {
+  const exportToPDF = (selectedResults?: any[]) => {
     const doc = new jsPDF()
     const summary = getFinancialSummary()
+    const resultsToExport = selectedResults || results
 
     // Title
     doc.setFontSize(20)
@@ -360,21 +361,21 @@ export default function FinancialReportsPage() {
           {/* Tab Content */}
           {activeTab === 'reports' && (
             <>
-              {/* Date Range Filter */}
-              <div className="mb-8">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Time Period</label>
-                <select
-                  value={dateRange}
-                  onChange={(e) => setDateRange(e.target.value)}
-                  className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-                  <option value="7">Last 7 days</option>
-                  <option value="30">Last 30 days</option>
-                  <option value="90">Last 90 days</option>
-                  <option value="365">Last year</option>
-                  <option value="10000">All time</option>
-                </select>
-              </div>
+          {/* Date Range Filter */}
+          <div className="mb-8">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Time Period</label>
+            <select
+              value={dateRange}
+              onChange={(e) => setDateRange(e.target.value)}
+              className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            >
+              <option value="7">Last 7 days</option>
+              <option value="30">Last 30 days</option>
+              <option value="90">Last 90 days</option>
+              <option value="365">Last year</option>
+              <option value="10000">All time</option>
+            </select>
+          </div>
 
           {loading ? (
             <div className="text-center py-12">
@@ -699,4 +700,7 @@ export default function FinancialReportsPage() {
               )}
             </>
           )}
-        </div>
+      </div>
+    </div>
+  )
+}

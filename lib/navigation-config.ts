@@ -9,30 +9,28 @@ export interface NavItem {
 export const NAVIGATION_ITEMS: NavItem[] = [
   {
     href: '/',
-    label: 'Home'
+    label: 'Home',
   },
   {
     href: '/docs/diversified-farm-plan',
-    label: 'Documentation'
+    label: 'Documentation',
   },
   {
     href: '/tools/calculators',
-    label: 'Calculators'
+    label: 'Calculators',
   },
   {
     href: '/tools/dashboard',
     label: 'Dashboard',
-    requiresAuth: true
+    requiresAuth: true,
   },
   {
     href: 'https://github.com/JustAGhosT/farm-business-plan',
     label: 'GitHub',
-    external: true
-  }
+    external: true,
+  },
 ]
 
 export const getNavigationItems = (isAuthenticated: boolean = false) => {
-  return NAVIGATION_ITEMS.filter(item => 
-    !item.requiresAuth || isAuthenticated
-  )
+  return NAVIGATION_ITEMS.filter((item) => !item.requiresAuth || isAuthenticated)
 }
