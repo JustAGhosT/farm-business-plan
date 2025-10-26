@@ -1,17 +1,17 @@
 'use client'
 
-import { Container } from '@/components/ui'
-import { useSession } from 'next-auth/react'
-import { HOME_CONFIG } from '@/lib/home-page-config'
 import {
-  AccountBenefitsSection,
-  DocumentationSection,
-  FeaturesSection,
-  HeroSection,
-  PublicResourcesSection,
-  QuickStartSection,
-  ToolsSection,
+    AccountBenefitsSection,
+    DocumentationSection,
+    FeaturesSection,
+    HeroSection,
+    PublicResourcesSection,
+    QuickStartSection,
+    ToolsSection,
 } from '@/components/home-page-sections'
+import { Container } from '@/components/ui'
+import { HOME_CONFIG } from '@/lib/home-page-config'
+import { useSession } from 'next-auth/react'
 
 export default function Home() {
   const { data: session, status } = useSession()

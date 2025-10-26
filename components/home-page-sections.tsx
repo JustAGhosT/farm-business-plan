@@ -1,9 +1,9 @@
 'use client'
 
-import { Badge, Card, CardDescription, CardTitle, Container, Grid, Section } from '@/components/ui'
+import { Badge, Card, CardDescription, CardTitle, Grid, Section } from '@/components/ui'
+import { BenefitItem, FeatureItem, ResourceItem, StepItem, ToolItem } from '@/lib/home-page-config'
 import Link from 'next/link'
 import React from 'react'
-import { BenefitItem, FeatureItem, ResourceItem, StepItem, ToolItem } from '@/lib/home-page-config'
 
 // Reusable components for home page sections
 export interface StepCardProps {
