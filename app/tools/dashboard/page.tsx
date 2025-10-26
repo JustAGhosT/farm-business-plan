@@ -277,7 +277,7 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-semibold text-gray-900 dark:text-white">Recent Calculations</h3>
                 <Link
-                  href="/tools/calculators/history"
+                  href="/tools/reports"
                   className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
                 >
                   View All →

@@ -294,7 +294,7 @@ export default function Home() {
                 Public
               </Badge>
               <CardTitle>💰 Financial Tools</CardTitle>
-              <CardDescription>6 calculators: ROI, break-even & more</CardDescription>
+              <CardDescription>6 calculators + unified reports & analytics</CardDescription>
             </Card>
 
             <Card
@@ -308,7 +308,7 @@ export default function Home() {
                 </Badge>
               )}
               <CardTitle>📊 Dashboard</CardTitle>
-              <CardDescription>Track tasks and operations</CardDescription>
+              <CardDescription>Unified overview with financial metrics</CardDescription>
             </Card>
 
             <Card href="/tools/templates" variant="bordered" className="relative">
