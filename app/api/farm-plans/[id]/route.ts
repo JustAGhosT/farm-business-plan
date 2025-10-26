@@ -55,35 +55,35 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
     try {
       const id = validateUuidParam(rawId)
 
-    const body = await request.json()
+      const body = await request.json()
 
-    // Validate input
-    const validation = validateData(FarmPlanSchema.partial(), body)
-    if (!validation.success) {
-      return createErrorResponse(
-        'Validation failed',
-        400,
-        validation.errors?.issues,
-        'VALIDATION_ERROR'
-      )
-    }
+      // Validate input
+      const validation = validateData(FarmPlanSchema.partial(), body)
+      if (!validation.success) {
+        return createErrorResponse(
+          'Validation failed',
+          400,
+          validation.errors?.issues,
+          'VALIDATION_ERROR'
+        )
+      }
 
-    const updatedFarmPlan = await farmPlanRepository.update(id, validation.data!)
+      const updatedFarmPlan = await farmPlanRepository.update(id, validation.data!)
 
-    if (!updatedFarmPlan) {
-      return createErrorResponse(
-        'Farm plan not found or no fields to update',
-        404,
-        undefined,
-        'NOT_FOUND'
-      )
-    }
+      if (!updatedFarmPlan) {
+        return createErrorResponse(
+          'Farm plan not found or no fields to update',
+          404,
+          undefined,
+          'NOT_FOUND'
+        )
+      }
 
-    return NextResponse.json({
-      success: true,
-      data: updatedFarmPlan,
-      message: 'Farm plan updated successfully',
-    })
+      return NextResponse.json({
+        success: true,
+        data: updatedFarmPlan,
+        message: 'Farm plan updated successfully',
+      })
     } catch (error) {
       return createErrorResponse(
         error instanceof Error ? error.message : 'Invalid parameter',

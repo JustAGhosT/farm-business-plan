@@ -21,7 +21,11 @@ export async function GET(request: Request) {
     const status = searchParams.get('status')
     const priority = searchParams.get('priority')
 
-    const tasks = await taskRepository.getAll(farmPlanId || undefined, status || undefined, priority || undefined)
+    const tasks = await taskRepository.getAll(
+      farmPlanId || undefined,
+      status || undefined,
+      priority || undefined
+    )
 
     return NextResponse.json({
       success: true,
