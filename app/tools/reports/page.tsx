@@ -18,7 +18,7 @@ export default function ReportsPage() {
   const fetchResults = useCallback(async () => {
     try {
       setLoading(true)
-      const response = await fetch(`/api/calculator-results?filter=${filter}`)
+      const response = await fetch(`/api/calculator-results?filter=${encodeURIComponent(filter)}`)
       if (!response.ok) throw new Error('Failed to fetch results')
       const data = await response.json()
       setResults(data.results || [])

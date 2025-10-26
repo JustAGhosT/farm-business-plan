@@ -411,47 +411,53 @@ export default function UnifiedCalculator() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              {currentConfig.fields.map((field) => (
-                <div key={field.id} className={field.type === 'textarea' ? 'md:col-span-2' : ''}>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    {field.label} {field.required && <span className="text-red-500">*</span>}
-                  </label>
-                  {field.type === 'textarea' ? (
-                    <textarea
-                      value={formData[field.id] || ''}
-                      onChange={(e) => handleInputChange(field.id, e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder={field.placeholder}
-                      rows={3}
-                    />
-                  ) : field.type === 'select' ? (
-                    <select
-                      value={formData[field.id] || ''}
-                      onChange={(e) => handleInputChange(field.id, e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      aria-label={field.label}
-                    >
-                      <option value="">Select {field.label}</option>
-                      {field.options?.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <input
-                      type={field.type}
-                      value={formData[field.id] || ''}
-                      onChange={(e) => handleInputChange(field.id, e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder={field.placeholder}
-                      min={field.min}
-                      max={field.max}
-                      step={field.step}
-                    />
-                  )}
-                </div>
-              ))}
+              {currentConfig.fields.map((field) => {
+                const inputId = `field-${field.id}`
+                return (
+                  <div key={field.id} className={field.type === 'textarea' ? 'md:col-span-2' : ''}>
+                    <label htmlFor={inputId} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      {field.label} {field.required && <span className="text-red-500">*</span>}
+                    </label>
+                    {field.type === 'textarea' ? (
+                      <textarea
+                        id={inputId}
+                        value={formData[field.id] || ''}
+                        onChange={(e) => handleInputChange(field.id, e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        placeholder={field.placeholder}
+                        rows={3}
+                      />
+                    ) : field.type === 'select' ? (
+                      <select
+                        id={inputId}
+                        value={formData[field.id] || ''}
+                        onChange={(e) => handleInputChange(field.id, e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        aria-label={field.label}
+                      >
+                        <option value="">Select {field.label}</option>
+                        {field.options?.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        id={inputId}
+                        type={field.type}
+                        value={formData[field.id] || ''}
+                        onChange={(e) => handleInputChange(field.id, e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        placeholder={field.placeholder}
+                        min={field.min}
+                        max={field.max}
+                        step={field.step}
+                      />
+                    )}
+                  </div>
+                )
+              })}
             </div>
 
             <div className="flex gap-4">
