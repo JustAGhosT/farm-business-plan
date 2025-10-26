@@ -4,32 +4,32 @@ on:
   push:
     branches: [main, develop]
     paths:
-      - "app/**"
-      - "components/**"
-      - "types/**"
-      - "package.json"
-      - "pnpm-lock.yaml"
-      - "next.config.js"
-      - "tsconfig.json"
-      - "tailwind.config.ts"
-      - "postcss.config.js"
-      - ".eslintrc.json"
-      - "netlify.toml"
-      - ".github/workflows/netlify-deploy.yml"
+      - 'app/**'
+      - 'components/**'
+      - 'types/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'next.config.js'
+      - 'tsconfig.json'
+      - 'tailwind.config.ts'
+      - 'postcss.config.js'
+      - '.eslintrc.json'
+      - 'netlify.toml'
+      - '.github/workflows/netlify-deploy.yml'
   pull_request:
     paths:
-      - "app/**"
-      - "components/**"
-      - "types/**"
-      - "package.json"
-      - "pnpm-lock.yaml"
-      - "next.config.js"
-      - "tsconfig.json"
-      - "tailwind.config.ts"
-      - "postcss.config.js"
-      - ".eslintrc.json"
-      - "netlify.toml"
-      - ".github/workflows/netlify-deploy.yml"
+      - 'app/**'
+      - 'components/**'
+      - 'types/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'next.config.js'
+      - 'tsconfig.json'
+      - 'tailwind.config.ts'
+      - 'postcss.config.js'
+      - '.eslintrc.json'
+      - 'netlify.toml'
+      - '.github/workflows/netlify-deploy.yml'
   workflow_dispatch:
 
 jobs:
@@ -57,7 +57,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: "20"
+          node-version: '20'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -152,7 +152,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: "20"
+          node-version: '20'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
