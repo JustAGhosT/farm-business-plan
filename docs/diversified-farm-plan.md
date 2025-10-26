@@ -155,7 +155,7 @@ Determine the minimum viable plot size for your chosen crops:
 
 ### 2.1 Overview
 
-This section provides a framework for analyzing and documenting each crop in your agricultural business plan. Complete this analysis for each crop you plan to grow.
+This section provides a framework for analyzing and documenting each crop in your agricultural business plan. For detailed guides on specific crops, please see our new **[Farming Guides](/farming-guides)** section.
 
 ### 2.2 Crop Analysis Template
 
@@ -196,221 +196,6 @@ This section provides a framework for analyzing and documenting each crop in you
 | Drainage needs       | [Poor/good/excellent]      | [Your drainage]           |
 
 **Site Suitability Score**: [Excellent/Good/Adequate/Needs Improvement]
-
-#### C. Cultivation Requirements
-
-**Land Preparation:**
-
-- [Describe soil preparation, amendments, bed formation]
-- [Timeline for preparation]
-- [Equipment or labor needs]
-
-**Planting:**
-
-- **Method**: [Direct seeding/transplanting/cuttings/divisions]
-- **Optimal planting time**: [Season/months based on your climate]
-- **Spacing**:
-  - Within row: [Distance]
-  - Between rows: [Distance]
-  - Plants per hectare: [Density]
-- **Planting depth**: [If applicable]
-- **Seed/planting material quantity**: [Per hectare or area]
-
-**Water Management:**
-
-- **Establishment phase**: [Frequency and amount]
-- **Mature plants**: [Frequency and amount]
-- **Irrigation system**: [Drip/sprinkler/flood/rain-fed]
-- **Critical water periods**: [Growth stages needing most water]
-- **Total seasonal water requirement**: [mm or liters per hectare]
-
-**Fertility and Soil Management:**
-
-- **Pre-plant fertilization**: [Type and amount]
-- **Growing season nutrition**: [Fertilizer schedule]
-- **Organic matter maintenance**: [Mulching, cover crops, compost]
-- **Soil health practices**: [Crop rotation, green manures, etc.]
-
-**Advanced Fertility Management (Precision Approach):**
-
-- **Soil Testing Strategy**:
-  - Annual testing: 0-6" depth (pH, P, K, Zn, OM, CEC)
-  - Nitrate profile: 0-24" depth for N and S
-  - Use zone/grid sampling for variable-rate application
-- **P/K Sufficiency Strategy**:
-  - Base rates on soil test results (not blanket annuals)
-  - Apply only when tests indicate yield response
-  - Band P/K where placement efficiency is higher (salt-safe)
-- **Nutrient Removal Rates**: [Calculate based on yield targets]
-  - Use crop-specific removal rates (see Fertility Management Guide)
-  - Account for residue cycling (especially K from sunflower/sorghum)
-- **Nitrogen Management**:
-  - Credit previous crop N (e.g., 30-45 lb N/ac from legumes)
-  - Sample profile nitrate (0-24") to set rates
-  - Split applications for high-demand crops
-- **Micronutrients**:
-  - Boron: [Rate if needed - e.g., 2-3 lb B/ac for beets]
-  - Sulfur: [15-30 lb S/ac for potatoes on sandy soils]
-  - Zinc: [Based on soil test results]
-- **Special Considerations**:
-  - Potassium source: [K₂SO₄ (SOP) for quality crops like potatoes]
-  - pH management: [Target range based on crop - e.g., 6.2-7.0 for beets]
-  - In-season monitoring: [Tissue testing schedule if applicable]
-
-**Ongoing Care:**
-
-- **Pruning/training**: [Requirements and timing]
-- **Weed management**: [Methods and frequency]
-- **Pest and disease management**: [Common issues and prevention/control]
-- **Other maintenance**: [Trellising, staking, thinning, etc.]
-
-#### D. Production Timeline
-
-| Stage                  | Timeline             | Key Activities | Labor Requirements        |
-| ---------------------- | -------------------- | -------------- | ------------------------- |
-| Planning & preparation | [Months/weeks]       | [Activities]   | [Hours or person-days]    |
-| Planting               | [Timing]             | [Activities]   | [Labor needs]             |
-| Establishment          | [Duration]           | [Activities]   | [Labor needs]             |
-| Growth & development   | [Duration]           | [Activities]   | [Labor needs]             |
-| First harvest          | [Time from planting] | [Activities]   | [Labor needs]             |
-| Subsequent harvests    | [Frequency]          | [Activities]   | [Labor needs per harvest] |
-| Peak production        | [Year or season]     | [Activities]   | [Labor needs]             |
-
-**Harvest Specifications:**
-
-- **Harvest indicators**: [How to determine when to harvest]
-- **Harvest method**: [Manual/mechanical, tools needed]
-- **Harvest frequency**: [Once/multiple times per season/continuous]
-- **Expected yields**:
-  - Year 1: [Amount per hectare]
-  - Year 2: [Amount per hectare]
-  - Year 3+: [Amount per hectare at maturity]
-- **Post-harvest handling**: [Cleaning, processing, storage requirements]
-- **Shelf life**: [Fresh product storage time]
-
-#### E. Economic Analysis
-
-**Initial Investment (per hectare or your unit):**
-
-| Item                          | Quantity          | Unit Cost | Total Cost  |
-| ----------------------------- | ----------------- | --------- | ----------- |
-| Land preparation              | [Area]            | [Cost]    | [Total]     |
-| Planting material             | [Amount]          | [Cost]    | [Total]     |
-| Irrigation system             | [Type/components] | [Cost]    | [Total]     |
-| Support structures            | [If needed]       | [Cost]    | [Total]     |
-| Tools and equipment           | [List]            | [Cost]    | [Total]     |
-| Initial fertilizer/amendments | [Amount]          | [Cost]    | [Total]     |
-| Other startup costs           | [Specify]         | [Cost]    | [Total]     |
-| **TOTAL INITIAL INVESTMENT**  |                   |           | **[Total]** |
-
-**Annual Operating Costs:**
-
-| Category                                     | Year 1      | Year 2      | Year 3+     |
-| -------------------------------------------- | ----------- | ----------- | ----------- |
-| Irrigation (water, electricity, maintenance) | [Cost]      | [Cost]      | [Cost]      |
-| Fertilizer and amendments                    | [Cost]      | [Cost]      | [Cost]      |
-| Pest/disease management                      | [Cost]      | [Cost]      | [Cost]      |
-| Labor (or your time value)                   | [Cost]      | [Cost]      | [Cost]      |
-| Harvesting and processing                    | [Cost]      | [Cost]      | [Cost]      |
-| Marketing and distribution                   | [Cost]      | [Cost]      | [Cost]      |
-| Equipment maintenance                        | [Cost]      | [Cost]      | [Cost]      |
-| Other operational expenses                   | [Cost]      | [Cost]      | [Cost]      |
-| **TOTAL ANNUAL COSTS**                       | **[Total]** | **[Total]** | **[Total]** |
-
-**Revenue Projections:**
-
-| Product             | Year 1 Yield | Price per Unit | Year 1 Revenue | Year 2 Revenue | Year 3 Revenue |
-| ------------------- | ------------ | -------------- | -------------- | -------------- | -------------- |
-| [Primary product]   | [Amount]     | [Price]        | [Total]        | [Total]        | [Total]        |
-| [Secondary product] | [Amount]     | [Price]        | [Total]        | [Total]        | [Total]        |
-| [Other products]    | [Amount]     | [Price]        | [Total]        | [Total]        | [Total]        |
-| **TOTAL REVENUE**   |              |                | **[Total]**    | **[Total]**    | **[Total]**    |
-
-**Profitability Summary:**
-
-| Metric           | Year 1   | Year 2   | Year 3   |
-| ---------------- | -------- | -------- | -------- |
-| Gross Revenue    | [Amount] | [Amount] | [Amount] |
-| Total Costs      | [Amount] | [Amount] | [Amount] |
-| Net Profit/Loss  | [Amount] | [Amount] | [Amount] |
-| Profit Margin    | [%]      | [%]      | [%]      |
-| ROI (Cumulative) | [%]      | [%]      | [%]      |
-
-#### F. Market Analysis
-
-**Target Markets:**
-
-- [Primary market channels: farmers markets, wholesale, restaurants, retail, etc.]
-- [Geographic scope: local, regional, national, international]
-- [Customer segments: home consumers, businesses, processors, etc.]
-
-**Competitive Analysis:**
-
-- **Current suppliers**: [Who is currently serving this market]
-- **Your competitive advantage**: [Quality, price, variety, service, location, etc.]
-- **Market gaps**: [Unmet needs or opportunities]
-- **Barriers to entry**: [What challenges you might face]
-
-**Pricing Strategy:**
-
-- **Current market price**: [Range in your target market]
-- **Your target price**: [Pricing strategy]
-- **Price justification**: [Why customers will pay your price]
-- **Volume vs. price strategy**: [Premium-low volume or commodity-high volume]
-
-**Marketing and Sales:**
-
-- **Marketing methods**: [How you will reach customers]
-- **Sales channels**: [How product will get to customers]
-- **Brand positioning**: [Your unique identity]
-- **Customer acquisition cost**: [Estimated cost to gain a customer]
-
-#### G. Risk Assessment
-
-**Production Risks:**
-
-| Risk                          | Probability    | Impact         | Mitigation Strategy                 |
-| ----------------------------- | -------------- | -------------- | ----------------------------------- |
-| [Climate/weather extremes]    | [High/Med/Low] | [High/Med/Low] | [Prevention or response plan]       |
-| [Pest or disease outbreak]    | [Level]        | [Impact]       | [Management approach]               |
-| [Water shortage]              | [Level]        | [Impact]       | [Backup plans]                      |
-| [Poor establishment/survival] | [Level]        | [Impact]       | [Quality control, backup plantings] |
-| [Other production risks]      | [Level]        | [Impact]       | [Mitigation]                        |
-
-**Market Risks:**
-
-| Risk                    | Probability | Impact   | Mitigation Strategy                   |
-| ----------------------- | ----------- | -------- | ------------------------------------- |
-| [Price fluctuations]    | [Level]     | [Impact] | [Diversification, contracts, storage] |
-| [Lack of market access] | [Level]     | [Impact] | [Market development plan]             |
-| [Competition]           | [Level]     | [Impact] | [Differentiation strategy]            |
-| [Change in demand]      | [Level]     | [Impact] | [Market research, flexibility]        |
-
-**Financial Risks:**
-
-- [Cash flow challenges, financing issues, cost overruns]
-- [Mitigation: reserves, financing arrangements, careful budgeting]
-
-#### H. Crop-Specific Strengths and Weaknesses
-
-**Strengths:**
-
-- [List key advantages of this crop for your operation]
-- [What makes it a good fit]
-- [Market opportunities]
-
-**Weaknesses:**
-
-- [Challenges or limitations]
-- [Resource demands]
-- [Market constraints]
-
-**Overall Assessment:**
-[Paragraph summarizing whether this crop is recommended for your plan and why]
-
----
-
-**Repeat this analysis for each crop in your plan (Crop 2, Crop 3, etc.)**
 
 ---
 
@@ -494,38 +279,31 @@ Consider these synergies when selecting multiple crops:
 - Different customer segments (wholesale, retail, direct)
 - Multiple sales channels (farmers market, restaurants, export)
 
-### 3.4 Additional Crop Options to Consider
+### 3.4 Profitable Crop Options for Bela-Bela
 
-When expanding your operation, consider these categories:
+Based on market analysis and climate suitability for Limpopo, here are promising crops to consider for diversification.
 
-**High-Value Specialty Crops:**
+**A. High-Value Vegetables & Leafy Greens**
 
-- Herbs and spices
-- Exotic fruits
-- Gourmet vegetables
-- Medicinal plants
-- Essential oil crops
+*   **Traditional High-Demand Crops**:
+    *   **Tomatoes, Onions, Cabbage**: Consistently profitable with strong local demand.
+    *   **Spinach, Kale, Carrots**: High market demand, excellent for small-scale operations.
+*   **Specialty Leafy Greens**:
+    *   **Microgreens**: Exceptional profit margins with a quick 7-14 day turnaround and premium pricing.
+    *   **Specialty Herbs (Basil, Cilantro, Parsley)**: Command higher prices than conventional vegetables.
 
-**Value-Added Products:**
+**B. Premium Specialty Crops**
 
-- Processed products (dried, powdered, extracted)
-- Combined products (spice mixes, herbal teas)
-- Ready-to-eat items
-- Beauty and wellness products
+*   **High-Value Options**:
+    *   **Gourmet Mushrooms (Oyster, Shiitake)**: Offer year-round production potential in a controlled environment.
+    *   **Heirloom Tomatoes**: Can command a 2-3x premium over standard varieties.
+    *   **Garlic**: Excellent storage capabilities and consistent demand.
+*   **Export-Oriented Opportunities (Long-term)**:
+    *   **Avocados & Citrus Fruits**: Strong, established export crops for South Africa.
 
-**Livestock Integration (if appropriate):**
+**C. Climate-Adapted Recommendations**
 
-- Poultry (eggs, meat)
-- Small ruminants (goats, sheep)
-- Bees (honey, pollination services)
-- Aquaculture (if water available)
-
-**Service-Based Income:**
-
-- Agro-tourism
-- Educational workshops
-- Farm-to-table experiences
-- Pick-your-own operations
+*   Focus on **heat-tolerant and drought-resistant varieties** to align with Limpopo's climate trends and expected above-normal temperatures.
 
 ### 3.5 Diversification Decision Matrix
 
@@ -721,127 +499,58 @@ Develop financial projections for your operation using multiple scenarios to und
 
 A phased implementation approach reduces risk and allows you to learn and adapt as you build your agricultural operation.
 
-### 6.2 Implementation Phases Template
+### 6.2 Strategic Implementation Approach
 
-**Customize this timeline for your specific crops and context:**
+This phased approach prioritizes immediate cash flow and learning while building towards long-term, high-value production.
 
-#### Phase 1: Planning and Preparation ([Your Timeframe, e.g., Months 1-4])
+#### Phase 1: Quick Wins (Months 1-6)
 
-**Key Activities:**
-
-- [ ] Finalize farm layout and crop selection
-- [ ] Conduct comprehensive soil testing
-- [ ] Complete climate and water resource assessment
-- [ ] Develop detailed financial projections
-- [ ] Secure financing (loans, grants, investors)
-- [ ] Order seeds, planting materials, equipment
-- [ ] Establish market contacts and sales channels
-- [ ] Obtain necessary permits and licenses
-- [ ] Develop farm management plan
-
-**Outputs:**
-
-- Finalized business plan
-- Secured funding
-- Materials ordered
-- Market relationships established
-
-#### Phase 2: Site Preparation ([Your Timeframe, e.g., Months 3-6])
+**Focus**: Generate immediate cash flow, test local market demand, and establish a baseline of operations.
 
 **Key Activities:**
 
-- [ ] Clear land and remove vegetation
-- [ ] Conduct soil amendments (pH adjustment, organic matter)
-- [ ] Install irrigation infrastructure
-- [ ] Construct support structures (trellises, greenhouses, etc.)
-- [ ] Install fencing and security measures
-- [ ] Prepare planting beds or areas
-- [ ] Set up storage and processing facilities
-- [ ] Install weather monitoring equipment
+*   **Jalapeños**: Execute the dual-cohort strategy (purchase seedlings, plant seeds) to establish a 6-month harvest window.
+*   **Microgreens & Herbs**: Start small-scale production for quick turnaround (7-21 days). These require minimal space and provide immediate products for sale.
+*   **Market Testing**: Sell directly at local markets to build relationships and gather feedback on pricing and product quality.
 
 **Outputs:**
 
-- Site prepared for planting
-- Infrastructure in place
-- Systems tested and operational
+*   First jalapeño harvest and sales (by Month 2).
+*   Continuous weekly income from microgreens and herbs.
+*   Established presence at local markets.
 
-#### Phase 3: Initial Planting ([Your Timeframe, e.g., Months 5-8])
+#### Phase 2: Medium-Term Expansion (Months 6-18)
+
+**Focus**: Diversify into high-demand vegetables and develop direct-to-consumer channels.
 
 **Key Activities:**
 
-- [ ] Plant crops according to optimal timing for your climate
-- [ ] Implement initial irrigation schedule
-- [ ] Apply starting fertilizers and amendments
-- [ ] Install plant support systems as needed
-- [ ] Begin pest and disease monitoring
-- [ ] Start record-keeping system
-- [ ] Implement quality control procedures
+*   **Vegetable Production**: Establish production of tomatoes, spinach, kale, and carrots based on Phase 1 market feedback.
+*   **Direct Channels**: Develop relationships with local restaurants and lodges, offering a consistent supply of fresh produce.
+*   **Value-Added Processing**: Begin small-batch processing of jalapeño sauces and pickles based on surplus from Phase 1.
 
 **Outputs:**
 
-- All planned crops planted
-- Monitoring systems active
-- Documentation initiated
+*   Diversified range of fresh produce.
+*   Supply agreements with local businesses.
+*   First value-added products ready for sale.
 
-#### Phase 4: Establishment and Care ([Your Timeframe, e.g., Months 6-12])
+#### Phase 3: Long-Term Investments & Scaling (Year 2+)
+
+**Focus**: Scale successful operations and invest in long-term, high-value crops.
 
 **Key Activities:**
 
-- [ ] Daily/weekly monitoring of plant health
-- [ ] Adjust irrigation based on weather and plant needs
-- [ ] Implement pest and disease management as needed
-- [ ] Conduct regular weeding and maintenance
-- [ ] Apply fertilizers according to schedule
-- [ ] Training and pruning as required for specific crops
-- [ ] Continue market development activities
-- [ ] Refine production practices based on observations
+*   **Scale Production**: Expand production of the most profitable crops from Phase 2.
+*   **Tree Crops**: Evaluate and potentially invest in long-term crops like avocados or citrus for future export potential.
+*   **Infrastructure**: Invest in processing facilities and potentially a controlled environment for year-round mushroom or herb production.
+*   **Synergies**: Integrate crop production with existing pig farming through composting and waste-cycling.
 
 **Outputs:**
 
-- Healthy, established crops
-- Refined growing protocols
-- Market relationships developing
-
-#### Phase 5: First Harvest ([Your Timeframe, e.g., Months 8-15, varies by crop])
-
-**Key Activities:**
-
-- [ ] Monitor crops for harvest indicators
-- [ ] Implement harvest protocols
-- [ ] Post-harvest handling (cleaning, processing, storage)
-- [ ] Quality grading and packaging
-- [ ] Initial sales and customer feedback
-- [ ] Record yields and financial data
-- [ ] Assess first season performance
-- [ ] Adjust plans based on results
-
-**Outputs:**
-
-- First harvest completed
-- Initial revenue generated
-- Lessons learned documented
-- Adjustments planned
-
-#### Phase 6: Optimization and Scaling ([Your Timeframe, e.g., Year 2-3+])
-
-**Key Activities:**
-
-- [ ] Implement improvements based on Year 1 experience
-- [ ] Optimize irrigation and fertility programs
-- [ ] Refine pest/disease management
-- [ ] Expand production of successful crops
-- [ ] Phase out underperforming crops if needed
-- [ ] Develop value-added products
-- [ ] Strengthen market position
-- [ ] Consider expansion or new crops
-- [ ] Build reserves and reinvest profits
-
-**Outputs:**
-
-- Efficient, optimized operations
-- Strong market position
-- Financial sustainability
-- Growth opportunities identified
+*   Increased production capacity and market share.
+*   Long-term assets in the form of tree crops.
+*   A fully integrated and diversified farming operation.
 
 ### 6.3 Critical Path Activities
 
