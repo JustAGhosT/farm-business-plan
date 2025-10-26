@@ -226,8 +226,16 @@ export default function RevenueCalculator() {
                 <button
                   onClick={() => removeCrop(crop.id)}
                   className="text-red-600 hover:text-red-700 transition-colors"
+                  aria-label={`Remove ${crop.name || 'crop'} ${index + 1}`}
+                  title={`Remove ${crop.name || 'crop'} ${index + 1}`}
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -307,31 +315,49 @@ export default function RevenueCalculator() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  htmlFor={`growth-rate-${crop.id}`}
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Annual Growth (%)
                 </label>
                 <input
+                  id={`growth-rate-${crop.id}`}
                   type="number"
                   value={crop.growthRate}
                   onChange={(e) => updateCrop(crop.id, 'growthRate', e.target.value)}
                   step="0.1"
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
+                  aria-describedby={`growth-rate-help-${crop.id}`}
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Production increase</p>
+                <p
+                  id={`growth-rate-help-${crop.id}`}
+                  className="text-xs text-gray-500 dark:text-gray-400 mt-1"
+                >
+                  Production increase
+                </p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  htmlFor={`price-inflation-${crop.id}`}
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Price Inflation (%)
                 </label>
                 <input
+                  id={`price-inflation-${crop.id}`}
                   type="number"
                   value={crop.priceInflation}
                   onChange={(e) => updateCrop(crop.id, 'priceInflation', e.target.value)}
                   step="0.1"
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-500"
+                  aria-describedby={`price-inflation-help-${crop.id}`}
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                <p
+                  id={`price-inflation-help-${crop.id}`}
+                  className="text-xs text-gray-500 dark:text-gray-400 mt-1"
+                >
                   Annual price increase
                 </p>
               </div>
