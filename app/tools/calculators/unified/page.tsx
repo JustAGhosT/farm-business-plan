@@ -13,7 +13,7 @@ interface CalculatorConfig {
   icon: string
   fields: CalculatorField[]
   calculate: (data: any) => any
-  resultsComponent: (results: any) => JSX.Element
+  resultsComponent: (results: any) => React.JSX.Element
 }
 
 interface CalculatorField {
@@ -332,7 +332,11 @@ export default function UnifiedCalculator() {
   }
 
   return (
-    <WizardWrapper>
+    <WizardWrapper
+      title="Unified Calculator"
+      description="Calculate ROI, break-even, investment, revenue, operating costs, and loan payments"
+      step={1}
+    >
       <div className="max-w-4xl mx-auto">
         {/* Calculator Selection */}
         <div className="mb-8">
