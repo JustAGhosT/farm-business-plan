@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
-import { query } from '@/lib/db'
-import bcrypt from 'bcryptjs'
+import { userRepository } from '@/lib/repositories/userRepository'
 import { z } from 'zod'
 
 // Force dynamic rendering
@@ -36,9 +35,9 @@ export async function POST(request: Request) {
     const { name, email, password } = validation.data
 
     // Check if user already exists
-    const existingUser = await query('SELECT id FROM users WHERE email = $1', [email])
+    const existingUser = await userRepository.findByEmail(email)
 
-    if (existingUser.rows.length > 0) {
+    if (existingUser) {
       return NextResponse.json(
         {
           success: false,
@@ -48,18 +47,8 @@ export async function POST(request: Request) {
       )
     }
 
-    // Hash password
-    const passwordHash = await bcrypt.hash(password, 12)
-
     // Create user
-    const result = await query(
-      `INSERT INTO users (name, email, password_hash, role, auth_provider)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING id, name, email, role, created_at`,
-      [name, email, passwordHash, 'user', 'credentials']
-    )
-
-    const user = result.rows[0]
+    const user = await userRepository.create({ name, email, password })
 
     return NextResponse.json(
       {

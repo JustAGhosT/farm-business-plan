@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import { query } from '@/lib/db'
+import { cropRepository } from '@/lib/repositories/cropRepository'
+import { taskRepository } from '@/lib/repositories/taskRepository'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -21,55 +22,35 @@ export async function POST(request: Request) {
     }
 
     // Get crop plans to generate tasks for
-    let cropPlansQuery = `
-      SELECT cp.*, fp.location, fp.province
-      FROM crop_plans cp
-      JOIN farm_plans fp ON cp.farm_plan_id = fp.id
-      WHERE cp.farm_plan_id = $1
-    `
-    const queryParams: any[] = [farm_plan_id]
+    const cropPlans = await cropRepository.getAllPlans(farm_plan_id)
 
-    if (crop_plan_id) {
-      cropPlansQuery += ' AND cp.id = $2'
-      queryParams.push(crop_plan_id)
-    }
-
-    const cropPlansResult = await query(cropPlansQuery, queryParams)
-
-    if (cropPlansResult.rows.length === 0) {
+    if (cropPlans.length === 0) {
       return NextResponse.json({ success: false, error: 'No crop plans found' }, { status: 404 })
     }
 
     const generatedTasks: any[] = []
 
     // Generate tasks for each crop plan
-    for (const cropPlan of cropPlansResult.rows) {
+    for (const cropPlan of cropPlans) {
       const plantingDateObj = planting_date ? new Date(planting_date) : new Date()
       const tasks = generateCropTasks(cropPlan, plantingDateObj)
 
       // Insert tasks into database
       for (const task of tasks) {
-        const insertQuery = `
-          INSERT INTO tasks (
-            farm_plan_id, crop_plan_id, title, description,
-            status, priority, category, due_date
-          )
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-          RETURNING *
-        `
-        const insertParams = [
-          farm_plan_id,
-          cropPlan.id,
-          task.title,
-          task.description,
-          'pending',
-          task.priority,
-          task.category,
-          task.due_date,
-        ]
-
-        const result = await query(insertQuery, insertParams)
-        generatedTasks.push(result.rows[0])
+        const newTask = await taskRepository.create(
+          {
+            farm_plan_id,
+            crop_plan_id: cropPlan.id,
+            title: task.title,
+            description: task.description,
+            status: 'pending',
+            priority: task.priority,
+            category: task.category,
+            due_date: task.due_date,
+          },
+          null
+        )
+        generatedTasks.push(newTask)
       }
     }
 
