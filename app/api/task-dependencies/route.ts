@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { query } from '@/lib/db'
+import { taskRepository } from '@/lib/repositories/taskRepository'
+import { systemRepository } from '@/lib/repositories/systemRepository'
 
 // GET /api/task-dependencies - Get dependencies for tasks
 export async function GET(request: Request) {
@@ -17,32 +18,12 @@ export async function GET(request: Request) {
 
     if (taskId) {
       // Get dependencies for a specific task
-      const result = await query(
-        `SELECT td.*, t1.title as task_title, t2.title as depends_on_title,
-                t1.status as task_status, t2.status as depends_on_status,
-                t1.due_date as task_due_date, t2.due_date as depends_on_due_date
-         FROM task_dependencies td
-         JOIN tasks t1 ON t1.id = td.task_id
-         JOIN tasks t2 ON t2.id = td.depends_on_task_id
-         WHERE td.task_id = $1
-         ORDER BY td.created_at DESC`,
-        [taskId]
-      )
-      return NextResponse.json({ dependencies: result.rows })
+      const dependencies = await taskRepository.getDependenciesByTaskId(taskId)
+      return NextResponse.json({ dependencies })
     } else if (farmPlanId) {
       // Get all dependencies for tasks in a farm plan
-      const result = await query(
-        `SELECT td.*, t1.title as task_title, t2.title as depends_on_title,
-                t1.status as task_status, t2.status as depends_on_status,
-                t1.due_date as task_due_date, t2.due_date as depends_on_due_date
-         FROM task_dependencies td
-         JOIN tasks t1 ON t1.id = td.task_id
-         JOIN tasks t2 ON t2.id = td.depends_on_task_id
-         WHERE t1.farm_plan_id = $1
-         ORDER BY t1.due_date, t1.created_at`,
-        [farmPlanId]
-      )
-      return NextResponse.json({ dependencies: result.rows })
+      const dependencies = await taskRepository.getDependenciesByFarmPlanId(farmPlanId)
+      return NextResponse.json({ dependencies })
     } else {
       return NextResponse.json({ error: 'task_id or farm_plan_id required' }, { status: 400 })
     }
@@ -71,37 +52,30 @@ export async function POST(request: Request) {
     }
 
     // Check for circular dependency
-    const circularCheck = await query('SELECT check_circular_dependency($1, $2) as is_circular', [
-      task_id,
-      depends_on_task_id,
-    ])
+    const isCircular = await taskRepository.checkCircularDependency(task_id, depends_on_task_id)
 
-    if (circularCheck.rows[0].is_circular) {
+    if (isCircular) {
       return NextResponse.json({ error: 'Circular dependency detected' }, { status: 400 })
     }
 
     // Create dependency
-    const result = await query(
-      `INSERT INTO task_dependencies (task_id, depends_on_task_id, dependency_type, lag_days)
-       VALUES ($1, $2, $3, $4)
-       RETURNING *`,
-      [task_id, depends_on_task_id, dependency_type, lag_days]
-    )
+    const dependency = await taskRepository.createDependency({
+      task_id,
+      depends_on_task_id,
+      dependency_type,
+      lag_days,
+    })
 
     // Log the change
-    await query(
-      `INSERT INTO change_log (target_type, target_id, action, user_id, description)
-       VALUES ($1, $2, $3, $4, $5)`,
-      [
-        'task',
-        task_id,
-        'add_dependency',
-        session.user.id,
-        `Added ${dependency_type} dependency on task ${depends_on_task_id}`,
-      ]
-    )
+    await systemRepository.logChange({
+      target_type: 'task',
+      target_id: task_id,
+      action: 'add_dependency',
+      user_id: session.user.id,
+      description: `Added ${dependency_type} dependency on task ${depends_on_task_id}`,
+    })
 
-    return NextResponse.json({ dependency: result.rows[0] }, { status: 201 })
+    return NextResponse.json({ dependency }, { status: 201 })
   } catch (error: any) {
     console.error('Create task dependency error:', error)
     if (error.code === '23505') {
@@ -128,29 +102,23 @@ export async function DELETE(request: Request) {
     }
 
     // Get dependency details before deleting
-    const depResult = await query('SELECT * FROM task_dependencies WHERE id = $1', [dependencyId])
+    const dependency = await taskRepository.getDependencyById(dependencyId)
 
-    if (depResult.rows.length === 0) {
+    if (!dependency) {
       return NextResponse.json({ error: 'Dependency not found' }, { status: 404 })
     }
 
-    const dependency = depResult.rows[0]
-
     // Delete dependency
-    await query('DELETE FROM task_dependencies WHERE id = $1', [dependencyId])
+    await taskRepository.deleteDependency(dependencyId)
 
     // Log the change
-    await query(
-      `INSERT INTO change_log (target_type, target_id, action, user_id, description)
-       VALUES ($1, $2, $3, $4, $5)`,
-      [
-        'task',
-        dependency.task_id,
-        'remove_dependency',
-        session.user.id,
-        `Removed dependency on task ${dependency.depends_on_task_id}`,
-      ]
-    )
+    await systemRepository.logChange({
+      target_type: 'task',
+      target_id: dependency.task_id,
+      action: 'remove_dependency',
+      user_id: session.user.id,
+      description: `Removed dependency on task ${dependency.depends_on_task_id}`,
+    })
 
     return NextResponse.json({ message: 'Dependency removed' })
   } catch (error) {

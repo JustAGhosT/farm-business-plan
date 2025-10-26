@@ -1,4 +1,4 @@
-import { query } from '@/lib/db'
+import { locationRepository } from '@/lib/repositories/locationRepository'
 import { getServerSession } from 'next-auth'
 import { NextResponse } from 'next/server'
 
@@ -66,16 +66,8 @@ export async function GET(request: Request) {
     const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '100')))
     const offset = (page - 1) * limit
 
-    // Select only required columns for provinces
-    const { rows: provinces } = await query<Province>(
-      'SELECT id, name FROM provinces ORDER BY name LIMIT $1 OFFSET $2',
-      [limit, offset]
-    )
-
-    // Select only required columns for towns
-    const { rows: towns } = await query<Town>(
-      'SELECT id, name, province_id FROM towns ORDER BY name'
-    )
+    const provinces = await locationRepository.getProvinces(limit, offset)
+    const towns = await locationRepository.getTowns()
 
     // Group towns by province_id using Map for O(n+m) complexity
     const townsByProvince = new Map<string, Town[]>()
