@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
+import { useState } from 'react'
 
 interface Task {
   id: number
@@ -225,10 +225,10 @@ export default function DashboardPage() {
               </h2>
               <div className="space-y-3">
                 <Link
-                  href="/tools/plan-generator"
+                  href="/tools/ai-wizard"
                   className="block w-full px-5 py-3 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/50 transition-all duration-300 text-center font-bold shadow-sm hover:shadow-md transform hover:scale-105"
                 >
-                  📝 Create New Plan
+                  🤖 AI Farm Planning
                 </Link>
                 <Link
                   href="/tools/calculators"

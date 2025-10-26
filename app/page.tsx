@@ -1,8 +1,8 @@
 'use client'
 
-import Link from 'next/link'
+import { Badge, Card, CardDescription, CardTitle, Container, Grid, Section } from '@/components/ui'
 import { useSession } from 'next-auth/react'
-import { Container, Section, Badge, Grid, Card, CardTitle, CardDescription } from '@/components/ui'
+import Link from 'next/link'
 
 export default function Home() {
   const { data: session, status } = useSession()
@@ -274,22 +274,8 @@ export default function Home() {
           </h2>
           <Grid cols={{ md: 2, lg: 4 }}>
             <Card
-              href={session ? '/tools/ai-wizard' : '/auth/signin?callbackUrl=/tools/ai-wizard'}
-              variant="bordered"
-              className="relative"
-            >
-              {!session && (
-                <Badge variant="locked" className="absolute top-2 right-2">
-                  🔒
-                </Badge>
-              )}
-              <CardTitle>🤖 AI Wizard</CardTitle>
-              <CardDescription>Personalized farm planning</CardDescription>
-            </Card>
-
-            <Card
               href={
-                session ? '/tools/plan-generator' : '/auth/signin?callbackUrl=/tools/plan-generator'
+                session ? '/tools/ai-wizard' : '/auth/signin?callbackUrl=/tools/ai-wizard'
               }
               variant="bordered"
               className="relative"
@@ -299,8 +285,8 @@ export default function Home() {
                   🔒
                 </Badge>
               )}
-              <CardTitle>🌱 Plan Generator</CardTitle>
-              <CardDescription>Create customized business plans</CardDescription>
+              <CardTitle>🤖 AI Farm Planning</CardTitle>
+              <CardDescription>Complete farm planning with AI recommendations</CardDescription>
             </Card>
 
             <Card href="/tools/calculators" variant="bordered" className="relative">
