@@ -269,8 +269,16 @@ export default function InvestmentCalculator() {
                 <button
                   onClick={() => removeCrop(crop.id)}
                   className="text-red-600 hover:text-red-700 transition-colors"
+                  aria-label={`Remove ${crop.name || 'crop'} ${index + 1}`}
+                  title={`Remove ${crop.name || 'crop'} ${index + 1}`}
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -558,6 +566,7 @@ export default function InvestmentCalculator() {
                             <span className="font-medium">{percentage.toFixed(1)}%</span>
                           </div>
                           <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                            {/* eslint-disable-next-line react/forbid-dom-props */}
                             <div
                               className="bg-primary-600 h-2 rounded-full"
                               style={{ width: `${Math.min(percentage, 100)}%` }}

@@ -263,7 +263,13 @@ export default function BreakEvenCalculator() {
                   aria-label={`Remove ${crop.name || 'crop'} ${index + 1}`}
                   title={`Remove ${crop.name || 'crop'} ${index + 1}`}
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
