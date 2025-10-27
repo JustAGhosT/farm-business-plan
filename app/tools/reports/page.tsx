@@ -14,6 +14,11 @@ export default function ReportsPage() {
   const [dateRange, setDateRange] = useState('30')
   const [filter, setFilter] = useState('')
   const [selectedResults, setSelectedResults] = useState<any[]>([])
+  const [notification, setNotification] = useState<{
+    type: 'success' | 'error'
+    message: string
+  } | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   const fetchResults = useCallback(async () => {
     try {
@@ -38,15 +43,35 @@ export default function ReportsPage() {
   }, [filter, fetchResults, activeTab])
 
   const handleDelete = async (id: string) => {
+    setDeletingId(id)
+    setNotification(null)
+
     try {
       const response = await fetch(`/api/calculator-results/${id}`, {
         method: 'DELETE',
       })
-      if (!response.ok) throw new Error('Failed to delete result')
+
+      if (!response.ok) {
+        throw new Error('Failed to delete result')
+      }
+
       setResults(results.filter((r) => r.id !== id))
       setSelectedResults(selectedResults.filter((r) => r.id !== id))
+      setNotification({ type: 'success', message: 'Calculation deleted successfully' })
+
+      // Clear notification after 3 seconds
+      setTimeout(() => setNotification(null), 3000)
     } catch (error) {
       console.error('Error deleting result:', error)
+      setNotification({
+        type: 'error',
+        message: error instanceof Error ? error.message : 'Failed to delete calculation',
+      })
+
+      // Clear error notification after 5 seconds
+      setTimeout(() => setNotification(null), 5000)
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -142,9 +167,27 @@ export default function ReportsPage() {
         <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
           <ReportsHeader exportToPDF={exportToPDF} exportToCSV={exportToCSV} />
 
+          {/* Notification */}
+          {notification && (
+            <div
+              className={`mb-4 p-4 rounded-lg border ${
+                notification.type === 'success'
+                  ? 'bg-green-50 border-green-200 text-green-800'
+                  : 'bg-red-50 border-red-200 text-red-800'
+              }`}
+              role="alert"
+              aria-live="polite"
+            >
+              <div className="flex items-center">
+                <span className="mr-2">{notification.type === 'success' ? '✅' : '❌'}</span>
+                {notification.message}
+              </div>
+            </div>
+          )}
+
           {/* Tab Navigation */}
           <div className="flex border-b border-gray-200 mb-6" role="tablist">
-              <button
+            <button
               onClick={() => setActiveTab('reports')}
               role="tab"
               aria-selected={activeTab === 'reports'}
@@ -157,8 +200,8 @@ export default function ReportsPage() {
               }`}
             >
               📊 Reports & Analytics
-              </button>
-              <button
+            </button>
+            <button
               onClick={() => setActiveTab('history')}
               role="tab"
               aria-selected={activeTab === 'history'}
@@ -198,6 +241,7 @@ export default function ReportsPage() {
                 selectedResults={selectedResults}
                 setSelectedResults={setSelectedResults}
                 handleDelete={handleDelete}
+                deletingId={deletingId}
                 exportToPDF={exportToPDF}
               />
             </div>

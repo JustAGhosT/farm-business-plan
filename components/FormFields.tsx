@@ -9,7 +9,7 @@ export interface BaseFormFieldProps {
   name: string
   value: string
   onChange: (value: string) => void
-  onBlur?: (name: string, value: string) => void
+  onBlur?: (name: string, value: string | string[]) => void
   error?: string
   required?: boolean
   placeholder?: string
@@ -115,16 +115,16 @@ export function FormNumber({
   className = '',
 }: FormNumberProps) {
   const handleChange = (value: string) => {
-    let newValue = value
+    onChange(value)
+  }
 
-    if (precision !== undefined && newValue) {
-      const num = parseFloat(newValue)
+  const handleBlur = (value: string) => {
+    if (precision !== undefined && value) {
+      const num = parseFloat(value)
       if (!isNaN(num)) {
-        newValue = num.toFixed(precision)
+        onChange(num.toFixed(precision))
       }
     }
-
-    onChange(newValue)
   }
 
   return (
@@ -134,7 +134,10 @@ export function FormNumber({
       type="number"
       value={value}
       onChange={handleChange}
-      onBlur={onBlur}
+      onBlur={(name, value) => {
+        handleBlur(value as string)
+        onBlur?.(name, value)
+      }}
       error={error}
       required={required}
       placeholder={placeholder}
@@ -263,7 +266,12 @@ export function FormSelect({
         name={name}
         value={multiple ? (Array.isArray(value) ? value : []) : value || ''}
         onChange={handleChange}
-        onBlur={(e) => onBlur?.(name, e.target.value)}
+        onBlur={(e) => {
+          const values = multiple
+            ? Array.from(e.target.selectedOptions).map((option) => option.value)
+            : e.target.value
+          onBlur?.(name, values)
+        }}
         multiple={multiple}
         disabled={disabled}
         className={selectClasses}

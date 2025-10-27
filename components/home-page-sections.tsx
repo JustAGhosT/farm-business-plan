@@ -61,12 +61,16 @@ export const ToolCard = ({ tool, session }: ToolCardProps) => {
   return (
     <Card href={href} variant="bordered" className="relative">
       {tool.requiresAuth && !session && (
-        <Badge variant="locked" className="absolute top-2 right-2">
-          🔒
+        <Badge
+          variant="locked"
+          className="absolute top-2 right-2"
+          aria-label="Requires authentication"
+        >
+          <span aria-hidden="true">🔒</span>
         </Badge>
       )}
       {!tool.requiresAuth && (
-        <Badge variant="public" className="absolute top-2 right-2">
+        <Badge variant="public" className="absolute top-2 right-2" aria-label="Publicly available">
           Public
         </Badge>
       )}

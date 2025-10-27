@@ -35,6 +35,47 @@ interface Crop {
   [key: string]: any
 }
 
+// Formatting helper functions
+const formatNumber = (
+  value: number,
+  decimals: number = 2,
+  showThousands: boolean = true
+): string => {
+  if (isNaN(value) || !isFinite(value)) return 'N/A'
+
+  if (showThousands) {
+    return value.toLocaleString('en-US', {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    })
+  } else {
+    return value.toFixed(decimals)
+  }
+}
+
+// Format percentage values
+const formatPercentage = (value: number): string => {
+  if (isNaN(value) || !isFinite(value)) return 'N/A'
+  return `${value.toFixed(2)}%`
+}
+
+// Format payback period with special handling
+const formatPaybackPeriod = (
+  paybackPeriod: number,
+  annualProfit: number,
+  initialInvestment: number
+): string => {
+  if (
+    isNaN(paybackPeriod) ||
+    !isFinite(paybackPeriod) ||
+    annualProfit <= 0 ||
+    initialInvestment <= 0
+  ) {
+    return 'N/A'
+  }
+  return `${paybackPeriod.toFixed(1)} years`
+}
+
 // Calculator configurations
 const CALCULATOR_CONFIGS: CalculatorConfig[] = [
   {
@@ -283,34 +324,6 @@ export default function UnifiedCalculator() {
   const [saveError, setSaveError] = useState('')
   const [isSaving, setIsSaving] = useState(false)
 
-  // Formatting helper for numeric values
-  const formatNumber = (value: number, decimals: number = 2, showThousands: boolean = true): string => {
-    if (isNaN(value) || !isFinite(value)) return 'N/A'
-    
-    if (showThousands) {
-      return value.toLocaleString('en-US', {
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals,
-      })
-    } else {
-      return value.toFixed(decimals)
-    }
-  }
-
-  // Format percentage values
-  const formatPercentage = (value: number): string => {
-    if (isNaN(value) || !isFinite(value)) return 'N/A'
-    return `${value.toFixed(2)}%`
-  }
-
-  // Format payback period with special handling
-  const formatPaybackPeriod = (paybackPeriod: number, annualProfit: number, initialInvestment: number): string => {
-    if (isNaN(paybackPeriod) || !isFinite(paybackPeriod) || annualProfit <= 0 || initialInvestment <= 0) {
-      return 'N/A'
-    }
-    return `${paybackPeriod.toFixed(1)} years`
-  }
-
   // Handle URL parameter for pre-selecting calculator
   useEffect(() => {
     const calculatorParam = searchParams.get('calculator')
@@ -415,7 +428,10 @@ export default function UnifiedCalculator() {
                 const inputId = `field-${field.id}`
                 return (
                   <div key={field.id} className={field.type === 'textarea' ? 'md:col-span-2' : ''}>
-                    <label htmlFor={inputId} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label
+                      htmlFor={inputId}
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    >
                       {field.label} {field.required && <span className="text-red-500">*</span>}
                     </label>
                     {field.type === 'textarea' ? (

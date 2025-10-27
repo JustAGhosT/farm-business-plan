@@ -19,10 +19,18 @@ export default function ReportsHeader({ exportToPDF, exportToCSV }: ReportsHeade
       </div>
       <div className="flex gap-3">
         <button
+          type="button"
           onClick={exportToPDF}
           className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -33,10 +41,18 @@ export default function ReportsHeader({ exportToPDF, exportToCSV }: ReportsHeade
           PDF
         </button>
         <button
+          type="button"
           onClick={exportToCSV}
           className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"

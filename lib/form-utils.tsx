@@ -125,7 +125,7 @@ export const renderFormField = (
           className={inputClasses}
           placeholder={field.placeholder}
           rows={3}
-          aria-invalid={Boolean(error)}
+          aria-invalid={error ? 'true' : 'false'}
         />
       )
 
@@ -135,7 +135,8 @@ export const renderFormField = (
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className={inputClasses}
-          aria-invalid={Boolean(error)}
+          aria-label={field.label}
+          aria-invalid={error ? 'true' : 'false'}
         >
           <option value="">Select {field.label}</option>
           {field.options?.map((option) => (
@@ -157,7 +158,7 @@ export const renderFormField = (
           min={field.min}
           max={field.max}
           step={field.step}
-          aria-invalid={Boolean(error)}
+          aria-invalid={error ? 'true' : 'false'}
         />
       )
   }

@@ -19,6 +19,7 @@ interface HistoryTabProps {
   selectedResults: any[]
   setSelectedResults: (results: any[]) => void
   handleDelete: (id: string) => void
+  deletingId: string | null
   exportToPDF: (selectedResults?: any[]) => void
 }
 
@@ -29,6 +30,7 @@ export default function HistoryTab({
   selectedResults,
   setSelectedResults,
   handleDelete,
+  deletingId,
   exportToPDF,
 }: HistoryTabProps) {
   const formatCurrency = (amount: number) => {
@@ -135,7 +137,7 @@ export default function HistoryTab({
                   />
                   <div>
                     <h4 className="font-medium text-gray-900 capitalize">
-                      {result.calculator_type.replace('-', ' ')} Calculator
+                      {result.calculator_type.replaceAll('-', ' ')} Calculator
                     </h4>
                     <p className="text-sm text-gray-600">
                       Created: {new Date(result.created_at).toLocaleDateString()}
@@ -178,9 +180,14 @@ export default function HistoryTab({
                 </div>
                 <button
                   onClick={() => handleDelete(result.id)}
-                  className="text-red-600 hover:text-red-800 transition-colors"
+                  disabled={deletingId === result.id}
+                  className={`transition-colors ${
+                    deletingId === result.id
+                      ? 'text-gray-400 cursor-not-allowed'
+                      : 'text-red-600 hover:text-red-800'
+                  }`}
                 >
-                  Delete
+                  {deletingId === result.id ? 'Deleting...' : 'Delete'}
                 </button>
               </div>
             </div>
