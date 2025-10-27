@@ -143,7 +143,7 @@ export default function HistoryTab({
                       Created: {new Date(result.created_at).toLocaleDateString()}
                     </p>
                     <div className="mt-2 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                      {result.roi && (
+                      {result.roi != null && (
                         <div>
                           <span className="text-gray-500">ROI:</span>
                           <span className="ml-1 font-medium text-green-600">
@@ -151,7 +151,7 @@ export default function HistoryTab({
                           </span>
                         </div>
                       )}
-                      {result.initial_investment && (
+                      {result.initial_investment != null && (
                         <div>
                           <span className="text-gray-500">Investment:</span>
                           <span className="ml-1 font-medium">
@@ -159,7 +159,7 @@ export default function HistoryTab({
                           </span>
                         </div>
                       )}
-                      {result.total_revenue && (
+                      {result.total_revenue != null && (
                         <div>
                           <span className="text-gray-500">Revenue:</span>
                           <span className="ml-1 font-medium">
@@ -167,7 +167,7 @@ export default function HistoryTab({
                           </span>
                         </div>
                       )}
-                      {result.net_profit && (
+                      {result.net_profit != null && (
                         <div>
                           <span className="text-gray-500">Net Profit:</span>
                           <span className="ml-1 font-medium text-green-600">
