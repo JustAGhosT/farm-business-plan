@@ -110,9 +110,7 @@ export default function AIWizardPage() {
     return emailRegex.test(email)
   }
 
-  // Aria-invalid values
-  const ARIA_INVALID_TRUE = 'true' as const
-  const ARIA_INVALID_FALSE = 'false' as const
+
 
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -751,6 +749,7 @@ export default function AIWizardPage() {
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Farm Name *
                     </label>
+                    {/* eslint-disable-next-line react/jsx-props-no-spreading */}
                     <input
                       type="text"
                       value={data.farmName}
@@ -760,7 +759,7 @@ export default function AIWizardPage() {
                       } bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
                       placeholder="e.g., Green Valley Farm"
                       aria-required="true"
-                      aria-invalid={errors.farmName ? ARIA_INVALID_TRUE : ARIA_INVALID_FALSE}
+                      aria-invalid={!!errors.farmName}
                       aria-describedby={errors.farmName ? 'farmName-error' : undefined}
                     />
                     {errors.farmName && (
@@ -782,7 +781,7 @@ export default function AIWizardPage() {
                       } bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
                       placeholder="Your name"
                       aria-required="true"
-                      aria-invalid={errors.ownerName ? ARIA_INVALID_TRUE : ARIA_INVALID_FALSE}
+                      aria-invalid={!!errors.ownerName}
                       aria-describedby={errors.ownerName ? 'ownerName-error' : undefined}
                     />
                     {errors.ownerName && (
