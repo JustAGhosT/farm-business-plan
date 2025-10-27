@@ -2,19 +2,61 @@
 
 import { useFarmPlans, useFinancialData, useTasks } from '@/lib/hooks'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function DashboardPage() {
   const [selectedFarmId, setSelectedFarmId] = useState<string | null>(null)
+  const [notification, setNotification] = useState<{
+    type: 'success' | 'error' | 'info'
+    message: string
+  } | null>(null)
 
   // Fetch data from database
-  const { farmPlans, loading: loadingFarms } = useFarmPlans()
-  const { tasks, loading: loadingTasks } = useTasks(
-    selectedFarmId ? { farm_plan_id: selectedFarmId } : undefined
-  )
-  const { financialData, loading: loadingFinancials } = useFinancialData(
-    selectedFarmId ? { farm_plan_id: selectedFarmId } : undefined
-  )
+  const {
+    farmPlans,
+    loading: loadingFarms,
+    error: errorFarms,
+    refetch: refetchFarms,
+  } = useFarmPlans()
+  const {
+    tasks,
+    loading: loadingTasks,
+    error: errorTasks,
+    refetch: refetchTasks,
+  } = useTasks(selectedFarmId ? { farm_plan_id: selectedFarmId } : undefined)
+  const {
+    financialData,
+    loading: loadingFinancials,
+    error: errorFinancials,
+    refetch: refetchFinancials,
+  } = useFinancialData(selectedFarmId ? { farm_plan_id: selectedFarmId } : undefined)
+
+  // Auto-dismiss notifications
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => setNotification(null), 5000)
+      return () => clearTimeout(timer)
+    }
+  }, [notification])
+
+  // Show error notifications
+  useEffect(() => {
+    if (errorFarms) {
+      setNotification({ type: 'error', message: 'Failed to load farms' })
+    }
+    if (errorTasks) {
+      setNotification({ type: 'error', message: 'Failed to load tasks' })
+    }
+    if (errorFinancials) {
+      setNotification({ type: 'error', message: 'Failed to load financial data' })
+    }
+  }, [errorFarms, errorTasks, errorFinancials])
+
+  const handleRetry = async () => {
+    setNotification({ type: 'info', message: 'Refreshing data...' })
+    await Promise.all([refetchFarms(), refetchTasks(), refetchFinancials()])
+    setNotification({ type: 'success', message: 'Data refreshed!' })
+  }
 
   // Calculate stats from real data
   const activeTasks = tasks.filter((t) => t.status !== 'completed')
@@ -87,6 +129,88 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white dark:from-gray-800 dark:to-gray-900">
       <div className="container mx-auto px-4 py-8">
+        {/* Notification Banner */}
+        {notification && (
+          <div
+            className={`mb-6 rounded-lg p-4 flex items-center justify-between shadow-lg ${
+              notification.type === 'error'
+                ? 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'
+                : notification.type === 'success'
+                  ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
+                  : 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800'
+            }`}
+          >
+            <div className="flex items-center">
+              {notification.type === 'error' && (
+                <svg
+                  className="w-5 h-5 text-red-600 dark:text-red-400 mr-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              )}
+              {notification.type === 'success' && (
+                <svg
+                  className="w-5 h-5 text-green-600 dark:text-green-400 mr-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              )}
+              {notification.type === 'info' && (
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 dark:border-blue-400 mr-3"></div>
+              )}
+              <p
+                className={`font-medium ${
+                  notification.type === 'error'
+                    ? 'text-red-800 dark:text-red-300'
+                    : notification.type === 'success'
+                      ? 'text-green-800 dark:text-green-300'
+                      : 'text-blue-800 dark:text-blue-300'
+                }`}
+              >
+                {notification.message}
+              </p>
+            </div>
+            {notification.type === 'error' && (
+              <button
+                onClick={handleRetry}
+                className="ml-4 px-3 py-1 text-sm font-medium text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-md transition-colors"
+              >
+                Retry
+              </button>
+            )}
+            <button
+              onClick={() => setNotification(null)}
+              className="ml-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              aria-label="Dismiss notification"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        )}
+
         <Link
           href="/"
           className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 mb-8 transition-all font-medium group"
@@ -170,8 +294,21 @@ export default function DashboardPage() {
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-8 border border-gray-100 dark:border-gray-700">
               <div className="flex justify-between items-center mb-8">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Task List</h2>
-                <button className="px-5 py-2.5 bg-primary-600 dark:bg-primary-700 text-white rounded-lg hover:bg-primary-700 dark:hover:bg-primary-600 transition-all duration-300 text-sm font-medium shadow-md hover:shadow-lg transform hover:scale-105">
-                  + Add Task
+                <button
+                  onClick={() =>
+                    setNotification({ type: 'info', message: 'Task creation coming soon!' })
+                  }
+                  className="px-5 py-2.5 bg-primary-600 dark:bg-primary-700 text-white rounded-lg hover:bg-primary-700 dark:hover:bg-primary-600 transition-all duration-300 text-sm font-medium shadow-md hover:shadow-lg transform hover:scale-105 flex items-center"
+                  aria-label="Add new task"
+                >
+                  {loadingTasks ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Adding...
+                    </>
+                  ) : (
+                    <>+ Add Task</>
+                  )}
                 </button>
               </div>
 
@@ -182,12 +319,37 @@ export default function DashboardPage() {
                     <p className="text-gray-600 dark:text-gray-400 mt-4">Loading tasks...</p>
                   </div>
                 ) : tasks.length === 0 ? (
-                  <div className="text-center py-8">
-                    <p className="text-gray-600 dark:text-gray-400">
+                  <div className="text-center py-12">
+                    <div className="text-6xl mb-4">📋</div>
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                      {selectedFarmId ? 'No tasks yet' : 'No tasks to display'}
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
                       {selectedFarmId
-                        ? 'No tasks found for this farm. Create your first task!'
-                        : 'Select a farm to view tasks'}
+                        ? 'Get started by creating your first task. Track planting, maintenance, and other farm activities to stay organized.'
+                        : 'Select a farm from the dropdown above to view its tasks, or create a new farm plan using the AI Wizard.'}
                     </p>
+                    {selectedFarmId && (
+                      <Link
+                        href="/tools/dashboard"
+                        className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                      >
+                        <svg
+                          className="w-5 h-5 mr-2"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 4v16m8-8H4"
+                          />
+                        </svg>
+                        Create Task
+                      </Link>
+                    )}
                   </div>
                 ) : (
                   tasks.map((task) => (

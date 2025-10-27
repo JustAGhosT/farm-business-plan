@@ -80,125 +80,125 @@ export default function TemplatesPage() {
           </div>
         </div>
 
-                  {/* Templates Grid */}
-          {loading ? (
-            <div className="text-center py-16">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary-600 mx-auto"></div>
-              <p className="text-gray-600 mt-4">Loading crop templates...</p>
-            </div>
-          ) : cropTemplates.length === 0 ? (
-            <div className="text-center py-16">
-              <div className="text-6xl mb-4">🌱</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No templates found</h3>
-              <p className="text-gray-600">
-                {selectedCategory !== 'All'
-                  ? `No ${selectedCategory.toLowerCase()} templates available.`
-                  : 'No crop templates available in the database.'}
-              </p>
-            </div>
-          ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {cropTemplates.map((template) => (
-            <div
-              key={template.id}
-              className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden"
-            >
-              <div className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center">
-                    <span className="text-4xl mr-3">{getIcon(template)}</span>
-                    <div>
-                      <h3 className="text-xl font-semibold text-gray-900">{template.name}</h3>
-                      <span className="text-sm text-gray-500">{template.category}</span>
+        {/* Templates Grid */}
+        {loading ? (
+          <div className="text-center py-16">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary-600 mx-auto"></div>
+            <p className="text-gray-600 mt-4">Loading crop templates...</p>
+          </div>
+        ) : cropTemplates.length === 0 ? (
+          <div className="text-center py-16">
+            <div className="text-6xl mb-4">🌱</div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No templates found</h3>
+            <p className="text-gray-600">
+              {selectedCategory !== 'All'
+                ? `No ${selectedCategory.toLowerCase()} templates available.`
+                : 'No crop templates available in the database.'}
+            </p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {cropTemplates.map((template) => (
+              <div
+                key={template.id}
+                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden"
+              >
+                <div className="p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center">
+                      <span className="text-4xl mr-3">{getIcon(template)}</span>
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-900">{template.name}</h3>
+                        <span className="text-sm text-gray-500">{template.category}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <p className="text-gray-600 text-sm mb-4 line-clamp-3">{template.description}</p>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">{template.description}</p>
 
-                <div className="space-y-2 mb-4 text-sm">
-                  <div className="flex items-center text-gray-700">
-                    <svg
-                      className="w-4 h-4 mr-2 text-primary-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    {getSpec(template, 'growing_period')}
+                  <div className="space-y-2 mb-4 text-sm">
+                    <div className="flex items-center text-gray-700">
+                      <svg
+                        className="w-4 h-4 mr-2 text-primary-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      {getSpec(template, 'growing_period')}
+                    </div>
+                    <div className="flex items-center text-gray-700">
+                      <svg
+                        className="w-4 h-4 mr-2 text-primary-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
+                        />
+                      </svg>
+                      Water: {getSpec(template, 'water_needs')}
+                    </div>
+                    <div className="flex items-center text-gray-700">
+                      <svg
+                        className="w-4 h-4 mr-2 text-primary-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                        />
+                      </svg>
+                      {getSpec(template, 'sun_requirements')}
+                    </div>
                   </div>
-                  <div className="flex items-center text-gray-700">
-                    <svg
-                      className="w-4 h-4 mr-2 text-primary-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
-                      />
-                    </svg>
-                    Water: {getSpec(template, 'water_needs')}
-                  </div>
-                  <div className="flex items-center text-gray-700">
-                    <svg
-                      className="w-4 h-4 mr-2 text-primary-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                      />
-                    </svg>
-                    {getSpec(template, 'sun_requirements')}
-                  </div>
-                </div>
 
-                <div className="flex items-center justify-between">
-                  {template.growing_requirements?.difficulty && (
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${getDifficultyColor(
-                        template.growing_requirements.difficulty
-                      )}`}
-                    >
-                      {template.growing_requirements.difficulty}
-                    </span>
-                  )}
-                  <button className="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center">
-                    View Details
-                    <svg
-                      className="w-4 h-4 ml-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </button>
+                  <div className="flex items-center justify-between">
+                    {template.growing_requirements?.difficulty && (
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${getDifficultyColor(
+                          template.growing_requirements.difficulty
+                        )}`}
+                      >
+                        {template.growing_requirements.difficulty}
+                      </span>
+                    )}
+                    <button className="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center">
+                      View Details
+                      <svg
+                        className="w-4 h-4 ml-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-              ))}
-            </div>
-          )}
+            ))}
+          </div>
+        )}
 
         <div className="mt-8 bg-blue-50 border-l-4 border-blue-500 p-6 rounded">
           <h3 className="text-lg font-semibold text-blue-900 mb-2">💡 How to Use Templates</h3>
