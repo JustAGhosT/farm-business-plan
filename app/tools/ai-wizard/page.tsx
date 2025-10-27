@@ -110,6 +110,10 @@ export default function AIWizardPage() {
     return emailRegex.test(email)
   }
 
+  // Aria-invalid values
+  const ARIA_INVALID_TRUE = 'true' as const
+  const ARIA_INVALID_FALSE = 'false' as const
+
   useEffect(() => {
     const fetchSuggestions = async () => {
       if (currentStep !== 'crops') return
@@ -751,9 +755,19 @@ export default function AIWizardPage() {
                       type="text"
                       value={data.farmName}
                       onChange={(e) => setData({ ...data, farmName: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className={`w-full px-4 py-2 border ${
+                        errors.farmName ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                      } bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
                       placeholder="e.g., Green Valley Farm"
+                      aria-required="true"
+                      aria-invalid={errors.farmName ? ARIA_INVALID_TRUE : ARIA_INVALID_FALSE}
+                      aria-describedby={errors.farmName ? 'farmName-error' : undefined}
                     />
+                    {errors.farmName && (
+                      <p id="farmName-error" className="text-xs text-red-600 dark:text-red-400 mt-1">
+                        {errors.farmName}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -763,9 +777,19 @@ export default function AIWizardPage() {
                       type="text"
                       value={data.ownerName}
                       onChange={(e) => setData({ ...data, ownerName: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className={`w-full px-4 py-2 border ${
+                        errors.ownerName ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                      } bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
                       placeholder="Your name"
+                      aria-required="true"
+                      aria-invalid={errors.ownerName ? ARIA_INVALID_TRUE : ARIA_INVALID_FALSE}
+                      aria-describedby={errors.ownerName ? 'ownerName-error' : undefined}
                     />
+                    {errors.ownerName && (
+                      <p id="ownerName-error" className="text-xs text-red-600 dark:text-red-400 mt-1">
+                        {errors.ownerName}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -775,12 +799,23 @@ export default function AIWizardPage() {
                       type="email"
                       value={data.contactEmail}
                       onChange={(e) => setData({ ...data, contactEmail: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className={`w-full px-4 py-2 border ${
+                        errors.contactEmail ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                      } bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
                       placeholder="your@email.com"
+                      aria-required="false"
+                      aria-invalid={errors.contactEmail ? ARIA_INVALID_TRUE : ARIA_INVALID_FALSE}
+                      aria-describedby={errors.contactEmail ? 'contactEmail-error' : undefined}
                     />
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      Optional: For sharing and collaboration
-                    </p>
+                    {errors.contactEmail ? (
+                      <p id="contactEmail-error" className="text-xs text-red-600 dark:text-red-400 mt-1">
+                        {errors.contactEmail}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        Optional: For sharing and collaboration
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -1345,101 +1380,119 @@ export default function AIWizardPage() {
                   investment requirements
                 </p>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <Link
-                    href="/tools/calculators/roi"
-                    className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
-                  >
-                    <div className="flex items-start mb-4">
-                      <span className="text-3xl mr-4">📈</span>
-                      <div>
-                        <h3 className="text-lg font-semibold mb-2 dark:text-white">
-                          ROI Calculator
-                        </h3>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm">
-                          Calculate Return on Investment for your farm operations
-                        </p>
+                  <Link href="/tools/calculators/roi" legacyBehavior>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                    >
+                      <div className="flex items-start mb-4">
+                        <span className="text-3xl mr-4">📈</span>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                            ROI Calculator
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            Calculate Return on Investment for your farm operations
+                          </p>
+                        </div>
                       </div>
-                    </div>
+                    </a>
                   </Link>
-                  <Link
-                    href="/tools/calculators/break-even"
-                    className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
-                  >
-                    <div className="flex items-start mb-4">
-                      <span className="text-3xl mr-4">⚖️</span>
-                      <div>
-                        <h3 className="text-lg font-semibold mb-2 dark:text-white">
-                          Break-Even Analysis
-                        </h3>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm">
-                          Determine your break-even point for production and sales
-                        </p>
+                  <Link href="/tools/calculators/break-even" legacyBehavior>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                    >
+                      <div className="flex items-start mb-4">
+                        <span className="text-3xl mr-4">⚖️</span>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                            Break-Even Analysis
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            Determine your break-even point for production and sales
+                          </p>
+                        </div>
                       </div>
-                    </div>
+                    </a>
                   </Link>
-                  <Link
-                    href="/tools/calculators/investment"
-                    className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
-                  >
-                    <div className="flex items-start mb-4">
-                      <span className="text-3xl mr-4">💰</span>
-                      <div>
-                        <h3 className="text-lg font-semibold mb-2 dark:text-white">
-                          Investment Calculator
-                        </h3>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm">
-                          Plan your startup investment and funding requirements
-                        </p>
+                  <Link href="/tools/calculators/investment" legacyBehavior>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                    >
+                      <div className="flex items-start mb-4">
+                        <span className="text-3xl mr-4">💰</span>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                            Investment Calculator
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            Plan your startup investment and funding requirements
+                          </p>
+                        </div>
                       </div>
-                    </div>
+                    </a>
                   </Link>
-                  <Link
-                    href="/tools/calculators/revenue"
-                    className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
-                  >
-                    <div className="flex items-start mb-4">
-                      <span className="text-3xl mr-4">📊</span>
-                      <div>
-                        <h3 className="text-lg font-semibold mb-2 dark:text-white">
-                          Revenue Projections
-                        </h3>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm">
-                          Project revenue based on yield and market prices
-                        </p>
+                  <Link href="/tools/calculators/revenue" legacyBehavior>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                    >
+                      <div className="flex items-start mb-4">
+                        <span className="text-3xl mr-4">📊</span>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                            Revenue Projections
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            Project revenue based on yield and market prices
+                          </p>
+                        </div>
                       </div>
-                    </div>
+                    </a>
                   </Link>
-                  <Link
-                    href="/tools/calculators/operating-costs"
-                    className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
-                  >
-                    <div className="flex items-start mb-4">
-                      <span className="text-3xl mr-4">💸</span>
-                      <div>
-                        <h3 className="text-lg font-semibold mb-2 dark:text-white">
-                          Operating Costs
-                        </h3>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm">
-                          Calculate monthly and annual operating expenses
-                        </p>
+                  <Link href="/tools/calculators/operating-costs" legacyBehavior>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                    >
+                      <div className="flex items-start mb-4">
+                        <span className="text-3xl mr-4">💸</span>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                            Operating Costs
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            Calculate monthly and annual operating expenses
+                          </p>
+                        </div>
                       </div>
-                    </div>
+                    </a>
                   </Link>
-                  <Link
-                    href="/tools/calculators/loan"
-                    className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
-                  >
-                    <div className="flex items-start mb-4">
-                      <span className="text-3xl mr-4">🏦</span>
-                      <div>
-                        <h3 className="text-lg font-semibold mb-2 dark:text-white">
-                          Loan Calculator
-                        </h3>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm">
-                          Calculate loan payments and interest costs
-                        </p>
+                  <Link href="/tools/calculators/loan" legacyBehavior>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                    >
+                      <div className="flex items-start mb-4">
+                        <span className="text-3xl mr-4">🏦</span>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                            Loan Calculator
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            Calculate loan payments and interest costs
+                          </p>
+                        </div>
                       </div>
-                    </div>
+                    </a>
                   </Link>
                 </div>
                 <div className="mt-6 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
