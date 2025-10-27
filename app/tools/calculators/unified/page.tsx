@@ -3,7 +3,7 @@
 import WizardWrapper from '@/components/WizardWrapper'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { useEffect, useState, Suspense } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 
 // Unified calculator configuration
 interface CalculatorConfig {

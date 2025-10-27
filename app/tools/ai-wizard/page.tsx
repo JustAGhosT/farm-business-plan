@@ -101,6 +101,14 @@ export default function AIWizardPage() {
   })
 
   const [aiRecommendations, setAiRecommendations] = useState<string[]>([])
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
+  // Email validation helper
+  const validateEmail = (email: string): boolean => {
+    if (!email) return true // Empty email is allowed (optional field)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
 
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -527,6 +535,29 @@ export default function AIWizardPage() {
   }
 
   const handleNext = () => {
+    // Validate basic-info step
+    if (currentStep === 'basic-info') {
+      const newErrors: Record<string, string> = {}
+      
+      if (!data.farmName.trim()) {
+        newErrors.farmName = 'Farm name is required'
+      }
+      
+      if (!data.ownerName.trim()) {
+        newErrors.ownerName = 'Owner/Manager name is required'
+      }
+      
+      if (data.contactEmail && !validateEmail(data.contactEmail)) {
+        newErrors.contactEmail = 'Please enter a valid email address'
+      }
+      
+      setErrors(newErrors)
+      
+      if (Object.keys(newErrors).length > 0) {
+        return // Don't advance if there are errors
+      }
+    }
+    
     if (currentStep === 'timeline') {
       setCurrentStep('calculators')
     } else if (currentStep === 'calculators') {
