@@ -3,7 +3,7 @@
 import WizardWrapper from '@/components/WizardWrapper'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 
 // Unified calculator configuration
 interface CalculatorConfig {
@@ -316,6 +316,26 @@ const CALCULATOR_CONFIGS: CalculatorConfig[] = [
 ]
 
 export default function UnifiedCalculator() {
+  return (
+    <Suspense fallback={
+      <WizardWrapper
+        title="Unified Calculator"
+        description="Calculate ROI, break-even, investment, revenue, operating costs, and loan payments"
+        step={1}
+      >
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center py-12">
+            <p className="text-gray-600 dark:text-gray-300">Loading calculator...</p>
+          </div>
+        </div>
+      </WizardWrapper>
+    }>
+      <UnifiedCalculatorContent />
+    </Suspense>
+  )
+}
+
+function UnifiedCalculatorContent() {
   const searchParams = useSearchParams()
   const [selectedCalculator, setSelectedCalculator] = useState<string>('roi')
   const [formData, setFormData] = useState<Record<string, string>>({})
