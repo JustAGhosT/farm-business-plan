@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
+import { useState } from 'react'
 
 interface Task {
   id: number
@@ -217,6 +217,87 @@ export default function DashboardPage() {
             </div>
           </div>
 
+          {/* Financial Overview */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-7 border border-gray-100 dark:border-gray-700">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                💰 Financial Overview
+              </h2>
+              <Link
+                href="/tools/reports"
+                className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
+              >
+                View Full Dashboard →
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-green-600 dark:text-green-400 font-medium">
+                      Total Investment
+                    </p>
+                    <p className="text-2xl font-bold text-green-700 dark:text-green-300">R 0</p>
+                  </div>
+                  <span className="text-2xl">💰</span>
+                </div>
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-blue-600 dark:text-blue-400 font-medium">
+                      Total Revenue
+                    </p>
+                    <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">R 0</p>
+                  </div>
+                  <span className="text-2xl">📊</span>
+                </div>
+              </div>
+
+              <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-purple-600 dark:text-purple-400 font-medium">
+                      Net Profit
+                    </p>
+                    <p className="text-2xl font-bold text-purple-700 dark:text-purple-300">R 0</p>
+                  </div>
+                  <span className="text-2xl">📈</span>
+                </div>
+              </div>
+
+              <div className="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-orange-600 dark:text-orange-400 font-medium">
+                      Avg ROI
+                    </p>
+                    <p className="text-2xl font-bold text-orange-700 dark:text-orange-300">0%</p>
+                  </div>
+                  <span className="text-2xl">⚖️</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-gray-900 dark:text-white">Recent Calculations</h3>
+                <Link
+                  href="/tools/reports"
+                  className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
+                >
+                  View All →
+                </Link>
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                No calculations yet. Start by using the AI Farm Planning wizard or individual
+                calculators.
+              </div>
+            </div>
+          </div>
+
           {/* Quick Actions & Calendar */}
           <div className="space-y-6">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-7 border border-gray-100 dark:border-gray-700">
@@ -225,10 +306,10 @@ export default function DashboardPage() {
               </h2>
               <div className="space-y-3">
                 <Link
-                  href="/tools/plan-generator"
+                  href="/tools/ai-wizard"
                   className="block w-full px-5 py-3 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/50 transition-all duration-300 text-center font-bold shadow-sm hover:shadow-md transform hover:scale-105"
                 >
-                  📝 Create New Plan
+                  🤖 AI Farm Planning
                 </Link>
                 <Link
                   href="/tools/calculators"

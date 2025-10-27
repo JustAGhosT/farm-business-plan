@@ -1,11 +1,12 @@
 import { createErrorResponse } from '@/lib/api-utils'
 import { authOptions } from '@/lib/auth'
-import { taskRepository } from '@/lib/repositories/taskRepository'
 import { communicationRepository } from '@/lib/repositories/communicationRepository'
 import { systemRepository } from '@/lib/repositories/systemRepository'
+import { taskRepository } from '@/lib/repositories/taskRepository'
 import { TaskSchema, validateData } from '@/lib/validation'
 import { getServerSession } from 'next-auth'
 import { NextResponse } from 'next/server'
+import { z } from 'zod'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -16,12 +17,44 @@ export const dynamic = 'force-dynamic'
  */
 export async function GET(request: Request) {
   try {
+    // Check authentication
+    const session = await getServerSession(authOptions)
+    if (!session) {
+      return createErrorResponse('Unauthorized', 401, undefined, 'UNAUTHORIZED')
+    }
+
+    // Extract query parameters
     const { searchParams } = new URL(request.url)
     const farmPlanId = searchParams.get('farm_plan_id')
     const status = searchParams.get('status')
     const priority = searchParams.get('priority')
 
-    const tasks = await taskRepository.getAll(farmPlanId, status, priority)
+    // Validate query parameters with Zod
+    const queryParamsSchema = z.object({
+      farm_plan_id: z.string().uuid().optional(),
+      status: z.enum(['pending', 'in-progress', 'completed', 'cancelled']).optional(),
+      priority: z.enum(['low', 'medium', 'high', 'critical']).optional(),
+    })
+
+    const parse = queryParamsSchema.safeParse({
+      farm_plan_id: farmPlanId || undefined,
+      status: status || undefined,
+      priority: priority || undefined,
+    })
+
+    if (!parse.success) {
+      return createErrorResponse(
+        'Invalid query parameters',
+        400,
+        parse.error.issues,
+        'VALIDATION_ERROR'
+      )
+    }
+
+    // Use validated parameters
+    const { farm_plan_id, status: validatedStatus, priority: validatedPriority } = parse.data
+
+    const tasks = await taskRepository.getAll(farm_plan_id, validatedStatus, validatedPriority)
 
     return NextResponse.json({
       success: true,

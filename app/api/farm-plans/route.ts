@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const ownerId = searchParams.get('owner_id')
 
-    const farmPlans = await farmPlanRepository.getAll(ownerId)
+    const farmPlans = await farmPlanRepository.getAll(ownerId || undefined)
 
     return NextResponse.json({
       success: true,

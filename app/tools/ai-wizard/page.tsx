@@ -4,7 +4,15 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-type Step = 'location' | 'climate' | 'crops' | 'financials' | 'timeline' | 'recommendations'
+type Step =
+  | 'basic-info'
+  | 'location'
+  | 'climate'
+  | 'crops'
+  | 'financials'
+  | 'timeline'
+  | 'calculators'
+  | 'recommendations'
 
 interface BoundaryPoint {
   lat: number
@@ -18,6 +26,12 @@ interface CropAllocation {
 }
 
 interface WizardData {
+  // Basic Info
+  farmName: string
+  ownerName: string
+  contactEmail: string
+  contactPhone: string
+  // Location & Size
   location: string
   province: string
   coordinates: {
@@ -27,6 +41,7 @@ interface WizardData {
   farmSize: string
   farmSizeSource: 'manual' | 'boundary' | 'calculated'
   boundaryPoints: BoundaryPoint[]
+  // Climate
   climate: {
     avgTempSummer: string
     avgTempWinter: string
@@ -34,8 +49,10 @@ interface WizardData {
     frostRisk: string
     autoPopulated: boolean
   }
+  // Crops
   crops: string[]
   cropAllocations: CropAllocation[]
+  // Financials
   budget: string
   timeline: string
   soilType: string
@@ -44,12 +61,18 @@ interface WizardData {
 
 export default function AIWizardPage() {
   const router = useRouter()
-  const [currentStep, setCurrentStep] = useState<Step>('location')
+  const [currentStep, setCurrentStep] = useState<Step>('basic-info')
   const [isLoadingClimate, setIsLoadingClimate] = useState(false)
   const [isDetectingLocation, setIsDetectingLocation] = useState(false)
   const [cropSuggestions, setCropSuggestions] = useState<any[]>([])
   const [loadingSuggestions, setLoadingSuggestions] = useState(true)
   const [data, setData] = useState<WizardData>({
+    // Basic Info
+    farmName: '',
+    ownerName: '',
+    contactEmail: '',
+    contactPhone: '',
+    // Location & Size
     location: '',
     province: '',
     coordinates: {
@@ -59,6 +82,7 @@ export default function AIWizardPage() {
     farmSize: '',
     farmSizeSource: 'manual',
     boundaryPoints: [],
+    // Climate
     climate: {
       avgTempSummer: '',
       avgTempWinter: '',
@@ -66,8 +90,10 @@ export default function AIWizardPage() {
       frostRisk: 'no',
       autoPopulated: false,
     },
+    // Crops
     crops: [],
     cropAllocations: [],
+    // Financials
     budget: '',
     timeline: '',
     soilType: '',
@@ -75,6 +101,14 @@ export default function AIWizardPage() {
   })
 
   const [aiRecommendations, setAiRecommendations] = useState<string[]>([])
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
+  // Email validation helper
+  const validateEmail = (email: string): boolean => {
+    if (!email) return true // Empty email is allowed (optional field)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
 
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -389,11 +423,13 @@ export default function AIWizardPage() {
   }
 
   const steps: { id: Step; title: string; icon: string }[] = [
+    { id: 'basic-info', title: 'Basic Info', icon: '📝' },
     { id: 'location', title: 'Location & Size', icon: '📍' },
     { id: 'climate', title: 'Climate Data', icon: '🌡️' },
     { id: 'crops', title: 'Crop Selection', icon: '🌱' },
     { id: 'financials', title: 'Budget & Goals', icon: '💰' },
     { id: 'timeline', title: 'Timeline', icon: '📅' },
+    { id: 'calculators', title: 'Financial Analysis', icon: '🧮' },
     { id: 'recommendations', title: 'AI Recommendations', icon: '🤖' },
   ]
 
@@ -499,7 +535,32 @@ export default function AIWizardPage() {
   }
 
   const handleNext = () => {
+    // Validate basic-info step
+    if (currentStep === 'basic-info') {
+      const newErrors: Record<string, string> = {}
+
+      if (!data.farmName.trim()) {
+        newErrors.farmName = 'Farm name is required'
+      }
+
+      if (!data.ownerName.trim()) {
+        newErrors.ownerName = 'Owner/Manager name is required'
+      }
+
+      if (data.contactEmail && !validateEmail(data.contactEmail)) {
+        newErrors.contactEmail = 'Please enter a valid email address'
+      }
+
+      setErrors(newErrors)
+
+      if (Object.keys(newErrors).length > 0) {
+        return // Don't advance if there are errors
+      }
+    }
+
     if (currentStep === 'timeline') {
+      setCurrentStep('calculators')
+    } else if (currentStep === 'calculators') {
       generateAIRecommendations()
       setCurrentStep('recommendations')
     } else {
@@ -525,7 +586,7 @@ export default function AIWizardPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: `${data.location} Farm Plan`,
+          name: data.farmName || `${data.location} Farm Plan`,
           location: data.location,
           province: data.province,
           coordinates:
@@ -648,7 +709,7 @@ export default function AIWizardPage() {
               🤖 AI Farm Planning Wizard
             </h1>
             <p className="text-gray-600 dark:text-gray-300">
-              Get personalized recommendations based on your location, climate, and goals
+              Create your complete farm business plan with AI-powered recommendations
             </p>
           </div>
           <div className="mb-8">
@@ -675,6 +736,119 @@ export default function AIWizardPage() {
             </div>
           </div>
           <div className="min-h-[400px]">
+            {currentStep === 'basic-info' && (
+              <div>
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">📝 Basic Information</h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  Tell us about your farm and contact information
+                </p>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Farm Name *
+                    </label>
+                    {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+                    <input
+                      type="text"
+                      value={data.farmName}
+                      onChange={(e) => setData({ ...data, farmName: e.target.value })}
+                      className={`w-full px-4 py-2 border ${
+                        errors.farmName ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                      } bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
+                      placeholder="e.g., Green Valley Farm"
+                      aria-required="true"
+                      aria-invalid={!!errors.farmName}
+                      aria-describedby={errors.farmName ? 'farmName-error' : undefined}
+                    />
+                    {errors.farmName && (
+                      <p
+                        id="farmName-error"
+                        className="text-xs text-red-600 dark:text-red-400 mt-1"
+                      >
+                        {errors.farmName}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Owner/Manager Name *
+                    </label>
+                    <input
+                      type="text"
+                      value={data.ownerName}
+                      onChange={(e) => setData({ ...data, ownerName: e.target.value })}
+                      className={`w-full px-4 py-2 border ${
+                        errors.ownerName ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                      } bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
+                      placeholder="Your name"
+                      aria-required="true"
+                      aria-invalid={!!errors.ownerName}
+                      aria-describedby={errors.ownerName ? 'ownerName-error' : undefined}
+                    />
+                    {errors.ownerName && (
+                      <p
+                        id="ownerName-error"
+                        className="text-xs text-red-600 dark:text-red-400 mt-1"
+                      >
+                        {errors.ownerName}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Contact Email
+                    </label>
+                    <input
+                      type="email"
+                      value={data.contactEmail}
+                      onChange={(e) => setData({ ...data, contactEmail: e.target.value })}
+                      className={`w-full px-4 py-2 border ${
+                        errors.contactEmail
+                          ? 'border-red-500'
+                          : 'border-gray-300 dark:border-gray-600'
+                      } bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
+                      placeholder="your@email.com"
+                      aria-required="false"
+                      aria-invalid={!!errors.contactEmail}
+                      aria-describedby={errors.contactEmail ? 'contactEmail-error' : undefined}
+                    />
+                    {errors.contactEmail ? (
+                      <p
+                        id="contactEmail-error"
+                        className="text-xs text-red-600 dark:text-red-400 mt-1"
+                      >
+                        {errors.contactEmail}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        Optional: For sharing and collaboration
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Contact Phone
+                    </label>
+                    <input
+                      type="tel"
+                      value={data.contactPhone}
+                      onChange={(e) => setData({ ...data, contactPhone: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="+27 12 345 6789"
+                    />
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Optional: Include country code
+                    </p>
+                  </div>
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
+                    <p className="text-sm text-blue-800 dark:text-blue-300">
+                      <strong>💡 Tip:</strong> This information will be used throughout your
+                      business plan. You can always come back and edit it later.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
             {currentStep === 'location' && (
               <div>
                 <h2 className="text-2xl font-bold mb-4 dark:text-white">📍 Location & Farm Size</h2>
@@ -1202,6 +1376,140 @@ export default function AIWizardPage() {
                     ))}
                   </div>
                 )}
+              </div>
+            )}
+            {currentStep === 'calculators' && (
+              <div>
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">
+                  🧮 Financial Analysis Tools
+                </h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  Use our financial calculators to analyze your farm&apos;s profitability and
+                  investment requirements
+                </p>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <Link href="/tools/calculators/roi" legacyBehavior>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                    >
+                      <div className="flex items-start mb-4">
+                        <span className="text-3xl mr-4">📈</span>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                            ROI Calculator
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            Calculate Return on Investment for your farm operations
+                          </p>
+                        </div>
+                      </div>
+                    </a>
+                  </Link>
+                  <Link href="/tools/calculators/break-even" legacyBehavior>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                    >
+                      <div className="flex items-start mb-4">
+                        <span className="text-3xl mr-4">⚖️</span>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                            Break-Even Analysis
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            Determine your break-even point for production and sales
+                          </p>
+                        </div>
+                      </div>
+                    </a>
+                  </Link>
+                  <Link href="/tools/calculators/investment" legacyBehavior>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                    >
+                      <div className="flex items-start mb-4">
+                        <span className="text-3xl mr-4">💰</span>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                            Investment Calculator
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            Plan your startup investment and funding requirements
+                          </p>
+                        </div>
+                      </div>
+                    </a>
+                  </Link>
+                  <Link href="/tools/calculators/revenue" legacyBehavior>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                    >
+                      <div className="flex items-start mb-4">
+                        <span className="text-3xl mr-4">📊</span>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                            Revenue Projections
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            Project revenue based on yield and market prices
+                          </p>
+                        </div>
+                      </div>
+                    </a>
+                  </Link>
+                  <Link href="/tools/calculators/operating-costs" legacyBehavior>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                    >
+                      <div className="flex items-start mb-4">
+                        <span className="text-3xl mr-4">💸</span>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                            Operating Costs
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            Calculate monthly and annual operating expenses
+                          </p>
+                        </div>
+                      </div>
+                    </a>
+                  </Link>
+                  <Link href="/tools/calculators/loan" legacyBehavior>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                    >
+                      <div className="flex items-start mb-4">
+                        <span className="text-3xl mr-4">🏦</span>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                            Loan Calculator
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            Calculate loan payments and interest costs
+                          </p>
+                        </div>
+                      </div>
+                    </a>
+                  </Link>
+                </div>
+                <div className="mt-6 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
+                  <p className="text-sm text-blue-800 dark:text-blue-300">
+                    <strong>💡 Tip:</strong> Use these calculators to validate your financial
+                    projections and get detailed analysis of your farm&apos;s profitability. You can
+                    also view your calculation history and generate reports from the dashboard.
+                  </p>
+                </div>
               </div>
             )}
           </div>
