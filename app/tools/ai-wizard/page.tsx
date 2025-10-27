@@ -102,6 +102,7 @@ export default function AIWizardPage() {
 
   const [aiRecommendations, setAiRecommendations] = useState<string[]>([])
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isTransitioning, setIsTransitioning] = useState(false)
 
   // Email validation helper
   const validateEmail = (email: string): boolean => {
@@ -534,7 +535,7 @@ export default function AIWizardPage() {
     ]
   }
 
-  const handleNext = () => {
+  const handleNext = async () => {
     // Validate basic-info step
     if (currentStep === 'basic-info') {
       const newErrors: Record<string, string> = {}
@@ -569,13 +570,24 @@ export default function AIWizardPage() {
         setCurrentStep(steps[nextIndex].id)
       }
     }
+
+    setIsTransitioning(true)
+    // Add a small delay for smooth transition
+    await new Promise((resolve) => setTimeout(resolve, 200))
+
+    setIsTransitioning(false)
   }
 
-  const handlePrevious = () => {
+  const handlePrevious = async () => {
+    setIsTransitioning(true)
+    await new Promise((resolve) => setTimeout(resolve, 200))
+
     const prevIndex = currentStepIndex - 1
     if (prevIndex >= 0) {
       setCurrentStep(steps[prevIndex].id)
     }
+
+    setIsTransitioning(false)
   }
 
   const handleComplete = async () => {
@@ -712,32 +724,90 @@ export default function AIWizardPage() {
               Create your complete farm business plan with AI-powered recommendations
             </p>
           </div>
+
+          {/* Enhanced Progress Indicator */}
           <div className="mb-8">
-            <div className="flex justify-between mb-4">
-              {steps.map((step, index) => (
+            <div className="flex justify-between mb-4 relative">
+              {/* Connection Lines */}
+              <div className="absolute top-5 left-5 right-5 h-0.5 bg-gray-200 dark:bg-gray-700 z-0">
                 <div
-                  key={step.id}
-                  className={`flex flex-col items-center ${index <= currentStepIndex ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400 dark:text-gray-500'}`}
-                >
+                  className="h-full bg-primary-600 dark:bg-primary-500 transition-all duration-500 ease-out"
+                  style={{ width: `${(currentStepIndex / (steps.length - 1)) * 100}%` }}
+                />
+              </div>
+
+              {steps.map((step, index) => {
+                const isCompleted = index < currentStepIndex
+                const isCurrent = index === currentStepIndex
+                const isUpcoming = index > currentStepIndex
+
+                return (
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center text-xl mb-2 ${index < currentStepIndex ? 'bg-primary-600 text-white' : index === currentStepIndex ? 'bg-primary-100 dark:bg-primary-900/30 border-2 border-primary-600 dark:border-primary-500' : 'bg-gray-100 dark:bg-gray-700'}`}
+                    key={step.id}
+                    className={`flex flex-col items-center relative z-10 ${
+                      isCompleted || isCurrent
+                        ? 'text-primary-600 dark:text-primary-400'
+                        : 'text-gray-400 dark:text-gray-500'
+                    }`}
                   >
-                    {index < currentStepIndex ? '✓' : step.icon}
+                    <div
+                      className={`w-12 h-12 rounded-full flex items-center justify-center text-lg mb-2 transition-all duration-300 ${
+                        isCompleted
+                          ? 'bg-primary-600 text-white shadow-lg transform scale-110'
+                          : isCurrent
+                            ? 'bg-primary-100 dark:bg-primary-900/30 border-2 border-primary-600 dark:border-primary-500 shadow-md'
+                            : 'bg-gray-100 dark:bg-gray-700'
+                      }`}
+                    >
+                      {isCompleted ? (
+                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      ) : (
+                        <span>{step.icon}</span>
+                      )}
+                    </div>
+                    <div className="text-center">
+                      <span className="text-xs font-medium hidden md:block">{step.title}</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400 block md:hidden">
+                        {index + 1}
+                      </span>
+                    </div>
                   </div>
-                  <span className="text-xs text-center hidden md:block">{step.title}</span>
-                </div>
-              ))}
+                )
+              })}
             </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+
+            {/* Progress Bar */}
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
               <div
-                className="bg-primary-600 dark:bg-primary-500 h-2 rounded-full transition-all duration-300"
+                className="bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 h-full rounded-full transition-all duration-500 ease-out shadow-md"
                 style={{ width: `${((currentStepIndex + 1) / steps.length) * 100}%` }}
-              ></div>
+              >
+                <div className="h-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
+              </div>
+            </div>
+
+            {/* Step Counter */}
+            <div className="text-center mt-3">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Step {currentStepIndex + 1} of {steps.length}
+              </p>
             </div>
           </div>
-          <div className="min-h-[400px]">
+
+          {/* Animated Step Content */}
+          <div
+            className={`min-h-[400px] transition-opacity duration-300 ${
+              isTransitioning ? 'opacity-50' : 'opacity-100'
+            }`}
+          >
             {currentStep === 'basic-info' && (
-              <div>
+              <div className="animate-fadeIn">
                 <h2 className="text-2xl font-bold mb-4 dark:text-white">📝 Basic Information</h2>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
                   Tell us about your farm and contact information
@@ -850,7 +920,7 @@ export default function AIWizardPage() {
               </div>
             )}
             {currentStep === 'location' && (
-              <div>
+              <div className="animate-fadeIn">
                 <h2 className="text-2xl font-bold mb-4 dark:text-white">📍 Location & Farm Size</h2>
                 <div className="space-y-4">
                   <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 rounded-lg p-4">
@@ -1180,7 +1250,7 @@ export default function AIWizardPage() {
               </div>
             )}
             {currentStep === 'climate' && (
-              <div>
+              <div className="animate-fadeIn">
                 <h2 className="text-2xl font-bold mb-4 dark:text-white">🌡️ Climate Information</h2>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
                   Help us understand your local climate conditions
@@ -1325,7 +1395,7 @@ export default function AIWizardPage() {
               </div>
             )}
             {currentStep === 'crops' && (
-              <div>
+              <div className="animate-fadeIn">
                 <h2 className="text-2xl font-bold mb-4 dark:text-white">
                   🌱 Crop Selection & Allocation
                 </h2>
@@ -1379,9 +1449,9 @@ export default function AIWizardPage() {
               </div>
             )}
             {currentStep === 'calculators' && (
-              <div>
+              <div className="animate-fadeIn">
                 <h2 className="text-2xl font-bold mb-4 dark:text-white">
-                  🧮 Financial Analysis Tools
+                  �� Financial Analysis Tools
                 </h2>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
                   Use our financial calculators to analyze your farm&apos;s profitability and
@@ -1513,27 +1583,74 @@ export default function AIWizardPage() {
               </div>
             )}
           </div>
-          <div className="flex justify-between mt-8 pt-6 border-t">
+
+          {/* Navigation Buttons */}
+          <div className="flex justify-between mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
             <button
               onClick={handlePrevious}
               disabled={currentStepIndex === 0}
-              className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className={`px-6 py-2 rounded-lg font-medium transition-all ${
+                currentStepIndex === 0
+                  ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+              }`}
             >
-              Previous
+              <span className="flex items-center">
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+                Previous
+              </span>
             </button>
-            {currentStep === 'recommendations' ? (
+
+            {currentStepIndex < steps.length - 1 ? (
               <button
-                onClick={handleComplete}
-                className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                onClick={handleNext}
+                className="px-6 py-2 bg-primary-600 dark:bg-primary-500 text-white rounded-lg font-medium hover:bg-primary-700 dark:hover:bg-primary-600 transition-colors shadow-md hover:shadow-lg"
               >
-                Complete & Go to Dashboard
+                <span className="flex items-center">
+                  Next
+                  <svg
+                    className="w-5 h-5 ml-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </span>
               </button>
             ) : (
               <button
-                onClick={handleNext}
-                className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                onClick={handleComplete}
+                className="px-6 py-2 bg-green-600 dark:bg-green-500 text-white rounded-lg font-medium hover:bg-green-700 dark:hover:bg-green-600 transition-colors shadow-md hover:shadow-lg"
               >
-                Next Step
+                <span className="flex items-center">
+                  Complete
+                  <svg
+                    className="w-5 h-5 ml-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </span>
               </button>
             )}
           </div>
