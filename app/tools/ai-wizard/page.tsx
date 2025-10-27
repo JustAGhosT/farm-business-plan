@@ -803,7 +803,7 @@ export default function AIWizardPage() {
                       } bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
                       placeholder="your@email.com"
                       aria-required="false"
-                      aria-invalid={errors.contactEmail ? ARIA_INVALID_TRUE : ARIA_INVALID_FALSE}
+                      aria-invalid={!!errors.contactEmail}
                       aria-describedby={errors.contactEmail ? 'contactEmail-error' : undefined}
                     />
                     {errors.contactEmail ? (
