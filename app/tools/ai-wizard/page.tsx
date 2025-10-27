@@ -1,10 +1,12 @@
 'use client'
 
+import { useFarmPlans } from '@/lib/hooks/useFarmPlans'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 type Step =
+  | 'farm-selection'
   | 'basic-info'
   | 'location'
   | 'climate'
@@ -26,6 +28,8 @@ interface CropAllocation {
 }
 
 interface WizardData {
+  // Farm Selection
+  selectedFarmId: string | null
   // Basic Info
   farmName: string
   ownerName: string
@@ -61,12 +65,15 @@ interface WizardData {
 
 export default function AIWizardPage() {
   const router = useRouter()
-  const [currentStep, setCurrentStep] = useState<Step>('basic-info')
+  const { farmPlans, loading: loadingFarms } = useFarmPlans()
+  const [currentStep, setCurrentStep] = useState<Step>('farm-selection')
   const [isLoadingClimate, setIsLoadingClimate] = useState(false)
   const [isDetectingLocation, setIsDetectingLocation] = useState(false)
   const [cropSuggestions, setCropSuggestions] = useState<any[]>([])
   const [loadingSuggestions, setLoadingSuggestions] = useState(true)
   const [data, setData] = useState<WizardData>({
+    // Farm Selection
+    selectedFarmId: null,
     // Basic Info
     farmName: '',
     ownerName: '',
@@ -423,6 +430,7 @@ export default function AIWizardPage() {
   }
 
   const steps: { id: Step; title: string; icon: string }[] = [
+    { id: 'farm-selection', title: 'Select Farm', icon: '🏡' },
     { id: 'basic-info', title: 'Basic Info', icon: '📝' },
     { id: 'location', title: 'Location & Size', icon: '📍' },
     { id: 'climate', title: 'Climate Data', icon: '🌡️' },
@@ -535,6 +543,38 @@ export default function AIWizardPage() {
   }
 
   const handleNext = () => {
+    // Handle farm selection
+    if (currentStep === 'farm-selection') {
+      // If user selected "Create new farm", move to basic-info
+      if (data.selectedFarmId === 'new') {
+        setCurrentStep('basic-info')
+        return
+      }
+      // If user selected an existing farm, populate data and move to location
+      if (data.selectedFarmId) {
+        const selectedFarm = farmPlans.find((f) => f.id === data.selectedFarmId)
+        if (selectedFarm) {
+          setData((prev) => ({
+            ...prev,
+            farmName: selectedFarm.name,
+            location: selectedFarm.location,
+            province: selectedFarm.province || '',
+            coordinates: {
+              lat: selectedFarm.coordinates?.lat?.toString() || '',
+              lng: selectedFarm.coordinates?.lng?.toString() || '',
+            },
+            farmSize: selectedFarm.farm_size?.toString() || '',
+            soilType: selectedFarm.soil_type || '',
+            waterSource: selectedFarm.water_source || '',
+          }))
+          setCurrentStep('location')
+          return
+        }
+      }
+      // If no selection, don't advance
+      return
+    }
+
     // Validate basic-info step
     if (currentStep === 'basic-info') {
       const newErrors: Record<string, string> = {}
@@ -736,6 +776,105 @@ export default function AIWizardPage() {
             </div>
           </div>
           <div className="min-h-[400px]">
+            {currentStep === 'farm-selection' && (
+              <div>
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">🏡 Select Your Farm</h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  Choose an existing farm or create a new one
+                </p>
+                {loadingFarms ? (
+                  <div className="text-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600 dark:text-gray-300">Loading your farms...</p>
+                  </div>
+                ) : farmPlans.length === 0 ? (
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6">
+                    <div className="flex items-start">
+                      <div className="text-4xl mr-4">🌱</div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-200 mb-2">
+                          No farms yet
+                        </h3>
+                        <p className="text-blue-800 dark:text-blue-300 mb-4">
+                          You don&apos;t have any existing farms. Let&apos;s create your first farm
+                          plan!
+                        </p>
+                        <button
+                          onClick={() => {
+                            setData({ ...data, selectedFarmId: 'new' })
+                            setCurrentStep('basic-info')
+                          }}
+                          className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                        >
+                          Create New Farm
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {farmPlans.map((farm) => (
+                      <button
+                        key={farm.id}
+                        onClick={() => setData({ ...data, selectedFarmId: farm.id })}
+                        className={`w-full p-6 border-2 rounded-lg text-left transition-all ${
+                          data.selectedFarmId === farm.id
+                            ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                            : 'border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 bg-white dark:bg-gray-800'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                              {farm.name}
+                            </h3>
+                            <p className="text-gray-600 dark:text-gray-300 mb-2">
+                              📍 {farm.location}
+                              {farm.province && `, ${farm.province}`}
+                            </p>
+                            <div className="flex flex-wrap gap-2 text-sm text-gray-500 dark:text-gray-400">
+                              <span>{farm.farm_size} hectares</span>
+                              {farm.soil_type && <span>• {farm.soil_type}</span>}
+                              {farm.crop_count && farm.crop_count > 0 && (
+                                <span>• {farm.crop_count} crops</span>
+                              )}
+                            </div>
+                          </div>
+                          {data.selectedFarmId === farm.id && (
+                            <div className="text-primary-600 dark:text-primary-400 text-2xl">✓</div>
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => setData({ ...data, selectedFarmId: 'new' })}
+                      className={`w-full p-6 border-2 border-dashed rounded-lg text-left transition-all ${
+                        data.selectedFarmId === 'new'
+                          ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                          : 'border-gray-300 dark:border-gray-600 hover:border-primary-400 dark:hover:border-primary-500 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                      }`}
+                    >
+                      <div className="flex items-center">
+                        <div className="text-3xl mr-4">➕</div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                            Create New Farm
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300">
+                            Start a new farm plan from scratch
+                          </p>
+                        </div>
+                        {data.selectedFarmId === 'new' && (
+                          <div className="ml-auto text-primary-600 dark:text-primary-400 text-2xl">
+                            ✓
+                          </div>
+                        )}
+                      </div>
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
             {currentStep === 'basic-info' && (
               <div>
                 <h2 className="text-2xl font-bold mb-4 dark:text-white">📝 Basic Information</h2>
