@@ -317,19 +317,21 @@ const CALCULATOR_CONFIGS: CalculatorConfig[] = [
 
 export default function UnifiedCalculator() {
   return (
-    <Suspense fallback={
-      <WizardWrapper
-        title="Unified Calculator"
-        description="Calculate ROI, break-even, investment, revenue, operating costs, and loan payments"
-        step={1}
-      >
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center py-12">
-            <p className="text-gray-600 dark:text-gray-300">Loading calculator...</p>
+    <Suspense
+      fallback={
+        <WizardWrapper
+          title="Unified Calculator"
+          description="Calculate ROI, break-even, investment, revenue, operating costs, and loan payments"
+          step={1}
+        >
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center py-12">
+              <p className="text-gray-600 dark:text-gray-300">Loading calculator...</p>
+            </div>
           </div>
-        </div>
-      </WizardWrapper>
-    }>
+        </WizardWrapper>
+      }
+    >
       <UnifiedCalculatorContent />
     </Suspense>
   )

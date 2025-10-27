@@ -110,8 +110,6 @@ export default function AIWizardPage() {
     return emailRegex.test(email)
   }
 
-
-
   useEffect(() => {
     const fetchSuggestions = async () => {
       if (currentStep !== 'crops') return
@@ -540,26 +538,26 @@ export default function AIWizardPage() {
     // Validate basic-info step
     if (currentStep === 'basic-info') {
       const newErrors: Record<string, string> = {}
-      
+
       if (!data.farmName.trim()) {
         newErrors.farmName = 'Farm name is required'
       }
-      
+
       if (!data.ownerName.trim()) {
         newErrors.ownerName = 'Owner/Manager name is required'
       }
-      
+
       if (data.contactEmail && !validateEmail(data.contactEmail)) {
         newErrors.contactEmail = 'Please enter a valid email address'
       }
-      
+
       setErrors(newErrors)
-      
+
       if (Object.keys(newErrors).length > 0) {
         return // Don't advance if there are errors
       }
     }
-    
+
     if (currentStep === 'timeline') {
       setCurrentStep('calculators')
     } else if (currentStep === 'calculators') {
@@ -763,7 +761,10 @@ export default function AIWizardPage() {
                       aria-describedby={errors.farmName ? 'farmName-error' : undefined}
                     />
                     {errors.farmName && (
-                      <p id="farmName-error" className="text-xs text-red-600 dark:text-red-400 mt-1">
+                      <p
+                        id="farmName-error"
+                        className="text-xs text-red-600 dark:text-red-400 mt-1"
+                      >
                         {errors.farmName}
                       </p>
                     )}
@@ -785,7 +786,10 @@ export default function AIWizardPage() {
                       aria-describedby={errors.ownerName ? 'ownerName-error' : undefined}
                     />
                     {errors.ownerName && (
-                      <p id="ownerName-error" className="text-xs text-red-600 dark:text-red-400 mt-1">
+                      <p
+                        id="ownerName-error"
+                        className="text-xs text-red-600 dark:text-red-400 mt-1"
+                      >
                         {errors.ownerName}
                       </p>
                     )}
@@ -799,7 +803,9 @@ export default function AIWizardPage() {
                       value={data.contactEmail}
                       onChange={(e) => setData({ ...data, contactEmail: e.target.value })}
                       className={`w-full px-4 py-2 border ${
-                        errors.contactEmail ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                        errors.contactEmail
+                          ? 'border-red-500'
+                          : 'border-gray-300 dark:border-gray-600'
                       } bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
                       placeholder="your@email.com"
                       aria-required="false"
@@ -807,7 +813,10 @@ export default function AIWizardPage() {
                       aria-describedby={errors.contactEmail ? 'contactEmail-error' : undefined}
                     />
                     {errors.contactEmail ? (
-                      <p id="contactEmail-error" className="text-xs text-red-600 dark:text-red-400 mt-1">
+                      <p
+                        id="contactEmail-error"
+                        className="text-xs text-red-600 dark:text-red-400 mt-1"
+                      >
                         {errors.contactEmail}
                       </p>
                     ) : (
