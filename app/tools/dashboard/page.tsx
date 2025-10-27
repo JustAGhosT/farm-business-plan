@@ -2,7 +2,7 @@
 
 import { useFarmPlans, useFinancialData, useTasks } from '@/lib/hooks'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function DashboardPage() {
   const [selectedFarmId, setSelectedFarmId] = useState<string | null>(null)
@@ -10,10 +10,6 @@ export default function DashboardPage() {
     type: 'success' | 'error' | 'info'
     message: string
   } | null>(null)
-  const [taskFilter, setTaskFilter] = useState<'all' | 'active' | 'completed' | 'high-priority'>(
-    'all'
-  )
-  const [sortBy, setSortBy] = useState<'date' | 'priority' | 'status'>('date')
 
   // Fetch data from database
   const {
@@ -43,21 +39,6 @@ export default function DashboardPage() {
     }
   }, [notification])
 
-  // Keyboard shortcuts
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      // Ctrl/Cmd + R to refresh
-      if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
-        e.preventDefault()
-        handleRetry()
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyPress)
-    return () => window.removeEventListener('keydown', handleKeyPress)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   // Show error notifications
   useEffect(() => {
     if (errorFarms) {
@@ -76,38 +57,6 @@ export default function DashboardPage() {
     await Promise.all([refetchFarms(), refetchTasks(), refetchFinancials()])
     setNotification({ type: 'success', message: 'Data refreshed!' })
   }
-
-  // Filter and sort tasks
-  let filteredTasks = [...tasks]
-
-  if (taskFilter === 'active') {
-    filteredTasks = filteredTasks.filter((t) => t.status !== 'completed')
-  } else if (taskFilter === 'completed') {
-    filteredTasks = filteredTasks.filter((t) => t.status === 'completed')
-  } else if (taskFilter === 'high-priority') {
-    filteredTasks = filteredTasks.filter((t) => t.priority === 'high' || t.priority === 'critical')
-  }
-
-  // Sort tasks
-  filteredTasks.sort((a, b) => {
-    if (sortBy === 'date') {
-      const dateA = a.due_date ? new Date(a.due_date).getTime() : 0
-      const dateB = b.due_date ? new Date(b.due_date).getTime() : 0
-      return dateB - dateA
-    } else if (sortBy === 'priority') {
-      const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 }
-      return (
-        priorityOrder[b.priority as keyof typeof priorityOrder] -
-        priorityOrder[a.priority as keyof typeof priorityOrder]
-      )
-    } else {
-      const statusOrder = { completed: 0, 'in-progress': 1, pending: 2 }
-      return (
-        statusOrder[b.status as keyof typeof statusOrder] -
-        statusOrder[a.status as keyof typeof statusOrder]
-      )
-    }
-  })
 
   // Calculate stats from real data
   const activeTasks = tasks.filter((t) => t.status !== 'completed')
@@ -128,60 +77,30 @@ export default function DashboardPage() {
   const netProfit = totalRevenue - totalInvestment
   const avgROI = totalInvestment > 0 ? ((netProfit / totalInvestment) * 100).toFixed(1) : '0'
 
-  // Interactive stats - click to filter
-  const handleStatClick = (filterType: 'active' | 'completed' | 'high-priority') => {
-    setTaskFilter(filterType === 'high-priority' ? 'high-priority' : filterType)
-  }
-
-  // Get current date/time info
-  const currentDate = new Date()
-  const currentTime = currentDate.toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-  })
-  const dateOptions: Intl.DateTimeFormatOptions = {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }
-  const formattedDate = currentDate.toLocaleDateString('en-US', dateOptions)
-
   const stats = [
     {
       label: 'Active Tasks',
       value: activeTasks.length,
       icon: '📋',
       color: 'bg-blue-100 text-blue-600',
-      hoverColor: 'hover:bg-blue-200',
-      onClick: () => handleStatClick('active'),
-      clickable: true,
     },
     {
       label: 'Completed Tasks',
       value: completedTasks.length,
       icon: '✅',
       color: 'bg-green-100 text-green-600',
-      hoverColor: 'hover:bg-green-200',
-      onClick: () => handleStatClick('completed'),
-      clickable: true,
     },
     {
       label: 'High Priority',
       value: highPriorityTasks.length,
       icon: '⚠️',
       color: 'bg-red-100 text-red-600',
-      hoverColor: 'hover:bg-red-200',
-      onClick: () => handleStatClick('high-priority'),
-      clickable: true,
     },
     {
       label: 'My Farms',
       value: farmPlans.length,
       icon: '🏡',
       color: 'bg-purple-100 text-purple-600',
-      hoverColor: 'hover:bg-purple-200',
-      clickable: false,
     },
   ]
 
@@ -312,163 +231,85 @@ export default function DashboardPage() {
           Back to Home
         </Link>
 
-        {/* Improved Header with Time Context */}
-        <div className="mb-8">
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
-                  Operations Dashboard
-                </h1>
-              </div>
-              <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 mb-2">
-                {formattedDate} • {currentTime}
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
+        <div className="mb-10">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-3">
+                Operations Dashboard
+              </h1>
+              <p className="text-lg text-gray-600 dark:text-gray-300">
                 Track your farm activities, tasks, and milestones
               </p>
             </div>
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              <button
-                onClick={handleRetry}
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors flex items-center justify-center gap-2"
-                title="Refresh data (Ctrl+R)"
+            <div className="flex items-center gap-3">
+              <label
+                htmlFor="farm-select"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  />
-                </svg>
-                Refresh
-              </button>
-              <div className="flex items-center gap-2">
-                <label
-                  htmlFor="farm-select"
-                  className="hidden sm:block text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap"
-                >
-                  Farm:
-                </label>
-                <select
-                  id="farm-select"
-                  value={selectedFarmId || ''}
-                  onChange={(e) => setSelectedFarmId(e.target.value || null)}
-                  className="flex-1 px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent min-w-0"
-                >
-                  <option value="">All Farms</option>
-                  {farmPlans.map((farm) => (
-                    <option key={farm.id} value={farm.id}>
-                      {farm.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                Filter by Farm:
+              </label>
+              <select
+                id="farm-select"
+                value={selectedFarmId || ''}
+                onChange={(e) => setSelectedFarmId(e.target.value || null)}
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              >
+                <option value="">All Farms</option>
+                {farmPlans.map((farm) => (
+                  <option key={farm.id} value={farm.id}>
+                    {farm.name}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         </div>
 
-        {/* Interactive Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           {stats.map((stat, index) => (
-            <button
+            <div
               key={index}
-              onClick={stat.clickable ? stat.onClick : undefined}
-              className={`bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 transition-all duration-300 ${
-                stat.clickable
-                  ? 'hover:shadow-xl transform hover:-translate-y-1 cursor-pointer'
-                  : 'cursor-default'
-              } ${stat.clickable ? stat.hoverColor : ''} ${
-                taskFilter ===
-                (stat.label === 'Active Tasks'
-                  ? 'active'
-                  : stat.label === 'Completed Tasks'
-                    ? 'completed'
-                    : stat.label === 'High Priority'
-                      ? 'high-priority'
-                      : '')
-                  ? 'ring-2 ring-primary-500 border-primary-500'
-                  : ''
-              }`}
-              aria-label={stat.clickable ? `Filter by ${stat.label}` : stat.label}
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-7 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
             >
               <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <p className="text-gray-600 dark:text-gray-400 text-xs md:text-sm mb-1.5 font-medium">
+                <div>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-2 font-medium">
                     {stat.label}
                   </p>
-                  <p className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
-                    {stat.value}
-                  </p>
-                  {stat.clickable && (
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Click to filter</p>
-                  )}
+                  <p className="text-4xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                 </div>
-                <div className={`text-3xl md:text-4xl rounded-full p-3 ${stat.color} shadow-md`}>
+                <div className={`text-4xl rounded-full p-4 ${stat.color} shadow-md`}>
                   {stat.icon}
                 </div>
               </div>
-            </button>
+            </div>
           ))}
         </div>
 
-        {/* Main Content Grid - Improved Layout */}
-        <div className="grid lg:grid-cols-5 gap-6">
-          {/* Tasks List - Takes 3 columns */}
-          <div className="lg:col-span-3">
+        {/* Main Content Grid */}
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Tasks List */}
+          <div className="lg:col-span-2">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-8 border border-gray-100 dark:border-gray-700">
-              <div className="mb-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Task List</h2>
-                  <button
-                    onClick={() =>
-                      setNotification({ type: 'info', message: 'Task creation coming soon!' })
-                    }
-                    className="px-5 py-2.5 bg-primary-600 dark:bg-primary-700 text-white rounded-lg hover:bg-primary-700 dark:hover:bg-primary-600 transition-all duration-300 text-sm font-medium shadow-md hover:shadow-lg transform hover:scale-105"
-                    aria-label="Add new task"
-                  >
-                    + Add Task
-                  </button>
-                </div>
-
-                {/* Filter and Sort Controls */}
-                <div className="flex flex-wrap gap-3">
-                  <div className="flex items-center gap-2">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Filter:
-                    </label>
-                    <select
-                      value={taskFilter}
-                      onChange={(e) => setTaskFilter(e.target.value as any)}
-                      className="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      aria-label="Filter tasks"
-                    >
-                      <option value="all">All Tasks</option>
-                      <option value="active">Active</option>
-                      <option value="completed">Completed</option>
-                      <option value="high-priority">High Priority</option>
-                    </select>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Sort by:
-                    </label>
-                    <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value as any)}
-                      className="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      aria-label="Sort tasks"
-                    >
-                      <option value="date">Date</option>
-                      <option value="priority">Priority</option>
-                      <option value="status">Status</option>
-                    </select>
-                  </div>
-                  <div className="ml-auto text-xs text-gray-500 dark:text-gray-400">
-                    {filteredTasks.length} task{filteredTasks.length !== 1 ? 's' : ''}
-                  </div>
-                </div>
+              <div className="flex justify-between items-center mb-8">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Task List</h2>
+                <button
+                  onClick={() =>
+                    setNotification({ type: 'info', message: 'Task creation coming soon!' })
+                  }
+                  className="px-5 py-2.5 bg-primary-600 dark:bg-primary-700 text-white rounded-lg hover:bg-primary-700 dark:hover:bg-primary-600 transition-all duration-300 text-sm font-medium shadow-md hover:shadow-lg transform hover:scale-105 flex items-center"
+                  aria-label="Add new task"
+                >
+                  {loadingTasks ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Adding...
+                    </>
+                  ) : (
+                    <>+ Add Task</>
+                  )}
+                </button>
               </div>
 
               <div className="space-y-4">
@@ -477,7 +318,7 @@ export default function DashboardPage() {
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
                     <p className="text-gray-600 dark:text-gray-400 mt-4">Loading tasks...</p>
                   </div>
-                ) : filteredTasks.length === 0 ? (
+                ) : tasks.length === 0 ? (
                   <div className="text-center py-12">
                     <div className="text-6xl mb-4">📋</div>
                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
@@ -511,7 +352,7 @@ export default function DashboardPage() {
                     )}
                   </div>
                 ) : (
-                  filteredTasks.map((task) => (
+                  tasks.map((task) => (
                     <div
                       key={task.id}
                       className="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-5 hover:shadow-lg hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-300 group"
@@ -580,95 +421,99 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Financial Overview & Quick Actions Sidebar - Takes 2 columns */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Financial Overview - More Prominent */}
-            <div className="bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-xl shadow-xl p-6 border border-green-200 dark:border-green-800">
-              <div className="flex items-center justify-between mb-5">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                  <span className="text-2xl">💰</span> Financial Overview
-                </h2>
-                <Link
-                  href="/tools/reports"
-                  className="text-xs text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
-                >
-                  View All →
-                </Link>
-              </div>
+          {/* Financial Overview */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-7 border border-gray-100 dark:border-gray-700">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                💰 Financial Overview
+              </h2>
+              <Link
+                href="/tools/reports"
+                className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
+              >
+                View Full Dashboard →
+              </Link>
+            </div>
 
-              <div className="grid grid-cols-2 gap-3 mb-5">
-                <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-green-600 dark:text-green-400 font-medium">
-                        Total Investment
-                      </p>
-                      <p className="text-2xl font-bold text-green-700 dark:text-green-300">
-                        R {totalInvestment.toFixed(2)}
-                      </p>
-                    </div>
-                    <span className="text-2xl">💰</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-green-600 dark:text-green-400 font-medium">
+                      Total Investment
+                    </p>
+                    <p className="text-2xl font-bold text-green-700 dark:text-green-300">
+                      R {totalInvestment.toFixed(2)}
+                    </p>
                   </div>
-                </div>
-
-                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-blue-600 dark:text-blue-400 font-medium">
-                        Total Revenue
-                      </p>
-                      <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">
-                        R {totalRevenue.toFixed(2)}
-                      </p>
-                    </div>
-                    <span className="text-2xl">📊</span>
-                  </div>
-                </div>
-
-                <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-purple-600 dark:text-purple-400 font-medium">
-                        Net Profit
-                      </p>
-                      <p className="text-2xl font-bold text-purple-700 dark:text-purple-300">
-                        R {netProfit.toFixed(2)}
-                      </p>
-                    </div>
-                    <span className="text-2xl">📈</span>
-                  </div>
-                </div>
-
-                <div className="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-orange-600 dark:text-orange-400 font-medium">
-                        Avg ROI
-                      </p>
-                      <p className="text-2xl font-bold text-orange-700 dark:text-orange-300">
-                        {avgROI}%
-                      </p>
-                    </div>
-                    <span className="text-2xl">⚖️</span>
-                  </div>
+                  <span className="text-2xl">💰</span>
                 </div>
               </div>
 
-              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-                    Recent Calculations
-                  </h3>
+              <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-blue-600 dark:text-blue-400 font-medium">
+                      Total Revenue
+                    </p>
+                    <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">
+                      R {totalRevenue.toFixed(2)}
+                    </p>
+                  </div>
+                  <span className="text-2xl">📊</span>
                 </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
-                  No calculations yet. Start by using the AI Farm Planning wizard.
+              </div>
+
+              <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-purple-600 dark:text-purple-400 font-medium">
+                      Net Profit
+                    </p>
+                    <p className="text-2xl font-bold text-purple-700 dark:text-purple-300">
+                      R {netProfit.toFixed(2)}
+                    </p>
+                  </div>
+                  <span className="text-2xl">📈</span>
+                </div>
+              </div>
+
+              <div className="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-orange-600 dark:text-orange-400 font-medium">
+                      Avg ROI
+                    </p>
+                    <p className="text-2xl font-bold text-orange-700 dark:text-orange-300">
+                      {avgROI}%
+                    </p>
+                  </div>
+                  <span className="text-2xl">⚖️</span>
                 </div>
               </div>
             </div>
 
-            {/* Quick Actions */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 border border-gray-100 dark:border-gray-700">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-gray-900 dark:text-white">Recent Calculations</h3>
+                <Link
+                  href="/tools/reports"
+                  className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
+                >
+                  View All →
+                </Link>
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                No calculations yet. Start by using the AI Farm Planning wizard or individual
+                calculators.
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Actions & Calendar */}
+          <div className="space-y-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-7 border border-gray-100 dark:border-gray-700">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-5">
                 Quick Actions
               </h2>
               <div className="space-y-3">
@@ -696,9 +541,8 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Recent Activity */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 border border-gray-100 dark:border-gray-700">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-7 border border-gray-100 dark:border-gray-700">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-5">
                 Recent Activity
               </h2>
               <div className="space-y-4">
@@ -721,7 +565,7 @@ export default function DashboardPage() {
                       Task Completed
                     </p>
                     <p className="text-xs text-gray-600 dark:text-gray-400">
-                      {tasks.length > 0 && tasks[0].title}
+                      Plant dragon fruit cuttings
                     </p>
                     <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">2 hours ago</p>
                   </div>
@@ -740,7 +584,7 @@ export default function DashboardPage() {
                   <div className="flex-1">
                     <p className="text-sm font-bold text-gray-900 dark:text-white">Task Started</p>
                     <p className="text-xs text-gray-600 dark:text-gray-400">
-                      {tasks.length > 1 && tasks[1].title}
+                      Install drip irrigation
                     </p>
                     <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">5 hours ago</p>
                   </div>
@@ -763,7 +607,7 @@ export default function DashboardPage() {
                   <div className="flex-1">
                     <p className="text-sm font-bold text-gray-900 dark:text-white">Task Added</p>
                     <p className="text-xs text-gray-600 dark:text-gray-400">
-                      {tasks.length > 2 && tasks[2].title}
+                      Apply organic fertilizer
                     </p>
                     <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">1 day ago</p>
                   </div>

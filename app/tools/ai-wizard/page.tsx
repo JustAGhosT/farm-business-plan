@@ -1,10 +1,12 @@
 'use client'
 
+import { useFarmPlans } from '@/lib/hooks/useFarmPlans'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 type Step =
+  | 'farm-selection'
   | 'basic-info'
   | 'location'
   | 'climate'
@@ -26,6 +28,8 @@ interface CropAllocation {
 }
 
 interface WizardData {
+  // Farm Selection
+  selectedFarmId: string | null
   // Basic Info
   farmName: string
   ownerName: string
@@ -61,12 +65,15 @@ interface WizardData {
 
 export default function AIWizardPage() {
   const router = useRouter()
-  const [currentStep, setCurrentStep] = useState<Step>('basic-info')
+  const { farmPlans, loading: loadingFarms } = useFarmPlans()
+  const [currentStep, setCurrentStep] = useState<Step>('farm-selection')
   const [isLoadingClimate, setIsLoadingClimate] = useState(false)
   const [isDetectingLocation, setIsDetectingLocation] = useState(false)
   const [cropSuggestions, setCropSuggestions] = useState<any[]>([])
   const [loadingSuggestions, setLoadingSuggestions] = useState(true)
   const [data, setData] = useState<WizardData>({
+    // Farm Selection
+    selectedFarmId: null,
     // Basic Info
     farmName: '',
     ownerName: '',
@@ -424,6 +431,7 @@ export default function AIWizardPage() {
   }
 
   const steps: { id: Step; title: string; icon: string }[] = [
+    { id: 'farm-selection', title: 'Select Farm', icon: '🏡' },
     { id: 'basic-info', title: 'Basic Info', icon: '📝' },
     { id: 'location', title: 'Location & Size', icon: '📍' },
     { id: 'climate', title: 'Climate Data', icon: '🌡️' },
@@ -536,6 +544,44 @@ export default function AIWizardPage() {
   }
 
   const handleNext = async () => {
+    // Handle farm selection
+    if (currentStep === 'farm-selection') {
+      // If user selected "Create new farm", move to basic-info
+      if (data.selectedFarmId === 'new') {
+        setIsTransitioning(true)
+        await new Promise((resolve) => setTimeout(resolve, 200))
+        setCurrentStep('basic-info')
+        setIsTransitioning(false)
+        return
+      }
+      // If user selected an existing farm, populate data and move to location
+      if (data.selectedFarmId) {
+        const selectedFarm = farmPlans.find((f) => f.id === data.selectedFarmId)
+        if (selectedFarm) {
+          setIsTransitioning(true)
+          await new Promise((resolve) => setTimeout(resolve, 200))
+          setData((prev) => ({
+            ...prev,
+            farmName: selectedFarm.name,
+            location: selectedFarm.location,
+            province: selectedFarm.province || '',
+            coordinates: {
+              lat: selectedFarm.coordinates?.lat?.toString() || '',
+              lng: selectedFarm.coordinates?.lng?.toString() || '',
+            },
+            farmSize: selectedFarm.farm_size?.toString() || '',
+            soilType: selectedFarm.soil_type || '',
+            waterSource: selectedFarm.water_source || '',
+          }))
+          setCurrentStep('location')
+          setIsTransitioning(false)
+          return
+        }
+      }
+      // If no selection, don't advance
+      return
+    }
+
     // Validate basic-info step
     if (currentStep === 'basic-info') {
       const newErrors: Record<string, string> = {}
@@ -559,6 +605,10 @@ export default function AIWizardPage() {
       }
     }
 
+    setIsTransitioning(true)
+    // Add a small delay for smooth transition
+    await new Promise((resolve) => setTimeout(resolve, 200))
+
     if (currentStep === 'timeline') {
       setCurrentStep('calculators')
     } else if (currentStep === 'calculators') {
@@ -570,10 +620,6 @@ export default function AIWizardPage() {
         setCurrentStep(steps[nextIndex].id)
       }
     }
-
-    setIsTransitioning(true)
-    // Add a small delay for smooth transition
-    await new Promise((resolve) => setTimeout(resolve, 200))
 
     setIsTransitioning(false)
   }
@@ -724,90 +770,135 @@ export default function AIWizardPage() {
               Create your complete farm business plan with AI-powered recommendations
             </p>
           </div>
-
-          {/* Enhanced Progress Indicator */}
           <div className="mb-8">
-            <div className="flex justify-between mb-4 relative">
-              {/* Connection Lines */}
-              <div className="absolute top-5 left-5 right-5 h-0.5 bg-gray-200 dark:bg-gray-700 z-0">
+            <div className="flex justify-between mb-4">
+              {steps.map((step, index) => (
                 <div
-                  className="h-full bg-primary-600 dark:bg-primary-500 transition-all duration-500 ease-out"
-                  style={{ width: `${(currentStepIndex / (steps.length - 1)) * 100}%` }}
-                />
-              </div>
-
-              {steps.map((step, index) => {
-                const isCompleted = index < currentStepIndex
-                const isCurrent = index === currentStepIndex
-                const isUpcoming = index > currentStepIndex
-
-                return (
+                  key={step.id}
+                  className={`flex flex-col items-center ${index <= currentStepIndex ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400 dark:text-gray-500'}`}
+                >
                   <div
-                    key={step.id}
-                    className={`flex flex-col items-center relative z-10 ${
-                      isCompleted || isCurrent
-                        ? 'text-primary-600 dark:text-primary-400'
-                        : 'text-gray-400 dark:text-gray-500'
-                    }`}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center text-xl mb-2 ${index < currentStepIndex ? 'bg-primary-600 text-white' : index === currentStepIndex ? 'bg-primary-100 dark:bg-primary-900/30 border-2 border-primary-600 dark:border-primary-500' : 'bg-gray-100 dark:bg-gray-700'}`}
                   >
-                    <div
-                      className={`w-12 h-12 rounded-full flex items-center justify-center text-lg mb-2 transition-all duration-300 ${
-                        isCompleted
-                          ? 'bg-primary-600 text-white shadow-lg transform scale-110'
-                          : isCurrent
-                            ? 'bg-primary-100 dark:bg-primary-900/30 border-2 border-primary-600 dark:border-primary-500 shadow-md'
-                            : 'bg-gray-100 dark:bg-gray-700'
-                      }`}
-                    >
-                      {isCompleted ? (
-                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      ) : (
-                        <span>{step.icon}</span>
-                      )}
-                    </div>
-                    <div className="text-center">
-                      <span className="text-xs font-medium hidden md:block">{step.title}</span>
-                      <span className="text-xs text-gray-500 dark:text-gray-400 block md:hidden">
-                        {index + 1}
-                      </span>
-                    </div>
+                    {index < currentStepIndex ? '✓' : step.icon}
                   </div>
-                )
-              })}
+                  <span className="text-xs text-center hidden md:block">{step.title}</span>
+                </div>
+              ))}
             </div>
-
-            {/* Progress Bar */}
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
+            <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
               <div
-                className="bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 h-full rounded-full transition-all duration-500 ease-out shadow-md"
+                className="bg-primary-600 dark:bg-primary-500 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${((currentStepIndex + 1) / steps.length) * 100}%` }}
-              >
-                <div className="h-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
-              </div>
-            </div>
-
-            {/* Step Counter */}
-            <div className="text-center mt-3">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Step {currentStepIndex + 1} of {steps.length}
-              </p>
+              ></div>
             </div>
           </div>
-
-          {/* Animated Step Content */}
           <div
             className={`min-h-[400px] transition-opacity duration-300 ${
               isTransitioning ? 'opacity-50' : 'opacity-100'
             }`}
           >
+            {currentStep === 'farm-selection' && (
+              <div>
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">🏡 Select Your Farm</h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  Choose an existing farm or create a new one
+                </p>
+                {loadingFarms ? (
+                  <div className="text-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600 dark:text-gray-300">Loading your farms...</p>
+                  </div>
+                ) : farmPlans.length === 0 ? (
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6">
+                    <div className="flex items-start">
+                      <div className="text-4xl mr-4">🌱</div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-200 mb-2">
+                          No farms yet
+                        </h3>
+                        <p className="text-blue-800 dark:text-blue-300 mb-4">
+                          You don&apos;t have any existing farms. Let&apos;s create your first farm
+                          plan!
+                        </p>
+                        <button
+                          onClick={() => {
+                            setData({ ...data, selectedFarmId: 'new' })
+                            setCurrentStep('basic-info')
+                          }}
+                          className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                        >
+                          Create New Farm
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {farmPlans.map((farm) => (
+                      <button
+                        key={farm.id}
+                        onClick={() => setData({ ...data, selectedFarmId: farm.id })}
+                        className={`w-full p-6 border-2 rounded-lg text-left transition-all ${
+                          data.selectedFarmId === farm.id
+                            ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                            : 'border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 bg-white dark:bg-gray-800'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                              {farm.name}
+                            </h3>
+                            <p className="text-gray-600 dark:text-gray-300 mb-2">
+                              📍 {farm.location}
+                              {farm.province && `, ${farm.province}`}
+                            </p>
+                            <div className="flex flex-wrap gap-2 text-sm text-gray-500 dark:text-gray-400">
+                              <span>{farm.farm_size} hectares</span>
+                              {farm.soil_type && <span>• {farm.soil_type}</span>}
+                              {farm.crop_count && farm.crop_count > 0 && (
+                                <span>• {farm.crop_count} crops</span>
+                              )}
+                            </div>
+                          </div>
+                          {data.selectedFarmId === farm.id && (
+                            <div className="text-primary-600 dark:text-primary-400 text-2xl">✓</div>
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => setData({ ...data, selectedFarmId: 'new' })}
+                      className={`w-full p-6 border-2 border-dashed rounded-lg text-left transition-all ${
+                        data.selectedFarmId === 'new'
+                          ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                          : 'border-gray-300 dark:border-gray-600 hover:border-primary-400 dark:hover:border-primary-500 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                      }`}
+                    >
+                      <div className="flex items-center">
+                        <div className="text-3xl mr-4">➕</div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                            Create New Farm
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300">
+                            Start a new farm plan from scratch
+                          </p>
+                        </div>
+                        {data.selectedFarmId === 'new' && (
+                          <div className="ml-auto text-primary-600 dark:text-primary-400 text-2xl">
+                            ✓
+                          </div>
+                        )}
+                      </div>
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
             {currentStep === 'basic-info' && (
-              <div className="animate-fadeIn">
+              <div>
                 <h2 className="text-2xl font-bold mb-4 dark:text-white">📝 Basic Information</h2>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
                   Tell us about your farm and contact information
@@ -920,7 +1011,7 @@ export default function AIWizardPage() {
               </div>
             )}
             {currentStep === 'location' && (
-              <div className="animate-fadeIn">
+              <div>
                 <h2 className="text-2xl font-bold mb-4 dark:text-white">📍 Location & Farm Size</h2>
                 <div className="space-y-4">
                   <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 rounded-lg p-4">
@@ -1250,7 +1341,7 @@ export default function AIWizardPage() {
               </div>
             )}
             {currentStep === 'climate' && (
-              <div className="animate-fadeIn">
+              <div>
                 <h2 className="text-2xl font-bold mb-4 dark:text-white">🌡️ Climate Information</h2>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
                   Help us understand your local climate conditions
@@ -1395,7 +1486,7 @@ export default function AIWizardPage() {
               </div>
             )}
             {currentStep === 'crops' && (
-              <div className="animate-fadeIn">
+              <div>
                 <h2 className="text-2xl font-bold mb-4 dark:text-white">
                   🌱 Crop Selection & Allocation
                 </h2>
@@ -1449,9 +1540,9 @@ export default function AIWizardPage() {
               </div>
             )}
             {currentStep === 'calculators' && (
-              <div className="animate-fadeIn">
+              <div>
                 <h2 className="text-2xl font-bold mb-4 dark:text-white">
-                  �� Financial Analysis Tools
+                  🧮 Financial Analysis Tools
                 </h2>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
                   Use our financial calculators to analyze your farm&apos;s profitability and
@@ -1583,74 +1674,27 @@ export default function AIWizardPage() {
               </div>
             )}
           </div>
-
-          {/* Navigation Buttons */}
-          <div className="flex justify-between mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex justify-between mt-8 pt-6 border-t">
             <button
               onClick={handlePrevious}
               disabled={currentStepIndex === 0}
-              className={`px-6 py-2 rounded-lg font-medium transition-all ${
-                currentStepIndex === 0
-                  ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed'
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
-              }`}
+              className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span className="flex items-center">
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-                Previous
-              </span>
+              Previous
             </button>
-
-            {currentStepIndex < steps.length - 1 ? (
+            {currentStep === 'recommendations' ? (
               <button
-                onClick={handleNext}
-                className="px-6 py-2 bg-primary-600 dark:bg-primary-500 text-white rounded-lg font-medium hover:bg-primary-700 dark:hover:bg-primary-600 transition-colors shadow-md hover:shadow-lg"
+                onClick={handleComplete}
+                className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
               >
-                <span className="flex items-center">
-                  Next
-                  <svg
-                    className="w-5 h-5 ml-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </span>
+                Complete & Go to Dashboard
               </button>
             ) : (
               <button
-                onClick={handleComplete}
-                className="px-6 py-2 bg-green-600 dark:bg-green-500 text-white rounded-lg font-medium hover:bg-green-700 dark:hover:bg-green-600 transition-colors shadow-md hover:shadow-lg"
+                onClick={handleNext}
+                className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
               >
-                <span className="flex items-center">
-                  Complete
-                  <svg
-                    className="w-5 h-5 ml-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                </span>
+                Next Step
               </button>
             )}
           </div>
