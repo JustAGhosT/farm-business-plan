@@ -1,0 +1,4 @@
+# Normalize line endings for CI to satisfy Prettier
+.github/workflows/*.yml text eol=lf
+middleware.ts text eol=lf
+
