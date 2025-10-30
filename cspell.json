@@ -1,0 +1,18 @@
+{
+	"version": "0.2",
+	"language": "en",
+	"words": [
+		"SonarCloud",
+		"sonarcloud",
+		"SonarSource",
+		"Dsonar",
+		"SONAR_TOKEN"
+	],
+	"ignorePaths": [
+		"node_modules",
+		"coverage",
+		"dist",
+		".next"
+	]
+}
+
