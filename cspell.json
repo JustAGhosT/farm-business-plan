@@ -6,7 +6,13 @@
 		"sonarcloud",
 		"SonarSource",
 		"Dsonar",
-		"SONAR_TOKEN"
+		"SONAR_TOKEN",
+		"fcli",
+		"Debricked",
+		"debricked",
+		"scancentral",
+		"DEBRICKED",
+		"APPVERSION"
 	],
 	"ignorePaths": [
 		"node_modules",
