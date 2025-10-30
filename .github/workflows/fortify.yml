@@ -50,9 +50,7 @@ jobs:
         uses: fortify/github-action@ef5539bf4bd9c45c0bd971978f635a69eae55297
         with:
           sast-scan: true # Run a SAST scan; if not specified or set to false, no SAST scan will be run
-          debricked-sca-scan:
-            true # For FoD, run an open-source scan as part of the SAST scan (ignored if SAST scan
-            # is disabled). For SSC, run a Debricked scan and import results into SSC.
+          debricked-sca-scan: true # For FoD, run an open-source scan as part of the SAST scan (ignored if SAST scan is disabled). For SSC, run a Debricked scan and import results into SSC.
         env:
           #############################################################
           ##### Fortify on Demand configuration
