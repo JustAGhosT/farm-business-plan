@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
 import { withAuth } from 'next-auth/middleware'
+import type { NextRequest } from 'next/server'
+import { NextResponse } from 'next/server'
 import { applyRateLimit, RATE_LIMITS } from './lib/rate-limit'
 
 // Public routes that don't require authentication
