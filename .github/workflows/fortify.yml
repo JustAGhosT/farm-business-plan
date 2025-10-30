@@ -15,8 +15,6 @@
 
 name: Fortify AST Scan (DISABLED)
 
-# Workflow temporarily disabled
-on: {}
 
 jobs:
   Fortify-AST-Scan:
