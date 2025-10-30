@@ -109,6 +109,7 @@ export default function AIWizardPage() {
 
   const [aiRecommendations, setAiRecommendations] = useState<string[]>([])
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isTransitioning, setIsTransitioning] = useState(false)
 
   // Email validation helper
   const validateEmail = (email: string): boolean => {
@@ -542,18 +543,23 @@ export default function AIWizardPage() {
     ]
   }
 
-  const handleNext = () => {
+  const handleNext = async () => {
     // Handle farm selection
     if (currentStep === 'farm-selection') {
       // If user selected "Create new farm", move to basic-info
       if (data.selectedFarmId === 'new') {
+        setIsTransitioning(true)
+        await new Promise((resolve) => setTimeout(resolve, 200))
         setCurrentStep('basic-info')
+        setIsTransitioning(false)
         return
       }
       // If user selected an existing farm, populate data and move to location
       if (data.selectedFarmId) {
         const selectedFarm = farmPlans.find((f) => f.id === data.selectedFarmId)
         if (selectedFarm) {
+          setIsTransitioning(true)
+          await new Promise((resolve) => setTimeout(resolve, 200))
           setData((prev) => ({
             ...prev,
             farmName: selectedFarm.name,
@@ -568,6 +574,7 @@ export default function AIWizardPage() {
             waterSource: selectedFarm.water_source || '',
           }))
           setCurrentStep('location')
+          setIsTransitioning(false)
           return
         }
       }
@@ -598,6 +605,10 @@ export default function AIWizardPage() {
       }
     }
 
+    setIsTransitioning(true)
+    // Add a small delay for smooth transition
+    await new Promise((resolve) => setTimeout(resolve, 200))
+
     if (currentStep === 'timeline') {
       setCurrentStep('calculators')
     } else if (currentStep === 'calculators') {
@@ -609,13 +620,20 @@ export default function AIWizardPage() {
         setCurrentStep(steps[nextIndex].id)
       }
     }
+
+    setIsTransitioning(false)
   }
 
-  const handlePrevious = () => {
+  const handlePrevious = async () => {
+    setIsTransitioning(true)
+    await new Promise((resolve) => setTimeout(resolve, 200))
+
     const prevIndex = currentStepIndex - 1
     if (prevIndex >= 0) {
       setCurrentStep(steps[prevIndex].id)
     }
+
+    setIsTransitioning(false)
   }
 
   const handleComplete = async () => {
@@ -775,7 +793,11 @@ export default function AIWizardPage() {
               ></div>
             </div>
           </div>
-          <div className="min-h-[400px]">
+          <div
+            className={`min-h-[400px] transition-opacity duration-300 ${
+              isTransitioning ? 'opacity-50' : 'opacity-100'
+            }`}
+          >
             {currentStep === 'farm-selection' && (
               <div>
                 <h2 className="text-2xl font-bold mb-4 dark:text-white">🏡 Select Your Farm</h2>
