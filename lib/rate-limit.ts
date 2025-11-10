@@ -117,9 +117,11 @@ export const rateLimiter = new RateLimiter()
  * Rate limit configuration presets
  */
 export const RATE_LIMITS = {
-  // Strict limit for authentication endpoints
+  // Reasonable limit for authentication endpoints
+  // Increased from 5 to 30 to accommodate NextAuth's multiple requests
+  // during normal authentication flows (signin, callback, session, etc.)
   auth: {
-    maxRequests: 5,
+    maxRequests: 30,
     windowMs: 15 * 60 * 1000, // 15 minutes
   },
   // Standard limit for API endpoints

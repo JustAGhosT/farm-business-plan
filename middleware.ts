@@ -26,9 +26,13 @@ export default function middleware(req: NextRequest) {
         req.method === 'GET' &&
         (pathname === '/api/auth/csrf' ||
           pathname === '/api/auth/providers' ||
-          pathname === '/api/auth/session')
+          pathname === '/api/auth/session' ||
+          pathname.startsWith('/api/auth/signin'))
 
-      if (isExemptAuthGet) {
+      // Also exempt callback endpoints (both GET and POST)
+      const isExemptAuthCallback = pathname.startsWith('/api/auth/callback')
+
+      if (isExemptAuthGet || isExemptAuthCallback) {
         return NextResponse.next()
       }
 
@@ -36,7 +40,7 @@ export default function middleware(req: NextRequest) {
       const isProd = process.env.NODE_ENV === 'production'
       const authConfig = isProd
         ? RATE_LIMITS.auth
-        : { maxRequests: 60, windowMs: 60 * 1000 }
+        : { maxRequests: 100, windowMs: 60 * 1000 } // 100 requests per minute in dev
 
       // Scope by path+IP so each auth sub-endpoint has its own bucket
       const scopeKey = pathname
