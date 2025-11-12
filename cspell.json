@@ -1,24 +1,18 @@
 {
-	"version": "0.2",
-	"language": "en",
-	"words": [
-		"SonarCloud",
-		"sonarcloud",
-		"SonarSource",
-		"Dsonar",
-		"SONAR_TOKEN",
-		"fcli",
-		"Debricked",
-		"debricked",
-		"scancentral",
-		"DEBRICKED",
-		"APPVERSION"
-	],
-	"ignorePaths": [
-		"node_modules",
-		"coverage",
-		"dist",
-		".next"
-	]
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "SonarCloud",
+    "sonarcloud",
+    "SonarSource",
+    "Dsonar",
+    "SONAR_TOKEN",
+    "fcli",
+    "Debricked",
+    "debricked",
+    "scancentral",
+    "DEBRICKED",
+    "APPVERSION"
+  ],
+  "ignorePaths": ["node_modules", "coverage", "dist", ".next"]
 }
-

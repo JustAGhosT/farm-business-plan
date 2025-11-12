@@ -61,9 +61,9 @@ jobs:
           # FOD_TENANT: ${{secrets.FOD_TENANT}} # Uncomment when enabling and configure repo secret
           # FOD_USER: ${{secrets.FOD_USER}} # Uncomment when enabling and configure repo secret
           # FOD_PASSWORD: ${{secrets.FOD_PAT}} # Uncomment when enabling and configure repo secret
-          FOD_TENANT: ""
-          FOD_USER: ""
-          FOD_PASSWORD: ""
+          FOD_TENANT: ''
+          FOD_USER: ''
+          FOD_PASSWORD: ''
           # FOD_CLIENT_ID: ${{secrets.FOD_CLIENT_ID}}
           # FOD_CLIENT_SECRET: ${{secrets.FOD_CLIENT_SECRET}}
           ### Optional configuration
@@ -98,10 +98,10 @@ jobs:
           # SSC_TOKEN: ${{secrets.SSC_TOKEN}} # Uncomment when enabling and configure repo secret
           # SC_SAST_TOKEN: ${{secrets.SC_CLIENT_AUTH_TOKEN}} # Uncomment when enabling and configure repo secret
           # DEBRICKED_TOKEN: ${{secrets.DEBRICKED_TOKEN}} # Uncomment when enabling and configure repo secret
-          SSC_URL: ""
-          SSC_TOKEN: ""
-          SC_SAST_TOKEN: ""
-          DEBRICKED_TOKEN: ""
+          SSC_URL: ''
+          SSC_TOKEN: ''
+          SC_SAST_TOKEN: ''
+          DEBRICKED_TOKEN: ''
           SC_SAST_SENSOR_VERSION: 24.4.0 # Sensor version to use for the scan, required if SAST scan is enabled
           ### Optional configuration
           # SSC_LOGIN_EXTRA_OPTS: --socket-timeout=60s     # Extra 'fcli ssc session login' options
