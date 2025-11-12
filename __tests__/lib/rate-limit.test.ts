@@ -55,7 +55,7 @@ describe('Rate Limiter', () => {
     it('should track different identifiers separately', () => {
       rateLimiter.checkLimit('user1', 2, 60000)
       rateLimiter.checkLimit('user1', 2, 60000)
-      
+
       // user1 should be at limit
       const result1 = rateLimiter.checkLimit('user1', 2, 60000)
       expect(result1.allowed).toBe(false)
@@ -136,9 +136,9 @@ describe('Rate Limiter', () => {
         headers: { 'x-forwarded-for': '192.168.1.1' },
       })
       const config = { maxRequests: 10, windowMs: 60000 }
-      
+
       const result = applyRateLimit(mockRequest, config)
-      
+
       expect(result.allowed).toBe(true)
       expect(result.headers['X-RateLimit-Limit']).toBe('10')
       expect(result.headers['X-RateLimit-Remaining']).toBe('9')
@@ -150,15 +150,15 @@ describe('Rate Limiter', () => {
         headers: { 'x-forwarded-for': '192.168.1.1' },
       })
       const config = { maxRequests: 2, windowMs: 60000 }
-      
+
       // Different scope keys should have separate limits
       applyRateLimit(mockRequest, config, undefined, 'scope1')
       applyRateLimit(mockRequest, config, undefined, 'scope1')
-      
+
       // scope1 should be at limit
       const result1 = applyRateLimit(mockRequest, config, undefined, 'scope1')
       expect(result1.allowed).toBe(false)
-      
+
       // scope2 should still be allowed
       const result2 = applyRateLimit(mockRequest, config, undefined, 'scope2')
       expect(result2.allowed).toBe(true)
@@ -169,10 +169,10 @@ describe('Rate Limiter', () => {
         headers: { 'x-forwarded-for': '192.168.1.1' },
       })
       const config = { maxRequests: 2, windowMs: 60000 }
-      
+
       applyRateLimit(mockRequest, config)
       applyRateLimit(mockRequest, config)
-      
+
       const result = applyRateLimit(mockRequest, config)
       expect(result.allowed).toBe(false)
       expect(result.headers['X-RateLimit-Remaining']).toBe('0')
@@ -184,16 +184,16 @@ describe('Rate Limiter', () => {
       // Add entries with short TTL
       rateLimiter.checkLimit('test1', 10, 100)
       rateLimiter.checkLimit('test2', 10, 100)
-      
+
       expect(rateLimiter.getCount('test1')).toBe(1)
       expect(rateLimiter.getCount('test2')).toBe(1)
-      
+
       // Wait for expiration
       await new Promise((resolve) => setTimeout(resolve, 150))
-      
+
       // Cleanup
       rateLimiter.cleanup()
-      
+
       // Counts should be reset
       expect(rateLimiter.getCount('test1')).toBe(0)
       expect(rateLimiter.getCount('test2')).toBe(0)

@@ -38,9 +38,7 @@ export default function middleware(req: NextRequest) {
 
       // In development, relax auth rate limits significantly
       const isProd = process.env.NODE_ENV === 'production'
-      const authConfig = isProd
-        ? RATE_LIMITS.auth
-        : { maxRequests: 100, windowMs: 60 * 1000 } // 100 requests per minute in dev
+      const authConfig = isProd ? RATE_LIMITS.auth : { maxRequests: 100, windowMs: 60 * 1000 } // 100 requests per minute in dev
 
       // Scope by path+IP so each auth sub-endpoint has its own bucket
       const scopeKey = pathname
