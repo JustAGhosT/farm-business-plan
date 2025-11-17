@@ -52,26 +52,8 @@ export const authOptions: NextAuthOptions = {
       },
       authorize: authorizeCredentials,
     }),
-    // GitHub OAuth (requires GITHUB_ID and GITHUB_SECRET env vars)
-    ...(process.env.GITHUB_ID && process.env.GITHUB_SECRET
-      ? [
-          GitHubProvider({
-            clientId: process.env.GITHUB_ID,
-            clientSecret: process.env.GITHUB_SECRET,
-          }),
-        ]
-      : []),
-    // Google OAuth (requires GOOGLE_ID and GOOGLE_SECRET env vars)
-    ...(process.env.NEXT_PUBLIC_GOOGLE_ENABLED === 'true' &&
-    process.env.GOOGLE_ID &&
-    process.env.GOOGLE_SECRET
-      ? [
-          GoogleProvider({
-            clientId: process.env.GOOGLE_ID,
-            clientSecret: process.env.GOOGLE_SECRET,
-          }),
-        ]
-      : []),
+    // OAuth providers - dynamically configured
+    ...getOAuthProviders(),
   ],
   pages: {
     signIn: '/auth/signin',
@@ -109,7 +91,7 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || 'fallback-secret-for-build-only-do-not-use-in-production',
   debug: process.env.NODE_ENV === 'development', // Enable debug mode in development
 }
 

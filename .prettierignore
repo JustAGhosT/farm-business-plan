@@ -18,6 +18,9 @@ npm-debug.log*
 # Git
 .git/
 
+# Cache directories
+.mypy_cache/
+
 # Other
 coverage/
 .DS_Store

@@ -159,6 +159,9 @@ export interface CropTemplate {
   }
   averagePricePerUnit?: number
   technicalNotes?: string
+  investment?: number
+  revenuePerHectare?: number
+  costsPerHectare?: number
 }
 
 // Market analysis types

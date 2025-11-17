@@ -1,10 +1,20 @@
 'use client'
 
-import { useState } from 'react'
+import { useFarmPlans } from '@/lib/hooks/useFarmPlans'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
-type Step = 'location' | 'climate' | 'crops' | 'financials' | 'timeline' | 'recommendations'
+type Step =
+  | 'farm-selection'
+  | 'basic-info'
+  | 'location'
+  | 'climate'
+  | 'crops'
+  | 'financials'
+  | 'timeline'
+  | 'calculators'
+  | 'recommendations'
 
 interface BoundaryPoint {
   lat: number
@@ -18,6 +28,14 @@ interface CropAllocation {
 }
 
 interface WizardData {
+  // Farm Selection
+  selectedFarmId: string | null
+  // Basic Info
+  farmName: string
+  ownerName: string
+  contactEmail: string
+  contactPhone: string
+  // Location & Size
   location: string
   province: string
   coordinates: {
@@ -27,6 +45,7 @@ interface WizardData {
   farmSize: string
   farmSizeSource: 'manual' | 'boundary' | 'calculated'
   boundaryPoints: BoundaryPoint[]
+  // Climate
   climate: {
     avgTempSummer: string
     avgTempWinter: string
@@ -34,8 +53,10 @@ interface WizardData {
     frostRisk: string
     autoPopulated: boolean
   }
+  // Crops
   crops: string[]
   cropAllocations: CropAllocation[]
+  // Financials
   budget: string
   timeline: string
   soilType: string
@@ -44,10 +65,21 @@ interface WizardData {
 
 export default function AIWizardPage() {
   const router = useRouter()
-  const [currentStep, setCurrentStep] = useState<Step>('location')
+  const { farmPlans, loading: loadingFarms } = useFarmPlans()
+  const [currentStep, setCurrentStep] = useState<Step>('farm-selection')
   const [isLoadingClimate, setIsLoadingClimate] = useState(false)
   const [isDetectingLocation, setIsDetectingLocation] = useState(false)
+  const [cropSuggestions, setCropSuggestions] = useState<any[]>([])
+  const [loadingSuggestions, setLoadingSuggestions] = useState(true)
   const [data, setData] = useState<WizardData>({
+    // Farm Selection
+    selectedFarmId: null,
+    // Basic Info
+    farmName: '',
+    ownerName: '',
+    contactEmail: '',
+    contactPhone: '',
+    // Location & Size
     location: '',
     province: '',
     coordinates: {
@@ -57,6 +89,7 @@ export default function AIWizardPage() {
     farmSize: '',
     farmSizeSource: 'manual',
     boundaryPoints: [],
+    // Climate
     climate: {
       avgTempSummer: '',
       avgTempWinter: '',
@@ -64,8 +97,10 @@ export default function AIWizardPage() {
       frostRisk: 'no',
       autoPopulated: false,
     },
+    // Crops
     crops: [],
     cropAllocations: [],
+    // Financials
     budget: '',
     timeline: '',
     soilType: '',
@@ -73,6 +108,38 @@ export default function AIWizardPage() {
   })
 
   const [aiRecommendations, setAiRecommendations] = useState<string[]>([])
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isTransitioning, setIsTransitioning] = useState(false)
+
+  // Email validation helper
+  const validateEmail = (email: string): boolean => {
+    if (!email) return true // Empty email is allowed (optional field)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (currentStep !== 'crops') return
+      try {
+        setLoadingSuggestions(true)
+        const response = await fetch(
+          `/api/suggest-crops?province=${data.province}&town=${data.location}`
+        )
+        if (!response.ok) {
+          throw new Error('Failed to fetch crop suggestions')
+        }
+        const res_data = await response.json()
+        setCropSuggestions(res_data.suggestions)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setLoadingSuggestions(false)
+      }
+    }
+
+    fetchSuggestions()
+  }, [currentStep, data.province, data.location])
 
   // South African cities/towns for autocomplete
   const southAfricanLocations = [
@@ -124,54 +191,36 @@ export default function AIWizardPage() {
     'Brits', // North West
   ]
 
-  // Calculate farm size from boundary points using the Shoelace formula
+  // Calculate farm size from boundary points
   const calculateAreaFromBoundary = (points: BoundaryPoint[]): number => {
     if (points.length < 3) return 0
-
     let area = 0
     const n = points.length
-
     for (let i = 0; i < n; i++) {
       const j = (i + 1) % n
       area += points[i].lat * points[j].lng
       area -= points[j].lat * points[i].lng
     }
-
     area = Math.abs(area) / 2
-
-    // Convert from square degrees to hectares (approximate)
-    // 1 degree latitude ≈ 111 km, 1 degree longitude ≈ 111 * cos(latitude) km
     const avgLat = points.reduce((sum, p) => sum + p.lat, 0) / n
-    const latFactor = 111 * 1000 // meters per degree
+    const latFactor = 111 * 1000
     const lngFactor = 111 * 1000 * Math.cos((avgLat * Math.PI) / 180)
-
     const areaInSquareMeters = area * latFactor * lngFactor
-    const hectares = areaInSquareMeters / 10000
-
-    return hectares
+    return areaInSquareMeters / 10000
   }
 
-  // Detect town name from coordinates using reverse geocoding
+  // Detect town name from coordinates
   const detectTownFromCoordinates = async (lat: number, lng: number): Promise<string> => {
     try {
-      // Use Open-Meteo Geocoding API (free, no API key required)
       const response = await fetch(
         `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lng}`
       )
-
-      if (!response.ok) {
-        throw new Error('Reverse geocoding failed')
-      }
-
+      if (!response.ok) throw new Error('Reverse geocoding failed')
       const data = await response.json()
-
-      // Get the most relevant result
       if (data.results && data.results.length > 0) {
         const result = data.results[0]
-        // Return city/town name or admin region
         return result.name || result.admin1 || 'Unknown location'
       }
-
       return 'Unknown location'
     } catch (error) {
       console.error('Error in reverse geocoding:', error)
@@ -183,32 +232,20 @@ export default function AIWizardPage() {
   const detectLocationViaIP = async () => {
     setIsDetectingLocation(true)
     try {
-      // Use ipapi.co free API (no key required, 30k requests/month)
       const response = await fetch('https://ipapi.co/json/')
-
-      if (!response.ok) {
-        throw new Error('IP location detection failed')
-      }
-
+      if (!response.ok) throw new Error('IP location detection failed')
       const ipData = await response.json()
-
-      // Check if it's in South Africa
       if (ipData.country_code === 'ZA') {
         const lat = ipData.latitude
         const lng = ipData.longitude
         const detectedProvince = detectProvinceFromCoordinates(lat, lng)
-
         setData((prev) => ({
           ...prev,
-          coordinates: {
-            lat: lat.toString(),
-            lng: lng.toString(),
-          },
+          coordinates: { lat: lat.toString(), lng: lng.toString() },
           province: detectedProvince || ipData.region || '',
           location: ipData.city || 'Unknown location',
         }))
       } else {
-        // Not in South Africa, just use what we got
         setData((prev) => ({
           ...prev,
           location: ipData.city || 'Unknown location',
@@ -223,123 +260,69 @@ export default function AIWizardPage() {
     }
   }
 
-  // Auto-detect user's current location using browser geolocation API
+  // Auto-detect user's current location
   const detectCurrentLocation = () => {
     if (!navigator.geolocation) {
       alert('Geolocation is not supported by your browser')
       return
     }
-
     setIsDetectingLocation(true)
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const lat = position.coords.latitude
         const lng = position.coords.longitude
-
-        // Try to reverse geocode to get town name
         const townName = await detectTownFromCoordinates(lat, lng)
         const detectedProvince = detectProvinceFromCoordinates(lat, lng)
-
         setData((prev) => ({
           ...prev,
-          coordinates: {
-            lat: lat.toString(),
-            lng: lng.toString(),
-          },
+          coordinates: { lat: lat.toString(), lng: lng.toString() },
           province: detectedProvince,
           location: townName,
         }))
-
         setIsDetectingLocation(false)
       },
       (error) => {
         console.error('Error getting location:', error)
-        // Fallback to IP-based detection
-        console.log('Falling back to IP-based location detection...')
         detectLocationViaIP()
       },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0,
-      }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     )
   }
 
   // Detect South African province from coordinates
   const detectProvinceFromCoordinates = (lat: number, lng: number): string => {
-    // Approximate province boundaries for South Africa
-    // Northern provinces (Limpopo)
     if (lat < -22 && lat > -25 && lng > 28 && lng < 31) return 'Limpopo'
-    // Mpumalanga
     if (lat < -24 && lat > -27 && lng > 29 && lng < 32) return 'Mpumalanga'
-    // Gauteng
     if (lat < -25.5 && lat > -26.5 && lng > 27.5 && lng < 29) return 'Gauteng'
-    // KwaZulu-Natal
     if (lat < -27 && lat > -31 && lng > 29 && lng < 33) return 'KwaZulu-Natal'
-    // Western Cape
     if (lat < -32 && lat > -35 && lng > 18 && lng < 24) return 'Western Cape'
-    // Eastern Cape
     if (lat < -30 && lat > -34 && lng > 24 && lng < 30) return 'Eastern Cape'
-    // Northern Cape
     if (lat < -27 && lat > -31 && lng > 20 && lng < 25) return 'Northern Cape'
-    // Free State
     if (lat < -27 && lat > -30 && lng > 26 && lng < 30) return 'Free State'
-    // North West
     if (lat < -25 && lat > -28 && lng > 24 && lng < 28) return 'North West'
-
-    // Default - couldn't determine
     return ''
   }
 
-  // Fetch climate data based on location
+  // Fetch climate data
   const fetchClimateData = async () => {
-    if (!data.coordinates.lat || !data.coordinates.lng) {
-      // Try to geocode the location first
-      if (data.location && data.province) {
-        setIsLoadingClimate(true)
-        try {
-          // Simulated climate data based on South African provinces
-          const climateData = getClimateDataForProvince(data.province, data.location)
-
-          setData({
-            ...data,
-            climate: {
-              ...climateData,
-              autoPopulated: true,
-            },
-          })
-        } catch (error) {
-          console.error('Error fetching climate data:', error)
-        } finally {
-          setIsLoadingClimate(false)
-        }
-      }
-    } else {
-      setIsLoadingClimate(true)
-      try {
-        // Use coordinates to get more accurate climate data
-        const climateData = getClimateDataForCoordinates(
-          parseFloat(data.coordinates.lat),
-          parseFloat(data.coordinates.lng)
-        )
-
-        setData({
-          ...data,
-          climate: {
-            ...climateData,
-            autoPopulated: true,
-          },
-        })
-      } catch (error) {
-        console.error('Error fetching climate data:', error)
-      } finally {
-        setIsLoadingClimate(false)
-      }
+    setIsLoadingClimate(true)
+    try {
+      const climateData =
+        data.coordinates.lat && data.coordinates.lng
+          ? getClimateDataForCoordinates(
+              parseFloat(data.coordinates.lat),
+              parseFloat(data.coordinates.lng)
+            )
+          : getClimateDataForProvince(data.province, data.location)
+      setData({ ...data, climate: { ...climateData, autoPopulated: true } })
+    } catch (error) {
+      console.error('Error fetching climate data:', error)
+    } finally {
+      setIsLoadingClimate(false)
     }
   }
 
-  // Simulated climate data function (in production, this would call a real API)
+  // Simulated climate data
   const getClimateDataForProvince = (province: string, location: string) => {
     const climateDB: Record<string, any> = {
       Limpopo: {
@@ -397,7 +380,6 @@ export default function AIWizardPage() {
         frostRisk: 'yes',
       },
     }
-
     return (
       climateDB[province] || {
         avgTempSummer: '26',
@@ -409,234 +391,227 @@ export default function AIWizardPage() {
   }
 
   const getClimateDataForCoordinates = (lat: number, lng: number) => {
-    // Simulated based on latitude (more sophisticated in production)
     const avgLat = Math.abs(lat)
-
-    if (avgLat < 26) {
-      // Northern, hotter
-      return {
-        avgTempSummer: '30',
-        avgTempWinter: '18',
-        annualRainfall: '450',
-        frostRisk: 'no',
-      }
-    } else if (avgLat < 28) {
-      return {
-        avgTempSummer: '27',
-        avgTempWinter: '14',
-        annualRainfall: '600',
-        frostRisk: 'yes',
-      }
-    } else {
-      // Southern, cooler
-      return {
-        avgTempSummer: '24',
-        avgTempWinter: '12',
-        annualRainfall: '550',
-        frostRisk: 'yes',
-      }
-    }
+    if (avgLat < 26)
+      return { avgTempSummer: '30', avgTempWinter: '18', annualRainfall: '450', frostRisk: 'no' }
+    else if (avgLat < 28)
+      return { avgTempSummer: '27', avgTempWinter: '14', annualRainfall: '600', frostRisk: 'yes' }
+    else
+      return { avgTempSummer: '24', avgTempWinter: '12', annualRainfall: '550', frostRisk: 'yes' }
   }
 
-  // Autopopulate budget recommendations based on farm size and crops
+  // Get budget recommendations
   const getRecommendedBudget = () => {
     const size = parseFloat(data.farmSize) || 0
     const cropCount = data.crops.length
-
     if (size === 0 || cropCount === 0) return ''
-
-    // Base cost per hectare varies by crop complexity
-    let costPerHectare = 50000 // Base for simple crops
-
-    if (data.crops.includes('dragon-fruit')) {
-      costPerHectare = 150000 // High infrastructure cost
-    } else if (data.crops.includes('moringa') || data.crops.includes('lucerne')) {
-      costPerHectare = 70000 // Medium cost
-    } else if (data.crops.includes('vegetables')) {
-      costPerHectare = 80000 // Medium-high for intensive management
-    }
-
-    const estimatedBudget = Math.round(size * costPerHectare)
-    return estimatedBudget.toString()
+    let costPerHectare = 50000
+    if (data.crops.includes('dragon-fruit')) costPerHectare = 150000
+    else if (data.crops.includes('moringa') || data.crops.includes('lucerne'))
+      costPerHectare = 70000
+    else if (data.crops.includes('vegetables')) costPerHectare = 80000
+    return Math.round(size * costPerHectare).toString()
   }
 
-  // Autopopulate soil and water recommendations
+  // Get soil and water recommendations
   const getSoilRecommendation = () => {
-    if (data.province === 'Limpopo' || data.province === 'Northern Cape') {
+    if (data.province === 'Limpopo' || data.province === 'Northern Cape')
       return 'Sandy loam with low organic matter - may require amendments'
-    } else if (data.province === 'KwaZulu-Natal') {
-      return 'Clay-rich soils with good water retention'
-    } else if (data.province === 'Western Cape') {
-      return 'Sandy or alluvial soils - good drainage'
-    }
+    else if (data.province === 'KwaZulu-Natal') return 'Clay-rich soils with good water retention'
+    else if (data.province === 'Western Cape') return 'Sandy or alluvial soils - good drainage'
     return 'Mixed soil types - conduct soil test for specifics'
   }
 
   const getWaterSourceRecommendation = () => {
     const rainfall = parseInt(data.climate.annualRainfall) || 0
-
-    if (rainfall < 400) {
-      return 'Borehole or municipal water essential - very low rainfall'
-    } else if (rainfall < 600) {
-      return 'Supplementary irrigation required - moderate rainfall'
-    } else if (rainfall > 900) {
-      return 'Rainwater harvesting viable - high rainfall area'
-    }
+    if (rainfall < 400) return 'Borehole or municipal water essential - very low rainfall'
+    else if (rainfall < 600) return 'Supplementary irrigation required - moderate rainfall'
+    else if (rainfall > 900) return 'Rainwater harvesting viable - high rainfall area'
     return 'Mixed sources recommended - seasonal variation'
   }
 
   const steps: { id: Step; title: string; icon: string }[] = [
+    { id: 'farm-selection', title: 'Select Farm', icon: '🏡' },
+    { id: 'basic-info', title: 'Basic Info', icon: '📝' },
     { id: 'location', title: 'Location & Size', icon: '📍' },
     { id: 'climate', title: 'Climate Data', icon: '🌡️' },
     { id: 'crops', title: 'Crop Selection', icon: '🌱' },
     { id: 'financials', title: 'Budget & Goals', icon: '💰' },
     { id: 'timeline', title: 'Timeline', icon: '📅' },
+    { id: 'calculators', title: 'Financial Analysis', icon: '🧮' },
     { id: 'recommendations', title: 'AI Recommendations', icon: '🤖' },
   ]
 
   const currentStepIndex = steps.findIndex((s) => s.id === currentStep)
 
   const generateAIRecommendations = () => {
-    // Simulated AI recommendations based on input data
     const recommendations: string[] = []
-
-    // Climate-based recommendations
     if (parseInt(data.climate.annualRainfall) < 600) {
       recommendations.push(
-        'Low rainfall area detected. Consider drought-resistant crops like Moringa, Dragon Fruit, or dry-land crops.'
+        'Low rainfall area detected. Consider drought-resistant crops like Moringa, Dragon Fruit, or dry-land crops.',
+        'Implement drip irrigation for water efficiency.'
       )
-      recommendations.push('Implement drip irrigation for water efficiency.')
     } else if (parseInt(data.climate.annualRainfall) > 1000) {
       recommendations.push(
         'High rainfall area. Perfect for crops like Lucerne, vegetables, and high-water-demand crops.'
       )
     }
-
-    // Temperature-based recommendations
     if (parseInt(data.climate.avgTempSummer) > 30) {
       recommendations.push(
-        'Hot climate detected. Dragon Fruit and heat-tolerant crops recommended.'
+        'Hot climate detected. Dragon Fruit and heat-tolerant crops recommended.',
+        'Consider shade structures for sensitive crops.'
       )
-      recommendations.push('Consider shade structures for sensitive crops.')
     }
-
     if (data.climate.frostRisk === 'yes') {
       recommendations.push(
         'Frost risk identified. Avoid frost-sensitive crops or implement frost protection measures.'
       )
     }
-
-    // Budget-based recommendations
     const budget = parseInt(data.budget)
     if (budget < 100000) {
       recommendations.push(
-        'Starting budget: Focus on low-capital crops like leafy vegetables, herbs (Basil), or small-scale Moringa.'
+        'Starting budget: Focus on low-capital crops like leafy vegetables, herbs (Basil), or small-scale Moringa.',
+        'Consider phased investment approach - start small and expand.'
       )
-      recommendations.push('Consider phased investment approach - start small and expand.')
     } else if (budget < 300000) {
       recommendations.push(
-        'Medium budget: You can start with Dragon Fruit (1-2 hectares) or mixed vegetable production.'
-      )
-      recommendations.push(
+        'Medium budget: You can start with Dragon Fruit (1-2 hectares) or mixed vegetable production.',
         'Allocate 20% for infrastructure, 30% for inputs, 50% for working capital.'
       )
     } else {
       recommendations.push(
-        'Strong budget: Consider diversified operation with multiple high-value crops.'
+        'Strong budget: Consider diversified operation with multiple high-value crops.',
+        'Invest in quality infrastructure and irrigation systems.'
       )
-      recommendations.push('Invest in quality infrastructure and irrigation systems.')
     }
-
-    // Crop-specific recommendations
     if (data.crops.includes('dragon-fruit')) {
       recommendations.push(
-        'Dragon Fruit: Expected ROI of 40-60% annually. 18-24 months to first harvest.'
-      )
-      recommendations.push(
+        'Dragon Fruit: Expected ROI of 40-60% annually. 18-24 months to first harvest.',
         'Recommended tools: ROI Calculator, Break-Even Analysis, Investment Calculator'
       )
     }
-
     if (data.crops.includes('moringa')) {
       recommendations.push(
-        'Moringa: Fast-growing, 6-8 months to first harvest. Lower capital requirements.'
+        'Moringa: Fast-growing, 6-8 months to first harvest. Lower capital requirements.',
+        'Consider value-added products (powder, tea) for higher margins.'
       )
-      recommendations.push('Consider value-added products (powder, tea) for higher margins.')
     }
-
     if (data.crops.includes('vegetables')) {
       recommendations.push(
-        'Vegetables: Quick returns (2-4 months), but require intensive management.'
+        'Vegetables: Quick returns (2-4 months), but require intensive management.',
+        'Focus on high-demand local varieties for better market access.'
       )
-      recommendations.push('Focus on high-demand local varieties for better market access.')
     }
-
-    // Farm size recommendations
     const size = parseFloat(data.farmSize)
     if (size < 1) {
-      recommendations.push('Small farm: Focus on high-value crops per square meter.')
-      recommendations.push('Consider intensive methods like hydroponics or vertical farming.')
+      recommendations.push(
+        'Small farm: Focus on high-value crops per square meter.',
+        'Consider intensive methods like hydroponics or vertical farming.'
+      )
     } else if (size > 5) {
-      recommendations.push('Larger farm: Implement crop rotation and diversification strategies.')
-      recommendations.push('Consider mechanization to reduce labor costs.')
+      recommendations.push(
+        'Larger farm: Implement crop rotation and diversification strategies.',
+        'Consider mechanization to reduce labor costs.'
+      )
     }
-
-    // Timeline recommendations
     if (data.timeline === 'immediate') {
       recommendations.push(
-        'Immediate start: Begin with quick-growing crops (vegetables, herbs) for cash flow.'
+        'Immediate start: Begin with quick-growing crops (vegetables, herbs) for cash flow.',
+        'Use revenue from fast crops to fund longer-term investments.'
       )
-      recommendations.push('Use revenue from fast crops to fund longer-term investments.')
     }
-
-    // Tool recommendations
-    recommendations.push('Next steps: Use Financial Calculators to validate projections.')
-    recommendations.push('Visit Templates Library to explore detailed crop profiles.')
-    recommendations.push('Review Operations Manual for daily management guidelines.')
-
+    recommendations.push(
+      'Next steps: Use Financial Calculators to validate projections.',
+      'Visit Templates Library to explore detailed crop profiles.',
+      'Review Operations Manual for daily management guidelines.'
+    )
     setAiRecommendations(recommendations)
   }
 
   const generateAutomationSuggestions = (): string[] => {
-    const suggestions: string[] = []
-
-    // Suggest automations based on context
-    suggestions.push(
-      '🤖 **Weather Integration**: Connect to real-time weather APIs (OpenWeatherMap, WeatherAPI) for accurate forecasts and alerts'
-    )
-    suggestions.push(
-      '📊 **Market Price Tracking**: Automatically fetch current market prices for your crops to optimize selling decisions'
-    )
-    suggestions.push(
-      '💧 **Smart Irrigation**: Implement IoT sensors to automate irrigation based on soil moisture and weather forecasts'
-    )
-    suggestions.push(
-      '📅 **Task Scheduling**: Set up automated reminders for planting, fertilizing, and harvesting based on crop calendars'
-    )
-    suggestions.push(
-      '📈 **Yield Prediction**: Use historical data and ML models to predict harvest yields and plan accordingly'
-    )
-    suggestions.push(
-      '🌱 **Pest & Disease Alerts**: Integrate climate-based pest prediction systems for early warning'
-    )
-    suggestions.push(
-      '💰 **Expense Tracking**: Connect bank accounts or use receipt scanning to automatically track farm expenses'
-    )
-    suggestions.push(
-      '📱 **Mobile Notifications**: Enable push notifications for critical farm events (frost warnings, irrigation needs, harvest time)'
-    )
-    suggestions.push(
-      '🔄 **Crop Rotation Planning**: Auto-generate optimal crop rotation schedules based on soil health and market demand'
-    )
-    suggestions.push(
-      '📊 **Inventory Management**: Track seed, fertilizer, and equipment inventory with low-stock alerts'
-    )
-
-    return suggestions
+    return [
+      '🤖 **Weather Integration**: Connect to real-time weather APIs for accurate forecasts and alerts',
+      '📊 **Market Price Tracking**: Automatically fetch current market prices for your crops',
+      '💧 **Smart Irrigation**: Implement IoT sensors to automate irrigation',
+      '📅 **Task Scheduling**: Set up automated reminders for planting, fertilizing, and harvesting',
+      '📈 **Yield Prediction**: Use historical data and ML models to predict harvest yields',
+      '🌱 **Pest & Disease Alerts**: Integrate climate-based pest prediction systems',
+      '💰 **Expense Tracking**: Connect bank accounts or use receipt scanning to automatically track farm expenses',
+      '📱 **Mobile Notifications**: Enable push notifications for critical farm events',
+      '🔄 **Crop Rotation Planning**: Auto-generate optimal crop rotation schedules',
+      '📊 **Inventory Management**: Track seed, fertilizer, and equipment inventory with low-stock alerts',
+    ]
   }
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    // Handle farm selection
+    if (currentStep === 'farm-selection') {
+      // If user selected "Create new farm", move to basic-info
+      if (data.selectedFarmId === 'new') {
+        setIsTransitioning(true)
+        await new Promise((resolve) => setTimeout(resolve, 200))
+        setCurrentStep('basic-info')
+        setIsTransitioning(false)
+        return
+      }
+      // If user selected an existing farm, populate data and move to location
+      if (data.selectedFarmId) {
+        const selectedFarm = farmPlans.find((f) => f.id === data.selectedFarmId)
+        if (selectedFarm) {
+          setIsTransitioning(true)
+          await new Promise((resolve) => setTimeout(resolve, 200))
+          setData((prev) => ({
+            ...prev,
+            farmName: selectedFarm.name,
+            location: selectedFarm.location,
+            province: selectedFarm.province || '',
+            coordinates: {
+              lat: selectedFarm.coordinates?.lat?.toString() || '',
+              lng: selectedFarm.coordinates?.lng?.toString() || '',
+            },
+            farmSize: selectedFarm.farm_size?.toString() || '',
+            soilType: selectedFarm.soil_type || '',
+            waterSource: selectedFarm.water_source || '',
+          }))
+          setCurrentStep('location')
+          setIsTransitioning(false)
+          return
+        }
+      }
+      // If no selection, don't advance
+      return
+    }
+
+    // Validate basic-info step
+    if (currentStep === 'basic-info') {
+      const newErrors: Record<string, string> = {}
+
+      if (!data.farmName.trim()) {
+        newErrors.farmName = 'Farm name is required'
+      }
+
+      if (!data.ownerName.trim()) {
+        newErrors.ownerName = 'Owner/Manager name is required'
+      }
+
+      if (data.contactEmail && !validateEmail(data.contactEmail)) {
+        newErrors.contactEmail = 'Please enter a valid email address'
+      }
+
+      setErrors(newErrors)
+
+      if (Object.keys(newErrors).length > 0) {
+        return // Don't advance if there are errors
+      }
+    }
+
+    setIsTransitioning(true)
+    // Add a small delay for smooth transition
+    await new Promise((resolve) => setTimeout(resolve, 200))
+
     if (currentStep === 'timeline') {
+      setCurrentStep('calculators')
+    } else if (currentStep === 'calculators') {
       generateAIRecommendations()
       setCurrentStep('recommendations')
     } else {
@@ -645,35 +620,36 @@ export default function AIWizardPage() {
         setCurrentStep(steps[nextIndex].id)
       }
     }
+
+    setIsTransitioning(false)
   }
 
-  const handlePrevious = () => {
+  const handlePrevious = async () => {
+    setIsTransitioning(true)
+    await new Promise((resolve) => setTimeout(resolve, 200))
+
     const prevIndex = currentStepIndex - 1
     if (prevIndex >= 0) {
       setCurrentStep(steps[prevIndex].id)
     }
+
+    setIsTransitioning(false)
   }
 
   const handleComplete = async () => {
     try {
-      // Save to localStorage as backup
       localStorage.setItem('aiWizardData', JSON.stringify(data))
       localStorage.setItem('aiRecommendations', JSON.stringify(aiRecommendations))
-
-      // Create farm plan via API
       const farmPlanResponse = await fetch('/api/farm-plans', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: `${data.location} Farm Plan`,
+          name: data.farmName || `${data.location} Farm Plan`,
           location: data.location,
           province: data.province,
           coordinates:
             data.coordinates.lat && data.coordinates.lng
-              ? {
-                  lat: parseFloat(data.coordinates.lat),
-                  lng: parseFloat(data.coordinates.lng),
-                }
+              ? { lat: parseFloat(data.coordinates.lat), lng: parseFloat(data.coordinates.lng) }
               : undefined,
           farm_size: parseFloat(data.farmSize),
           soil_type: data.soilType,
@@ -681,13 +657,9 @@ export default function AIWizardPage() {
           status: 'draft',
         }),
       })
-
       const farmPlanResult = await farmPlanResponse.json()
-
       if (farmPlanResult.success && farmPlanResult.data) {
         const farmPlanId = farmPlanResult.data.id
-
-        // Create climate data
         if (
           data.climate.avgTempSummer &&
           data.climate.avgTempWinter &&
@@ -706,10 +678,8 @@ export default function AIWizardPage() {
             }),
           })
         }
-
-        // Create crop plans
         for (const cropId of data.crops) {
-          const cropOption = cropOptions.find((c) => c.id === cropId)
+          const cropOption = cropSuggestions.find((c) => c.id === cropId)
           if (cropOption) {
             const cropPlanResponse = await fetch('/api/crop-plans', {
               method: 'POST',
@@ -717,12 +687,10 @@ export default function AIWizardPage() {
               body: JSON.stringify({
                 farm_plan_id: farmPlanId,
                 crop_name: cropOption.name,
-                planting_area: parseFloat(data.farmSize) / data.crops.length, // Equal distribution
+                planting_area: parseFloat(data.farmSize) / data.crops.length,
                 status: 'planned',
               }),
             })
-
-            // If crop plan created, add financial data
             const cropPlanResult = await cropPlanResponse.json()
             if (cropPlanResult.success && cropPlanResult.data && data.budget) {
               await fetch('/api/financial-data', {
@@ -736,30 +704,24 @@ export default function AIWizardPage() {
             }
           }
         }
-
-        // Create AI recommendations
         for (const recommendation of aiRecommendations) {
-          // Extract category from recommendation text
           let category = 'general'
           if (
             recommendation.toLowerCase().includes('irrigation') ||
             recommendation.toLowerCase().includes('water')
-          ) {
+          )
             category = 'irrigation'
-          } else if (
+          else if (
             recommendation.toLowerCase().includes('budget') ||
             recommendation.toLowerCase().includes('cost')
-          ) {
+          )
             category = 'financial'
-          } else if (recommendation.toLowerCase().includes('crop')) {
-            category = 'crop-selection'
-          } else if (
+          else if (recommendation.toLowerCase().includes('crop')) category = 'crop-selection'
+          else if (
             recommendation.toLowerCase().includes('climate') ||
             recommendation.toLowerCase().includes('frost')
-          ) {
+          )
             category = 'climate'
-          }
-
           await fetch('/api/ai-recommendations', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -771,36 +733,23 @@ export default function AIWizardPage() {
             }),
           })
         }
-
-        // Navigate to dashboard
         router.push('/tools/dashboard')
       } else {
         console.error('Failed to create farm plan:', farmPlanResult.error)
-        // Still navigate to dashboard with localStorage data
         router.push('/tools/dashboard')
       }
     } catch (error) {
       console.error('Error saving farm plan:', error)
-      // Still navigate to dashboard with localStorage data
       router.push('/tools/dashboard')
     }
   }
 
-  const cropOptions = [
-    { id: 'dragon-fruit', name: 'Dragon Fruit', icon: '🐉' },
-    { id: 'moringa', name: 'Moringa', icon: '🌿' },
-    { id: 'lucerne', name: 'Lucerne (Alfalfa)', icon: '🌾' },
-    { id: 'vegetables', name: 'Vegetables', icon: '🥬' },
-    { id: 'fruits', name: 'Other Fruits', icon: '🍓' },
-    { id: 'herbs', name: 'Herbs', icon: '🌱' },
-  ]
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <Link
           href="/"
-          className="inline-flex items-center text-primary-600 hover:text-primary-700 mb-6 transition-colors"
+          className="inline-flex items-center text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 mb-6 transition-colors"
         >
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -812,31 +761,24 @@ export default function AIWizardPage() {
           </svg>
           Back to Home
         </Link>
-
-        <div className="bg-white rounded-lg shadow-lg p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">🤖 AI Farm Planning Wizard</h1>
-            <p className="text-gray-600">
-              Get personalized recommendations based on your location, climate, and goals
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              🤖 AI Farm Planning Wizard
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300">
+              Create your complete farm business plan with AI-powered recommendations
             </p>
           </div>
-
-          {/* Progress Bar */}
           <div className="mb-8">
             <div className="flex justify-between mb-4">
               {steps.map((step, index) => (
                 <div
                   key={step.id}
-                  className={`flex flex-col items-center ${index <= currentStepIndex ? 'text-primary-600' : 'text-gray-400'}`}
+                  className={`flex flex-col items-center ${index <= currentStepIndex ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400 dark:text-gray-500'}`}
                 >
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center text-xl mb-2 ${
-                      index < currentStepIndex
-                        ? 'bg-primary-600 text-white'
-                        : index === currentStepIndex
-                          ? 'bg-primary-100 border-2 border-primary-600'
-                          : 'bg-gray-100'
-                    }`}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center text-xl mb-2 ${index < currentStepIndex ? 'bg-primary-600 text-white' : index === currentStepIndex ? 'bg-primary-100 dark:bg-primary-900/30 border-2 border-primary-600 dark:border-primary-500' : 'bg-gray-100 dark:bg-gray-700'}`}
                   >
                     {index < currentStepIndex ? '✓' : step.icon}
                   </div>
@@ -844,26 +786,239 @@ export default function AIWizardPage() {
                 </div>
               ))}
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
               <div
-                className="bg-primary-600 h-2 rounded-full transition-all duration-300"
+                className="bg-primary-600 dark:bg-primary-500 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${((currentStepIndex + 1) / steps.length) * 100}%` }}
               ></div>
             </div>
           </div>
-
-          {/* Step Content */}
-          <div className="min-h-[400px]">
+          <div
+            className={`min-h-[400px] transition-opacity duration-300 ${
+              isTransitioning ? 'opacity-50' : 'opacity-100'
+            }`}
+          >
+            {currentStep === 'farm-selection' && (
+              <div>
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">🏡 Select Your Farm</h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  Choose an existing farm or create a new one
+                </p>
+                {loadingFarms ? (
+                  <div className="text-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600 dark:text-gray-300">Loading your farms...</p>
+                  </div>
+                ) : farmPlans.length === 0 ? (
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6">
+                    <div className="flex items-start">
+                      <div className="text-4xl mr-4">🌱</div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-200 mb-2">
+                          No farms yet
+                        </h3>
+                        <p className="text-blue-800 dark:text-blue-300 mb-4">
+                          You don&apos;t have any existing farms. Let&apos;s create your first farm
+                          plan!
+                        </p>
+                        <button
+                          onClick={() => {
+                            setData({ ...data, selectedFarmId: 'new' })
+                            setCurrentStep('basic-info')
+                          }}
+                          className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                        >
+                          Create New Farm
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {farmPlans.map((farm) => (
+                      <button
+                        key={farm.id}
+                        onClick={() => setData({ ...data, selectedFarmId: farm.id })}
+                        className={`w-full p-6 border-2 rounded-lg text-left transition-all ${
+                          data.selectedFarmId === farm.id
+                            ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                            : 'border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 bg-white dark:bg-gray-800'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                              {farm.name}
+                            </h3>
+                            <p className="text-gray-600 dark:text-gray-300 mb-2">
+                              📍 {farm.location}
+                              {farm.province && `, ${farm.province}`}
+                            </p>
+                            <div className="flex flex-wrap gap-2 text-sm text-gray-500 dark:text-gray-400">
+                              <span>{farm.farm_size} hectares</span>
+                              {farm.soil_type && <span>• {farm.soil_type}</span>}
+                              {farm.crop_count && farm.crop_count > 0 && (
+                                <span>• {farm.crop_count} crops</span>
+                              )}
+                            </div>
+                          </div>
+                          {data.selectedFarmId === farm.id && (
+                            <div className="text-primary-600 dark:text-primary-400 text-2xl">✓</div>
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => setData({ ...data, selectedFarmId: 'new' })}
+                      className={`w-full p-6 border-2 border-dashed rounded-lg text-left transition-all ${
+                        data.selectedFarmId === 'new'
+                          ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                          : 'border-gray-300 dark:border-gray-600 hover:border-primary-400 dark:hover:border-primary-500 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                      }`}
+                    >
+                      <div className="flex items-center">
+                        <div className="text-3xl mr-4">➕</div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                            Create New Farm
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300">
+                            Start a new farm plan from scratch
+                          </p>
+                        </div>
+                        {data.selectedFarmId === 'new' && (
+                          <div className="ml-auto text-primary-600 dark:text-primary-400 text-2xl">
+                            ✓
+                          </div>
+                        )}
+                      </div>
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+            {currentStep === 'basic-info' && (
+              <div>
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">📝 Basic Information</h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  Tell us about your farm and contact information
+                </p>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Farm Name *
+                    </label>
+                    {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+                    <input
+                      type="text"
+                      value={data.farmName}
+                      onChange={(e) => setData({ ...data, farmName: e.target.value })}
+                      className={`w-full px-4 py-2 border ${
+                        errors.farmName ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                      } bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
+                      placeholder="e.g., Green Valley Farm"
+                      aria-required="true"
+                      aria-invalid={!!errors.farmName}
+                      aria-describedby={errors.farmName ? 'farmName-error' : undefined}
+                    />
+                    {errors.farmName && (
+                      <p
+                        id="farmName-error"
+                        className="text-xs text-red-600 dark:text-red-400 mt-1"
+                      >
+                        {errors.farmName}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Owner/Manager Name *
+                    </label>
+                    <input
+                      type="text"
+                      value={data.ownerName}
+                      onChange={(e) => setData({ ...data, ownerName: e.target.value })}
+                      className={`w-full px-4 py-2 border ${
+                        errors.ownerName ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                      } bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
+                      placeholder="Your name"
+                      aria-required="true"
+                      aria-invalid={!!errors.ownerName}
+                      aria-describedby={errors.ownerName ? 'ownerName-error' : undefined}
+                    />
+                    {errors.ownerName && (
+                      <p
+                        id="ownerName-error"
+                        className="text-xs text-red-600 dark:text-red-400 mt-1"
+                      >
+                        {errors.ownerName}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Contact Email
+                    </label>
+                    <input
+                      type="email"
+                      value={data.contactEmail}
+                      onChange={(e) => setData({ ...data, contactEmail: e.target.value })}
+                      className={`w-full px-4 py-2 border ${
+                        errors.contactEmail
+                          ? 'border-red-500'
+                          : 'border-gray-300 dark:border-gray-600'
+                      } bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
+                      placeholder="your@email.com"
+                      aria-required="false"
+                      aria-invalid={!!errors.contactEmail}
+                      aria-describedby={errors.contactEmail ? 'contactEmail-error' : undefined}
+                    />
+                    {errors.contactEmail ? (
+                      <p
+                        id="contactEmail-error"
+                        className="text-xs text-red-600 dark:text-red-400 mt-1"
+                      >
+                        {errors.contactEmail}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        Optional: For sharing and collaboration
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Contact Phone
+                    </label>
+                    <input
+                      type="tel"
+                      value={data.contactPhone}
+                      onChange={(e) => setData({ ...data, contactPhone: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="+27 12 345 6789"
+                    />
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Optional: Include country code
+                    </p>
+                  </div>
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
+                    <p className="text-sm text-blue-800 dark:text-blue-300">
+                      <strong>💡 Tip:</strong> This information will be used throughout your
+                      business plan. You can always come back and edit it later.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
             {currentStep === 'location' && (
               <div>
-                <h2 className="text-2xl font-bold mb-4">📍 Location & Farm Size</h2>
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">📍 Location & Farm Size</h2>
                 <div className="space-y-4">
-                  {/* Auto-detect location button */}
-                  <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
-                    <h3 className="font-semibold text-primary-900 mb-2">
+                  <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 rounded-lg p-4">
+                    <h3 className="font-semibold text-primary-900 dark:text-primary-200 mb-2">
                       📍 Auto-Detect Your Location
                     </h3>
-                    <p className="text-sm text-primary-800 mb-3">
+                    <p className="text-sm text-primary-800 dark:text-primary-300 mb-3">
                       Use your device&apos;s GPS to automatically detect your current location and
                       coordinates
                     </p>
@@ -875,12 +1030,14 @@ export default function AIWizardPage() {
                       >
                         {isDetectingLocation ? (
                           <>
+                            {' '}
                             <svg
                               className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
                               viewBox="0 0 24 24"
                             >
+                              {' '}
                               <circle
                                 className="opacity-25"
                                 cx="12"
@@ -888,14 +1045,14 @@ export default function AIWizardPage() {
                                 r="10"
                                 stroke="currentColor"
                                 strokeWidth="4"
-                              ></circle>
+                              ></circle>{' '}
                               <path
                                 className="opacity-75"
                                 fill="currentColor"
                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                              ></path>
-                            </svg>
-                            Detecting...
+                              ></path>{' '}
+                            </svg>{' '}
+                            Detecting...{' '}
                           </>
                         ) : (
                           '🎯 Use GPS Location'
@@ -908,12 +1065,14 @@ export default function AIWizardPage() {
                       >
                         {isDetectingLocation ? (
                           <>
+                            {' '}
                             <svg
                               className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
                               viewBox="0 0 24 24"
                             >
+                              {' '}
                               <circle
                                 className="opacity-25"
                                 cx="12"
@@ -921,27 +1080,26 @@ export default function AIWizardPage() {
                                 r="10"
                                 stroke="currentColor"
                                 strokeWidth="4"
-                              ></circle>
+                              ></circle>{' '}
                               <path
                                 className="opacity-75"
                                 fill="currentColor"
                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                              ></path>
-                            </svg>
-                            Detecting...
+                              ></path>{' '}
+                            </svg>{' '}
+                            Detecting...{' '}
                           </>
                         ) : (
                           '🌐 Use IP Location'
                         )}
                       </button>
                     </div>
-                    <p className="text-xs text-gray-600 mt-2">
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
                       GPS is more accurate. IP location is used as fallback if GPS fails.
                     </p>
                   </div>
-
                   <div className="relative">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Location / Town *
                     </label>
                     <input
@@ -949,7 +1107,7 @@ export default function AIWizardPage() {
                       list="locations"
                       value={data.location}
                       onChange={(e) => setData({ ...data, location: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       placeholder="e.g., Bela Bela, Polokwane"
                     />
                     <datalist id="locations">
@@ -957,17 +1115,22 @@ export default function AIWizardPage() {
                         <option key={loc} value={loc} />
                       ))}
                     </datalist>
-                    <p className="text-xs text-gray-500 mt-1">Start typing to see suggestions</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Start typing to see suggestions
+                    </p>
                   </div>
-
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label
+                      htmlFor="province-select"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    >
                       Province *
                     </label>
                     <select
+                      id="province-select"
                       value={data.province}
                       onChange={(e) => setData({ ...data, province: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     >
                       <option value="">Select Province</option>
                       <option value="Limpopo">Limpopo</option>
@@ -981,17 +1144,16 @@ export default function AIWizardPage() {
                       <option value="North West">North West</option>
                     </select>
                   </div>
-
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <h3 className="font-semibold text-blue-900 mb-2">
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
+                    <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">
                       📍 Optional: Farm Coordinates
                     </h3>
-                    <p className="text-sm text-blue-800 mb-3">
+                    <p className="text-sm text-blue-800 dark:text-blue-300 mb-3">
                       Provide exact coordinates for more accurate climate data
                     </p>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                           Latitude
                         </label>
                         <input
@@ -1004,12 +1166,12 @@ export default function AIWizardPage() {
                               coordinates: { ...data.coordinates, lat: e.target.value },
                             })
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                           placeholder="e.g., -24.2819"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                           Longitude
                         </label>
                         <input
@@ -1022,19 +1184,18 @@ export default function AIWizardPage() {
                               coordinates: { ...data.coordinates, lng: e.target.value },
                             })
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                           placeholder="e.g., 28.4167"
                         />
                       </div>
                     </div>
                   </div>
-
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Farm Size Method *
                     </label>
                     <div className="flex gap-4 mb-3">
-                      <label className="flex items-center">
+                      <label className="flex items-center dark:text-gray-300">
                         <input
                           type="radio"
                           name="farmSizeSource"
@@ -1050,7 +1211,7 @@ export default function AIWizardPage() {
                         />
                         Manual Entry
                       </label>
-                      <label className="flex items-center">
+                      <label className="flex items-center dark:text-gray-300">
                         <input
                           type="radio"
                           name="farmSizeSource"
@@ -1067,10 +1228,9 @@ export default function AIWizardPage() {
                         Boundary Points
                       </label>
                     </div>
-
                     {data.farmSizeSource === 'manual' ? (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Farm Size (hectares) *
                         </label>
                         <input
@@ -1078,19 +1238,18 @@ export default function AIWizardPage() {
                           value={data.farmSize}
                           onChange={(e) => setData({ ...data, farmSize: e.target.value })}
                           step="0.1"
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                           placeholder="e.g., 2.5"
                         />
                       </div>
                     ) : (
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                        <h3 className="font-semibold text-green-900 mb-2">
+                      <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg p-4">
+                        <h3 className="font-semibold text-green-900 dark:text-green-200 mb-2">
                           🗺️ Define Farm Boundary
                         </h3>
-                        <p className="text-sm text-green-800 mb-3">
+                        <p className="text-sm text-green-800 dark:text-green-300 mb-3">
                           Enter at least 3 corner points (lat, lng) to calculate area
                         </p>
-
                         {data.boundaryPoints.map((point, index) => (
                           <div key={index} className="flex gap-2 mb-2">
                             <input
@@ -1102,7 +1261,7 @@ export default function AIWizardPage() {
                                 newPoints[index].lat = parseFloat(e.target.value) || 0
                                 setData({ ...data, boundaryPoints: newPoints })
                               }}
-                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
+                              className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg"
                               placeholder="Latitude"
                             />
                             <input
@@ -1114,7 +1273,7 @@ export default function AIWizardPage() {
                                 newPoints[index].lng = parseFloat(e.target.value) || 0
                                 setData({ ...data, boundaryPoints: newPoints })
                               }}
-                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
+                              className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg"
                               placeholder="Longitude"
                             />
                             <button
@@ -1128,7 +1287,6 @@ export default function AIWizardPage() {
                             </button>
                           </div>
                         ))}
-
                         <button
                           onClick={() => {
                             setData({
@@ -1136,11 +1294,10 @@ export default function AIWizardPage() {
                               boundaryPoints: [...data.boundaryPoints, { lat: 0, lng: 0 }],
                             })
                           }}
-                          className="w-full px-4 py-2 border-2 border-dashed border-green-300 rounded-lg text-green-700 hover:bg-green-100 transition-colors mt-2"
+                          className="w-full px-4 py-2 border-2 border-dashed border-green-300 dark:border-green-600 rounded-lg text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors mt-2"
                         >
                           + Add Boundary Point
                         </button>
-
                         {data.boundaryPoints.length >= 3 && (
                           <div className="mt-4">
                             <button
@@ -1158,10 +1315,9 @@ export default function AIWizardPage() {
                             >
                               Calculate Area from Boundary
                             </button>
-
                             {data.farmSizeSource === 'calculated' && data.farmSize && (
-                              <div className="mt-2 p-3 bg-white border border-green-300 rounded-lg">
-                                <p className="text-sm text-gray-700">
+                              <div className="mt-2 p-3 bg-white dark:bg-gray-700 border border-green-300 dark:border-green-600 rounded-lg">
+                                <p className="text-sm text-gray-700 dark:text-gray-300">
                                   <strong>Calculated Area:</strong>{' '}
                                   {parseFloat(data.farmSize).toFixed(2)} hectares
                                 </p>
@@ -1172,9 +1328,8 @@ export default function AIWizardPage() {
                       </div>
                     )}
                   </div>
-
-                  <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-                    <p className="text-sm text-blue-800">
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
+                    <p className="text-sm text-blue-800 dark:text-blue-300">
                       <strong>💡 Tip:</strong> The AI will use your location to provide
                       climate-specific recommendations and suitable crop suggestions.
                       {data.coordinates.lat &&
@@ -1185,21 +1340,19 @@ export default function AIWizardPage() {
                 </div>
               </div>
             )}
-
             {currentStep === 'climate' && (
               <div>
-                <h2 className="text-2xl font-bold mb-4">🌡️ Climate Information</h2>
-                <p className="text-gray-600 mb-6">
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">🌡️ Climate Information</h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
                   Help us understand your local climate conditions
                 </p>
-
                 <div className="space-y-4">
                   {!data.climate.autoPopulated && (data.location || data.coordinates.lat) && (
-                    <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
-                      <h3 className="font-semibold text-primary-900 mb-2">
+                    <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 rounded-lg p-4">
+                      <h3 className="font-semibold text-primary-900 dark:text-primary-200 mb-2">
                         🤖 Auto-Populate Climate Data
                       </h3>
-                      <p className="text-sm text-primary-800 mb-3">
+                      <p className="text-sm text-primary-800 dark:text-primary-300 mb-3">
                         We can automatically fetch climate data based on your location
                       </p>
                       <button
@@ -1211,19 +1364,17 @@ export default function AIWizardPage() {
                       </button>
                     </div>
                   )}
-
                   {data.climate.autoPopulated && (
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                      <p className="text-sm text-green-800">
+                    <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg p-4">
+                      <p className="text-sm text-green-800 dark:text-green-300">
                         ✓ Climate data auto-populated based on your location. You can adjust values
                         if needed.
                       </p>
                     </div>
                   )}
-
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Average Summer Temperature (°C)
                       </label>
                       <input
@@ -1239,13 +1390,12 @@ export default function AIWizardPage() {
                             },
                           })
                         }
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                         placeholder="e.g., 28"
                       />
                     </div>
-
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Average Winter Temperature (°C)
                       </label>
                       <input
@@ -1261,14 +1411,13 @@ export default function AIWizardPage() {
                             },
                           })
                         }
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                         placeholder="e.g., 16"
                       />
                     </div>
                   </div>
-
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Annual Rainfall (mm)
                     </label>
                     <input
@@ -1284,16 +1433,15 @@ export default function AIWizardPage() {
                           },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       placeholder="e.g., 600"
                     />
                   </div>
-
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Frost Risk
                     </label>
-                    <div className="flex gap-4">
+                    <div className="flex gap-4 dark:text-gray-300">
                       <label className="flex items-center">
                         <input
                           type="radio"
@@ -1328,9 +1476,8 @@ export default function AIWizardPage() {
                       </label>
                     </div>
                   </div>
-
-                  <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
-                    <p className="text-sm text-yellow-800">
+                  <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 p-4 rounded">
+                    <p className="text-sm text-yellow-800 dark:text-yellow-300">
                       <strong>💡 Tip:</strong> You can find this information from your local weather
                       station or agricultural extension office.
                     </p>
@@ -1338,405 +1485,203 @@ export default function AIWizardPage() {
                 </div>
               </div>
             )}
-
             {currentStep === 'crops' && (
               <div>
-                <h2 className="text-2xl font-bold mb-4">🌱 Crop Selection & Allocation</h2>
-                <p className="text-gray-600 mb-6">
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">
+                  🌱 Crop Selection & Allocation
+                </h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
                   Select crops you&apos;re interested in growing and allocate land
                 </p>
-
-                <div className="grid md:grid-cols-2 gap-4 mb-6">
-                  {cropOptions.map((crop) => (
-                    <div
-                      key={crop.id}
-                      onClick={() => {
-                        if (data.crops.includes(crop.id)) {
-                          setData({
-                            ...data,
-                            crops: data.crops.filter((c) => c !== crop.id),
-                            cropAllocations: data.cropAllocations.filter(
-                              (a) => a.cropId !== crop.id
-                            ),
-                          })
-                        } else {
-                          setData({
-                            ...data,
-                            crops: [...data.crops, crop.id],
-                            cropAllocations: [
-                              ...data.cropAllocations,
-                              { cropId: crop.id, minHectares: '', maxHectares: '' },
-                            ],
-                          })
-                        }
-                      }}
-                      className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                        data.crops.includes(crop.id)
-                          ? 'border-primary-500 bg-primary-50'
-                          : 'border-gray-200 hover:border-primary-300'
-                      }`}
-                    >
-                      <div className="flex items-center">
-                        <span className="text-3xl mr-3">{crop.icon}</span>
-                        <div>
-                          <h3 className="font-semibold">{crop.name}</h3>
-                          {data.crops.includes(crop.id) && (
-                            <span className="text-xs text-primary-600">✓ Selected</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {data.crops.length > 0 && data.farmSize && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                    <h3 className="font-semibold text-blue-900 mb-3">📊 Land Allocation</h3>
-                    <p className="text-sm text-blue-800 mb-4">
-                      Total farm size:{' '}
-                      <strong>{parseFloat(data.farmSize).toFixed(2)} hectares</strong>
-                    </p>
-
-                    <div className="space-y-3">
-                      {data.crops.map((cropId) => {
-                        const crop = cropOptions.find((c) => c.id === cropId)
-                        const allocation = data.cropAllocations.find((a) => a.cropId === cropId)
-
-                        return (
-                          <div
-                            key={cropId}
-                            className="bg-white rounded-lg p-3 border border-blue-200"
-                          >
-                            <div className="flex items-center mb-2">
-                              <span className="text-2xl mr-2">{crop?.icon}</span>
-                              <h4 className="font-semibold">{crop?.name}</h4>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-3">
-                              <div>
-                                <label className="block text-xs font-medium text-gray-700 mb-1">
-                                  Min Hectares
-                                </label>
-                                <input
-                                  type="number"
-                                  step="0.1"
-                                  value={allocation?.minHectares || ''}
-                                  onChange={(e) => {
-                                    const newAllocations = data.cropAllocations.map((a) =>
-                                      a.cropId === cropId
-                                        ? { ...a, minHectares: e.target.value }
-                                        : a
-                                    )
-                                    setData({ ...data, cropAllocations: newAllocations })
-                                  }}
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                                  placeholder="e.g., 0.5"
-                                />
-                              </div>
-
-                              <div>
-                                <label className="block text-xs font-medium text-gray-700 mb-1">
-                                  Max Hectares
-                                </label>
-                                <input
-                                  type="number"
-                                  step="0.1"
-                                  value={allocation?.maxHectares || ''}
-                                  onChange={(e) => {
-                                    const newAllocations = data.cropAllocations.map((a) =>
-                                      a.cropId === cropId
-                                        ? { ...a, maxHectares: e.target.value }
-                                        : a
-                                    )
-                                    setData({ ...data, cropAllocations: newAllocations })
-                                  }}
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                                  placeholder="e.g., 1.5"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        )
-                      })}
-                    </div>
-
-                    {(() => {
-                      const totalMin = data.cropAllocations.reduce(
-                        (sum, a) => sum + (parseFloat(a.minHectares) || 0),
-                        0
-                      )
-                      const totalMax = data.cropAllocations.reduce(
-                        (sum, a) => sum + (parseFloat(a.maxHectares) || 0),
-                        0
-                      )
-                      const farmSize = parseFloat(data.farmSize) || 0
-
-                      return (
-                        <div className="mt-4 p-3 bg-white rounded-lg border border-blue-200">
-                          <div className="flex justify-between text-sm mb-1">
-                            <span>Total Min Allocation:</span>
-                            <span
-                              className={
-                                totalMin > farmSize ? 'text-red-600 font-semibold' : 'font-semibold'
-                              }
-                            >
-                              {totalMin.toFixed(2)} ha{' '}
-                              {totalMin > farmSize && '⚠️ Exceeds farm size!'}
-                            </span>
-                          </div>
-                          <div className="flex justify-between text-sm mb-1">
-                            <span>Total Max Allocation:</span>
-                            <span
-                              className={
-                                totalMax > farmSize ? 'text-red-600 font-semibold' : 'font-semibold'
-                              }
-                            >
-                              {totalMax.toFixed(2)} ha{' '}
-                              {totalMax > farmSize && '⚠️ Exceeds farm size!'}
-                            </span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span>Unallocated Land:</span>
-                            <span className="font-semibold text-green-600">
-                              {Math.max(0, farmSize - totalMax).toFixed(2)} ha available
-                            </span>
-                          </div>
-                        </div>
-                      )
-                    })()}
-                  </div>
-                )}
-
-                {data.crops.length > 0 && (
-                  <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded">
-                    <p className="text-sm text-green-800">
-                      <strong>Selected:</strong> {data.crops.length} crop(s). The AI will provide
-                      specific recommendations for each crop allocation.
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {currentStep === 'financials' && (
-              <div>
-                <h2 className="text-2xl font-bold mb-4">💰 Budget & Financial Goals</h2>
-
-                <div className="space-y-4">
-                  {data.farmSize && data.crops.length > 0 && !data.budget && (
-                    <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
-                      <h3 className="font-semibold text-primary-900 mb-2">🤖 Recommended Budget</h3>
-                      <p className="text-sm text-primary-800 mb-3">
-                        Based on your farm size ({parseFloat(data.farmSize).toFixed(2)} ha) and
-                        selected crops
-                      </p>
-                      <button
-                        onClick={() => {
-                          const recommendedBudget = getRecommendedBudget()
-                          setData({ ...data, budget: recommendedBudget })
-                        }}
-                        className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-                      >
-                        ✨ Use Recommended Budget: R
-                        {parseInt(getRecommendedBudget()).toLocaleString()}
-                      </button>
-                    </div>
-                  )}
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Available Investment Budget (ZAR) *
-                    </label>
-                    <input
-                      type="number"
-                      value={data.budget}
-                      onChange={(e) => setData({ ...data, budget: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="e.g., 150000"
-                    />
-                    <p className="text-xs text-gray-500 mt-1">
-                      Total capital available for startup and first season
-                    </p>
-                  </div>
-
-                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                    <h3 className="font-semibold text-gray-900 mb-3">📋 Additional Information</h3>
-
-                    <div className="space-y-3">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Soil Type (Auto-detected)
-                        </label>
-                        <input
-                          type="text"
-                          value={data.soilType || getSoilRecommendation()}
-                          onChange={(e) => setData({ ...data, soilType: e.target.value })}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-blue-50"
-                          placeholder="Soil type information"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Water Source (Auto-recommended)
-                        </label>
-                        <input
-                          type="text"
-                          value={data.waterSource || getWaterSourceRecommendation()}
-                          onChange={(e) => setData({ ...data, waterSource: e.target.value })}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-blue-50"
-                          placeholder="Water source information"
-                        />
-                      </div>
-                    </div>
-
-                    <p className="text-xs text-gray-500 mt-3">
-                      💡 These fields are auto-populated based on your location and climate. You can
-                      edit them if needed.
-                    </p>
-                  </div>
-
-                  <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-                    <h3 className="font-semibold text-blue-900 mb-2">Budget Guidelines</h3>
-                    <ul className="text-sm text-blue-800 space-y-1">
-                      <li>• Small scale (&lt;R100k): Vegetables, herbs, small plot Moringa</li>
-                      <li>• Medium scale (R100k-R300k): Dragon Fruit 1-2ha, mixed vegetables</li>
-                      <li>• Large scale (&gt;R300k): Diversified operation, multiple crops</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {currentStep === 'timeline' && (
-              <div>
-                <h2 className="text-2xl font-bold mb-4">📅 Implementation Timeline</h2>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      When do you want to start?
-                    </label>
-                    <select
-                      value={data.timeline}
-                      onChange={(e) => setData({ ...data, timeline: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    >
-                      <option value="">Select timeline</option>
-                      <option value="immediate">Immediately (within 1 month)</option>
-                      <option value="short">Short-term (1-3 months)</option>
-                      <option value="medium">Medium-term (3-6 months)</option>
-                      <option value="long">Long-term (6+ months)</option>
-                    </select>
-                  </div>
-
-                  <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
-                    <p className="text-sm text-yellow-800">
-                      <strong>💡 Tip:</strong> Consider seasonal factors and crop planting schedules
-                      when planning your start date.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {currentStep === 'recommendations' && (
-              <div>
-                <h2 className="text-2xl font-bold mb-4">🤖 AI Recommendations</h2>
-                <p className="text-gray-600 mb-6">
-                  Based on your inputs, here are personalized recommendations:
-                </p>
-
-                <div className="space-y-3 mb-6">
-                  {aiRecommendations.map((rec, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start p-4 bg-green-50 border-l-4 border-green-500 rounded"
-                    >
-                      <span className="text-green-600 mr-3 flex-shrink-0">✓</span>
-                      <p className="text-sm text-gray-800">{rec}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
-                  <h3 className="font-semibold text-blue-900 mb-3">📋 Your Farm Profile</h3>
-                  <div className="grid md:grid-cols-2 gap-3 text-sm">
-                    <div>
-                      <strong>Location:</strong> {data.location}, {data.province}
-                    </div>
-                    <div>
-                      <strong>Farm Size:</strong> {data.farmSize} hectares
-                    </div>
-                    <div>
-                      <strong>Rainfall:</strong> {data.climate.annualRainfall}mm/year
-                    </div>
-                    <div>
-                      <strong>Budget:</strong> R{parseInt(data.budget).toLocaleString()}
-                    </div>
-                    <div>
-                      <strong>Selected Crops:</strong> {data.crops.length}
-                    </div>
-                    <div>
-                      <strong>Start Timeline:</strong> {data.timeline}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Automation Suggestions Section */}
-                <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-6 mb-6">
-                  <div className="flex items-center mb-3">
-                    <span className="text-2xl mr-2">⚡</span>
-                    <h3 className="font-semibold text-purple-900">
-                      Future Automation Opportunities
-                    </h3>
-                  </div>
-                  <p className="text-sm text-purple-800 mb-4">
-                    Here are ways this wizard and your farm operations can be further automated:
-                  </p>
-                  <div className="space-y-2">
-                    {generateAutomationSuggestions().map((suggestion, index) => (
+                {loadingSuggestions ? (
+                  <p>Loading crop suggestions...</p>
+                ) : (
+                  <div className="grid md:grid-cols-2 gap-4 mb-6">
+                    {cropSuggestions.map((crop) => (
                       <div
-                        key={index}
-                        className="flex items-start p-3 bg-white rounded-lg border border-purple-100"
+                        key={crop.id}
+                        onClick={() => {
+                          if (data.crops.includes(crop.id)) {
+                            setData({
+                              ...data,
+                              crops: data.crops.filter((c) => c !== crop.id),
+                              cropAllocations: data.cropAllocations.filter(
+                                (a) => a.cropId !== crop.id
+                              ),
+                            })
+                          } else {
+                            setData({
+                              ...data,
+                              crops: [...data.crops, crop.id],
+                              cropAllocations: [
+                                ...data.cropAllocations,
+                                { cropId: crop.id, minHectares: '', maxHectares: '' },
+                              ],
+                            })
+                          }
+                        }}
+                        className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${data.crops.includes(crop.id) ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600'}`}
                       >
-                        <span className="text-purple-500 mr-2 flex-shrink-0 text-sm">•</span>
-                        <p className="text-sm text-gray-700">{suggestion}</p>
+                        <div className="flex items-center">
+                          <span className="text-3xl mr-3">🌱</span>
+                          <div>
+                            <h3 className="font-semibold dark:text-white">{crop.name}</h3>
+                            {data.crops.includes(crop.id) && (
+                              <span className="text-xs text-primary-600 dark:text-primary-400">
+                                ✓ Selected
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </div>
-                  <div className="mt-4 p-3 bg-white rounded-lg border border-purple-200">
-                    <p className="text-xs text-purple-700">
-                      💡 <strong>Pro Tip:</strong> Start with 1-2 automation features that align
-                      with your immediate needs. Weather integration and task scheduling are great
-                      starting points for most farms.
-                    </p>
-                  </div>
+                )}
+              </div>
+            )}
+            {currentStep === 'calculators' && (
+              <div>
+                <h2 className="text-2xl font-bold mb-4 dark:text-white">
+                  🧮 Financial Analysis Tools
+                </h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  Use our financial calculators to analyze your farm&apos;s profitability and
+                  investment requirements
+                </p>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <Link href="/tools/calculators/roi" legacyBehavior>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                    >
+                      <div className="flex items-start mb-4">
+                        <span className="text-3xl mr-4">📈</span>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                            ROI Calculator
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            Calculate Return on Investment for your farm operations
+                          </p>
+                        </div>
+                      </div>
+                    </a>
+                  </Link>
+                  <Link href="/tools/calculators/break-even" legacyBehavior>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                    >
+                      <div className="flex items-start mb-4">
+                        <span className="text-3xl mr-4">⚖️</span>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                            Break-Even Analysis
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            Determine your break-even point for production and sales
+                          </p>
+                        </div>
+                      </div>
+                    </a>
+                  </Link>
+                  <Link href="/tools/calculators/investment" legacyBehavior>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                    >
+                      <div className="flex items-start mb-4">
+                        <span className="text-3xl mr-4">💰</span>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                            Investment Calculator
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            Plan your startup investment and funding requirements
+                          </p>
+                        </div>
+                      </div>
+                    </a>
+                  </Link>
+                  <Link href="/tools/calculators/revenue" legacyBehavior>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                    >
+                      <div className="flex items-start mb-4">
+                        <span className="text-3xl mr-4">📊</span>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                            Revenue Projections
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            Project revenue based on yield and market prices
+                          </p>
+                        </div>
+                      </div>
+                    </a>
+                  </Link>
+                  <Link href="/tools/calculators/operating-costs" legacyBehavior>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                    >
+                      <div className="flex items-start mb-4">
+                        <span className="text-3xl mr-4">💸</span>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                            Operating Costs
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            Calculate monthly and annual operating expenses
+                          </p>
+                        </div>
+                      </div>
+                    </a>
+                  </Link>
+                  <Link href="/tools/calculators/loan" legacyBehavior>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-6 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 hover:shadow-lg transition-all bg-white dark:bg-gray-800"
+                    >
+                      <div className="flex items-start mb-4">
+                        <span className="text-3xl mr-4">🏦</span>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                            Loan Calculator
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            Calculate loan payments and interest costs
+                          </p>
+                        </div>
+                      </div>
+                    </a>
+                  </Link>
                 </div>
-
-                <div className="bg-primary-50 border-l-4 border-primary-500 p-4 rounded">
-                  <h3 className="font-semibold text-primary-900 mb-2">🎯 Next Steps</h3>
-                  <ol className="list-decimal list-inside space-y-1 text-sm text-primary-800">
-                    <li>Use Financial Calculators to validate your projections</li>
-                    <li>Review crop templates for detailed growing requirements</li>
-                    <li>Create your detailed business plan using the Plan Generator</li>
-                    <li>Set up your operations dashboard to track progress</li>
-                  </ol>
+                <div className="mt-6 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded">
+                  <p className="text-sm text-blue-800 dark:text-blue-300">
+                    <strong>💡 Tip:</strong> Use these calculators to validate your financial
+                    projections and get detailed analysis of your farm&apos;s profitability. You can
+                    also view your calculation history and generate reports from the dashboard.
+                  </p>
                 </div>
               </div>
             )}
           </div>
-
-          {/* Navigation */}
           <div className="flex justify-between mt-8 pt-6 border-t">
             <button
               onClick={handlePrevious}
               disabled={currentStepIndex === 0}
-              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Previous
             </button>
-
             {currentStep === 'recommendations' ? (
               <button
                 onClick={handleComplete}

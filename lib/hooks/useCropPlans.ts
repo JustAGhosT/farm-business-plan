@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useCrudApi } from './useCrudApi'
 
 export interface CropPlan {
   id: string
@@ -36,126 +36,24 @@ interface CropPlanFilters {
 /**
  * Custom hook for managing crop plans
  * Provides CRUD operations and automatic data fetching with filtering
+ *
+ * Refactored to use generic useCrudApi hook for consistent behavior and timeout handling
  */
 export function useCropPlans(filters?: CropPlanFilters): UseCropPlansResult {
-  const [cropPlans, setCropPlans] = useState<CropPlan[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  const fetchCropPlans = useCallback(async () => {
-    try {
-      setLoading(true)
-      setError(null)
-
-      // Build query string from filters
-      const params = new URLSearchParams()
-      if (filters?.farm_plan_id) params.append('farm_plan_id', filters.farm_plan_id)
-      if (filters?.status) params.append('status', filters.status)
-
-      const url = `/api/crop-plans${params.toString() ? `?${params.toString()}` : ''}`
-      const response = await fetch(url)
-      const result = await response.json()
-
-      if (result.success) {
-        setCropPlans(result.data)
-      } else {
-        setError(result.error || 'Failed to fetch crop plans')
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-    } finally {
-      setLoading(false)
-    }
-  }, [filters?.farm_plan_id, filters?.status])
-
-  useEffect(() => {
-    fetchCropPlans()
-  }, [fetchCropPlans])
-
-  const createCropPlan = useCallback(
-    async (data: Partial<CropPlan>) => {
-      try {
-        const response = await fetch('/api/crop-plans', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
-        })
-
-        const result = await response.json()
-
-        if (result.success) {
-          await fetchCropPlans() // Refresh the list
-          return result.data
-        } else {
-          setError(result.error || 'Failed to create crop plan')
-          return null
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred')
-        return null
-      }
-    },
-    [fetchCropPlans]
-  )
-
-  const updateCropPlan = useCallback(
-    async (id: string, data: Partial<CropPlan>) => {
-      try {
-        const response = await fetch('/api/crop-plans', {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id, ...data }),
-        })
-
-        const result = await response.json()
-
-        if (result.success) {
-          await fetchCropPlans() // Refresh the list
-          return result.data
-        } else {
-          setError(result.error || 'Failed to update crop plan')
-          return null
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred')
-        return null
-      }
-    },
-    [fetchCropPlans]
-  )
-
-  const deleteCropPlan = useCallback(
-    async (id: string) => {
-      try {
-        const response = await fetch(`/api/crop-plans?id=${id}`, {
-          method: 'DELETE',
-        })
-
-        const result = await response.json()
-
-        if (result.success) {
-          await fetchCropPlans() // Refresh the list
-          return true
-        } else {
-          setError(result.error || 'Failed to delete crop plan')
-          return false
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred')
-        return false
-      }
-    },
-    [fetchCropPlans]
-  )
+  const { items, loading, error, refetch, create, update, remove } = useCrudApi<CropPlan>({
+    endpoint: '/api/crop-plans',
+    filters,
+    timeout: 30000,
+  })
 
   return {
-    cropPlans,
+    cropPlans: items,
     loading,
     error,
-    refetch: fetchCropPlans,
-    createCropPlan,
-    updateCropPlan,
-    deleteCropPlan,
+    refetch,
+    createCropPlan: create,
+    updateCropPlan: update,
+    deleteCropPlan: remove,
   }
 }
 

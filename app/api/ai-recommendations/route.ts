@@ -1,6 +1,7 @@
-import { NextResponse } from 'next/server'
+import { createErrorResponse } from '@/lib/api-utils'
 import { query } from '@/lib/db'
 import { AIRecommendationSchema, validateData } from '@/lib/validation'
+import { NextResponse } from 'next/server'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -50,10 +51,7 @@ export async function GET(request: Request) {
     })
   } catch (error) {
     console.error('Error fetching AI recommendations:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch AI recommendations' },
-      { status: 500 }
-    )
+    return createErrorResponse('Failed to fetch AI recommendations', 500)
   }
 }
 
@@ -68,13 +66,11 @@ export async function POST(request: Request) {
     // Validate input
     const validation = validateData(AIRecommendationSchema, body)
     if (!validation.success) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Validation failed',
-          details: validation.errors?.issues,
-        },
-        { status: 400 }
+      return createErrorResponse(
+        'Validation failed',
+        400,
+        validation.errors?.issues,
+        'VALIDATION_ERROR'
       )
     }
 
@@ -107,10 +103,7 @@ export async function POST(request: Request) {
     )
   } catch (error) {
     console.error('Error creating AI recommendation:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to create AI recommendation' },
-      { status: 500 }
-    )
+    return createErrorResponse('Failed to create AI recommendation', 500)
   }
 }
 
@@ -124,10 +117,7 @@ export async function PATCH(request: Request) {
     const { id, ...updates } = body
 
     if (!id) {
-      return NextResponse.json(
-        { success: false, error: 'AI recommendation ID is required' },
-        { status: 400 }
-      )
+      return createErrorResponse('AI recommendation ID is required', 400, undefined, 'MISSING_ID')
     }
 
     const setClauses: string[] = []
@@ -146,10 +136,7 @@ export async function PATCH(request: Request) {
     })
 
     if (setClauses.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'No valid fields to update' },
-        { status: 400 }
-      )
+      return createErrorResponse('No valid fields to update', 400, undefined, 'NO_FIELDS')
     }
 
     params.push(id)
@@ -163,10 +150,7 @@ export async function PATCH(request: Request) {
     const result = await query(queryText, params)
 
     if (result.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'AI recommendation not found' },
-        { status: 404 }
-      )
+      return createErrorResponse('AI recommendation not found', 404, undefined, 'NOT_FOUND')
     }
 
     return NextResponse.json({
@@ -176,10 +160,7 @@ export async function PATCH(request: Request) {
     })
   } catch (error) {
     console.error('Error updating AI recommendation:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to update AI recommendation' },
-      { status: 500 }
-    )
+    return createErrorResponse('Failed to update AI recommendation', 500)
   }
 }
 
@@ -193,19 +174,13 @@ export async function DELETE(request: Request) {
     const id = searchParams.get('id')
 
     if (!id) {
-      return NextResponse.json(
-        { success: false, error: 'AI recommendation ID is required' },
-        { status: 400 }
-      )
+      return createErrorResponse('AI recommendation ID is required', 400, undefined, 'MISSING_ID')
     }
 
     const result = await query('DELETE FROM ai_recommendations WHERE id = $1 RETURNING id', [id])
 
     if (result.rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'AI recommendation not found' },
-        { status: 404 }
-      )
+      return createErrorResponse('AI recommendation not found', 404, undefined, 'NOT_FOUND')
     }
 
     return NextResponse.json({
@@ -214,9 +189,6 @@ export async function DELETE(request: Request) {
     })
   } catch (error) {
     console.error('Error deleting AI recommendation:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to delete AI recommendation' },
-      { status: 500 }
-    )
+    return createErrorResponse('Failed to delete AI recommendation', 500)
   }
 }

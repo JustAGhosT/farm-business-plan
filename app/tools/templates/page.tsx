@@ -1,137 +1,21 @@
+'use client'
+
+import { useCropTemplates } from '@/lib/hooks'
 import Link from 'next/link'
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'Crop Templates Library | Agricultural Business Plan',
-  description: 'Browse pre-built templates and profiles for common agricultural crops',
-}
-
-interface CropTemplate {
-  id: string
-  name: string
-  category: string
-  icon: string
-  description: string
-  growingPeriod: string
-  waterNeeds: string
-  sunRequirements: string
-  difficulty: string
-}
+import { useState } from 'react'
 
 export default function TemplatesPage() {
-  const templates: CropTemplate[] = [
-    {
-      id: 'dragon-fruit',
-      name: 'Dragon Fruit (Pitaya)',
-      category: 'Fruits',
-      icon: '🐉',
-      description:
-        'High-value exotic fruit with wall-farming potential. Low water requirements, ideal for semi-arid climates.',
-      growingPeriod: '18-24 months to first harvest',
-      waterNeeds: 'Low to Moderate',
-      sunRequirements: 'Full Sun',
-      difficulty: 'Moderate',
-    },
-    {
-      id: 'moringa',
-      name: 'Moringa (Drumstick Tree)',
-      category: 'Herbs & Superfoods',
-      icon: '🌿',
-      description:
-        'Fast-growing superfood tree. Leaves harvested for powder production. Drought-tolerant and nutritious.',
-      growingPeriod: '6-8 months to first harvest',
-      waterNeeds: 'Low',
-      sunRequirements: 'Full Sun',
-      difficulty: 'Easy',
-    },
-    {
-      id: 'lucerne',
-      name: 'Lucerne (Alfalfa)',
-      category: 'Forage Crops',
-      icon: '🌾',
-      description:
-        'High-protein fodder crop. Multiple harvests per year. Excellent for livestock feed production.',
-      growingPeriod: '60-90 days per cutting',
-      waterNeeds: 'Moderate to High',
-      sunRequirements: 'Full Sun',
-      difficulty: 'Moderate',
-    },
-    {
-      id: 'tomatoes',
-      name: 'Tomatoes',
-      category: 'Vegetables',
-      icon: '🍅',
-      description:
-        'Popular vegetable crop with high market demand. Requires consistent care and pest management.',
-      growingPeriod: '80-100 days',
-      waterNeeds: 'Moderate',
-      sunRequirements: 'Full Sun',
-      difficulty: 'Moderate',
-    },
-    {
-      id: 'lettuce',
-      name: 'Lettuce',
-      category: 'Vegetables',
-      icon: '🥬',
-      description: 'Fast-growing leafy vegetable. Ideal for hydroponics or cool-season production.',
-      growingPeriod: '45-60 days',
-      waterNeeds: 'Moderate',
-      sunRequirements: 'Partial Shade',
-      difficulty: 'Easy',
-    },
-    {
-      id: 'peppers',
-      name: 'Bell Peppers',
-      category: 'Vegetables',
-      icon: '🫑',
-      description:
-        'High-value vegetable with good storage life. Multiple harvests from same plants.',
-      growingPeriod: '90-120 days',
-      waterNeeds: 'Moderate',
-      sunRequirements: 'Full Sun',
-      difficulty: 'Moderate',
-    },
-    {
-      id: 'herbs-basil',
-      name: 'Basil',
-      category: 'Herbs',
-      icon: '🌱',
-      description:
-        'Popular culinary herb with high demand. Quick growing and profitable in small spaces.',
-      growingPeriod: '40-60 days',
-      waterNeeds: 'Moderate',
-      sunRequirements: 'Full Sun',
-      difficulty: 'Easy',
-    },
-    {
-      id: 'strawberries',
-      name: 'Strawberries',
-      category: 'Fruits',
-      icon: '🍓',
-      description:
-        'High-value berry crop. Suitable for vertical farming and protected cultivation.',
-      growingPeriod: '4-6 months to first harvest',
-      waterNeeds: 'Moderate',
-      sunRequirements: 'Full Sun',
-      difficulty: 'Moderate',
-    },
-    {
-      id: 'kale',
-      name: 'Kale',
-      category: 'Vegetables',
-      icon: '🥬',
-      description:
-        'Hardy superfood vegetable. Cold-tolerant and nutritious. Growing market demand.',
-      growingPeriod: '55-75 days',
-      waterNeeds: 'Moderate',
-      sunRequirements: 'Full Sun to Partial Shade',
-      difficulty: 'Easy',
-    },
-  ]
+  const [selectedCategory, setSelectedCategory] = useState<string>('All')
 
-  const categories = ['All', 'Fruits', 'Vegetables', 'Herbs & Superfoods', 'Forage Crops']
+  // Fetch templates from database
+  const { cropTemplates, loading } = useCropTemplates({
+    is_public: true, // Only show public templates
+    ...(selectedCategory !== 'All' ? { category: selectedCategory } : {}),
+  })
 
-  const getDifficultyColor = (difficulty: string) => {
+  const categories = ['All', 'Fruits', 'Vegetables', 'Herbs', 'Forage Crops']
+
+  const getDifficultyColor = (difficulty?: string) => {
     switch (difficulty) {
       case 'Easy':
         return 'text-green-600 bg-green-50'
@@ -142,6 +26,16 @@ export default function TemplatesPage() {
       default:
         return 'text-gray-600 bg-gray-50'
     }
+  }
+
+  // Helper to safely get nested properties from technical_specs
+  const getSpec = (template: any, key: string): string => {
+    return template.technical_specs?.[key] || template.growing_requirements?.[key] || 'N/A'
+  }
+
+  const getIcon = (template: any): string => {
+    // Try to extract icon from technical_specs or use a default
+    return template.technical_specs?.icon || '🌱'
   }
 
   return (
@@ -187,103 +81,124 @@ export default function TemplatesPage() {
         </div>
 
         {/* Templates Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {templates.map((template) => (
-            <div
-              key={template.id}
-              className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden"
-            >
-              <div className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center">
-                    <span className="text-4xl mr-3">{template.icon}</span>
-                    <div>
-                      <h3 className="text-xl font-semibold text-gray-900">{template.name}</h3>
-                      <span className="text-sm text-gray-500">{template.category}</span>
+        {loading ? (
+          <div className="text-center py-16">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary-600 mx-auto"></div>
+            <p className="text-gray-600 mt-4">Loading crop templates...</p>
+          </div>
+        ) : cropTemplates.length === 0 ? (
+          <div className="text-center py-16">
+            <div className="text-6xl mb-4">🌱</div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No templates found</h3>
+            <p className="text-gray-600">
+              {selectedCategory !== 'All'
+                ? `No ${selectedCategory.toLowerCase()} templates available.`
+                : 'No crop templates available in the database.'}
+            </p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {cropTemplates.map((template) => (
+              <div
+                key={template.id}
+                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden"
+              >
+                <div className="p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center">
+                      <span className="text-4xl mr-3">{getIcon(template)}</span>
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-900">{template.name}</h3>
+                        <span className="text-sm text-gray-500">{template.category}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <p className="text-gray-600 text-sm mb-4 line-clamp-3">{template.description}</p>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">{template.description}</p>
 
-                <div className="space-y-2 mb-4 text-sm">
-                  <div className="flex items-center text-gray-700">
-                    <svg
-                      className="w-4 h-4 mr-2 text-primary-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    {template.growingPeriod}
+                  <div className="space-y-2 mb-4 text-sm">
+                    <div className="flex items-center text-gray-700">
+                      <svg
+                        className="w-4 h-4 mr-2 text-primary-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      {getSpec(template, 'growing_period')}
+                    </div>
+                    <div className="flex items-center text-gray-700">
+                      <svg
+                        className="w-4 h-4 mr-2 text-primary-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
+                        />
+                      </svg>
+                      Water: {getSpec(template, 'water_needs')}
+                    </div>
+                    <div className="flex items-center text-gray-700">
+                      <svg
+                        className="w-4 h-4 mr-2 text-primary-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                        />
+                      </svg>
+                      {getSpec(template, 'sun_requirements')}
+                    </div>
                   </div>
-                  <div className="flex items-center text-gray-700">
-                    <svg
-                      className="w-4 h-4 mr-2 text-primary-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
-                      />
-                    </svg>
-                    Water: {template.waterNeeds}
-                  </div>
-                  <div className="flex items-center text-gray-700">
-                    <svg
-                      className="w-4 h-4 mr-2 text-primary-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                      />
-                    </svg>
-                    {template.sunRequirements}
-                  </div>
-                </div>
 
-                <div className="flex items-center justify-between">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${getDifficultyColor(template.difficulty)}`}
-                  >
-                    {template.difficulty}
-                  </span>
-                  <button className="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center">
-                    View Details
-                    <svg
-                      className="w-4 h-4 ml-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </button>
+                  <div className="flex items-center justify-between">
+                    {template.growing_requirements?.difficulty && (
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${getDifficultyColor(
+                          template.growing_requirements.difficulty
+                        )}`}
+                      >
+                        {template.growing_requirements.difficulty}
+                      </span>
+                    )}
+                    <button className="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center">
+                      View Details
+                      <svg
+                        className="w-4 h-4 ml-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         <div className="mt-8 bg-blue-50 border-l-4 border-blue-500 p-6 rounded">
           <h3 className="text-lg font-semibold text-blue-900 mb-2">💡 How to Use Templates</h3>

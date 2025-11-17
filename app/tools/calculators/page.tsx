@@ -1,13 +1,40 @@
-import Link from 'next/link'
-import type { Metadata } from 'next'
+'use client'
 
-export const metadata: Metadata = {
-  title: 'Financial Calculators | Agricultural Business Plan',
-  description: 'Financial modeling tools for agricultural operations',
+import Link from 'next/link'
+
+// Client component for date/time display
+function DateTimeHeader() {
+  const currentDate = new Date()
+  const currentTime = currentDate.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+  const dateOptions: Intl.DateTimeFormatOptions = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }
+  const formattedDate = currentDate.toLocaleDateString('en-US', dateOptions)
+
+  return (
+    <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 mb-3">
+      {formattedDate} • {currentTime}
+    </p>
+  )
 }
 
 export default function CalculatorsPage() {
   const calculators = [
+    {
+      title: 'Unified Calculator',
+      description:
+        'All calculators in one interface - switch between ROI, Break-Even, Investment, and more',
+      icon: '🧮',
+      href: '/tools/calculators/unified',
+      color:
+        'border-primary-300 dark:border-primary-700 hover:border-primary-500 dark:hover:border-primary-600',
+    },
     {
       title: 'ROI Calculator',
       description: 'Calculate Return on Investment for your farm operations',
@@ -59,38 +86,12 @@ export default function CalculatorsPage() {
 
   const features = [
     {
-      title: 'Financial Dashboard',
-      description: 'Comprehensive overview of all your financial metrics and trends',
-      icon: '📊',
-      href: '/tools/calculators/dashboard',
+      title: 'AI Farm Planning Wizard',
+      description: 'Complete farm planning with integrated financial analysis tools',
+      icon: '🤖',
+      href: '/tools/ai-wizard',
       color:
         'border-primary-300 dark:border-primary-700 hover:border-primary-500 dark:hover:border-primary-600',
-    },
-    {
-      title: 'Portfolio Planner',
-      description:
-        'Allocate percentages across multiple crops (e.g., 10% Dragon Fruit, 40% Soy, 50% Sunflower)',
-      icon: '🌾',
-      href: '/tools/calculators/portfolio',
-      color:
-        'border-green-300 dark:border-green-700 hover:border-green-500 dark:hover:border-green-600',
-    },
-    {
-      title: 'Scenario Comparison',
-      description:
-        'Compare multiple investment scenarios, crops, and what-if analyses side-by-side',
-      icon: '🔄',
-      href: '/tools/calculators/scenarios',
-      color:
-        'border-purple-300 dark:border-purple-700 hover:border-purple-500 dark:hover:border-purple-600',
-    },
-    {
-      title: 'Calculator History',
-      description: 'View and compare all your saved calculations with interactive charts',
-      icon: '📋',
-      href: '/tools/calculators/history',
-      color:
-        'border-teal-300 dark:border-teal-700 hover:border-teal-500 dark:hover:border-teal-600',
     },
     {
       title: 'Financial Reports',
@@ -125,31 +126,34 @@ export default function CalculatorsPage() {
           Back to Home
         </Link>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-10 mb-10 border border-gray-100 dark:border-gray-700">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+        {/* Improved Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
             Financial Calculators
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+          <DateTimeHeader />
+          <p className="text-sm text-gray-600 dark:text-gray-300">
             Use these tools to create accurate financial projections for your agricultural business
             plan.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Calculators Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
           {calculators.map((calc) => (
             <Link
               key={calc.href}
               href={calc.href}
-              className={`block bg-white dark:bg-gray-800 p-8 rounded-xl border-2 ${calc.color} shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 group`}
+              className={`block bg-white dark:bg-gray-800 p-6 rounded-xl border-2 ${calc.color} shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 group`}
             >
-              <div className="text-5xl mb-5 group-hover:scale-110 transition-transform">
+              <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">
                 {calc.icon}
               </div>
-              <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">{calc.title}</h3>
-              <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+              <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">{calc.title}</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed text-sm">
                 {calc.description}
               </p>
-              <div className="text-primary-600 dark:text-primary-400 font-bold flex items-center group-hover:gap-3 gap-2 transition-all">
+              <div className="text-primary-600 dark:text-primary-400 font-bold flex items-center group-hover:gap-3 gap-2 transition-all text-sm">
                 Open Calculator
                 <svg
                   className="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
@@ -170,27 +174,27 @@ export default function CalculatorsPage() {
         </div>
 
         {/* Analysis Tools Section */}
-        <div className="mt-12 mb-8">
+        <div className="mb-10">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
             Analysis & Reporting Tools
           </h2>
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {features.map((feature) => (
               <Link
                 key={feature.href}
                 href={feature.href}
-                className={`block bg-white dark:bg-gray-800 p-8 rounded-xl border-2 ${feature.color} shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 group`}
+                className={`block bg-white dark:bg-gray-800 p-6 rounded-xl border-2 ${feature.color} shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 group`}
               >
-                <div className="text-5xl mb-5 group-hover:scale-110 transition-transform">
+                <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+                <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed text-sm">
                   {feature.description}
                 </p>
-                <div className="text-primary-600 dark:text-primary-400 font-bold flex items-center group-hover:gap-3 gap-2 transition-all">
+                <div className="text-primary-600 dark:text-primary-400 font-bold flex items-center group-hover:gap-3 gap-2 transition-all text-sm">
                   View {feature.title}
                   <svg
                     className="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
@@ -211,12 +215,13 @@ export default function CalculatorsPage() {
           </div>
         </div>
 
-        <div className="mt-10 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 border-l-4 border-blue-500 dark:border-blue-600 p-8 rounded-xl shadow-md">
+        {/* How to Use Section */}
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-l-4 border-blue-500 dark:border-blue-600 p-6 rounded-xl shadow-md">
           <h3 className="text-xl font-bold text-blue-900 dark:text-blue-300 mb-4 flex items-center">
             <span className="text-2xl mr-2">💡</span>
             How to Use These Tools
           </h3>
-          <ul className="space-y-3 text-blue-800 dark:text-blue-200">
+          <ul className="space-y-2 text-blue-800 dark:text-blue-200">
             <li className="flex items-start">
               <span className="text-blue-600 dark:text-blue-400 mr-3 mt-1">•</span>
               <span>Each calculator is designed for specific financial analysis needs</span>

@@ -68,17 +68,19 @@ export default function WorkflowProgress({ workflow, stages, approvals }: Workfl
   }
 
   return (
-    <div className="bg-white border rounded-lg p-6">
+    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
       <div className="mb-4">
-        <h3 className="text-lg font-semibold mb-1">{workflow.name}</h3>
-        <p className="text-sm text-gray-600">
+        <h3 className="text-lg font-semibold mb-1 text-gray-900 dark:text-white">
+          {workflow.name}
+        </h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           Workflow Type: <span className="font-medium">{workflow.type}</span>
         </p>
       </div>
 
       <div className="relative">
         {/* Progress Line */}
-        <div className="absolute top-5 left-5 right-5 h-0.5 bg-gray-200 -z-10" />
+        <div className="absolute top-5 left-5 right-5 h-0.5 bg-gray-200 dark:bg-gray-600 -z-10" />
 
         {/* Stages */}
         <div className="flex justify-between">
@@ -104,12 +106,14 @@ export default function WorkflowProgress({ workflow, stages, approvals }: Workfl
 
                   {/* Stage Info */}
                   <div className="text-center px-2">
-                    <p className="text-sm font-medium mb-1">{stage.name}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-sm font-medium mb-1 text-gray-900 dark:text-white">
+                      {stage.name}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       {approvedCount}/{stage.requiredApprovals} approved
                     </p>
                     {stage.deadline && (
-                      <p className="text-xs text-gray-400 mt-1">
+                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                         Due: {formatDate(stage.deadline)}
                       </p>
                     )}
@@ -121,18 +125,20 @@ export default function WorkflowProgress({ workflow, stages, approvals }: Workfl
       </div>
 
       {/* Overall Status */}
-      <div className="mt-6 pt-4 border-t">
+      <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-700">Overall Status:</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Overall Status:
+          </span>
           <span
             className={`px-3 py-1 rounded-full text-sm font-medium ${
               workflow.status === 'approved'
-                ? 'bg-green-100 text-green-800'
+                ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300'
                 : workflow.status === 'rejected'
-                  ? 'bg-red-100 text-red-800'
+                  ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
                   : workflow.status === 'in-progress'
-                    ? 'bg-blue-100 text-blue-800'
-                    : 'bg-gray-100 text-gray-800'
+                    ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'
             }`}
           >
             {workflow.status.replace('-', ' ').toUpperCase()}

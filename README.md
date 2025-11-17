@@ -12,7 +12,7 @@
 
 **🚀 Live Application:** [https://farmplan.netlify.app/](https://farmplan.netlify.app/)
 
-### 🚀 [Live Demo](https://farmplan.netlify.app/) | 📖 [Documentation](docs/) | 🚀 [Quick Start](docs/guides/QUICKSTART.md) | 💬 [Issues](https://github.com/JustAGhosT/farm-business-plan/issues)
+### 🚀 [Live Demo](https://farmplan.netlify.app/) | 📋 [TODO & Roadmap](TODO.md) | 📖 [Documentation](docs/) | 🚀 [Quick Start](docs/guides/QUICK_START_ENV_SETUP.md) | 💬 [Issues](https://github.com/JustAGhosT/farm-business-plan/issues)
 
 </div>
 
@@ -360,8 +360,13 @@ This repository includes a Next.js-based farm management and planning applicatio
 # Install dependencies
 npm install
 
-# Copy environment variables template (optional)
+# Copy environment variables template
 cp .env.example .env.local
+
+# IMPORTANT: Generate a secure NEXTAUTH_SECRET
+# Edit .env.local and replace the placeholder with:
+openssl rand -base64 32
+# See docs/guides/QUICK_START_ENV_SETUP.md for detailed instructions
 
 # For testing Google OAuth UI, set in .env.local:
 # NEXT_PUBLIC_GOOGLE_ENABLED="true"

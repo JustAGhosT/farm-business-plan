@@ -8,7 +8,7 @@ const createJestConfig = nextJest({
 // Add any custom config to be passed to Jest
 const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  testEnvironment: 'node', // Use node environment for API tests
+  testEnvironment: 'node', // Use node environment for API tests by default
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   },
@@ -20,6 +20,10 @@ const customJestConfig = {
     '!**/*.d.ts',
     '!**/node_modules/**',
   ],
+  // Allow tests to override testEnvironment with docblock comments
+  testEnvironmentOptions: {
+    url: 'http://localhost',
+  },
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

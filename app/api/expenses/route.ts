@@ -1,5 +1,6 @@
-import { NextResponse } from 'next/server'
+import { createErrorResponse } from '@/lib/api-utils'
 import { query } from '@/lib/db'
+import { NextResponse } from 'next/server'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -66,7 +67,7 @@ export async function GET(request: Request) {
     })
   } catch (error) {
     console.error('Error fetching expenses:', error)
-    return NextResponse.json({ success: false, error: 'Failed to fetch expenses' }, { status: 500 })
+    return createErrorResponse('Failed to fetch expenses', 500)
   }
 }
 
@@ -90,10 +91,7 @@ export async function POST(request: Request) {
     } = body
 
     if (!farm_plan_id || !category || !amount || !expense_date) {
-      return NextResponse.json(
-        { success: false, error: 'Required fields missing' },
-        { status: 400 }
-      )
+      return createErrorResponse('Required fields missing', 400, undefined, 'MISSING_FIELDS')
     }
 
     const queryText = `
@@ -129,7 +127,7 @@ export async function POST(request: Request) {
     )
   } catch (error) {
     console.error('Error creating expense:', error)
-    return NextResponse.json({ success: false, error: 'Failed to create expense' }, { status: 500 })
+    return createErrorResponse('Failed to create expense', 500)
   }
 }
 
@@ -143,7 +141,7 @@ export async function PATCH(request: Request) {
     const { id, ...updates } = body
 
     if (!id) {
-      return NextResponse.json({ success: false, error: 'Expense ID is required' }, { status: 400 })
+      return createErrorResponse('Expense ID is required', 400, undefined, 'MISSING_ID')
     }
 
     const fields: string[] = []
@@ -170,7 +168,7 @@ export async function PATCH(request: Request) {
     })
 
     if (fields.length === 0) {
-      return NextResponse.json({ success: false, error: 'No fields to update' }, { status: 400 })
+      return createErrorResponse('No fields to update', 400, undefined, 'NO_FIELDS')
     }
 
     values.push(id)
@@ -184,7 +182,7 @@ export async function PATCH(request: Request) {
     const result = await query(queryText, values)
 
     if (result.rows.length === 0) {
-      return NextResponse.json({ success: false, error: 'Expense not found' }, { status: 404 })
+      return createErrorResponse('Expense not found', 404, undefined, 'NOT_FOUND')
     }
 
     return NextResponse.json({
@@ -194,7 +192,7 @@ export async function PATCH(request: Request) {
     })
   } catch (error) {
     console.error('Error updating expense:', error)
-    return NextResponse.json({ success: false, error: 'Failed to update expense' }, { status: 500 })
+    return createErrorResponse('Failed to update expense', 500)
   }
 }
 
@@ -208,13 +206,13 @@ export async function DELETE(request: Request) {
     const id = searchParams.get('id')
 
     if (!id) {
-      return NextResponse.json({ success: false, error: 'Expense ID is required' }, { status: 400 })
+      return createErrorResponse('Expense ID is required', 400, undefined, 'MISSING_ID')
     }
 
     const result = await query('DELETE FROM expenses WHERE id = $1 RETURNING id', [id])
 
     if (result.rows.length === 0) {
-      return NextResponse.json({ success: false, error: 'Expense not found' }, { status: 404 })
+      return createErrorResponse('Expense not found', 404, undefined, 'NOT_FOUND')
     }
 
     return NextResponse.json({
@@ -223,7 +221,7 @@ export async function DELETE(request: Request) {
     })
   } catch (error) {
     console.error('Error deleting expense:', error)
-    return NextResponse.json({ success: false, error: 'Failed to delete expense' }, { status: 500 })
+    return createErrorResponse('Failed to delete expense', 500)
   }
 }
 

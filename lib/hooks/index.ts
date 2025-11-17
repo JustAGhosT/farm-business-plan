@@ -3,8 +3,12 @@
  * Provides easy imports for React components
  */
 
+// Generic CRUD API Hook (Refactoring #1)
+export { useCrudApi } from './useCrudApi'
+export type { CrudApiConfig, UseCrudApiResult } from './useCrudApi'
+
 // Farm Plans
-export { useFarmPlans, useFarmPlan } from './useFarmPlans'
+export { useFarmPlan, useFarmPlans } from './useFarmPlans'
 export type { FarmPlan } from './useFarmPlans'
 
 // Tasks
@@ -20,25 +24,17 @@ export { useCropPlans, useCropPlansByFarm } from './useCropPlans'
 export type { CropPlan } from './useCropPlans'
 
 // Financial Data
-export {
-  useFinancialData,
-  useFinancialDataByCrop,
-  useFinancialDataByFarm,
-} from './useFinancialData'
+export { useFinancialData } from './useFinancialData'
 export type { FinancialData } from './useFinancialData'
 
 // Crop Templates
-export {
-  useCropTemplates,
-  usePublicCropTemplates,
-  useCropTemplatesByCategory,
-} from './useCropTemplates'
+export { useCropTemplates } from './useCropTemplates'
 export type { CropTemplate } from './useCropTemplates'
 
 // AI Recommendations
-export {
-  useAIRecommendations,
-  useAIRecommendationsByFarm,
-  useAIRecommendationsByCategory,
-} from './useAIRecommendations'
+export { useAIRecommendations } from './useAIRecommendations'
 export type { AIRecommendation } from './useAIRecommendations'
+
+// Wizard Sessions
+export { useWizardSessions } from './useWizardSessions'
+export type { WizardSession } from './useWizardSessions'

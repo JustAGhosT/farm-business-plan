@@ -1,6 +1,17 @@
 'use client'
 
-import Link from 'next/link'
+import type { Session } from 'next-auth'
+import {
+  AccountBenefitsSection,
+  DocumentationSection,
+  FeaturesSection,
+  HeroSection,
+  PublicResourcesSection,
+  QuickStartSection,
+  ToolsSection,
+} from '@/components/home-page-sections'
+import { Container } from '@/components/ui'
+import { HOME_CONFIG } from '@/lib/home-page-config'
 import { useSession } from 'next-auth/react'
 import {
   Container,
@@ -17,84 +28,23 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-50 to-white dark:from-gray-800 dark:to-gray-900">
-      {/* Hero Section */}
       <Container>
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            Agricultural Business Plan Template
-          </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
-            A comprehensive framework for developing professional agricultural business plans and
-            managing farm operations - adaptable for any crop, location, or scale
-          </p>
+        <HeroSection
+          title={HOME_CONFIG.hero.title}
+          subtitle={HOME_CONFIG.hero.subtitle}
+          session={session}
+          status={status}
+        />
 
-          {/* Call to Action Buttons */}
-          {status !== 'loading' && (
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
-              {session ? (
-                <Link
-                  href="/tools/dashboard"
-                  className="px-8 py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-lg hover:shadow-xl font-bold text-lg transform hover:scale-105"
-                >
-                  Go to Dashboard →
-                </Link>
-              ) : (
-                <>
-                  <Link
-                    href="/auth/signin"
-                    className="px-8 py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-lg hover:shadow-xl font-bold text-lg transform hover:scale-105"
-                  >
-                    Sign In
-                  </Link>
-                  <Link
-                    href="/auth/register"
-                    className="px-8 py-4 bg-white dark:bg-gray-800 text-green-600 dark:text-green-400 border-2 border-green-600 dark:border-green-400 rounded-lg hover:bg-green-50 dark:hover:bg-gray-700 transition-colors shadow-lg hover:shadow-xl font-bold text-lg transform hover:scale-105"
-                  >
-                    Get Started Free
-                  </Link>
-                </>
-              )}
-            </div>
-          )}
-        </div>
+        <PublicResourcesSection resources={HOME_CONFIG.publicResources} />
 
-        {/* Public Resources - Always Available */}
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl shadow-xl p-8 mb-16 border border-blue-100 dark:border-blue-800">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              🌐 Free Public Resources
-            </h2>
-            <p className="text-gray-600 dark:text-gray-400">
-              Access these tools and documentation without signing in
-            </p>
-          </div>
-          <Grid cols={{ md: 3 }}>
-            <Card href="/docs/diversified-farm-plan" variant="elevated">
-              <CardTitle>📚 Documentation</CardTitle>
-              <CardDescription>Business plan templates and guides</CardDescription>
-            </Card>
+        <FeaturesSection features={HOME_CONFIG.features} />
 
-            <Card href="/tools/calculators" variant="elevated">
-              <CardTitle>💰 Calculators</CardTitle>
-              <CardDescription>ROI, break-even & financial tools</CardDescription>
-            </Card>
+        <QuickStartSection steps={HOME_CONFIG.quickStartSteps} />
 
-            <Card href="/tools/templates" variant="elevated">
-              <CardTitle>🌾 Templates</CardTitle>
-              <CardDescription>Pre-built crop profiles</CardDescription>
-            </Card>
-          </Grid>
-        </div>
+        {!session && <AccountBenefitsSection benefits={HOME_CONFIG.accountBenefits} />}
 
-        {/* Feature Cards */}
-        <Grid cols={{ md: 3 }} gap={8} className="mb-16">
-          <Card hover={true}>
-            <div className="text-5xl mb-4">🌱</div>
-            <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">Crop-Agnostic</h3>
-            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              Adaptable framework for any agricultural crop or livestock system
-            </p>
-          </Card>
+        <ToolsSection tools={HOME_CONFIG.tools} session={session} />
 
           <Card hover={true}>
             <div className="text-5xl mb-4">🌍</div>

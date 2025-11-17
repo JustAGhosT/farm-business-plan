@@ -1,8 +1,12 @@
-import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { createErrorResponse } from '@/lib/api-utils'
 import { authOptions } from '@/lib/auth'
-import { query } from '@/lib/db'
+import { communicationRepository } from '@/lib/repositories/communicationRepository'
+import { systemRepository } from '@/lib/repositories/systemRepository'
+import { taskRepository } from '@/lib/repositories/taskRepository'
 import { TaskSchema, validateData } from '@/lib/validation'
+import { getServerSession } from 'next-auth'
+import { NextResponse } from 'next/server'
+import { z } from 'zod'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -13,55 +17,53 @@ export const dynamic = 'force-dynamic'
  */
 export async function GET(request: Request) {
   try {
+    // Check authentication
+    const session = await getServerSession(authOptions)
+    if (!session) {
+      return createErrorResponse('Unauthorized', 401, undefined, 'UNAUTHORIZED')
+    }
+
+    // Extract query parameters
     const { searchParams } = new URL(request.url)
     const farmPlanId = searchParams.get('farm_plan_id')
     const status = searchParams.get('status')
     const priority = searchParams.get('priority')
 
-    let queryText = `
-      SELECT 
-        t.*,
-        fp.name as farm_plan_name,
-        cp.crop_name
-      FROM tasks t
-      JOIN farm_plans fp ON t.farm_plan_id = fp.id
-      LEFT JOIN crop_plans cp ON t.crop_plan_id = cp.id
-      WHERE 1=1
-    `
+    // Validate query parameters with Zod
+    const queryParamsSchema = z.object({
+      farm_plan_id: z.string().uuid().optional(),
+      status: z.enum(['pending', 'in-progress', 'completed', 'cancelled']).optional(),
+      priority: z.enum(['low', 'medium', 'high', 'critical']).optional(),
+    })
 
-    const params: any[] = []
-    let paramIndex = 1
+    const parse = queryParamsSchema.safeParse({
+      farm_plan_id: farmPlanId || undefined,
+      status: status || undefined,
+      priority: priority || undefined,
+    })
 
-    if (farmPlanId) {
-      queryText += ` AND t.farm_plan_id = $${paramIndex}`
-      params.push(farmPlanId)
-      paramIndex++
+    if (!parse.success) {
+      return createErrorResponse(
+        'Invalid query parameters',
+        400,
+        parse.error.issues,
+        'VALIDATION_ERROR'
+      )
     }
 
-    if (status) {
-      queryText += ` AND t.status = $${paramIndex}`
-      params.push(status)
-      paramIndex++
-    }
+    // Use validated parameters
+    const { farm_plan_id, status: validatedStatus, priority: validatedPriority } = parse.data
 
-    if (priority) {
-      queryText += ` AND t.priority = $${paramIndex}`
-      params.push(priority)
-      paramIndex++
-    }
-
-    queryText += ' ORDER BY t.due_date ASC, t.priority DESC, t.created_at DESC'
-
-    const result = await query(queryText, params)
+    const tasks = await taskRepository.getAll(farm_plan_id, validatedStatus, validatedPriority)
 
     return NextResponse.json({
       success: true,
-      data: result.rows,
-      count: result.rows.length,
+      data: tasks,
+      count: tasks.length,
     })
   } catch (error) {
     console.error('Error fetching tasks:', error)
-    return NextResponse.json({ success: false, error: 'Failed to fetch tasks' }, { status: 500 })
+    return createErrorResponse('Failed to fetch tasks', 500)
   }
 }
 
@@ -77,84 +79,43 @@ export async function POST(request: Request) {
     // Validate input
     const validation = validateData(TaskSchema, body)
     if (!validation.success) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Validation failed',
-          details: validation.errors?.issues,
-        },
-        { status: 400 }
+      return createErrorResponse(
+        'Validation failed',
+        400,
+        validation.errors?.issues,
+        'VALIDATION_ERROR'
       )
     }
 
     const data = validation.data!
     const createdBy = session?.user?.id || null
 
-    const queryText = `
-      INSERT INTO tasks (
-        farm_plan_id, crop_plan_id, title, description, 
-        status, priority, category, due_date,
-        assigned_to, assigned_by, created_by, 
-        estimated_duration, requires_approval, notes
-      )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
-      RETURNING *
-    `
-
-    const params = [
-      data.farm_plan_id,
-      data.crop_plan_id || null,
-      data.title,
-      data.description || null,
-      data.status || 'pending',
-      data.priority || 'medium',
-      data.category || null,
-      data.due_date || null,
-      data.assigned_to || null,
-      createdBy,
-      createdBy,
-      data.estimated_duration || null,
-      data.requires_approval || false,
-      data.notes || null,
-    ]
-
-    const result = await query(queryText, params)
-    const task = result.rows[0]
+    const task = await taskRepository.create(data, createdBy)
 
     // Create notification if task is assigned to someone
     if (data.assigned_to && data.assigned_to !== createdBy) {
-      await query(
-        `INSERT INTO notifications (
-          user_id, type, title, message, priority, context_type, context_id, action_url
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-        [
-          data.assigned_to,
-          'task-assigned',
-          'New Task Assigned',
-          `You have been assigned a new task: ${data.title}`,
-          data.priority || 'medium',
-          'task',
-          task.id,
-          `/tools/dashboard?task=${task.id}`,
-        ]
-      )
+      await communicationRepository.createNotification({
+        user_id: data.assigned_to,
+        type: 'task-assigned',
+        title: 'New Task Assigned',
+        message: `You have been assigned a new task: ${data.title}`,
+        priority: data.priority || 'medium',
+        context_type: 'task',
+        context_id: task.id,
+        action_url: `/tools/dashboard?task=${task.id}`,
+      })
     }
 
     // Log the change
     if (session?.user) {
-      await query(
-        `INSERT INTO change_log (
-          target_type, target_id, user_id, user_name, action, description
-        ) VALUES ($1, $2, $3, $4, $5, $6)`,
-        [
-          'task',
-          task.id,
-          session.user.id,
-          session.user.name || session.user.email,
-          'created',
-          `Created task: ${data.title}`,
-        ]
-      )
+      await systemRepository.logChange({
+        target_type: 'task',
+        target_id: task.id,
+        user_id: session.user.id,
+        user_name: session.user.name || session.user.email,
+        action: 'created',
+        description: `Created task: ${data.title}`,
+      })
     }
 
     return NextResponse.json(
@@ -167,9 +128,23 @@ export async function POST(request: Request) {
     )
   } catch (error) {
     console.error('Error creating task:', error)
-    return NextResponse.json({ success: false, error: 'Failed to create task' }, { status: 500 })
+    return createErrorResponse('Failed to create task', 500)
   }
 }
+
+// Whitelist of allowed fields to prevent SQL injection - frozen for security
+const ALLOWED_UPDATE_FIELDS = Object.freeze([
+  'title',
+  'description',
+  'status',
+  'priority',
+  'category',
+  'due_date',
+  'assigned_to',
+  'estimated_duration',
+  'actual_duration',
+  'notes',
+]) as readonly string[]
 
 /**
  * PATCH /api/tasks
@@ -181,102 +156,36 @@ export async function PATCH(request: Request) {
     const { id, ...updates } = body
 
     if (!id) {
-      return NextResponse.json({ success: false, error: 'Task ID is required' }, { status: 400 })
+      return createErrorResponse('Task ID is required', 400, undefined, 'MISSING_ID')
     }
 
-    // Build dynamic UPDATE query
-    const fields: string[] = []
-    const values: any[] = []
-    let paramIndex = 1
+    const updatedTask = await taskRepository.update(id, updates)
 
-    if (updates.title !== undefined) {
-      fields.push(`title = $${paramIndex++}`)
-      values.push(updates.title)
-    }
-    if (updates.description !== undefined) {
-      fields.push(`description = $${paramIndex++}`)
-      values.push(updates.description)
-    }
-    if (updates.status !== undefined) {
-      fields.push(`status = $${paramIndex++}`)
-      values.push(updates.status)
-
-      // If marking as completed, set completed_at
-      if (updates.status === 'completed' && !updates.completed_at) {
-        fields.push(`completed_at = $${paramIndex++}`)
-        values.push(new Date().toISOString())
-      }
-    }
-    if (updates.priority !== undefined) {
-      fields.push(`priority = $${paramIndex++}`)
-      values.push(updates.priority)
-    }
-    if (updates.category !== undefined) {
-      fields.push(`category = $${paramIndex++}`)
-      values.push(updates.category)
-    }
-    if (updates.due_date !== undefined) {
-      fields.push(`due_date = $${paramIndex++}`)
-      values.push(updates.due_date)
-    }
-    if (updates.assigned_to !== undefined) {
-      fields.push(`assigned_to = $${paramIndex++}`)
-      values.push(updates.assigned_to)
-    }
-    if (updates.estimated_duration !== undefined) {
-      fields.push(`estimated_duration = $${paramIndex++}`)
-      values.push(updates.estimated_duration)
-    }
-    if (updates.actual_duration !== undefined) {
-      fields.push(`actual_duration = $${paramIndex++}`)
-      values.push(updates.actual_duration)
-    }
-    if (updates.notes !== undefined) {
-      fields.push(`notes = $${paramIndex++}`)
-      values.push(updates.notes)
+    if (!updatedTask) {
+      return createErrorResponse(
+        'Task not found or no fields to update',
+        404,
+        undefined,
+        'NOT_FOUND'
+      )
     }
 
-    if (fields.length === 0) {
-      return NextResponse.json({ success: false, error: 'No fields to update' }, { status: 400 })
-    }
-
-    fields.push(`updated_at = $${paramIndex++}`)
-    values.push(new Date().toISOString())
-    values.push(id)
-
-    const queryText = `
-      UPDATE tasks
-      SET ${fields.join(', ')}
-      WHERE id = $${paramIndex}
-      RETURNING *
-    `
-
-    const result = await query(queryText, values)
-
-    if (result.rows.length === 0) {
-      return NextResponse.json({ success: false, error: 'Task not found' }, { status: 404 })
-    }
-
-    const updatedTask = result.rows[0]
     const session = await getServerSession(authOptions)
 
     // Send notification if task assignment changed
     if (updates.assigned_to !== undefined && session?.user) {
-      await query(
-        `INSERT INTO notifications (
-          user_id, type, title, message, priority, context_type, context_id, action_url
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-        [
-          updates.assigned_to,
-          'task-assigned',
-          'Task Reassigned',
-          `Task "${updatedTask.title}" has been assigned to you`,
-          updatedTask.priority || 'medium',
-          'task',
-          updatedTask.id,
-          `/tools/dashboard?task=${updatedTask.id}`,
-        ]
-      ).catch((err) => console.error('Failed to send notification:', err))
+      await communicationRepository
+        .createNotification({
+          user_id: updates.assigned_to,
+          type: 'task-assigned',
+          title: 'Task Reassigned',
+          message: `Task "${updatedTask.title}" has been assigned to you`,
+          priority: updatedTask.priority || 'medium',
+          context_type: 'task',
+          context_id: updatedTask.id,
+          action_url: `/tools/dashboard?task=${updatedTask.id}`,
+        })
+        .catch((err) => console.error('Failed to send notification:', err))
     }
 
     // Log the change
@@ -284,19 +193,16 @@ export async function PATCH(request: Request) {
       const changedFields = Object.keys(updates)
         .filter((k) => k !== 'id')
         .join(', ')
-      await query(
-        `INSERT INTO change_log (
-          target_type, target_id, user_id, user_name, action, description
-        ) VALUES ($1, $2, $3, $4, $5, $6)`,
-        [
-          'task',
-          id,
-          session.user.id,
-          session.user.name || session.user.email,
-          'updated',
-          `Updated task fields: ${changedFields}`,
-        ]
-      ).catch((err) => console.error('Failed to log change:', err))
+      await systemRepository
+        .logChange({
+          target_type: 'task',
+          target_id: id,
+          user_id: session.user.id,
+          user_name: session.user.name || session.user.email,
+          action: 'updated',
+          description: `Updated task fields: ${changedFields}`,
+        })
+        .catch((err) => console.error('Failed to log change:', err))
     }
 
     return NextResponse.json({
@@ -306,7 +212,7 @@ export async function PATCH(request: Request) {
     })
   } catch (error) {
     console.error('Error updating task:', error)
-    return NextResponse.json({ success: false, error: 'Failed to update task' }, { status: 500 })
+    return createErrorResponse('Failed to update task', 500)
   }
 }
 
@@ -320,14 +226,13 @@ export async function DELETE(request: Request) {
     const id = searchParams.get('id')
 
     if (!id) {
-      return NextResponse.json({ success: false, error: 'Task ID is required' }, { status: 400 })
+      return createErrorResponse('Task ID is required', 400, undefined, 'MISSING_ID')
     }
 
-    const queryText = 'DELETE FROM tasks WHERE id = $1 RETURNING id'
-    const result = await query(queryText, [id])
+    const deletedTask = await taskRepository.delete(id)
 
-    if (result.rows.length === 0) {
-      return NextResponse.json({ success: false, error: 'Task not found' }, { status: 404 })
+    if (!deletedTask) {
+      return createErrorResponse('Task not found', 404, undefined, 'NOT_FOUND')
     }
 
     return NextResponse.json({
@@ -336,6 +241,6 @@ export async function DELETE(request: Request) {
     })
   } catch (error) {
     console.error('Error deleting task:', error)
-    return NextResponse.json({ success: false, error: 'Failed to delete task' }, { status: 500 })
+    return createErrorResponse('Failed to delete task', 500)
   }
 }
