@@ -284,8 +284,9 @@ function validateOAuthProviders() {
     if (enabled) {
       logInfo(`${provider.name} OAuth is enabled`)
 
-      const missingCredentials = (!hasId || !isValidValue(hasId)) || (!hasSecret || !isValidValue(hasSecret))
-      
+      const missingCredentials =
+        !hasId || !isValidValue(hasId) || !hasSecret || !isValidValue(hasSecret)
+
       if (missingCredentials) {
         // In CI/CD, treat missing OAuth credentials as warnings, not errors
         // This allows builds to proceed with OAuth disabled
@@ -302,7 +303,9 @@ function validateOAuthProviders() {
         } else {
           // In development, be more strict
           if (!hasId || !isValidValue(hasId)) {
-            logError(`${provider.name} OAuth is enabled but ${provider.idVar} is missing or invalid`)
+            logError(
+              `${provider.name} OAuth is enabled but ${provider.idVar} is missing or invalid`
+            )
             console.error(`${colors.red}  → How to fix:${colors.reset}`)
             if (provider.name === 'Google') {
               console.error(

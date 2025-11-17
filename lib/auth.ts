@@ -7,7 +7,9 @@ import bcrypt from 'bcryptjs'
 import { UserRole } from '@/types/enums'
 import { credentialsSchema } from './validation/auth'
 
-async function authorizeCredentials(credentials: Record<string, string> | undefined): Promise<User | null> {
+async function authorizeCredentials(
+  credentials: Record<string, string> | undefined
+): Promise<User | null> {
   const parsedCredentials = credentialsSchema.safeParse(credentials)
 
   if (!parsedCredentials.success) {
@@ -107,23 +109,18 @@ async function handleOAuthSignIn(account: any, token: any) {
         `INSERT INTO users (email, name, auth_provider, auth_provider_id, role)
          VALUES ($1, $2, $3, $4, $5)
          RETURNING id, role`,
-        [
-          token.email,
-          token.name,
-          account.provider,
-          account.providerAccountId,
-          UserRole.User,
-        ]
+        [token.email, token.name, account.provider, account.providerAccountId, UserRole.User]
       )
       return { id: newUser.rows[0].id, role: newUser.rows[0].role }
     } else {
       const existingUser = result.rows[0]
       console.log('Existing user found:', existingUser.id)
       if (!existingUser.auth_provider || existingUser.auth_provider !== account.provider) {
-        await query(
-          'UPDATE users SET auth_provider = $1, auth_provider_id = $2 WHERE email = $3',
-          [account.provider, account.providerAccountId, token.email]
-        )
+        await query('UPDATE users SET auth_provider = $1, auth_provider_id = $2 WHERE email = $3', [
+          account.provider,
+          account.providerAccountId,
+          token.email,
+        ])
         console.log('Updated user OAuth provider')
       }
       return { id: existingUser.id, role: existingUser.role }
