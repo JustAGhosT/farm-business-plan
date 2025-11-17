@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import type { Session } from 'next-auth'
 import {
   AccountBenefitsSection,
@@ -10,7 +11,6 @@ import {
   QuickStartSection,
   ToolsSection,
 } from '@/components/home-page-sections'
-import { Container } from '@/components/ui'
 import { HOME_CONFIG } from '@/lib/home-page-config'
 import { useSession } from 'next-auth/react'
 import {
@@ -45,25 +45,6 @@ export default function Home() {
         {!session && <AccountBenefitsSection benefits={HOME_CONFIG.accountBenefits} />}
 
         <ToolsSection tools={HOME_CONFIG.tools} session={session} />
-
-          <Card hover={true}>
-            <div className="text-5xl mb-4">🌍</div>
-            <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
-              Location-Flexible
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              Templates for climate, soil, and market analysis for any region
-            </p>
-          </Card>
-
-          <Card hover={true}>
-            <div className="text-5xl mb-4">📊</div>
-            <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">Comprehensive</h3>
-            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              Covers technical planning, financial modeling, and operations management
-            </p>
-          </Card>
-        </Grid>
 
         {/* Quick Start Section */}
         <Section variant="default" className="mb-16">
