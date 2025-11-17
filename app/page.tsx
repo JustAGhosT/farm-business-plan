@@ -13,15 +13,7 @@ import {
 } from '@/components/home-page-sections'
 import { HOME_CONFIG } from '@/lib/home-page-config'
 import { useSession } from 'next-auth/react'
-import {
-  Container,
-  Section,
-  Badge,
-  Grid,
-  Card,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui'
+import { Container, Section, Badge, Grid, Card, CardTitle, CardDescription } from '@/components/ui'
 
 export default function Home() {
   const { data: session, status } = useSession()
