@@ -7,11 +7,10 @@ import ThemeToggle from '@/components/ThemeToggle'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import AuthProvider from '@/components/AuthProvider'
+import SEO from '../next-seo.config'
 
 export const metadata: Metadata = {
-  title: 'Agricultural Business Plan Template',
-  description:
-    'Comprehensive framework for developing agricultural business plans and farm management',
+  ...SEO,
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

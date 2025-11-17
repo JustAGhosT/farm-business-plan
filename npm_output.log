@@ -1,0 +1,14 @@
+
+> farm-business-plan@3.0.0 dev
+> next dev
+
+  ▲ Next.js 14.2.33
+  - Local:        http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 2.6s
+ ○ Compiling / ...
+ ✓ Compiled / in 7.4s (639 modules)
+ GET / 200 in 8384ms
+ ✓ Compiled in 925ms (324 modules)
+ ○ Compiling /api/auth/[...nextauth] ...
