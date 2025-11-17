@@ -284,51 +284,69 @@ function validateOAuthProviders() {
     if (enabled) {
       logInfo(`${provider.name} OAuth is enabled`)
 
-      if (!hasId || !isValidValue(hasId)) {
-        logError(`${provider.name} OAuth is enabled but ${provider.idVar} is missing or invalid`)
-        console.error(`${colors.red}  → How to fix:${colors.reset}`)
-        if (provider.name === 'Google') {
-          console.error(
-            `${colors.red}    1. Go to https://console.cloud.google.com/${colors.reset}`
+      const missingCredentials = (!hasId || !isValidValue(hasId)) || (!hasSecret || !isValidValue(hasSecret))
+      
+      if (missingCredentials) {
+        // In CI/CD, treat missing OAuth credentials as warnings, not errors
+        // This allows builds to proceed with OAuth disabled
+        if (isCI() || isBuildPhase()) {
+          logWarning(
+            `${provider.name} OAuth is enabled but credentials are incomplete - ${provider.name} OAuth will be disabled`
           )
-          console.error(`${colors.red}    2. Create or select a project${colors.reset}`)
-          console.error(`${colors.red}    3. Enable Google+ API${colors.reset}`)
-          console.error(`${colors.red}    4. Create OAuth 2.0 credentials${colors.reset}`)
-          console.error(
-            `${colors.red}    5. Set ${provider.idVar} with your Client ID${colors.reset}`
+          console.warn(
+            `${colors.yellow}  → To enable ${provider.name} OAuth, set both ${provider.idVar} and ${provider.secretVar}${colors.reset}`
           )
-        } else if (provider.name === 'GitHub') {
-          console.error(
-            `${colors.red}    1. Go to https://github.com/settings/developers${colors.reset}`
+          console.warn(
+            `${colors.yellow}  → Or explicitly disable: Set ${provider.enabledVar}="false"${colors.reset}`
           )
-          console.error(`${colors.red}    2. Click "New OAuth App"${colors.reset}`)
-          console.error(`${colors.red}    3. Fill in app details${colors.reset}`)
-          console.error(
-            `${colors.red}    4. Set ${provider.idVar} with your Client ID${colors.reset}`
-          )
+        } else {
+          // In development, be more strict
+          if (!hasId || !isValidValue(hasId)) {
+            logError(`${provider.name} OAuth is enabled but ${provider.idVar} is missing or invalid`)
+            console.error(`${colors.red}  → How to fix:${colors.reset}`)
+            if (provider.name === 'Google') {
+              console.error(
+                `${colors.red}    1. Go to https://console.cloud.google.com/${colors.reset}`
+              )
+              console.error(`${colors.red}    2. Create or select a project${colors.reset}`)
+              console.error(`${colors.red}    3. Enable Google+ API${colors.reset}`)
+              console.error(`${colors.red}    4. Create OAuth 2.0 credentials${colors.reset}`)
+              console.error(
+                `${colors.red}    5. Set ${provider.idVar} with your Client ID${colors.reset}`
+              )
+            } else if (provider.name === 'GitHub') {
+              console.error(
+                `${colors.red}    1. Go to https://github.com/settings/developers${colors.reset}`
+              )
+              console.error(`${colors.red}    2. Click "New OAuth App"${colors.reset}`)
+              console.error(`${colors.red}    3. Fill in app details${colors.reset}`)
+              console.error(
+                `${colors.red}    4. Set ${provider.idVar} with your Client ID${colors.reset}`
+              )
+            }
+            console.error(
+              `${colors.red}    → Or disable OAuth: Set ${provider.enabledVar}="false"${colors.reset}`
+            )
+          }
+
+          if (!hasSecret || !isValidValue(hasSecret)) {
+            logError(
+              `${provider.name} OAuth is enabled but ${provider.secretVar} is missing or invalid`
+            )
+            console.error(`${colors.red}  → How to fix:${colors.reset}`)
+            console.error(
+              `${colors.red}    • Get the Client Secret from the same ${provider.name} OAuth app${colors.reset}`
+            )
+            console.error(
+              `${colors.red}    • Set ${provider.secretVar} with your Client Secret${colors.reset}`
+            )
+            console.error(
+              `${colors.red}    → Or disable OAuth: Set ${provider.enabledVar}="false"${colors.reset}`
+            )
+          }
         }
-        console.error(
-          `${colors.red}    → Or disable OAuth: Set ${provider.enabledVar}="false"${colors.reset}`
-        )
       } else {
         logSuccess(`${provider.idVar} is set`)
-      }
-
-      if (!hasSecret || !isValidValue(hasSecret)) {
-        logError(
-          `${provider.name} OAuth is enabled but ${provider.secretVar} is missing or invalid`
-        )
-        console.error(`${colors.red}  → How to fix:${colors.reset}`)
-        console.error(
-          `${colors.red}    • Get the Client Secret from the same ${provider.name} OAuth app${colors.reset}`
-        )
-        console.error(
-          `${colors.red}    • Set ${provider.secretVar} with your Client Secret${colors.reset}`
-        )
-        console.error(
-          `${colors.red}    → Or disable OAuth: Set ${provider.enabledVar}="false"${colors.reset}`
-        )
-      } else {
         logSuccess(`${provider.secretVar} is set`)
       }
     } else if (hasId || hasSecret) {
