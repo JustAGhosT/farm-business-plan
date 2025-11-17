@@ -21,21 +21,18 @@ export default function middleware(req: NextRequest) {
     if (req.nextUrl.pathname.startsWith('/api/auth/')) {
       const pathname = req.nextUrl.pathname
 
-      // Exempt low-risk NextAuth endpoints to avoid tripping limits during normal flow
-      const isExemptAuthGet =
-        req.method === 'GET' &&
-        (pathname === '/api/auth/csrf' ||
-          pathname === '/api/auth/providers' ||
-          pathname === '/api/auth/session' ||
-          pathname.startsWith('/api/auth/signin'))
+      // Skip rate limiting entirely for ALL NextAuth internal routes
+      // These are part of the normal authentication flow and should not be rate limited
+      const isNextAuthRoute =
+        pathname === '/api/auth/csrf' ||
+        pathname === '/api/auth/providers' ||
+        pathname === '/api/auth/session' ||
+        pathname.startsWith('/api/auth/signin') ||
+        pathname.startsWith('/api/auth/callback') ||
+        pathname.startsWith('/api/auth/signout') ||
+        pathname === '/api/auth/error'
 
-      // Exempt signin POST requests (credentials, OAuth flows)
-      const isExemptAuthSignin = pathname.startsWith('/api/auth/signin')
-
-      // Also exempt callback endpoints (both GET and POST)
-      const isExemptAuthCallback = pathname.startsWith('/api/auth/callback')
-
-      if (isExemptAuthGet || isExemptAuthSignin || isExemptAuthCallback) {
+      if (isNextAuthRoute) {
         return NextResponse.next()
       }
 

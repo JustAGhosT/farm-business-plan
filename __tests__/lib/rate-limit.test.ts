@@ -1,12 +1,48 @@
 /**
  * Tests for rate limiting functionality
  */
-import { rateLimiter, RATE_LIMITS, getRateLimitIdentifier, applyRateLimit } from '@/lib/rate-limit'
+import {
+  rateLimiter,
+  RATE_LIMITS,
+  getRateLimitIdentifier,
+  applyRateLimit,
+  isRateLimitingDisabled,
+} from '@/lib/rate-limit'
 
 describe('Rate Limiter', () => {
+  // Store original env value
+  const originalEnv = process.env.DISABLE_RATE_LIMITING
+
   beforeEach(() => {
     // Reset rate limiter before each test
     rateLimiter.reset()
+    // Reset environment variable
+    delete process.env.DISABLE_RATE_LIMITING
+  })
+
+  afterAll(() => {
+    // Restore original env value
+    if (originalEnv !== undefined) {
+      process.env.DISABLE_RATE_LIMITING = originalEnv
+    } else {
+      delete process.env.DISABLE_RATE_LIMITING
+    }
+  })
+
+  describe('isRateLimitingDisabled', () => {
+    it('should return false when env var is not set', () => {
+      expect(isRateLimitingDisabled()).toBe(false)
+    })
+
+    it('should return false when env var is set to false', () => {
+      process.env.DISABLE_RATE_LIMITING = 'false'
+      expect(isRateLimitingDisabled()).toBe(false)
+    })
+
+    it('should return true when env var is set to true', () => {
+      process.env.DISABLE_RATE_LIMITING = 'true'
+      expect(isRateLimitingDisabled()).toBe(true)
+    })
   })
 
   describe('RateLimiter.checkLimit', () => {
@@ -176,6 +212,23 @@ describe('Rate Limiter', () => {
       const result = applyRateLimit(mockRequest, config)
       expect(result.allowed).toBe(false)
       expect(result.headers['X-RateLimit-Remaining']).toBe('0')
+    })
+
+    it('should always allow requests when rate limiting is disabled', () => {
+      process.env.DISABLE_RATE_LIMITING = 'true'
+
+      const mockRequest = new Request('http://localhost:3000/api/test', {
+        headers: { 'x-forwarded-for': '192.168.1.1' },
+      })
+      const config = { maxRequests: 2, windowMs: 60000 }
+
+      // Make many requests - should all be allowed
+      for (let i = 0; i < 10; i++) {
+        const result = applyRateLimit(mockRequest, config)
+        expect(result.allowed).toBe(true)
+        expect(result.headers['X-RateLimit-Disabled']).toBe('true')
+        expect(result.headers['X-RateLimit-Remaining']).toBe('2')
+      }
     })
   })
 

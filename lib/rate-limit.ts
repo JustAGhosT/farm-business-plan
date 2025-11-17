@@ -3,6 +3,13 @@
  * For production, consider using Redis or a distributed solution
  */
 
+/**
+ * Check if rate limiting is disabled via environment variable
+ */
+export function isRateLimitingDisabled(): boolean {
+  return process.env.DISABLE_RATE_LIMITING === 'true'
+}
+
 interface RateLimitEntry {
   count: number
   resetTime: number
@@ -176,6 +183,19 @@ export function applyRateLimit(
   userId?: string,
   scopeKey?: string
 ): { allowed: boolean; headers: Record<string, string> } {
+  // If rate limiting is disabled, always allow requests
+  if (isRateLimitingDisabled()) {
+    return {
+      allowed: true,
+      headers: {
+        'X-RateLimit-Limit': config.maxRequests.toString(),
+        'X-RateLimit-Remaining': config.maxRequests.toString(),
+        'X-RateLimit-Reset': new Date(Date.now() + config.windowMs).toISOString(),
+        'X-RateLimit-Disabled': 'true',
+      },
+    }
+  }
+
   const baseId = getRateLimitIdentifier(request, userId)
   const identifier = scopeKey ? `${baseId}:${scopeKey}` : baseId
   const result = rateLimiter.checkLimit(identifier, config.maxRequests, config.windowMs)
