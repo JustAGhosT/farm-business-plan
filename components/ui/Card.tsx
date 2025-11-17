@@ -31,7 +31,11 @@ export function Card({ className, variant, hover, href, ...props }: CardProps) {
   const classes = cardVariants({ variant, hover, className })
 
   if (href) {
-    return <Link href={href} className={`${classes} block group`} {...props} />
+    return (
+      <Link href={href} className={`${classes} block group`}>
+        {props.children}
+      </Link>
+    )
   }
 
   return <div className={classes} {...props} />
