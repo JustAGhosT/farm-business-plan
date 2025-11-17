@@ -94,6 +94,32 @@ function initializePool(): Pool {
   return newPool
 }
 
+function createPool(): Pool {
+  const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL
+
+  if (!connectionString) {
+    throw new Error(
+      'Database connection string not configured. Set DATABASE_URL or POSTGRES_URL environment variable.'
+    )
+  }
+
+  const newPool = new Pool({
+    connectionString,
+    ssl: process.env.NODE_ENV === 'production',
+    max: 20,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 10000,
+  })
+
+  // Handle pool errors
+  newPool.on('error', (err) => {
+    console.error('Unexpected error on idle database client', err)
+  })
+
+  console.log('Database pool created')
+  return newPool
+}
+
 /**
  * Get or create database connection pool
  */

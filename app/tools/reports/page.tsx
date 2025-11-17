@@ -1,235 +1,150 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import HistoryTab from '@/components/reports/HistoryTab'
+import ReportsHeader from '@/components/reports/ReportsHeader'
+import ReportsTab from '@/components/reports/ReportsTab'
+import { jsPDF } from 'jspdf'
 import Link from 'next/link'
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts'
-import jsPDF from 'jspdf'
-import autoTable from 'jspdf-autotable'
+import { useCallback, useEffect, useState } from 'react'
 
-interface CalculatorResult {
-  id: string
-  calculator_type: string
-  input_data: any
-  results: any
-  notes?: string
-  created_at: string
-}
-
-const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899']
-
-export default function FinancialReportsPage() {
-  const [results, setResults] = useState<CalculatorResult[]>([])
+export default function ReportsPage() {
+  const [results, setResults] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [dateRange, setDateRange] = useState<string>('30')
+  const [activeTab, setActiveTab] = useState<'reports' | 'history'>('reports')
+  const [dateRange, setDateRange] = useState('30')
+  const [filter, setFilter] = useState('')
+  const [selectedResults, setSelectedResults] = useState<any[]>([])
+  const [notification, setNotification] = useState<{
+    type: 'success' | 'error'
+    message: string
+  } | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  useEffect(() => {
-    fetchResults()
-  }, [])
-
-  const fetchResults = async () => {
-    setLoading(true)
+  const fetchResults = useCallback(async () => {
     try {
-      const response = await fetch('/api/calculator-results?limit=100')
+      setLoading(true)
+      const response = await fetch(`/api/calculator-results?filter=${encodeURIComponent(filter)}`)
+      if (!response.ok) throw new Error('Failed to fetch results')
       const data = await response.json()
-
-      if (data.success) {
-        setResults(data.data)
-      }
+      setResults(data.results || [])
     } catch (error) {
       console.error('Error fetching results:', error)
     } finally {
       setLoading(false)
     }
-  }
+  }, [filter])
 
-  const filterByDateRange = (results: CalculatorResult[]) => {
-    const days = parseInt(dateRange)
-    const cutoff = new Date()
-    cutoff.setDate(cutoff.getDate() - days)
-
-    return results.filter((r) => new Date(r.created_at) >= cutoff)
-  }
-
-  const getCalculatorTypeDistribution = () => {
-    const filtered = filterByDateRange(results)
-    const distribution: { [key: string]: number } = {}
-
-    filtered.forEach((r) => {
-      distribution[r.calculator_type] = (distribution[r.calculator_type] || 0) + 1
-    })
-
-    return Object.entries(distribution).map(([name, value]) => ({
-      name: name.replace('-', ' ').toUpperCase(),
-      value,
-    }))
-  }
-
-  const getRoiOverTime = () => {
-    const roiResults = filterByDateRange(results.filter((r) => r.calculator_type === 'roi'))
-    return roiResults
-      .slice(0, 20)
-      .reverse()
-      .map((r, index) => ({
-        date: new Date(r.created_at).toLocaleDateString(),
-        roi: r.results.roi || 0,
-        netProfit: r.results.netProfit || 0,
-      }))
-  }
-
-  const getFinancialSummary = () => {
-    const filtered = filterByDateRange(results)
-    const roiCalcs = filtered.filter((r) => r.calculator_type === 'roi')
-
-    const avgRoi =
-      roiCalcs.length > 0
-        ? roiCalcs.reduce((sum, r) => sum + (r.results.roi || 0), 0) / roiCalcs.length
-        : 0
-
-    const totalInvestment = roiCalcs.reduce(
-      (sum, r) => sum + (parseFloat(r.input_data.initialInvestment) || 0),
-      0
-    )
-
-    const totalNetProfit = roiCalcs.reduce((sum, r) => sum + (r.results.netProfit || 0), 0)
-
-    const avgPayback =
-      roiCalcs.length > 0
-        ? roiCalcs.reduce((sum, r) => sum + (r.results.paybackPeriod || 0), 0) / roiCalcs.length
-        : 0
-
-    return {
-      avgRoi,
-      totalInvestment,
-      totalNetProfit,
-      avgPayback,
-      totalCalculations: filtered.length,
+  // Fetch on mount and when filter changes (for history tab)
+  useEffect(() => {
+    fetchResults()
+    if (activeTab === 'history') {
+      setSelectedResults([]) // Clear selections when filter changes
     }
-  }
+  }, [filter, fetchResults, activeTab])
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-ZA', {
-      style: 'currency',
-      currency: 'ZAR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value)
-  }
+  const handleDelete = async (id: string) => {
+    setDeletingId(id)
+    setNotification(null)
 
-  const exportToPDF = () => {
-    const doc = new jsPDF()
-    const summary = getFinancialSummary()
-
-    // Title
-    doc.setFontSize(20)
-    doc.text('Financial Report', 14, 20)
-
-    // Date
-    doc.setFontSize(10)
-    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 28)
-    doc.text(`Period: Last ${dateRange} days`, 14, 34)
-
-    // Summary
-    doc.setFontSize(14)
-    doc.text('Executive Summary', 14, 45)
-
-    doc.setFontSize(10)
-    const summaryData = [
-      ['Total Calculations', summary.totalCalculations.toString()],
-      ['Average ROI', `${summary.avgRoi.toFixed(2)}%`],
-      ['Total Investment', formatCurrency(summary.totalInvestment)],
-      ['Total Net Profit', formatCurrency(summary.totalNetProfit)],
-      ['Average Payback Period', `${summary.avgPayback.toFixed(1)} years`],
-    ]
-
-    autoTable(doc, {
-      startY: 50,
-      head: [['Metric', 'Value']],
-      body: summaryData,
-      theme: 'grid',
-    })
-
-    // Calculator Distribution
-    const finalY = (doc as any).lastAutoTable.finalY || 90
-    doc.text('Calculator Usage Distribution', 14, finalY + 10)
-
-    const distData = getCalculatorTypeDistribution().map((d) => [d.name, d.value.toString()])
-    autoTable(doc, {
-      startY: finalY + 15,
-      head: [['Calculator Type', 'Count']],
-      body: distData,
-      theme: 'striped',
-    })
-
-    // Recent ROI Calculations
-    const finalY2 = (doc as any).lastAutoTable.finalY || 140
-    if (finalY2 < 250) {
-      doc.text('Recent ROI Trends', 14, finalY2 + 10)
-
-      const roiData = getRoiOverTime()
-        .slice(0, 10)
-        .map((d) => [d.date, `${d.roi.toFixed(2)}%`, formatCurrency(d.netProfit)])
-
-      autoTable(doc, {
-        startY: finalY2 + 15,
-        head: [['Date', 'ROI %', 'Net Profit']],
-        body: roiData,
-        theme: 'grid',
+    try {
+      const response = await fetch(`/api/calculator-results/${id}`, {
+        method: 'DELETE',
       })
-    }
 
-    // Footer
-    const pageCount = doc.getNumberOfPages()
-    for (let i = 1; i <= pageCount; i++) {
-      doc.setPage(i)
-      doc.setFontSize(8)
-      doc.text(
-        `Page ${i} of ${pageCount}`,
-        doc.internal.pageSize.getWidth() / 2,
-        doc.internal.pageSize.getHeight() - 10,
-        { align: 'center' }
-      )
-    }
+      if (!response.ok) {
+        throw new Error('Failed to delete result')
+      }
 
-    doc.save(`financial-report-${new Date().toISOString().split('T')[0]}.pdf`)
+      setResults(results.filter((r) => r.id !== id))
+      setSelectedResults(selectedResults.filter((r) => r.id !== id))
+      setNotification({ type: 'success', message: 'Calculation deleted successfully' })
+
+      // Clear notification after 3 seconds
+      setTimeout(() => setNotification(null), 3000)
+    } catch (error) {
+      console.error('Error deleting result:', error)
+      setNotification({
+        type: 'error',
+        message: error instanceof Error ? error.message : 'Failed to delete calculation',
+      })
+
+      // Clear error notification after 5 seconds
+      setTimeout(() => setNotification(null), 5000)
+    } finally {
+      setDeletingId(null)
+    }
+  }
+
+  const exportToPDF = (selectedResults?: any[]) => {
+    const resultsToExport = selectedResults || results
+    const doc = new jsPDF()
+
+    doc.setFontSize(20)
+    doc.text('Farm Financial Reports', 20, 20)
+
+    doc.setFontSize(12)
+    let y = 40
+
+    resultsToExport.forEach((result, index) => {
+      if (y > 280) {
+        doc.addPage()
+        y = 20
+      }
+
+      doc.text(`${index + 1}. ${result.calculator_type}`, 20, y)
+      y += 10
+
+      if (Number.isFinite(result.roi)) {
+        doc.text(`ROI: ${result.roi.toFixed(1)}%`, 30, y)
+        y += 7
+      }
+
+      if (Number.isFinite(result.initial_investment)) {
+        doc.text(`Investment: R${result.initial_investment.toLocaleString()}`, 30, y)
+        y += 7
+      }
+
+      if (Number.isFinite(result.total_revenue)) {
+        doc.text(`Revenue: R${result.total_revenue.toLocaleString()}`, 30, y)
+        y += 7
+      }
+
+      y += 10
+    })
+
+    doc.save('farm-financial-reports.pdf')
   }
 
   const exportToCSV = () => {
-    const filtered = filterByDateRange(results)
-    const csvData = [
-      ['Date', 'Calculator Type', 'Notes', 'Results'],
-      ...filtered.map((r) => [
-        new Date(r.created_at).toLocaleString(),
-        r.calculator_type,
-        r.notes || '',
-        JSON.stringify(r.results),
+    const csvContent = [
+      ['Calculator Type', 'ROI (%)', 'Investment', 'Revenue', 'Net Profit', 'Created Date'],
+      ...results.map((result) => [
+        result.calculator_type,
+        result.roi?.toFixed(1) || '',
+        result.initial_investment || '',
+        result.total_revenue || '',
+        result.net_profit || '',
+        new Date(result.created_at).toLocaleDateString(),
       ]),
     ]
+      .map((row) => row.join(','))
+      .join('\n')
 
-    const csvContent = csvData.map((row) => row.map((cell) => `"${cell}"`).join(',')).join('\n')
     const blob = new Blob([csvContent], { type: 'text/csv' })
-    const url = URL.createObjectURL(blob)
+    const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `financial-data-${new Date().toISOString().split('T')[0]}.csv`
+    a.download = 'farm-financial-reports.csv'
     a.click()
-    URL.revokeObjectURL(url)
+    window.URL.revokeObjectURL(url)
   }
 
-  const summary = getFinancialSummary()
+  const summary = {
+    avgRoi: results.reduce((sum, r) => sum + (r.roi || 0), 0) / results.length || 0,
+    totalInvestment: results.reduce((sum, r) => sum + (r.initial_investment || 0), 0),
+    totalNetProfit: results.reduce((sum, r) => sum + (r.net_profit || 0), 0),
+    avgPayback: results.reduce((sum, r) => sum + (r.payback_period || 0), 0) / results.length || 0,
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
@@ -250,202 +165,86 @@ export default function FinancialReportsPage() {
         </Link>
 
         <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
-            <div className="flex items-center">
-              <span className="text-4xl mr-4">📈</span>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">Financial Reports</h1>
-                <p className="text-gray-600">
-                  Comprehensive analysis of your farm financial calculations
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <button
-                onClick={exportToPDF}
-                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                PDF
-              </button>
-              <button
-                onClick={exportToCSV}
-                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                CSV
-              </button>
-            </div>
-          </div>
+          <ReportsHeader exportToPDF={exportToPDF} exportToCSV={exportToCSV} />
 
-          {/* Date Range Filter */}
-          <div className="mb-8">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Time Period</label>
-            <select
-              value={dateRange}
-              onChange={(e) => setDateRange(e.target.value)}
-              className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          {/* Notification */}
+          {notification && (
+            <div
+              className={`mb-4 p-4 rounded-lg border ${
+                notification.type === 'success'
+                  ? 'bg-green-50 border-green-200 text-green-800'
+                  : 'bg-red-50 border-red-200 text-red-800'
+              }`}
+              role="alert"
+              aria-live="polite"
             >
-              <option value="7">Last 7 days</option>
-              <option value="30">Last 30 days</option>
-              <option value="90">Last 90 days</option>
-              <option value="365">Last year</option>
-              <option value="10000">All time</option>
-            </select>
+              <div className="flex items-center">
+                <span className="mr-2">{notification.type === 'success' ? '✅' : '❌'}</span>
+                {notification.message}
+              </div>
+            </div>
+          )}
+
+          {/* Tab Navigation */}
+          <div className="flex border-b border-gray-200 mb-6" role="tablist">
+            <button
+              onClick={() => setActiveTab('reports')}
+              role="tab"
+              aria-selected={activeTab === 'reports'}
+              aria-controls="reports-panel"
+              tabIndex={activeTab === 'reports' ? 0 : -1}
+              className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
+                activeTab === 'reports'
+                  ? 'border-primary-500 text-primary-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              📊 Reports & Analytics
+            </button>
+            <button
+              onClick={() => setActiveTab('history')}
+              role="tab"
+              aria-selected={activeTab === 'history'}
+              aria-controls="history-panel"
+              tabIndex={activeTab === 'history' ? 0 : -1}
+              className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
+                activeTab === 'history'
+                  ? 'border-primary-500 text-primary-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              📋 Calculation History
+            </button>
           </div>
 
-          {loading ? (
-            <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-              <p className="mt-4 text-gray-600">Loading financial data...</p>
+          {/* Tab Content */}
+          {activeTab === 'reports' && (
+            <div role="tabpanel" id="reports-panel" aria-labelledby="reports-tab">
+              <ReportsTab
+                results={results}
+                summary={summary}
+                loading={loading}
+                dateRange={dateRange}
+                setDateRange={setDateRange}
+                exportToPDF={exportToPDF}
+                exportToCSV={exportToCSV}
+              />
             </div>
-          ) : (
-            <>
-              {/* KPI Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 border border-green-200">
-                  <div className="text-sm text-green-700 mb-1">Average ROI</div>
-                  <div className="text-3xl font-bold text-green-900">
-                    {summary.avgRoi.toFixed(1)}%
-                  </div>
-                  <div className="text-xs text-green-600 mt-2">Across all ROI calculations</div>
-                </div>
+          )}
 
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 border border-blue-200">
-                  <div className="text-sm text-blue-700 mb-1">Total Investment</div>
-                  <div className="text-2xl font-bold text-blue-900">
-                    {formatCurrency(summary.totalInvestment)}
-                  </div>
-                  <div className="text-xs text-blue-600 mt-2">Sum of all investments</div>
-                </div>
-
-                <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border border-purple-200">
-                  <div className="text-sm text-purple-700 mb-1">Total Net Profit</div>
-                  <div className="text-2xl font-bold text-purple-900">
-                    {formatCurrency(summary.totalNetProfit)}
-                  </div>
-                  <div className="text-xs text-purple-600 mt-2">Projected profit</div>
-                </div>
-
-                <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-6 border border-orange-200">
-                  <div className="text-sm text-orange-700 mb-1">Calculations</div>
-                  <div className="text-3xl font-bold text-orange-900">
-                    {summary.totalCalculations}
-                  </div>
-                  <div className="text-xs text-orange-600 mt-2">Total saved</div>
-                </div>
-              </div>
-
-              {/* ROI Trend Chart */}
-              {getRoiOverTime().length > 0 && (
-                <div className="mb-8 p-6 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-                    ROI Trend Over Time
-                  </h2>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={getRoiOverTime()}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" />
-                      <YAxis yAxisId="left" />
-                      <YAxis yAxisId="right" orientation="right" />
-                      <Tooltip />
-                      <Legend />
-                      <Line
-                        yAxisId="left"
-                        type="monotone"
-                        dataKey="roi"
-                        stroke="#10b981"
-                        strokeWidth={2}
-                        name="ROI %"
-                      />
-                      <Line
-                        yAxisId="right"
-                        type="monotone"
-                        dataKey="netProfit"
-                        stroke="#3b82f6"
-                        strokeWidth={2}
-                        name="Net Profit"
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              )}
-
-              {/* Calculator Distribution */}
-              {getCalculatorTypeDistribution().length > 0 && (
-                <div className="grid md:grid-cols-2 gap-8 mb-8">
-                  <div className="p-6 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-                      Calculator Usage Distribution
-                    </h2>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <PieChart>
-                        <Pie
-                          data={getCalculatorTypeDistribution()}
-                          cx="50%"
-                          cy="50%"
-                          labelLine={false}
-                          label={(entry) => entry.name}
-                          outerRadius={80}
-                          fill="#8884d8"
-                          dataKey="value"
-                        >
-                          {getCalculatorTypeDistribution().map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                          ))}
-                        </Pie>
-                        <Tooltip />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-
-                  <div className="p-6 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-                      Usage by Type
-                    </h2>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <BarChart data={getCalculatorTypeDistribution()}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Bar dataKey="value" fill="#10b981" name="Count" />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-              )}
-
-              {/* Summary Stats */}
-              <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded">
-                <h3 className="font-semibold text-blue-900 mb-3">📊 Report Summary</h3>
-                <ul className="space-y-2 text-sm text-blue-800">
-                  <li>
-                    • {summary.totalCalculations} total financial calculations saved in the selected
-                    period
-                  </li>
-                  <li>• Average ROI of {summary.avgRoi.toFixed(1)}% across all investments</li>
-                  <li>• Total projected investment: {formatCurrency(summary.totalInvestment)}</li>
-                  <li>• Total projected net profit: {formatCurrency(summary.totalNetProfit)}</li>
-                  <li>• Average payback period: {summary.avgPayback.toFixed(1)} years</li>
-                </ul>
-              </div>
-            </>
+          {activeTab === 'history' && (
+            <div role="tabpanel" id="history-panel" aria-labelledby="history-tab">
+              <HistoryTab
+                results={results}
+                filter={filter}
+                setFilter={setFilter}
+                selectedResults={selectedResults}
+                setSelectedResults={setSelectedResults}
+                handleDelete={handleDelete}
+                deletingId={deletingId}
+                exportToPDF={exportToPDF}
+              />
+            </div>
           )}
         </div>
       </div>

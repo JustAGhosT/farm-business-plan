@@ -117,9 +117,11 @@ export const rateLimiter = new RateLimiter()
  * Rate limit configuration presets
  */
 export const RATE_LIMITS = {
-  // Strict limit for authentication endpoints
+  // Reasonable limit for authentication endpoints
+  // Increased from 5 to 30 to accommodate NextAuth's multiple requests
+  // during normal authentication flows (signin, callback, session, etc.)
   auth: {
-    maxRequests: 5,
+    maxRequests: 30,
     windowMs: 15 * 60 * 1000, // 15 minutes
   },
   // Standard limit for API endpoints
@@ -148,9 +150,20 @@ export function getRateLimitIdentifier(request: Request, userId?: string): strin
     return `user:${userId}`
   }
 
-  // Fall back to IP address
+  // Try to detect IP from Next.js middleware request first
+  // @ts-ignore - NextRequest has `ip` in middleware runtime
+  const nextIp = (request as any)?.ip as string | undefined
+
+  // Common proxy headers
   const forwarded = request.headers.get('x-forwarded-for')
-  const ip = forwarded ? forwarded.split(',')[0].trim() : 'unknown'
+  const realIp = request.headers.get('x-real-ip')
+
+  const ip =
+    nextIp?.trim() ||
+    (forwarded ? forwarded.split(',')[0].trim() : '') ||
+    (realIp ? realIp.trim() : '') ||
+    'unknown'
+
   return `ip:${ip}`
 }
 
@@ -160,9 +173,11 @@ export function getRateLimitIdentifier(request: Request, userId?: string): strin
 export function applyRateLimit(
   request: Request,
   config: { maxRequests: number; windowMs: number },
-  userId?: string
+  userId?: string,
+  scopeKey?: string
 ): { allowed: boolean; headers: Record<string, string> } {
-  const identifier = getRateLimitIdentifier(request, userId)
+  const baseId = getRateLimitIdentifier(request, userId)
+  const identifier = scopeKey ? `${baseId}:${scopeKey}` : baseId
   const result = rateLimiter.checkLimit(identifier, config.maxRequests, config.windowMs)
 
   const headers = {

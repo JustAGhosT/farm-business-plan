@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
 import { withAuth } from 'next-auth/middleware'
+import type { NextRequest } from 'next/server'
+import { NextResponse } from 'next/server'
 import { applyRateLimit, RATE_LIMITS } from './lib/rate-limit'
 
 // Public routes that don't require authentication
@@ -19,7 +19,34 @@ export default function middleware(req: NextRequest) {
 
     // Apply rate limiting for other public routes (like auth)
     if (req.nextUrl.pathname.startsWith('/api/auth/')) {
-      const { allowed, headers } = applyRateLimit(req, RATE_LIMITS.auth)
+      const pathname = req.nextUrl.pathname
+
+      // Exempt low-risk NextAuth endpoints to avoid tripping limits during normal flow
+      const isExemptAuthGet =
+        req.method === 'GET' &&
+        (pathname === '/api/auth/csrf' ||
+          pathname === '/api/auth/providers' ||
+          pathname === '/api/auth/session' ||
+          pathname.startsWith('/api/auth/signin'))
+
+      // Exempt signin POST requests (credentials, OAuth flows)
+      const isExemptAuthSignin = pathname.startsWith('/api/auth/signin')
+
+      // Also exempt callback endpoints (both GET and POST)
+      const isExemptAuthCallback = pathname.startsWith('/api/auth/callback')
+
+      if (isExemptAuthGet || isExemptAuthSignin || isExemptAuthCallback) {
+        return NextResponse.next()
+      }
+
+      // In development, relax auth rate limits significantly
+      const isProd = process.env.NODE_ENV === 'production'
+      const authConfig = isProd ? RATE_LIMITS.auth : { maxRequests: 100, windowMs: 60 * 1000 } // 100 requests per minute in dev
+
+      // Scope by path+IP so each auth sub-endpoint has its own bucket
+      const scopeKey = pathname
+
+      const { allowed, headers } = applyRateLimit(req, authConfig, undefined, scopeKey)
 
       if (!allowed) {
         return NextResponse.json(

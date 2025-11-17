@@ -1,167 +1,350 @@
-import { NextResponse } from 'next/server'
+// Shared API utilities for consistent API patterns across the application
 
-/**
- * Generate unique request ID for tracking
- */
-function generateRequestId(): string {
-  return `req_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`
-}
-
-/**
- * Standardized API error response
- */
-export interface ApiError {
-  success: false
-  error: string
-  details?: any
-  code?: string
-  requestId?: string
-  timestamp?: string
-}
-
-/**
- * Standardized API success response
- */
-export interface ApiSuccess<T = any> {
-  success: true
+export interface ApiResponse<T = any> {
+  success: boolean
   data?: T
+  error?: string
   message?: string
-  count?: number
-  requestId?: string
 }
 
-/**
- * Centralized error handler for API routes
- * Wraps API route handlers with consistent error handling
- */
-export function withErrorHandler<T = any>(
-  handler: (request: Request) => Promise<NextResponse<ApiSuccess<T> | ApiError>>
-) {
-  return async (request: Request): Promise<NextResponse<ApiSuccess<T> | ApiError>> => {
-    const requestId = generateRequestId()
+export interface PaginationParams {
+  page?: number
+  limit?: number
+  offset?: number
+}
 
+export interface CalculatorResult {
+  id: string
+  calculator_type: string
+  input_data: any
+  results: any
+  notes?: string
+  created_at: string
+  farm_plan_name?: string
+  crop_name?: string
+}
+
+// Generic API client with consistent error handling
+export class ApiClient {
+  private baseUrl: string
+
+  constructor(baseUrl: string = '') {
+    this.baseUrl = baseUrl
+  }
+
+  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
     try {
-      const response = await handler(request)
+      // Merge headers properly - defaults first, then user headers
+      const headers = new Headers({
+        'Content-Type': 'application/json',
+        ...options.headers,
+      })
 
-      // Add requestId to successful responses if JSON
-      if (response.headers.get('content-type')?.includes('application/json')) {
-        try {
-          // Clone response to avoid consuming body
-          const clonedResponse = response.clone()
-          const body = await clonedResponse.json()
-          return NextResponse.json({ ...body, requestId }, { status: response.status })
-        } catch (parseError) {
-          // If JSON parsing fails, return response as-is
-          console.warn('Failed to parse response JSON:', parseError)
-          return response
+      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        ...options,
+        headers,
+      })
+
+      // Handle empty responses (204 No Content, empty body)
+      const isNoContent =
+        response.status === 204 ||
+        response.headers.get('content-length') === '0' ||
+        (response.headers.get('content-type')?.includes('text/plain') &&
+          response.headers.get('content-length') === '0')
+
+      let data: any = null
+
+      if (!isNoContent) {
+        const contentType = response.headers.get('content-type')
+        const responseText = await response.text()
+
+        if (responseText && contentType?.includes('application/json')) {
+          try {
+            data = JSON.parse(responseText)
+          } catch (parseError) {
+            // If JSON parsing fails, return the text as error
+            return {
+              success: false,
+              error: `Invalid JSON response: ${responseText}`,
+            }
+          }
+        } else if (responseText) {
+          // Non-JSON response with content
+          data = { message: responseText }
         }
       }
 
-      return response
-    } catch (error) {
-      console.error(`API route error [${requestId}]:`, error)
-
-      // Handle specific error types
-      if (error instanceof Error) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: error.message || 'Internal server error',
-            code: 'INTERNAL_ERROR',
-            requestId,
-            timestamp: new Date().toISOString(),
-          },
-          { status: 500 }
-        )
+      if (!response.ok) {
+        return {
+          success: false,
+          error: data?.error || data?.message || `HTTP ${response.status}: ${response.statusText}`,
+        }
       }
 
-      // Generic error fallback
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'An unexpected error occurred',
-          code: 'UNKNOWN_ERROR',
-          requestId,
-          timestamp: new Date().toISOString(),
-        },
-        { status: 500 }
-      )
+      return {
+        success: true,
+        data: data?.data || data,
+        message: data?.message,
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred',
+      }
     }
+  }
+
+  async get<T>(endpoint: string, params?: Record<string, any>): Promise<ApiResponse<T>> {
+    const url = params ? `${endpoint}?${new URLSearchParams(params)}` : endpoint
+    return this.request<T>(url)
+  }
+
+  async post<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, {
+      method: 'POST',
+      body: data ? JSON.stringify(data) : undefined,
+    })
+  }
+
+  async put<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, {
+      method: 'PUT',
+      body: data ? JSON.stringify(data) : undefined,
+    })
+  }
+
+  async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, {
+      method: 'DELETE',
+    })
   }
 }
 
-/**
- * Create a standardized error response with enhanced context
- */
+// Create default API client instance
+export const apiClient = new ApiClient()
+
+// Calculator-specific API functions
+export const calculatorApi = {
+  // Save calculator result
+  async saveResult(
+    calculatorType: string,
+    inputData: any,
+    results: any,
+    notes?: string
+  ): Promise<ApiResponse<CalculatorResult>> {
+    return apiClient.post('/api/calculator-results', {
+      calculator_type: calculatorType,
+      input_data: inputData,
+      results: results,
+      notes: notes || '',
+    })
+  },
+
+  // Fetch calculator results
+  async getResults(
+    calculatorType?: string,
+    params?: PaginationParams
+  ): Promise<ApiResponse<CalculatorResult[]>> {
+    const queryParams: Record<string, any> = {
+      ...params,
+      limit: params?.limit ?? 50,
+    }
+
+    if (calculatorType) {
+      queryParams.calculator_type = calculatorType
+    }
+
+    return apiClient.get('/api/calculator-results', queryParams)
+  },
+
+  // Delete calculator result
+  async deleteResult(id: string): Promise<ApiResponse<void>> {
+    return apiClient.delete(`/api/calculator-results?id=${id}`)
+  },
+
+  // Export results to PDF
+  async exportToPDF(results: CalculatorResult[]): Promise<Blob> {
+    const response = await fetch('/api/calculator-results/export', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ results }),
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to export results')
+    }
+
+    return response.blob()
+  },
+
+  // Export results to CSV
+  async exportToCSV(results: CalculatorResult[]): Promise<Blob> {
+    const response = await fetch('/api/calculator-results/export-csv', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ results }),
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to export results')
+    }
+
+    return response.blob()
+  },
+}
+
+// Farm plan API functions
+export const farmPlanApi = {
+  async create(data: any): Promise<ApiResponse<any>> {
+    return apiClient.post('/api/farm-plans', data)
+  },
+
+  async getPlans(params?: PaginationParams): Promise<ApiResponse<any[]>> {
+    return apiClient.get('/api/farm-plans', params)
+  },
+
+  async getPlan(id: string): Promise<ApiResponse<any>> {
+    return apiClient.get(`/api/farm-plans/${id}`)
+  },
+
+  async updatePlan(id: string, data: any): Promise<ApiResponse<any>> {
+    return apiClient.put(`/api/farm-plans/${id}`, data)
+  },
+
+  async deletePlan(id: string): Promise<ApiResponse<void>> {
+    return apiClient.delete(`/api/farm-plans/${id}`)
+  },
+}
+
+// Crop suggestions API
+export const cropApi = {
+  async getSuggestions(province: string, town: string): Promise<ApiResponse<any[]>> {
+    return apiClient.get('/api/suggest-crops', { province, town })
+  },
+
+  async getTemplates(): Promise<ApiResponse<any[]>> {
+    return apiClient.get('/api/crop-templates')
+  },
+}
+
+// Climate data API
+export const climateApi = {
+  async saveData(data: any): Promise<ApiResponse<any>> {
+    return apiClient.post('/api/climate-data', data)
+  },
+
+  async getData(farmPlanId: string): Promise<ApiResponse<any>> {
+    return apiClient.get(`/api/climate-data?farm_plan_id=${farmPlanId}`)
+  },
+}
+
+// AI recommendations API
+export const aiApi = {
+  async saveRecommendation(data: any): Promise<ApiResponse<any>> {
+    return apiClient.post('/api/ai-recommendations', data)
+  },
+
+  async getRecommendations(farmPlanId: string): Promise<ApiResponse<any[]>> {
+    return apiClient.get(`/api/ai-recommendations?farm_plan_id=${farmPlanId}`)
+  },
+}
+
+// Utility functions for common API patterns
+export const apiUtils = {
+  // Handle API errors consistently
+  handleError(error: any): string {
+    if (typeof error === 'string') return error
+    if (error?.message) return error.message
+    if (error?.error) return error.error
+    return 'An unexpected error occurred'
+  },
+
+  // Format currency consistently
+  formatCurrency(amount: number, currency = 'ZAR'): string {
+    return new Intl.NumberFormat('en-ZA', {
+      style: 'currency',
+      currency: currency,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount)
+  },
+
+  // Format percentage consistently
+  formatPercentage(value: number, decimals = 1): string {
+    return `${value.toFixed(decimals)}%`
+  },
+
+  // Format date consistently
+  formatDate(date: string | Date): string {
+    return new Date(date).toLocaleDateString('en-ZA')
+  },
+
+  // Format date and time consistently
+  formatDateTime(date: string | Date): string {
+    return new Date(date).toLocaleString('en-ZA')
+  },
+
+  // Download blob as file
+  downloadBlob(blob: Blob, filename: string): void {
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  },
+}
+
+// Utility functions for API responses
 export function createErrorResponse(
   error: string,
-  status: number = 500,
+  status = 400,
   details?: any,
   code?: string
-): NextResponse<ApiError> {
-  return NextResponse.json(
-    {
+): Response {
+  return new Response(
+    JSON.stringify({
       success: false,
       error,
       ...(details && { details }),
       ...(code && { code }),
-      requestId: generateRequestId(),
-      timestamp: new Date().toISOString(),
-    },
-    { status }
-  )
-}
-
-/**
- * Create a standardized success response
- */
-export function createSuccessResponse<T = any>(
-  data?: T,
-  message?: string,
-  status: number = 200
-): NextResponse<ApiSuccess<T>> {
-  return NextResponse.json(
+    }),
     {
-      success: true,
-      ...(data !== undefined && { data }),
-      ...(message && { message }),
-      requestId: generateRequestId(),
-    },
-    { status }
+      status,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
   )
 }
 
-/**
- * Validation result for UUID parameters
- */
-export type UuidValidationResult =
-  | { success: true; id: string }
-  | { success: false; response: NextResponse<ApiError> }
-
-/**
- * Validate and sanitize a UUID parameter
- * Returns a success object with trimmed ID or a failure response
- */
-export function validateUuidParam(id: string | undefined | null): UuidValidationResult {
-  // Check for non-empty string
-  if (!id || typeof id !== 'string' || id.trim() === '') {
-    return {
-      success: false,
-      response: createErrorResponse('Invalid ID parameter', 400, undefined, 'INVALID_ID'),
+export function createSuccessResponse(data: any, message?: string, status = 200): Response {
+  return new Response(
+    JSON.stringify({
+      success: true,
+      data,
+      message,
+    }),
+    {
+      status,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     }
+  )
+}
+
+export function validateUuidParam(param: string | null): string {
+  if (!param) {
+    throw new Error('Missing required parameter')
   }
 
-  // Validate UUID format
-  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-  if (!uuidRegex.test(id.trim())) {
-    return {
-      success: false,
-      response: createErrorResponse('ID must be a valid UUID', 400, undefined, 'INVALID_ID_FORMAT'),
-    }
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+  if (!uuidRegex.test(param)) {
+    throw new Error('Invalid UUID format')
   }
 
-  return {
-    success: true,
-    id: id.trim(),
-  }
+  return param
 }

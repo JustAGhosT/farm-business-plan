@@ -16,7 +16,10 @@ export async function GET(request: Request) {
     const category = searchParams.get('category')
     const isPublic = searchParams.get('is_public')
 
-    const templates = await cropRepository.getAllTemplates(category, isPublic)
+    const templates = await cropRepository.getAllTemplates(
+      category || undefined,
+      isPublic || undefined
+    )
 
     return NextResponse.json({
       success: true,

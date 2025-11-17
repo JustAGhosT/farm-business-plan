@@ -16,22 +16,26 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
     const { id: rawId } = params
 
     // Validate ID parameter
-    const validation = validateUuidParam(rawId)
-    if (!validation.success) {
-      return validation.response
+    try {
+      const id = validateUuidParam(rawId)
+      const farmPlan = await farmPlanRepository.getById(id)
+
+      if (!farmPlan) {
+        return createErrorResponse('Farm plan not found', 404, undefined, 'NOT_FOUND')
+      }
+
+      return NextResponse.json({
+        success: true,
+        data: farmPlan,
+      })
+    } catch (error) {
+      return createErrorResponse(
+        error instanceof Error ? error.message : 'Invalid parameter',
+        400,
+        undefined,
+        'INVALID_PARAMETER'
+      )
     }
-    const id = validation.id
-
-    const farmPlan = await farmPlanRepository.getById(id)
-
-    if (!farmPlan) {
-      return createErrorResponse('Farm plan not found', 404, undefined, 'NOT_FOUND')
-    }
-
-    return NextResponse.json({
-      success: true,
-      data: farmPlan,
-    })
   } catch (error) {
     console.error('Error fetching farm plan:', error)
     return createErrorResponse('Failed to fetch farm plan', 500)
@@ -48,22 +52,44 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
     const { id: rawId } = params
 
     // Validate ID parameter
-    const idValidation = validateUuidParam(rawId)
-    if (!idValidation.success) {
-      return idValidation.response
-    }
-    const id = idValidation.id
+    try {
+      const id = validateUuidParam(rawId)
 
-    const body = await request.json()
+      const body = await request.json()
 
-    // Validate input
-    const validation = validateData(FarmPlanSchema.partial(), body)
-    if (!validation.success) {
+      // Validate input
+      const validation = validateData(FarmPlanSchema.partial(), body)
+      if (!validation.success) {
+        return createErrorResponse(
+          'Validation failed',
+          400,
+          validation.errors?.issues,
+          'VALIDATION_ERROR'
+        )
+      }
+
+      const updatedFarmPlan = await farmPlanRepository.update(id, validation.data!)
+
+      if (!updatedFarmPlan) {
+        return createErrorResponse(
+          'Farm plan not found or no fields to update',
+          404,
+          undefined,
+          'NOT_FOUND'
+        )
+      }
+
+      return NextResponse.json({
+        success: true,
+        data: updatedFarmPlan,
+        message: 'Farm plan updated successfully',
+      })
+    } catch (error) {
       return createErrorResponse(
-        'Validation failed',
+        error instanceof Error ? error.message : 'Invalid parameter',
         400,
-        validation.errors?.issues,
-        'VALIDATION_ERROR'
+        undefined,
+        'INVALID_PARAMETER'
       )
     }
 
@@ -99,22 +125,27 @@ export async function DELETE(request: Request, props: { params: Promise<{ id: st
     const { id: rawId } = params
 
     // Validate ID parameter
-    const validation = validateUuidParam(rawId)
-    if (!validation.success) {
-      return validation.response
+    try {
+      const id = validateUuidParam(rawId)
+
+      const deletedFarmPlan = await farmPlanRepository.delete(id)
+
+      if (!deletedFarmPlan) {
+        return createErrorResponse('Farm plan not found', 404, undefined, 'NOT_FOUND')
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: 'Farm plan deleted successfully',
+      })
+    } catch (error) {
+      return createErrorResponse(
+        error instanceof Error ? error.message : 'Invalid parameter',
+        400,
+        undefined,
+        'INVALID_PARAMETER'
+      )
     }
-    const id = validation.id
-
-    const deletedFarmPlan = await farmPlanRepository.delete(id)
-
-    if (!deletedFarmPlan) {
-      return createErrorResponse('Farm plan not found', 404, undefined, 'NOT_FOUND')
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: 'Farm plan deleted successfully',
-    })
   } catch (error) {
     console.error('Error deleting farm plan:', error)
     return createErrorResponse('Failed to delete farm plan', 500)

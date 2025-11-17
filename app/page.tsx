@@ -1,6 +1,17 @@
 'use client'
 
 import Link from 'next/link'
+import type { Session } from 'next-auth'
+import {
+  AccountBenefitsSection,
+  DocumentationSection,
+  FeaturesSection,
+  HeroSection,
+  PublicResourcesSection,
+  QuickStartSection,
+  ToolsSection,
+} from '@/components/home-page-sections'
+import { HOME_CONFIG } from '@/lib/home-page-config'
 import { useSession } from 'next-auth/react'
 import { Container, Section, Badge, Grid, Card, CardTitle, CardDescription } from '@/components/ui'
 
@@ -9,103 +20,23 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-50 to-white dark:from-gray-800 dark:to-gray-900">
-      {/* Hero Section */}
       <Container>
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            Agricultural Business Plan Template
-          </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
-            A comprehensive framework for developing professional agricultural business plans and
-            managing farm operations - adaptable for any crop, location, or scale
-          </p>
+        <HeroSection
+          title={HOME_CONFIG.hero.title}
+          subtitle={HOME_CONFIG.hero.subtitle}
+          session={session}
+          status={status}
+        />
 
-          {/* Call to Action Buttons */}
-          {status !== 'loading' && (
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
-              {session ? (
-                <Link
-                  href="/tools/dashboard"
-                  className="px-8 py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-lg hover:shadow-xl font-bold text-lg transform hover:scale-105"
-                >
-                  Go to Dashboard →
-                </Link>
-              ) : (
-                <>
-                  <Link
-                    href="/auth/signin"
-                    className="px-8 py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-lg hover:shadow-xl font-bold text-lg transform hover:scale-105"
-                  >
-                    Sign In
-                  </Link>
-                  <Link
-                    href="/auth/register"
-                    className="px-8 py-4 bg-white dark:bg-gray-800 text-green-600 dark:text-green-400 border-2 border-green-600 dark:border-green-400 rounded-lg hover:bg-green-50 dark:hover:bg-gray-700 transition-colors shadow-lg hover:shadow-xl font-bold text-lg transform hover:scale-105"
-                  >
-                    Get Started Free
-                  </Link>
-                </>
-              )}
-            </div>
-          )}
-        </div>
+        <PublicResourcesSection resources={HOME_CONFIG.publicResources} />
 
-        {/* Public Resources - Always Available */}
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl shadow-xl p-8 mb-16 border border-blue-100 dark:border-blue-800">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              🌐 Free Public Resources
-            </h2>
-            <p className="text-gray-600 dark:text-gray-400">
-              Access these tools and documentation without signing in
-            </p>
-          </div>
-          <Grid cols={{ md: 3 }}>
-            <Card href="/docs/diversified-farm-plan" variant="elevated">
-              <CardTitle>📚 Documentation</CardTitle>
-              <CardDescription>Business plan templates and guides</CardDescription>
-            </Card>
+        <FeaturesSection features={HOME_CONFIG.features} />
 
-            <Card href="/tools/calculators" variant="elevated">
-              <CardTitle>💰 Calculators</CardTitle>
-              <CardDescription>ROI, break-even & financial tools</CardDescription>
-            </Card>
+        <QuickStartSection steps={HOME_CONFIG.quickStartSteps} />
 
-            <Card href="/tools/templates" variant="elevated">
-              <CardTitle>🌾 Templates</CardTitle>
-              <CardDescription>Pre-built crop profiles</CardDescription>
-            </Card>
-          </Grid>
-        </div>
+        {!session && <AccountBenefitsSection benefits={HOME_CONFIG.accountBenefits} />}
 
-        {/* Feature Cards */}
-        <Grid cols={{ md: 3 }} gap={8} className="mb-16">
-          <Card hover={true}>
-            <div className="text-5xl mb-4">🌱</div>
-            <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">Crop-Agnostic</h3>
-            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              Adaptable framework for any agricultural crop or livestock system
-            </p>
-          </Card>
-
-          <Card hover={true}>
-            <div className="text-5xl mb-4">🌍</div>
-            <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
-              Location-Flexible
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              Templates for climate, soil, and market analysis for any region
-            </p>
-          </Card>
-
-          <Card hover={true}>
-            <div className="text-5xl mb-4">📊</div>
-            <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">Comprehensive</h3>
-            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              Covers technical planning, financial modeling, and operations management
-            </p>
-          </Card>
-        </Grid>
+        <ToolsSection tools={HOME_CONFIG.tools} session={session} />
 
         {/* Quick Start Section */}
         <Section variant="default" className="mb-16">
@@ -273,65 +204,49 @@ export default function Home() {
             Interactive Tools
           </h2>
           <Grid cols={{ md: 2, lg: 4 }}>
-            <Card
-              href={session ? '/tools/ai-wizard' : '/auth/signin?callbackUrl=/tools/ai-wizard'}
-              variant="bordered"
-              className="relative"
-            >
-              {!session && (
-                <Badge variant="locked" className="absolute top-2 right-2">
-                  🔒
-                </Badge>
-              )}
-              <CardTitle>🤖 AI Wizard</CardTitle>
-              <CardDescription>Personalized farm planning</CardDescription>
-            </Card>
-
-            <Card
-              href={
-                session ? '/tools/plan-generator' : '/auth/signin?callbackUrl=/tools/plan-generator'
-              }
-              variant="bordered"
-              className="relative"
-            >
-              {!session && (
-                <Badge variant="locked" className="absolute top-2 right-2">
-                  🔒
-                </Badge>
-              )}
-              <CardTitle>🌱 Plan Generator</CardTitle>
-              <CardDescription>Create customized business plans</CardDescription>
-            </Card>
-
-            <Card href="/tools/calculators" variant="bordered" className="relative">
-              <Badge variant="public" className="absolute top-2 right-2">
-                Public
-              </Badge>
-              <CardTitle>💰 Financial Tools</CardTitle>
-              <CardDescription>6 calculators: ROI, break-even & more</CardDescription>
-            </Card>
-
-            <Card
-              href={session ? '/tools/dashboard' : '/auth/signin?callbackUrl=/tools/dashboard'}
-              variant="bordered"
-              className="relative"
-            >
-              {!session && (
-                <Badge variant="locked" className="absolute top-2 right-2">
-                  🔒
-                </Badge>
-              )}
-              <CardTitle>📊 Dashboard</CardTitle>
-              <CardDescription>Track tasks and operations</CardDescription>
-            </Card>
-
-            <Card href="/tools/templates" variant="bordered" className="relative">
-              <Badge variant="public" className="absolute top-2 right-2">
-                Public
-              </Badge>
-              <CardTitle>📚 Crop Templates</CardTitle>
-              <CardDescription>Browse pre-built crop profiles</CardDescription>
-            </Card>
+            {[
+              {
+                href: session
+                  ? '/tools/plan-generator'
+                  : '/auth/signin?callbackUrl=/tools/plan-generator',
+                title: '🌱 Plan Generator',
+                description: 'Create customized business plans',
+                locked: !session,
+              },
+              {
+                href: '/tools/calculators',
+                title: '💰 Financial Tools',
+                description: '6 calculators: ROI, break-even & more',
+                public: true,
+              },
+              {
+                href: session ? '/tools/dashboard' : '/auth/signin?callbackUrl=/tools/dashboard',
+                title: '📊 Dashboard',
+                description: 'Track tasks and operations',
+                locked: !session,
+              },
+              {
+                href: '/tools/templates',
+                title: '📚 Crop Templates',
+                description: 'Browse pre-built crop profiles',
+                public: true,
+              },
+            ].map((tool) => (
+              <Card key={tool.href} href={tool.href} variant="bordered" className="relative">
+                {tool.locked && (
+                  <Badge variant="locked" className="absolute top-2 right-2">
+                    🔒
+                  </Badge>
+                )}
+                {tool.public && (
+                  <Badge variant="public" className="absolute top-2 right-2">
+                    Public
+                  </Badge>
+                )}
+                <CardTitle>{tool.title}</CardTitle>
+                <CardDescription>{tool.description}</CardDescription>
+              </Card>
+            ))}
           </Grid>
         </Section>
 
@@ -344,47 +259,53 @@ export default function Home() {
             </Badge>
           </div>
           <Grid cols={{ md: 2 }}>
-            <Card href="/docs/diversified-farm-plan" variant="bordered">
-              <CardTitle>🌾 Main Business Plan Template</CardTitle>
-              <CardDescription>
-                Comprehensive agricultural business planning framework
-              </CardDescription>
-            </Card>
-
-            <Card href="/docs/executive-summary" variant="bordered">
-              <CardTitle>📋 Executive Summary Template</CardTitle>
-              <CardDescription>High-level business plan summary structure</CardDescription>
-            </Card>
-
-            <Card href="/docs/technical-implementation" variant="bordered">
-              <CardTitle>🔧 Technical Implementation</CardTitle>
-              <CardDescription>Technical specifications and implementation details</CardDescription>
-            </Card>
-
-            <Card href="/docs/financial-analysis" variant="bordered">
-              <CardTitle>💰 Financial Analysis Framework</CardTitle>
-              <CardDescription>Financial modeling and projection tools</CardDescription>
-            </Card>
-
-            <Card href="/docs/operations-manual" variant="bordered">
-              <CardTitle>⚙️ Operations Manual</CardTitle>
-              <CardDescription>Daily operations and maintenance procedures</CardDescription>
-            </Card>
-
-            <Card href="/docs/market-strategy" variant="bordered">
-              <CardTitle>🛒 Market Strategy</CardTitle>
-              <CardDescription>Marketing and sales planning guide</CardDescription>
-            </Card>
-
-            <Card href="/docs/risk-management" variant="bordered">
-              <CardTitle>⚠️ Risk Management</CardTitle>
-              <CardDescription>Risk assessment and mitigation frameworks</CardDescription>
-            </Card>
-
-            <Card href="/docs/implementation-timeline" variant="bordered">
-              <CardTitle>📅 Implementation Timeline</CardTitle>
-              <CardDescription>Project timeline and milestone templates</CardDescription>
-            </Card>
+            {[
+              {
+                href: '/docs/diversified-farm-plan',
+                title: '🌾 Main Business Plan Template',
+                description: 'Comprehensive agricultural business planning framework',
+              },
+              {
+                href: '/docs/executive-summary',
+                title: '📋 Executive Summary Template',
+                description: 'High-level business plan summary structure',
+              },
+              {
+                href: '/docs/technical-implementation',
+                title: '🔧 Technical Implementation',
+                description: 'Technical specifications and implementation details',
+              },
+              {
+                href: '/docs/financial-analysis',
+                title: '💰 Financial Analysis Framework',
+                description: 'Financial modeling and projection tools',
+              },
+              {
+                href: '/docs/operations-manual',
+                title: '⚙️ Operations Manual',
+                description: 'Daily operations and maintenance procedures',
+              },
+              {
+                href: '/docs/market-strategy',
+                title: '🛒 Market Strategy',
+                description: 'Marketing and sales planning guide',
+              },
+              {
+                href: '/docs/risk-management',
+                title: '⚠️ Risk Management',
+                description: 'Risk assessment and mitigation frameworks',
+              },
+              {
+                href: '/docs/implementation-timeline',
+                title: '📅 Implementation Timeline',
+                description: 'Project timeline and milestone templates',
+              },
+            ].map((doc) => (
+              <Card key={doc.href} href={doc.href} variant="bordered">
+                <CardTitle>{doc.title}</CardTitle>
+                <CardDescription>{doc.description}</CardDescription>
+              </Card>
+            ))}
           </Grid>
         </Section>
       </Container>

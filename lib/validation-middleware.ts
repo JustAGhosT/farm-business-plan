@@ -1,7 +1,6 @@
+import { validateData } from '@/lib/validation'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { validateData } from '@/lib/validation'
-import { createErrorResponse } from '@/lib/api-utils'
 
 /**
  * Higher-order function that wraps API handlers with automatic validation
@@ -19,11 +18,14 @@ export function withValidation<T>(
       const validation = validateData(schema, body)
 
       if (!validation.success) {
-        return createErrorResponse(
-          'Validation failed',
-          400,
-          validation.errors?.issues,
-          'VALIDATION_ERROR'
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Validation failed',
+            details: validation.errors?.issues,
+            code: 'VALIDATION_ERROR',
+          },
+          { status: 400 }
         )
       }
 
@@ -31,7 +33,14 @@ export function withValidation<T>(
       return await handler(validation.data!, request)
     } catch (error) {
       if (error instanceof SyntaxError) {
-        return createErrorResponse('Invalid JSON in request body', 400, undefined, 'INVALID_JSON')
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Invalid JSON in request body',
+            code: 'INVALID_JSON',
+          },
+          { status: 400 }
+        )
       }
       throw error
     }

@@ -1,44 +1,44 @@
 import React from 'react'
 import Link from 'next/link'
+import { cva, type VariantProps } from 'class-variance-authority'
 
-interface CardProps {
-  children: React.ReactNode
+const cardVariants = cva('rounded-xl p-6 transition-all duration-300', {
+  variants: {
+    variant: {
+      default:
+        'bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl border border-gray-100 dark:border-gray-700',
+      bordered:
+        'border-2 border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-600 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700',
+      elevated: 'bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl',
+    },
+    hover: {
+      true: 'hover:-translate-y-1 transform',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+    hover: true,
+  },
+})
+
+export interface CardProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof cardVariants> {
   href?: string
-  variant?: 'default' | 'bordered' | 'elevated'
-  hover?: boolean
-  className?: string
 }
 
-export function Card({
-  children,
-  href,
-  variant = 'default',
-  hover = true,
-  className = '',
-}: CardProps) {
-  const baseClasses = 'rounded-xl p-6 transition-all duration-300'
-
-  const variantClasses = {
-    default:
-      'bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl border border-gray-100 dark:border-gray-700',
-    bordered:
-      'border-2 border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-600 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700',
-    elevated: 'bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl',
-  }
-
-  const hoverClasses = hover ? 'hover:-translate-y-1 transform' : ''
-
-  const combinedClasses = `${baseClasses} ${variantClasses[variant]} ${hoverClasses} ${className}`
+export function Card({ className, variant, hover, href, ...props }: CardProps) {
+  const classes = cardVariants({ variant, hover, className })
 
   if (href) {
     return (
-      <Link href={href} className={`${combinedClasses} block group`}>
-        {children}
+      <Link href={href} className={`${classes} block group`}>
+        {props.children}
       </Link>
     )
   }
 
-  return <div className={combinedClasses}>{children}</div>
+  return <div className={classes} {...props} />
 }
 
 interface CardTitleProps {

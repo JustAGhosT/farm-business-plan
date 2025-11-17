@@ -35,3 +35,6 @@ npm_output.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# cache directories
+.mypy_cache/
