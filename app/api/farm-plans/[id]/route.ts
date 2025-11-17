@@ -92,19 +92,6 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
         'INVALID_PARAMETER'
       )
     }
-    } catch (error) {
-      return createErrorResponse(
-        error instanceof Error ? error.message : 'Invalid parameter',
-        400,
-        undefined,
-        'INVALID_PARAMETER'
-      )
-    }
-  } catch (error) {
-    console.error('Error updating farm plan:', error)
-    return createErrorResponse('Failed to update farm plan', 500)
-  }
-}
   } catch (error) {
     console.error('Error updating farm plan:', error)
     return createErrorResponse('Failed to update farm plan', 500)
