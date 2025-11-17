@@ -1,7 +1,13 @@
 /**
  * Tests for rate limiting functionality
  */
-import { rateLimiter, RATE_LIMITS, getRateLimitIdentifier, applyRateLimit, isRateLimitingDisabled } from '@/lib/rate-limit'
+import {
+  rateLimiter,
+  RATE_LIMITS,
+  getRateLimitIdentifier,
+  applyRateLimit,
+  isRateLimitingDisabled,
+} from '@/lib/rate-limit'
 
 describe('Rate Limiter', () => {
   // Store original env value
