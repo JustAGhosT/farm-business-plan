@@ -29,10 +29,13 @@ export default function middleware(req: NextRequest) {
           pathname === '/api/auth/session' ||
           pathname.startsWith('/api/auth/signin'))
 
+      // Exempt signin POST requests (credentials, OAuth flows)
+      const isExemptAuthSignin = pathname.startsWith('/api/auth/signin')
+
       // Also exempt callback endpoints (both GET and POST)
       const isExemptAuthCallback = pathname.startsWith('/api/auth/callback')
 
-      if (isExemptAuthGet || isExemptAuthCallback) {
+      if (isExemptAuthGet || isExemptAuthSignin || isExemptAuthCallback) {
         return NextResponse.next()
       }
 
