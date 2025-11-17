@@ -92,23 +92,19 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
         'INVALID_PARAMETER'
       )
     }
-
-    const updatedFarmPlan = await farmPlanRepository.update(id, validation.data!)
-
-    if (!updatedFarmPlan) {
+    } catch (error) {
       return createErrorResponse(
-        'Farm plan not found or no fields to update',
-        404,
+        error instanceof Error ? error.message : 'Invalid parameter',
+        400,
         undefined,
-        'NOT_FOUND'
+        'INVALID_PARAMETER'
       )
     }
-
-    return NextResponse.json({
-      success: true,
-      data: updatedFarmPlan,
-      message: 'Farm plan updated successfully',
-    })
+  } catch (error) {
+    console.error('Error updating farm plan:', error)
+    return createErrorResponse('Failed to update farm plan', 500)
+  }
+}
   } catch (error) {
     console.error('Error updating farm plan:', error)
     return createErrorResponse('Failed to update farm plan', 500)
