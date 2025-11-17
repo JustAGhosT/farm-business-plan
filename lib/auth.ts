@@ -17,14 +17,14 @@ async function authorizeCredentials(credentials: Record<string, string> | undefi
   const { email, password } = parsedCredentials.data
 
   try {
-    const result = await query('SELECT * FROM users WHERE email = $1', [credentials.email])
+    const result = await query('SELECT * FROM users WHERE email = $1', [email])
     const user = result.rows[0]
 
     if (!user) {
       throw new Error('Invalid credentials')
     }
 
-    const isValid = await bcrypt.compare(credentials.password, user.password_hash)
+    const isValid = await bcrypt.compare(password, user.password_hash)
 
     if (!isValid) {
       throw new Error('Invalid credentials')
@@ -132,4 +132,30 @@ async function handleOAuthSignIn(account: any, token: any) {
     console.error('Error handling OAuth user:', error)
     throw new Error('Error handling OAuth user')
   }
+}
+
+function getOAuthProviders() {
+  const providers: any[] = []
+
+  // Add GitHub provider if configured
+  if (process.env.GITHUB_ID && process.env.GITHUB_SECRET) {
+    providers.push(
+      GitHubProvider({
+        clientId: process.env.GITHUB_ID,
+        clientSecret: process.env.GITHUB_SECRET,
+      })
+    )
+  }
+
+  // Add Google provider if configured
+  if (process.env.GOOGLE_ID && process.env.GOOGLE_SECRET) {
+    providers.push(
+      GoogleProvider({
+        clientId: process.env.GOOGLE_ID,
+        clientSecret: process.env.GOOGLE_SECRET,
+      })
+    )
+  }
+
+  return providers
 }
