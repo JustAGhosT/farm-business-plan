@@ -1,6 +1,7 @@
 {
   "name": "farm-business-plan",
   "version": "3.0.0",
+  "packageManager": "pnpm@10.33.2",
   "description": "Agricultural Business Plan Template and Farm Management Application",
   "homepage": "https://farmplan.netlify.app/",
   "repository": {
