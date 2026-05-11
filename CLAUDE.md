@@ -14,10 +14,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Key Commands
 
 ```bash
-npm install               # Install dependencies
-npm run dev               # Start dev server
-npm run build             # Production build
-npm run lint              # ESLint
+pnpm install              # Install dependencies
+pnpm run dev              # Start dev server
+pnpm run build            # Production build
+pnpm run lint             # ESLint
 ```
 
 ## Related Repos
