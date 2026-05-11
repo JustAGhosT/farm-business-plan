@@ -36,6 +36,8 @@ jobs:
   build-and-deploy:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
     permissions:
       contents: read
       statuses: write
@@ -45,17 +47,17 @@ jobs:
         working-directory: .
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
         with:
           ssh-key: ${{ secrets.DEPLOY_NETLIFY }}
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa
         with:
-          version: latest
+          version: 10.33.2
 
       - name: Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
         with:
           node-version: '20'
 
@@ -78,7 +80,7 @@ jobs:
 
       # Run tests before deployment (if available)
       # - name: Run tests
-      #   run: npm test
+      #   run: pnpm test
 
       - name: Type Check
         run: npx tsc --noEmit
@@ -142,15 +144,15 @@ jobs:
         working-directory: .
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa
         with:
-          version: latest
+          version: 10.33.2
 
       - name: Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
         with:
           node-version: '20'
 
@@ -173,7 +175,7 @@ jobs:
 
       # Run tests before deployment (if available)
       # - name: Run tests
-      #   run: npm test
+      #   run: pnpm test
 
       - name: Type Check
         run: npx tsc --noEmit

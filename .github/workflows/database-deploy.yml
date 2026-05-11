@@ -21,20 +21,22 @@ on:
 jobs:
   database-migration:
     runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment == 'production' && 'production' || 'staging' }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           ssh-key: ${{ secrets.DEPLOY_NETLIFY }}
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa
         with:
-          version: latest
+          version: 10.33.2
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
 
@@ -56,7 +58,7 @@ jobs:
           echo "Running migrations in dry-run mode..."
           echo "Environment: ${{ github.event.inputs.environment || 'staging' }}"
           # When actual database is configured, replace with real migration command
-          # npm run db:migrate -- --env=${{ github.event.inputs.environment || 'staging' }}
+          # pnpm run db:migrate -- --env=${{ github.event.inputs.environment || 'staging' }}
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
@@ -64,7 +66,7 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event.inputs.environment == 'production'
         run: |
           echo "Applying production migrations..."
-          # npm run db:migrate:production
+          # pnpm run db:migrate:production
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL_PRODUCTION }}
 
@@ -72,7 +74,7 @@ jobs:
         if: github.event.inputs.environment == 'staging'
         run: |
           echo "Seeding database with sample data..."
-          # npm run db:seed
+          # pnpm run db:seed
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
